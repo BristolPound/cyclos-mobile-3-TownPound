@@ -1,34 +1,24 @@
-import React, { Component } from 'react';
+import React from 'react'
+import Tabs from './Tabs'
+import { createStore, applyMiddleware } from 'redux'
+import { Provider } from 'react-redux'
+import thunk from 'redux-thunk'
+import { accountDetailsReceived, transactionsReceived } from './store/reducer/transaction'
+import reducer from './store/reducer'
 
-import { getBusinesses } from './api';
-import LoadingScreen from './LoadingScreen';
-import BusinessList from './BusinessList';
+import { getAccount, getTransactions } from './api'
 
-class App extends Component {
-  constructor() {
-    super();
+getAccount()
+  .then(account => store.dispatch(accountDetailsReceived(account)))
 
-    this.state = {
-      loading: true,
-      loadingMessage: 'loading businesses'
-    };
+getTransactions()
+  .then(transactions => store.dispatch(transactionsReceived(transactions)))
 
-    getBusinesses()
-      .then(businesses => {
-          this.setState({
-              loading: false,
-              loadingMessage: 'loaded!',
-              businesses
-          })
-      })
-      .catch(console.error);
-  }
+const store = createStore(reducer, applyMiddleware(thunk))
 
-  render() {
-    return  this.state.loading
-        ? <LoadingScreen message={this.state.loadingMessage}/>
-        : <BusinessList businesses={this.state.businesses}/>;
-  }
-}
+const App = () =>
+  <Provider store={store}>
+    <Tabs />
+  </Provider>
 
-module.exports = App;
+export default App
