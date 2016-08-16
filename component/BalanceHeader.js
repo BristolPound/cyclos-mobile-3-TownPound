@@ -2,8 +2,8 @@ import React from 'react'
 import { View } from 'react-native'
 import DefaultText from './DefaultText'
 import Price from './Price'
-import merge from './merge'
-import color from './colors'
+import merge from '../util/merge'
+import color from '../util/colors'
 
 const styles = {
   headingContainer: {

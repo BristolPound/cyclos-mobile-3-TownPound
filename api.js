@@ -1,5 +1,5 @@
 import {encode} from 'base-64'
-import merge from './merge'
+import merge from './util/merge'
 
 const BASE_URL = 'http://claymaa6.miniserver.com:8080/bristol-pound/'
 const USER = 'test1'

@@ -1,7 +1,7 @@
 import { ListView } from 'react-native'
-import merge from '../../merge'
+import merge from '../../util/merge'
 import groupTransactions from './groupTransactions'
-import { getTransactions } from '../../api'
+import { getTransactions, getAccount } from '../../api'
 
 const initialState = {
   loadingTransactions: true,
@@ -35,6 +35,17 @@ export const loadMoreTransactions = (page) =>
     getTransactions(page)
       .then(transactions => dispatch(transactionsReceived(transactions, page)))
   }
+
+export const loadTransactions = () =>
+    (dispatch) => {
+        getAccount()
+          .then(account => dispatch(accountDetailsReceived(account)))
+          .catch(console.error)
+
+        getTransactions()
+          .then(transactions => dispatch(transactionsReceived(transactions)))
+          .catch(console.error)
+    }
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {

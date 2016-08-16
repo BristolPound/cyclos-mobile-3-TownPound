@@ -1,11 +1,16 @@
 import { combineReducers } from 'redux'
 
-import transaction from './reducer/transaction'
+import transaction, { loadTransactions } from './reducer/transaction'
 import navigation from './reducer/navigation'
+import business, { loadBusinesses } from './reducer/business'
 
-const reducer = combineReducers({
+export const reducer = combineReducers({
   transaction,
-  navigation
+  navigation,
+  business
 })
 
-export default reducer
+export const initialise = (store) => {
+    store.dispatch(loadBusinesses())
+    store.dispatch(loadTransactions())
+}
