@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { TabBarIOS, View, StatusBar, Modal } from 'react-native'
 import Business from './Business'
 import TransactionsList from './TransactionsList'
 import SendMoney from './SendMoney'
-import color from './colors'
+import color from '../util/colors'
 import { connect } from 'react-redux'
-import { navigateToTab, showSendMoney } from './store/reducer/navigation'
+import { navigateToTab, showSendMoney } from '../store/reducer/navigation'
 
 // https://icons8.com/web-app/for/ios7/money
 // https://www.base64-image.de

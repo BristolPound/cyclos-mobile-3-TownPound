@@ -3,9 +3,9 @@ import { StyleSheet, ListView, View, Image, ActivityIndicator, TouchableHighligh
 import DefaultText from './DefaultText'
 import Price from './Price'
 import { connect } from 'react-redux'
-import merge from './merge'
+import merge from '../util/merge'
 import BalanceHeader from './BalanceHeader'
-import { loadMoreTransactions } from './store/reducer/transaction'
+import { loadMoreTransactions } from '../store/reducer/transaction'
 
 const borderColor = '#ddd'
 const marginSize = 8

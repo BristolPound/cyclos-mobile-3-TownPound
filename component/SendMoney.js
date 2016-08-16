@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import { View, TextInput, StyleSheet, TouchableHighlight } from 'react-native'
 import DefaultText from './DefaultText'
-import color from './colors'
-import merge from './merge'
-import { putTransaction } from './api'
+import color from '../util/colors'
+import merge from '../util/merge'
 
 const style = {
   formGroup: {
