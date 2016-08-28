@@ -2,24 +2,27 @@ import {encode} from 'base-64'
 import merge from './util/merge'
 
 const BASE_URL = 'https://bristol.cyclos.org/bristolpoundsandbox03/api/'
-const USER = 'test1'
-const PASS = 'testing123'
+let globalUsername = 'test2'
+let globalPassword = 'testing123'
 
-const headers = new Headers()
-headers.append('Authorization', 'Basic ' + encode(USER + ':' + PASS))
-headers.append('Content-Type', 'application/json')
+const httpHeaders = () => {
+  const headers = new Headers()
+  headers.append('Authorization', 'Basic ' + encode(globalUsername + ':' + globalPassword))
+  headers.append('Content-Type', 'application/json')
+  return headers
+}
 
 const querystring = params =>
   Object.keys(params).map(key => key + '=' + params[key]).join('&')
 
 const get = (url, params) =>
-  fetch(BASE_URL + url + (params ? '?' + querystring(params) : ''), {headers})
+  fetch(BASE_URL + url + (params ? '?' + querystring(params) : ''), {headers: httpHeaders()})
     .then(response => response.text())
     .then(JSON.parse)
     .catch(console.error)
 
 const post = (url, params) =>
-  fetch(BASE_URL + url, merge({headers}, {method: 'POST', body: JSON.stringify(params)}))
+  fetch(BASE_URL + url, merge({headers: httpHeaders()}, {method: 'POST', body: JSON.stringify(params)}))
     .then(response => response.text())
     .then(JSON.parse)
 
@@ -67,10 +70,20 @@ export const putTransaction = (payment) =>
       to: payment.subject,
       fields: 'paymentTypes.id'
   })
-  .then((res) => {
-    var transaction = {
+  .then((res) =>
+    post('self/payments', ({
       ...payment,
       type: res.paymentTypes[0].id
-    }
-    return post('self/payments', transaction)
-  })
+    }))
+  )
+
+export const authenticate = (username, password) =>
+  get('auth')
+    .then(response => {
+      // 'stash' the username / password so that they are used on subsequent requests
+      if (!response.expiredPassword) {
+        globalPassword = password
+        globalUsername = username
+      }
+      return response
+    })

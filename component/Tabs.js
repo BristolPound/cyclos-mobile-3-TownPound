@@ -8,6 +8,7 @@ import * as actions from '../store/reducer/navigation'
 import Business from './Business'
 import TransactionsList from './TransactionsList'
 import SendMoney from './SendMoney'
+import Login from './Login'
 import color from '../util/colors'
 
 const style = {
@@ -42,7 +43,7 @@ const Tabs = (props) =>
     <ScrollableTabView
         renderTabBar={() => <TabBar sendMoney={props.showSendMoney}/>}
         tabBarPosition='bottom'
-        initialPage={props.tabIndex}
+        initialPage={props.navigation.tabIndex}
         tabBarActiveTextColor={color.bristolBlue}
         style={style.tabs}
         tabBarBackgroundColor={color.lightGray}
@@ -51,13 +52,15 @@ const Tabs = (props) =>
         onChangeTab={({i}) => props.navigateToTab(i)}
         tabBarUnderlineColor={color.transparent}>
       <Business tabLabel='Directory'/>
-      <TransactionsList tabLabel='Transactions'/>
+      { props.loggedIn
+        ? <TransactionsList tabLabel='Transactions'/>
+        : <Login tabLabel='Transactions'/> }
     </ScrollableTabView>
     <Modal
       animationType={'slide'}
       transparent={false}
-      visible={props.sendMoneyVisible}
-      onRequestClose={() => props.showSendMoney(false)}>
+      onRequestClose={() => props.showSendMoney(false)}
+      visible={props.navigation.sendMoneyVisible}>
       <SendMoney cancel={() => props.showSendMoney(false)}/>
     </Modal>
   </View>
@@ -65,6 +68,9 @@ const Tabs = (props) =>
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(actions, dispatch)
 
-const mapStateToProps = (state) => ({...state.navigation})
+const mapStateToProps = (state) => ({
+  navigation: state.navigation,
+  loggedIn: state.login.loggedIn
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tabs)
