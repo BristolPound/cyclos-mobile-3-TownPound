@@ -16,6 +16,7 @@ const get = (url, params) =>
   fetch(BASE_URL + url + (params ? '?' + querystring(params) : ''), {headers})
     .then(response => response.text())
     .then(JSON.parse)
+    .catch(console.error)
 
 const post = (url, params) =>
   fetch(BASE_URL + url, merge({headers}, {method: 'POST', body: JSON.stringify(params)}))

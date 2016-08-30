@@ -1,5 +1,7 @@
 import React from 'react'
-import { TabBarIOS, View, StatusBar, Modal } from 'react-native'
+import { ScrollView, View, StatusBar, Modal, Image } from 'react-native'
+import ScrollableTabView from 'react-native-scrollable-tab-view'
+
 import Business from './Business'
 import TransactionsList from './TransactionsList'
 import SendMoney from './SendMoney'
@@ -18,42 +20,27 @@ const statusBarHeight = 20
 const Tabs = (props) =>
   <View style={{backgroundColor: color.bristolBlue, flex: 1}}>
     <StatusBar barStyle='light-content'/>
-    <TabBarIOS
-      tintColor={color.bristolBlue}
-      style={{marginTop: statusBarHeight, flex: 1, backgroundColor: 'white'}}
-      barTintColor='#eee'>
-      <TabBarIOS.Item
-          title='Directory'
-          icon={{uri: shopsIcon, scale: 4}}
-          selected={props.selectedTab === 'business'}
-          onPress={() => props.navigateToTab('business')}>
+    <ScrollableTabView
+      tabBarPosition='bottom'
+      tabBarActiveTextColor={color.bristolBlue}
+      style={{marginTop: 20, flex: 1, backgroundColor: 'white'}}
+      tabBarBackgroundColor='#eee'
+      scrollWithoutAnimation={true}
+      locked={true}
+      tabBarUnderlineColor='rgba(0, 0, 0, 0)'>
+      <ScrollView contentContainerStyle={{flex:1}}
+          tabLabel='Directory'>
         <Business businesses={props.businesses}/>
-      </TabBarIOS.Item>
-      <TabBarIOS.Item
-          title='Transactions'
-          icon={{uri: transactionsIcon, scale: 4}}
-          selected={props.selectedTab === 'transactions'}
-          onPress={() => props.navigateToTab('transactions')}>
-        <View style={{marginBottom: 30, flex: 1}}>
-          <TransactionsList/>
-        </View>
-      </TabBarIOS.Item>
-      <TabBarIOS.Item
-          title='Send Money'
-          icon={{uri: sendMoneyIcon, scale: 4}}
-          selected={false}
-          onPress={() => props.showSendMoney(true)}>
-        <View style={{marginBottom: 30, flex: 1}}>
-          <SendMoney/>
-        </View>
-      </TabBarIOS.Item>
-    </TabBarIOS>
-    <Modal
-      animationType={"slide"}
-      transparent={false}
-      visible={props.sendMoneyVisible}>
-      <SendMoney cancel={() => props.showSendMoney(false)}/>
-    </Modal>
+      </ScrollView>
+      <ScrollView
+          tabLabel='Transactions'>
+        <TransactionsList/>
+      </ScrollView>
+      <ScrollView
+          tabLabel='Send Money'>
+        <SendMoney cancel={() => props.showSendMoney(false)}/>
+      </ScrollView>
+    </ScrollableTabView>
   </View>
 
 const mapDispatchToProps = (dispatch) => ({
