@@ -49,8 +49,9 @@ const styles = {
   }
 }
 
+const seperatorKey = 0
 const renderSeparator = () =>
-  <View style={styles.separator}/>
+  <View style={styles.separator} key={seperatorKey++}/>
 
 const renderSectionHeader = (sectionData, sectionID) =>
   <View style={merge(styles.section, styles.sectionBorder)} ke={sectionID}>
