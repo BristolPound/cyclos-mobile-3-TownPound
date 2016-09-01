@@ -1,14 +1,13 @@
 import React from 'react'
-import { ScrollView, View, StatusBar, Modal, Image } from 'react-native'
+import { View, StatusBar } from 'react-native'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
 
 import Business from './Business'
 import TransactionsList from './TransactionsList'
 import SendMoney from './SendMoney'
 import color from '../util/colors'
-import { connect } from 'react-redux'
 
-const Tabs = (props) =>
+const Tabs = () =>
   <View style={{backgroundColor: color.bristolBlue, flex: 1}}>
     <StatusBar barStyle='light-content'/>
     <ScrollableTabView
