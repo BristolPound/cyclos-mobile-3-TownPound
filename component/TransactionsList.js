@@ -86,7 +86,7 @@ const TransactionsList = (props) =>
     {props.loadingTransactions
       ? <ActivityIndicator size='large' style={{flex: 1}}/>
       : <ListView
-          style={{flex: 1, marginBottom: 20}}
+          style={{flex: 1}}
           pageSize={10}
           dataSource={props.dataSource}
           renderSeparator={renderSeparator}
