@@ -81,6 +81,9 @@ class SendMoney extends Component {
     return (
       <View>
         <View style={style.heading}>
+          <NavBarButton style={merge(style.cancelButton, style.button)} onPress={() => this.props.cancel()}>
+            <DefaultText style={style.buttonText}>Cancel</DefaultText>
+          </NavBarButton>
           <DefaultText style={style.headingText}>Send Money</DefaultText>
           <NavBarButton style={merge(style.sendButton, style.button)} onPress={this._send.bind(this)}>
             <DefaultText style={style.buttonText}>Send</DefaultText>
