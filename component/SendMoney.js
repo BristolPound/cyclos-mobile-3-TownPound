@@ -1,5 +1,7 @@
-import React, { Component } from 'react'
-import { View, TextInput, StyleSheet, TouchableHighlight } from 'react-native'
+import React from 'react'
+import { connect } from 'react-redux'
+import { View, TextInput, StyleSheet, TouchableHighlight, ActivityIndicator } from 'react-native'
+import { updatePayee, updateAmount, sendTransaction, resetForm } from '../store/reducer/sendMoney'
 import DefaultText from './DefaultText'
 import color from '../util/colors'
 import merge from '../util/merge'
@@ -56,58 +58,60 @@ const NavBarButton = ({style, children, onPress}) =>
     </View>
   </TouchableHighlight>
 
-class SendMoney extends Component {
-
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      payee: '',
-      amount: '0'
+const SendMoney = (props) =>
+  <View>
+    <View style={style.heading}>
+      <NavBarButton style={merge(style.cancelButton, style.button)} onPress={() => { props.cancel(); props.resetForm() }}>
+        <DefaultText style={style.buttonText}>Cancel</DefaultText>
+      </NavBarButton>
+      <DefaultText style={style.headingText}>Send Money</DefaultText>
+      <NavBarButton style={merge(style.sendButton, style.button)} onPress={() => props.loading ? undefined : props.sendTransaction()}>
+        { props.loading
+          ? <ActivityIndicator size='large' style={{flex: 1, backgroundColor: 'transparent'}}/>
+          : <DefaultText style={style.buttonText}>Send</DefaultText>
+        }
+      </NavBarButton>
+    </View>
+    <View style={style.formGroup}>
+      <DefaultText style={style.label}>To:</DefaultText>
+      <TextInput
+        style={style.textInput}
+        value={props.payee}
+        onChangeText={(payee) => props.updatePayee(payee)}
+        placeholder='payee'/>
+    </View>
+    <View style={style.formGroup}>
+      <DefaultText style={style.label}>£</DefaultText>
+      <TextInput
+        style={style.textInput}
+        keyboardType='numeric'
+        value={props.amount}
+        onChangeText={(amount) => props.updateAmount(amount)}
+        placeholder='amount'/>
+    </View>
+    { props.transactionResponse && props.transactionResponse.description
+      ? <View>
+          <DefaultText>{ props.transactionResponse.description }</DefaultText>
+        </View>
+      : undefined
     }
-  }
+  </View>
 
-  _send() {
-    // putTransaction({
-    //   payeeUserName: this.state.payee,
-    //   description: 'This is a test',
-    //   amount: this.state.amount
-    // })
-    // .then((res) => console.log(res))
-    // .catch((err) => console.error(err))
+const mapDispatchToProps = (dispatch) => ({
+  updatePayee: (payee) => {
+    dispatch(updatePayee(payee))
+  },
+  updateAmount: (amount) => {
+    dispatch(updateAmount(amount))
+  },
+  sendTransaction: () => {
+    dispatch(sendTransaction())
+  },
+  resetForm: () => {
+    dispatch(resetForm())
   }
+})
 
-  render() {
-    return (
-      <View>
-        <View style={style.heading}>
-          <NavBarButton style={merge(style.cancelButton, style.button)} onPress={() => this.props.cancel()}>
-            <DefaultText style={style.buttonText}>Cancel</DefaultText>
-          </NavBarButton>
-          <DefaultText style={style.headingText}>Send Money</DefaultText>
-          <NavBarButton style={merge(style.sendButton, style.button)} onPress={this._send.bind(this)}>
-            <DefaultText style={style.buttonText}>Send</DefaultText>
-          </NavBarButton>
-        </View>
-        <View style={style.formGroup}>
-          <DefaultText style={style.label}>To:</DefaultText>
-          <TextInput
-            style={style.textInput}
-            value={this.state.payee}
-            onChangeText={(payee) => this.setState({payee})}
-            placeholder='payee'/>
-        </View>
-        <View style={style.formGroup}>
-          <DefaultText style={style.label}>£</DefaultText>
-          <TextInput
-            style={style.textInput}
-            value={this.state.amount}
-            onChangeText={(amount) => this.setState({amount})}
-            placeholder='amount'/>
-        </View>
-      </View>
-    )
-  }
-}
+const mapStateToProps = (state) => ({...state.sendMoney})
 
-export default SendMoney
+export default connect(mapStateToProps, mapDispatchToProps)(SendMoney)
