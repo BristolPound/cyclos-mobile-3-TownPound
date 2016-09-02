@@ -1,8 +1,7 @@
 import {encode} from 'base-64'
 import merge from './util/merge'
 
-const BASE_URL = 'http://claymaa6.miniserver.com:8080/bristol-pound/'
-const NEW_BASE_URL = 'https://bristol.cyclos.org/bristolpoundsandbox03/api/'
+const BASE_URL = 'https://bristol.cyclos.org/bristolpoundsandbox03/api/'
 const USER = 'test1'
 const PASS = 'testing123'
 
@@ -19,51 +18,59 @@ const get = (url, params) =>
     .then(JSON.parse)
     .catch(console.error)
 
-const new_get = (url, params) =>
-  fetch(NEW_BASE_URL + url + (params ? '?' + querystring(params) : ''), {headers})
-    .then(response => response.text())
-    .then(JSON.parse)
-
 const post = (url, params) =>
   fetch(BASE_URL + url, merge({headers}, {method: 'POST', body: JSON.stringify(params)}))
     .then(response => response.text())
     .then(JSON.parse)
 
-export const getBusinesses = () => {
-  let params = {
+export const getBusinesses = () =>
+  get('users', {
     fields: [
-      "email",
-      "id",
-      "username",
-      "name",
-      "address.addressLine1",
-      "address.addressLine2",
-      "address.zip",
-      "address.location",
-      "image.url",
-      "phone",
-      "display",
-      "shortDisplay"
+      'email',
+      'id',
+      'name',
+      'username',
+      'address.addressLine1',
+      'address.addressLine2',
+      'address.zip',
+      'address.location',
+      'image.url',
+      'phone',
+      'display',
+      'shortDisplay'
     ]
-  }
-  let businesses = new_get('users', params)
-  businesses = businesses.map((business) => {
-    let res = {..business, location: business.address.location};
-    delete res.address.location;
-    return res;
   })
-  return businesses;
-}
-
 
 export const getAccount = () =>
-  get('accounts')
+  get('self/accounts', {
+    fields: ['status.balance']
+  }).then((res) => res[0].status.balance) // get first item in list for now
 
-export const getTransactions = (pageNumber = 1) =>
-  get('transaction', {
-    pageNumber,
+
+export const getTransactions = (page = 0) =>
+  get('self/accounts/member/history', {
+    fields: [
+      'id',
+      'transactionNumber',
+      'date',
+      'description',
+      'amount',
+      'type',
+      'relatedAccount'
+    ],
+    page,
     pageSize: 20
   })
 
-export const putTransaction = (transaction) =>
-  post('transaction', transaction)
+export const putTransaction = (payment) =>
+  get('self/payments/data-for-perform', {
+      to: payment.subject,
+      fields: 'paymentTypes.id'
+  })
+  .then((res) => {
+    var transaction = {
+      ...payment,
+      type: res.paymentTypes[0].id
+    }
+    return post('self/payments', transaction)
+  })
