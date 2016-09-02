@@ -49,12 +49,11 @@ const styles = {
   }
 }
 
-const seperatorKey = 0
-const renderSeparator = () =>
-  <View style={styles.separator} key={seperatorKey++}/>
+const renderSeparator = (sectionID, rowID) =>
+  <View style={styles.separator} key={`sep:${sectionID}:${rowID}`}/>
 
 const renderSectionHeader = (sectionData, sectionID) =>
-  <View style={merge(styles.section, styles.sectionBorder)} ke={sectionID}>
+  <View style={merge(styles.section, styles.sectionBorder)} key={sectionID}>
    <DefaultText style={styles.sectionHeader}>
      {sectionID}
    </DefaultText>
@@ -62,8 +61,12 @@ const renderSectionHeader = (sectionData, sectionID) =>
 
 const renderRow = (transaction) =>
   <View style={styles.rowContainer} key={transaction.transactionNumber}>
-    { transaction.accountOwner.image ? <Image style={styles.image} source={{uri: transaction.accountOwner.image.url}}/> : <View style={styles.image} /> }
-    <DefaultText style={{marginLeft: 10}}>{transaction.accountOwner.name}</DefaultText>
+    { transaction.relatedAccount.user && transaction.relatedAccount.user.image ?
+      <Image style={styles.image} source={{uri: transaction.relatedAccount.user.image.url}}/>
+      : <View style={styles.image} /> }
+    { transaction.relatedAccount.user ?
+      <DefaultText style={{marginLeft: 10}}>{transaction.relatedAccount.user.display}</DefaultText>
+      : <DefaultText style={{marginLeft: 10}}>'System'</DefaultText> }
     <Price price={transaction.amount}/>
   </View>
 

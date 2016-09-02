@@ -33,7 +33,7 @@ const styles = {
 
 const BusinessListItem = props =>
   <TouchableHighlight onPress={() => props.businessClicked(props.business)}
-            underlayColor='#dddddd' key={props.business.userName}>
+            underlayColor='#dddddd' key={props.business.username}>
     <View style={styles.container}>
       { props.business.image ? <Image style={styles.image} source={{uri: props.business.image.url}}/> : <View style={styles.image}/> }
       <View style={styles.verticalStack}>
@@ -41,7 +41,7 @@ const BusinessListItem = props =>
           {props.business.name}
         </DefaultText>
         <DefaultText style={{color: '#777', fontSize: 16}}>
-          @{props.business.userName}
+          @{props.business.username}
         </DefaultText>
       </View>
     </View>

@@ -51,7 +51,7 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'account/ACCOUNT_DETAILS_RECEIVED':
       state = merge(state, {
-        balance: action.account.balance,
+        balance: action.account,
         loadingBalance: false
       })
       break
