@@ -6,7 +6,9 @@
 import { AsyncStorage } from 'react-native'
 
 const DEFAULT_KEY_PREFIX = '@BristolPoundStore:'
-const BUSINESS_KEY = 'BUSINESSES'
+export const storageKeys = {
+  BUSINESS_KEY: 'BUSINESSES'
+}
 const STALE_DATA_THRESHOLD = 24 * 60 * 60 * 1000 //TODO: find out what we want here. Currently: milliseconds in a day
 
 const wrapDataForStorage = (dataToStore) =>
@@ -23,24 +25,15 @@ const unwrapDataFromStorage = (storedData) =>
       : parsedData.data
   }
 
-const get = (key) =>
+export const get = (key) =>
   AsyncStorage.getItem(DEFAULT_KEY_PREFIX + key)
     .then(unwrapDataFromStorage)
     .catch(console.error)
 
-const store = (key, data) => {
+export const save = (key, data) => {
   AsyncStorage.setItem(DEFAULT_KEY_PREFIX + key, wrapDataForStorage(data))
     .catch(console.error)
 }
 
-const remove = (key) =>
+export const remove = (key) =>
   AsyncStorage.removeItem(key)
-
-export const getBusinessesFromStorage = () =>
-  get(BUSINESS_KEY)
-
-export const storeBusinessesToStorage = (businesses) =>
-  store(BUSINESS_KEY, businesses)
-
-export const removeBusinessesFromStorage = () =>
-  remove(BUSINESS_KEY)

@@ -22,7 +22,7 @@ const BusinessList = (props) =>
           dataSource={props.dataSource}
           renderRow={renderRow(props.navigator)}
           refreshControl={<RefreshControl
-            refreshing={props.loading}
+            refreshing={props.refreshing}
             onRefresh={props.refreshBusinesses} />
           }/>
       </View>
