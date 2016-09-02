@@ -1,13 +1,15 @@
 import { ListView } from 'react-native'
 import merge from '../../util/merge'
 import { getBusinesses } from '../../api'
-import { getBusinessesFromStorage, storeBusinessesToStorage, removeBusinessesFromStorage } from '../../localStorage'
+import * as localStorage from '../../localStorage'
 
-const unexceptableBusinessList = (businessList) => businessList === null || businessList.length === 0
+const acceptableBusinessList = (businessList) => businessList !== null && businessList.length > 0
+const storageKey = localStorage.storageKeys.BUSINESS_KEY
 
 const initialState = {
   business: [],
   loading: true,
+  refreshing: false,
   dataSource: new ListView.DataSource({
     rowHasChanged: (a, b) => a.userName === b.userName
   })
@@ -24,9 +26,9 @@ export const resetState = () => ({
 
 export const loadBusinesses = () =>
     (dispatch) =>
-      getBusinessesFromStorage()
+      localStorage.get(storageKey)
         .then(storedBusinesses => {
-          if (unexceptableBusinessList(storedBusinesses)) {
+          if (!acceptableBusinessList(storedBusinesses)) {
             dispatch(loadBusinessesFromApi())
           }
           else{
@@ -38,8 +40,8 @@ const loadBusinessesFromApi = () =>
     (dispatch) =>
       getBusinesses()
         .then(businesses => {
-          if (!unexceptableBusinessList(businesses)) {
-            storeBusinessesToStorage(businesses)
+          if (acceptableBusinessList(businesses)) {
+            localStorage.save(storageKey, businesses)
           }
           dispatch(businessDetailsReceived(businesses))
         })
@@ -49,7 +51,7 @@ export const refreshBusinesses = () =>
   (dispatch) =>
     {
       dispatch(resetState())
-      removeBusinessesFromStorage()
+      localStorage.remove(storageKey)
       dispatch(loadBusinessesFromApi())
     }
 
@@ -59,13 +61,13 @@ const reducer = (state = initialState, action) => {
       state = merge(state, {
         loading: false,
         dataSource: state.dataSource.cloneWithRows(action.business),
-        business: action.business
+        business: action.business,
+        refreshing: false
       })
       break
     case 'business/RESET_STATE':
       state = merge(state, {
-        loading: true,
-        business: []
+        refreshing: true
       })
       break
   }
