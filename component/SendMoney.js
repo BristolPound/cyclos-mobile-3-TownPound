@@ -1,7 +1,8 @@
 import React from 'react'
+import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { View, TextInput, StyleSheet, TouchableHighlight, ActivityIndicator } from 'react-native'
-import { updatePayee, updateAmount, sendTransaction, resetForm } from '../store/reducer/sendMoney'
+import * as actions from '../store/reducer/sendMoney'
 import DefaultText from './DefaultText'
 import color from '../util/colors'
 import merge from '../util/merge'
@@ -97,20 +98,8 @@ const SendMoney = (props) =>
     }
   </View>
 
-const mapDispatchToProps = (dispatch) => ({
-  updatePayee: (payee) => {
-    dispatch(updatePayee(payee))
-  },
-  updateAmount: (amount) => {
-    dispatch(updateAmount(amount))
-  },
-  sendTransaction: () => {
-    dispatch(sendTransaction())
-  },
-  resetForm: () => {
-    dispatch(resetForm())
-  }
-})
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(actions, dispatch)
 
 const mapStateToProps = (state) => ({...state.sendMoney})
 
