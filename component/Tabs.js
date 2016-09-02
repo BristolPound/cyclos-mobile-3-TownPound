@@ -56,7 +56,8 @@ const Tabs = (props) =>
     <Modal
       animationType={'slide'}
       transparent={false}
-      visible={props.sendMoneyVisible}>
+      visible={props.sendMoneyVisible}
+      onRequestClose={() => props.showSendMoney(false)}>
       <SendMoney cancel={() => props.showSendMoney(false)}/>
     </Modal>
   </View>
