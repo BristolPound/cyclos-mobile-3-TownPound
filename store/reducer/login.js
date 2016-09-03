@@ -37,9 +37,9 @@ export const login = (username, password) =>
   (dispatch) => {
       dispatch(loginInProgress(true))
       authenticate(username, password)
-        .then(response => {
+        .then(authenticated => {
           dispatch(loginInProgress(false))
-          if (!response.expiredPassword) {
+          if (authenticated) {
             dispatch(loggedIn())
             dispatch(loadTransactions())
           } else {

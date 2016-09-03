@@ -2,13 +2,21 @@ import {encode} from 'base-64'
 import merge from './util/merge'
 
 const BASE_URL = 'https://bristol.cyclos.org/bristolpoundsandbox03/api/'
-let globalUsername = 'test2'
-let globalPassword = 'testing123'
+let sessionToken = ''
 
 const httpHeaders = () => {
   const headers = new Headers()
-  headers.append('Authorization', 'Basic ' + encode(globalUsername + ':' + globalPassword))
-  headers.append('Content-Type', 'application/json')
+  if (sessionToken) {
+    headers.append('Session-Token', sessionToken)
+  }
+  headers.append('Accept', 'application/json')
+  return headers
+}
+
+const basicAuthHeaders = (username, password) => {
+  const headers = new Headers()
+  headers.append('Authorization', 'Basic ' + encode(username + ':' + password))
+  headers.append('Accept', 'application/json')
   return headers
 }
 
@@ -78,12 +86,18 @@ export const putTransaction = (payment) =>
   )
 
 export const authenticate = (username, password) =>
-  get('auth')
+  fetch(BASE_URL + 'auth/session', {
+      headers: basicAuthHeaders(username, password),
+      method: 'POST'
+    })
+    .then(response => response.text())
+    .then(JSON.parse)
     .then(response => {
       // 'stash' the username / password so that they are used on subsequent requests
-      if (!response.expiredPassword) {
-        globalPassword = password
-        globalUsername = username
+      // TODO: handle exceptions (objects with exceptionType and exceptionMesssage)
+      if (response.sessionToken) {
+        sessionToken = response.sessionToken
+        return true
       }
-      return response
+      return false
     })
