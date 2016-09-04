@@ -1,7 +1,9 @@
 import merge from '../../util/merge'
 import { authenticate } from '../../api'
-import { UNAUTHORIZED_ACCESS } from '../../apiError'
+import ApiError, { UNAUTHORIZED_ACCESS } from '../../apiError'
+import NetworkError from '../../networkError'
 import { loadTransactions } from './transaction'
+import { networkConnectionChanged } from './status'
 
 const initialState = {
   loggedIn: false,
@@ -45,10 +47,13 @@ export const login = (username, password) =>
         })
         .catch((err) => {
           dispatch(loginInProgress(false))
-          if (err.type === UNAUTHORIZED_ACCESS) {
+          if (err instanceof NetworkError) {
+            dispatch(networkConnectionChanged(false))
+          } else if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
             dispatch(loginFailed())
+          } else {
+            // TODO: What to do with unexpected errors?
           }
-          // TODO: What to do with unexpected errors?
         })
     }
 
