@@ -1,5 +1,6 @@
 import {encode} from 'base-64'
 import merge from './util/merge'
+import createError from './apiError'
 
 const BASE_URL = 'https://bristol.cyclos.org/bristolpoundsandbox03/api/'
 let sessionToken = ''
@@ -85,19 +86,28 @@ export const putTransaction = (payment) =>
     }))
   )
 
+// decodes the response via the json() function, which returns a promise, combining
+// the results with the original response object. This allows access to both
+// response data (e.g. status code) and application level data.
+const decodeResponse =
+  response => response.json()
+    .then(json => ({response, json}))
+
+const checkStatusCode = (data) => {
+  if (data.response.status !== 400) {
+    throw new createError(data.response, data.json)
+  }
+  return data
+}
+
 export const authenticate = (username, password) =>
   fetch(BASE_URL + 'auth/session', {
       headers: basicAuthHeaders(username, password),
       method: 'POST'
     })
-    .then(response => response.text())
-    .then(JSON.parse)
-    .then(response => {
-      // 'stash' the username / password so that they are used on subsequent requests
-      // TODO: handle exceptions (objects with exceptionType and exceptionMesssage)
-      if (response.sessionToken) {
-        sessionToken = response.sessionToken
-        return true
-      }
-      return false
+    .then(decodeResponse)
+    .then(checkStatusCode)
+    .then(({json}) => {
+      // 'stash' the sessionToken
+      sessionToken = json.sessionToken
     })

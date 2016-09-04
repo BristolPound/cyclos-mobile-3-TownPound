@@ -1,5 +1,6 @@
 import merge from '../../util/merge'
 import { authenticate } from '../../api'
+import { UNAUTHORIZED_ACCESS } from '../../apiError'
 import { loadTransactions } from './transaction'
 
 const initialState = {
@@ -37,14 +38,17 @@ export const login = (username, password) =>
   (dispatch) => {
       dispatch(loginInProgress(true))
       authenticate(username, password)
-        .then(authenticated => {
+        .then(() => {
           dispatch(loginInProgress(false))
-          if (authenticated) {
-            dispatch(loggedIn())
-            dispatch(loadTransactions())
-          } else {
+          dispatch(loggedIn())
+          dispatch(loadTransactions())
+        })
+        .catch((err) => {
+          dispatch(loginInProgress(false))
+          if (err.type === UNAUTHORIZED_ACCESS) {
             dispatch(loginFailed())
           }
+          // TODO: What to do with unexpected errors?
         })
     }
 
