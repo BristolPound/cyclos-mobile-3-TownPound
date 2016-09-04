@@ -1,6 +1,7 @@
 import {encode} from 'base-64'
 import merge from './util/merge'
-import createError from './apiError'
+import {throwOnError} from './apiError'
+import NetworkError from './networkError'
 
 const BASE_URL = 'https://bristol.cyclos.org/bristolpoundsandbox03/api/'
 let sessionToken = ''
@@ -93,21 +94,24 @@ const decodeResponse =
   response => response.json()
     .then(json => ({response, json}))
 
-const checkStatusCode = (data) => {
-  if (data.response.status !== 400) {
-    throw new createError(data.response, data.json)
-  }
-  return data
-}
-
 export const authenticate = (username, password) =>
   fetch(BASE_URL + 'auth/session', {
       headers: basicAuthHeaders(username, password),
       method: 'POST'
     })
+    .catch((err) => {
+      if (err.message === 'Network request failed') {
+        throw new NetworkError(err)
+      }
+    })
     .then(decodeResponse)
-    .then(checkStatusCode)
+    .then((data) => {
+      throwOnError(data.response, data.json)
+      return data
+    })
     .then(({json}) => {
       // 'stash' the sessionToken
+      // TODO: Investigate how long sessionTokens last for, and ensure that
+      // if the token expires, the login flow is invoked once again
       sessionToken = json.sessionToken
     })
