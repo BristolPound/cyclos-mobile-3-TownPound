@@ -18,7 +18,9 @@ class App extends React.Component {
       devTools()
     )
     this.store = createStore(reducer, enhancer)
-    devTools.updateStore(this.store)
+    if (!process.env.PROD) {
+      devTools.updateStore(this.store)
+    }
     initialise(this.store)
   }
 
