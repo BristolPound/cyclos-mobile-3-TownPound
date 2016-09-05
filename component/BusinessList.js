@@ -1,7 +1,9 @@
 import React from 'react'
-import { ActivityIndicator, ListView, View } from 'react-native'
+import { bindActionCreators } from 'redux'
+import { ActivityIndicator, ListView, View, RefreshControl } from 'react-native'
 import { connect } from 'react-redux'
 import BusinessListItem from './BusinessListItem'
+import * as actions from '../store/reducer/business'
 
 const renderRow = (navigator) =>
   (business) =>
@@ -18,9 +20,16 @@ const BusinessList = (props) =>
           style={{flex: 1}}
           pageSize={10}
           dataSource={props.dataSource}
-          renderRow={renderRow(props.navigator)}/>
+          renderRow={renderRow(props.navigator)}
+          refreshControl={<RefreshControl
+            refreshing={props.refreshing}
+            onRefresh={props.refreshBusinesses} />
+          }/>
       </View>
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(actions, dispatch)
 
 const mapStateToProps = (state) => ({...state.business})
 
-export default connect(mapStateToProps)(BusinessList)
+export default connect(mapStateToProps, mapDispatchToProps)(BusinessList)
