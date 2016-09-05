@@ -17,8 +17,7 @@ const wrapDataForStorage = (dataToStore) =>
     data: dataToStore
   })
 
-const unwrapDataFromStorage = (storedData) =>
-  {
+const unwrapDataFromStorage = (storedData) => {
     const parsedData = JSON.parse(storedData)
     return parsedData === null || Date.now() - parsedData.storedTime > STALE_DATA_THRESHOLD
       ? null

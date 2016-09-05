@@ -3,7 +3,7 @@ import merge from '../../util/merge'
 import { getBusinesses } from '../../api'
 import * as localStorage from '../../localStorage'
 
-const acceptableBusinessList = (businessList) => businessList !== null && businessList.length > 0
+const isValidList = (businessList) => businessList !== null && businessList.length > 0
 const storageKey = localStorage.storageKeys.BUSINESS_KEY
 
 const initialState = {
@@ -20,18 +20,17 @@ export const businessDetailsReceived = (business) => ({
   business
 })
 
-export const resetState = () => ({
-  type: 'business/RESET_STATE'
+const updateRefreshing = () => ({
+  type: 'business/UPDATE_REFRESHING'
 })
 
 export const loadBusinesses = () =>
     (dispatch) =>
       localStorage.get(storageKey)
         .then(storedBusinesses => {
-          if (!acceptableBusinessList(storedBusinesses)) {
+          if (!isValidList(storedBusinesses)) {
             dispatch(loadBusinessesFromApi())
-          }
-          else{
+          } else {
             dispatch(businessDetailsReceived(storedBusinesses))
           }
         })
@@ -40,7 +39,7 @@ const loadBusinessesFromApi = () =>
     (dispatch) =>
       getBusinesses()
         .then(businesses => {
-          if (acceptableBusinessList(businesses)) {
+          if (isValidList(businesses)) {
             localStorage.save(storageKey, businesses)
           }
           dispatch(businessDetailsReceived(businesses))
@@ -48,9 +47,8 @@ const loadBusinessesFromApi = () =>
         .catch(console.error)
 
 export const refreshBusinesses = () =>
-  (dispatch) =>
-    {
-      dispatch(resetState())
+  (dispatch) => {
+      dispatch(updateRefreshing())
       localStorage.remove(storageKey)
       dispatch(loadBusinessesFromApi())
     }
@@ -65,7 +63,7 @@ const reducer = (state = initialState, action) => {
         refreshing: false
       })
       break
-    case 'business/RESET_STATE':
+    case 'business/UPDATE_REFRESHING':
       state = merge(state, {
         refreshing: true
       })
