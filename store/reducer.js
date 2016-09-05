@@ -6,6 +6,7 @@ import navigation from './reducer/navigation'
 import login from './reducer/login'
 import sendMoney from './reducer/sendMoney'
 import status from './reducer/status'
+import position, { updatePosition } from './reducer/position'
 import account from './reducer/account'
 import map from './reducer/map'
 
@@ -15,11 +16,26 @@ export const reducer = combineReducers({
   navigation,
   login,
   sendMoney,
+
   status,
+  position,
+
   account,
   map
 })
 
+const GEOLOCATION_SETTINGS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+
 export const initialise = (store) => {
-    store.dispatch(loadBusinesses())
+  store.dispatch(loadBusinesses())
+    .then(() => navigator.geolocation.getCurrentPosition(
+      (position) => store.dispatch(updatePosition(position)),
+      () => alert('Cannot get location. Is GPS enabled?'),
+      GEOLOCATION_SETTINGS
+    ))
+  navigator.geolocation.watchPosition(
+    (position) => store.dispatch(updatePosition(position)),
+    () => alert('Cannot get location. Is GPS enabled?'),
+    GEOLOCATION_SETTINGS
+  )
 }
