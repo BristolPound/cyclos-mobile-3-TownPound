@@ -29,14 +29,13 @@ const querystring = params =>
 
 const get = (url, params) =>
   fetch(BASE_URL + url + (params ? '?' + querystring(params) : ''), {headers: httpHeaders()})
-    .then(response => response.text())
-    .then(JSON.parse)
+    .then(response => response.json())
     .catch(console.error)
 
 const post = (url, params) =>
   fetch(BASE_URL + url, merge({headers: httpHeaders()}, {method: 'POST', body: JSON.stringify(params)}))
-    .then(response => response.text())
-    .then(JSON.parse)
+    .then(response => response.json())
+    .catch(console.error)
 
 export const getBusinesses = () =>
   get('users', {
@@ -53,7 +52,9 @@ export const getBusinesses = () =>
       'phone',
       'display',
       'shortDisplay'
-    ]
+    ],
+    pageSize: 1000000,
+    addressResult: 'primary'
   })
 
 export const getAccount = () =>

@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from '../store/reducer/navigation'
 
-import BusinessList from './BusinessList'
+import SearchTab from './SearchTab'
 import TransactionsList from './TransactionsList'
 import Login from './Login'
 import color from '../util/colors'
@@ -58,7 +58,7 @@ const Tabs = (props) =>
         locked={true}
         onChangeTab={({i}) => props.navigateToTab(i)}
         tabBarUnderlineColor={color.transparent}>
-      <BusinessList tabLabel='Directory'/>
+      <SearchTab tabLabel='Search'/>
       { props.loggedIn
         ? <TransactionsList tabLabel='Transactions'/>
         : <Login tabLabel='Transactions'/> }

@@ -68,6 +68,11 @@ const reducer = (state = initialState, action) => {
         refreshing: true
       })
       break
+    case 'business/BUSINESS_SELECTED':
+      state = merge(state, {
+        selected: action.selected
+      })
+      break
   }
   return state
 }

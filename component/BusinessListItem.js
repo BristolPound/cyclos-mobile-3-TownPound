@@ -10,7 +10,8 @@ const styles = {
     flexDirection: 'row',
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd'
+    borderBottomColor: '#ddd',
+    backgroundColor: 'white'
   },
   image: {
     backgroundColor: '#ddd',
