@@ -1,7 +1,8 @@
 import { ListView } from 'react-native'
 import merge from '../../util/merge'
-import { getBusinesses } from '../../api'
+import { getBusinesses, getAddresses } from '../../api'
 import * as localStorage from '../../localStorage'
+import { selectClosestBusinessId } from './position'
 
 const isValidList = (businessList) => businessList !== null && businessList.length > 0
 const storageKey = localStorage.storageKeys.BUSINESS_KEY
@@ -66,6 +67,12 @@ const reducer = (state = initialState, action) => {
     case 'business/UPDATE_REFRESHING':
       state = merge(state, {
         refreshing: true
+      })
+      break
+    case 'position/POSITION_UPDATED':
+      const closestId = selectClosestBusinessId(state.business, action.position)
+      state = merge(state, {
+        selected: closestId
       })
       break
     case 'business/BUSINESS_SELECTED':
