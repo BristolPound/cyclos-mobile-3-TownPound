@@ -90,9 +90,15 @@ const SendMoney = (props) =>
         onChangeText={(amount) => props.updateAmount(amount)}
         placeholder='amount'/>
     </View>
-    { props.transactionResponse && props.transactionResponse.description
+    { props.newTransaction && props.newTransaction.description
       ? <View>
-          <DefaultText>{ props.transactionResponse.description }</DefaultText>
+          <DefaultText>{ props.newTransaction.description }</DefaultText>
+        </View>
+      : undefined
+    }
+    { props.paymentFailed
+      ? <View>
+          <DefaultText>Payment has not succeeded.</DefaultText>
         </View>
       : undefined
     }
