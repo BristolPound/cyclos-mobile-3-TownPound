@@ -1,11 +1,13 @@
 import React from 'react'
-import { StyleSheet, ListView, View, Image, ActivityIndicator, TouchableHighlight } from 'react-native'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { StyleSheet, ListView, View, Image, ActivityIndicator, TouchableHighlight, RefreshControl } from 'react-native'
+
 import DefaultText from './DefaultText'
 import Price from './Price'
-import { connect } from 'react-redux'
 import merge from '../util/merge'
 import BalanceHeader from './BalanceHeader'
-import { loadMoreTransactions } from '../store/reducer/transaction'
+import * as actions from '../store/reducer/transaction'
 
 const borderColor = '#ddd'
 const marginSize = 8
@@ -95,18 +97,21 @@ const TransactionsList = (props) =>
           renderSeparator={renderSeparator}
           renderSectionHeader={renderSectionHeader}
           renderFooter={() =>
-              props.loadingMoreTransactions
-              ? renderLoadingFooter()
-              : renderFooter(() => props.loadMore(props.page + 1))}
-          renderRow={renderRow}/>}
+              props.noMoreTransactionsToLoad
+              ? undefined
+              : (props.loadingMoreTransactions
+                ? renderLoadingFooter()
+                : renderFooter(() => props.loadMoreTransactions()))}
+          renderRow={renderRow}
+          refreshControl={<RefreshControl
+            refreshing={props.refreshing}
+            onRefresh={props.refreshTransactions} />
+          }/>}
   </View>
 
 
-const mapDispatchToProps = (dispatch) => ({
-  loadMore: (page) => {
-    dispatch(loadMoreTransactions(page))
-  }
-})
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(actions, dispatch)
 
 const mapStateToProps = (state) => ({...state.transaction})
 

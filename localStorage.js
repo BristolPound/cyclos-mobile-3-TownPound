@@ -7,7 +7,8 @@ import { AsyncStorage } from 'react-native'
 
 const DEFAULT_KEY_PREFIX = '@BristolPoundStore:'
 export const storageKeys = {
-  BUSINESS_KEY: 'BUSINESSES'
+  BUSINESS_KEY: 'BUSINESSES',
+  TRANSCATION_KEY: 'TRANSACTION'
 }
 const STALE_DATA_THRESHOLD = 24 * 60 * 60 * 1000 //TODO: find out what we want here. Currently: milliseconds in a day
 
