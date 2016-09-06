@@ -1,7 +1,7 @@
 import { ListView } from 'react-native'
 import merge from '../../util/merge'
 import groupTransactions, { sortTransactions } from './groupTransactions'
-import { getTransactions, getAccount, PAGE_SIZE } from '../../api'
+import { getTransactions, getTransactionsBefore, getTransactionsAfter, getAccount, PAGE_SIZE } from '../../api'
 import * as localStorage from '../../localStorage'
 
 const isValidList = (transactionList) => transactionList !== undefined && transactionList !== null && transactionList.length > 0
@@ -14,6 +14,7 @@ const initialState = {
   transactions: [],
   refreshing: false,
   oldestTransaction: null,
+  newestTransaction: null,
   noMoreTransactionsToLoad: false,
   dataSource: new ListView.DataSource({
     rowHasChanged: (a, b) => a.transactionNumber === b.transactionNumber,
@@ -26,10 +27,10 @@ export const accountDetailsReceived = (account) => ({
   account
 })
 
-export const transactionsReceived = (transactions, page = 1) => ({
+const transactionsReceived = (transactions, addToEnd) => ({
   type: 'account/TRANSACTIONS_RECEIVED',
   transactions,
-  page
+  addToEnd
 })
 
 export const loadingMore = () => ({
@@ -43,8 +44,15 @@ const updateRefreshing = () => ({
 export const loadMoreTransactions = () =>
   (dispatch, getState) => {
     dispatch(loadingMore())
-    getTransactions(getState().transaction.oldestTransaction)
-      .then(transactions => dispatch(transactionsReceived(transactions)))
+    getTransactionsBefore(getState().transaction.oldestTransaction)
+      .then(transactions => dispatch(transactionsReceived(transactions, true)))
+  }
+
+export const loadNewTransactions = () =>
+  (dispatch, getState) => {
+    dispatch(loadingMore())
+    getTransactionsAfter(getState().transaction.newestTransaction)
+      .then(transactions => dispatch(transactionsReceived(transactions, false)))
   }
 
 export const loadTransactions = () =>
@@ -54,17 +62,16 @@ export const loadTransactions = () =>
           .catch(console.error)
 
         localStorage.get(storageKey)
-          .then(storedTransactions => {
+          .then(storedTransactions =>
               dispatch(isValidList(storedTransactions)
                 ? transactionsReceived(storedTransactions)
-                : loadTransactionsFromApi())
-          })
+                : loadTransactionsFromApi()))
     }
 
 const loadTransactionsFromApi = () =>
     (dispatch) =>
       getTransactions()
-        .then(transactions => dispatch(transactionsReceived(transactions)))
+        .then(transactions => dispatch(transactionsReceived(transactions, true)))
         .catch(console.error)
 
 export const refreshTransactions = () =>
@@ -90,12 +97,12 @@ const reducer = (state = initialState, action) => {
       state = merge(state, {
         loadingTransactions: false,
         dataSource: state.dataSource.cloneWithRowsAndSections(grouped.groups, grouped.groupOrder),
-        page: action.page,
         oldestTransaction: sortedTransactions[sortedTransactions.length - 1],
-        transactions: mergedTransactions,
+        newestTransaction: sortedTransactions[0],
+        transactions: sortedTransactions,
         loadingMoreTransactions: false,
         refreshing: false,
-        noMoreTransactionsToLoad: action.transactions.length < PAGE_SIZE
+        noMoreTransactionsToLoad: action.addToEnd && action.transactions.length < PAGE_SIZE
       })
       break
     case 'account/LOADING_MORE_TRANSACTIONS':
@@ -106,7 +113,8 @@ const reducer = (state = initialState, action) => {
     case 'account/UPDATE_REFRESHING':
       state = merge(state, {
         refreshing: true,
-        oldestTransaction: null
+        oldestTransaction: null,
+        newestTransaction: null
       })
       break
   }

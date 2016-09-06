@@ -14,6 +14,7 @@ const httpHeaders = () => {
     headers.append('Session-Token', sessionToken)
   }
   headers.append('Accept', 'application/json')
+  headers.append('Content-Type', 'application/json')
   return headers
 }
 
@@ -61,24 +62,34 @@ export const getAccount = () =>
     fields: ['status.balance']
   }).then((res) => res[0].status.balance) // get first item in list for now
 
+const defaultTransactionParams = {
+  fields: [
+    'id',
+    'transactionNumber',
+    'date',
+    'description',
+    'amount',
+    'type',
+    'relatedAccount'
+  ],
+  page: 0,
+  pageSize: PAGE_SIZE
+}
 
-export const getTransactions = (beforeTransaction) =>
-  get('self/accounts/member/history', merge({
-    fields: [
-      'id',
-      'transactionNumber',
-      'date',
-      'description',
-      'amount',
-      'type',
-      'relatedAccount'
-    ],
-    page: 0,
-    pageSize: PAGE_SIZE
-  }, beforeTransaction ? {
-    datePeriod: ',' + formatDate(beforeTransaction.date),
-    excludedIds: beforeTransaction.id
+export const getTransactionsBefore = (transaction) =>
+  get('self/accounts/member/history', merge(defaultTransactionParams, transaction ? {
+    datePeriod: ',' + formatDate(transaction.date),
+    excludedIds: transaction.id
   } : {}))
+
+export const getTransactionsAfter = (transaction) =>
+  get('self/accounts/member/history', merge(defaultTransactionParams, transaction ? {
+    datePeriod: formatDate(transaction.date) + ',',
+    excludedIds: transaction.id
+  } : {}))
+
+export const getTransactions = () =>
+  get('self/accounts/member/history', defaultTransactionParams)
 
 export const putTransaction = (payment) =>
   get('self/payments/data-for-perform', {
