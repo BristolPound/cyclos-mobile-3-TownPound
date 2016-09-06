@@ -26,6 +26,16 @@ const style = {
   },
   flex: {
     flex: 1
+  },
+  banner: {
+    position: 'absolute',
+    top:0,
+    height: 60,
+    left: 0,
+    right: 0,
+    backgroundColor: color.lightGray,
+    paddingTop: 30,
+    paddingLeft: 10
   }
 }
 
@@ -56,6 +66,11 @@ const Tabs = (props) =>
         ? <TransactionsList tabLabel='Transactions'/>
         : <Login tabLabel='Transactions'/> }
     </ScrollableTabView>
+    { props.status.networkConnection
+      ? null
+      : <View style={style.banner}>
+          <Text>Network connection issues, some features won't work</Text>
+        </View> }
     <Modal
       animationType={'slide'}
       transparent={false}
@@ -70,7 +85,8 @@ const mapDispatchToProps = (dispatch) =>
 
 const mapStateToProps = (state) => ({
   navigation: state.navigation,
-  loggedIn: state.login.loggedIn
+  loggedIn: state.login.loggedIn,
+  status: state.status
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tabs)
