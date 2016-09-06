@@ -1,14 +1,24 @@
 import {encode} from 'base-64'
 import merge from './util/merge'
+import {throwOnError} from './apiError'
+import NetworkError from './networkError'
 
 const BASE_URL = 'https://bristol.cyclos.org/bristolpoundsandbox03/api/'
-let globalUsername = 'test2'
-let globalPassword = 'testing123'
+let sessionToken = ''
 
 const httpHeaders = () => {
   const headers = new Headers()
-  headers.append('Authorization', 'Basic ' + encode(globalUsername + ':' + globalPassword))
-  headers.append('Content-Type', 'application/json')
+  if (sessionToken) {
+    headers.append('Session-Token', sessionToken)
+  }
+  headers.append('Accept', 'application/json')
+  return headers
+}
+
+const basicAuthHeaders = (username, password) => {
+  const headers = new Headers()
+  headers.append('Authorization', 'Basic ' + encode(username + ':' + password))
+  headers.append('Accept', 'application/json')
   return headers
 }
 
@@ -77,13 +87,31 @@ export const putTransaction = (payment) =>
     }))
   )
 
+// decodes the response via the json() function, which returns a promise, combining
+// the results with the original response object. This allows access to both
+// response data (e.g. status code) and application level data.
+const decodeResponse =
+  response => response.json()
+    .then(json => ({response, json}))
+
 export const authenticate = (username, password) =>
-  get('auth')
-    .then(response => {
-      // 'stash' the username / password so that they are used on subsequent requests
-      if (!response.expiredPassword) {
-        globalPassword = password
-        globalUsername = username
+  fetch(BASE_URL + 'auth/session', {
+      headers: basicAuthHeaders(username, password),
+      method: 'POST'
+    })
+    .catch((err) => {
+      if (err.message === 'Network request failed') {
+        throw new NetworkError(err)
       }
-      return response
+    })
+    .then(decodeResponse)
+    .then((data) => {
+      throwOnError(data.response, data.json)
+      return data
+    })
+    .then(({json}) => {
+      // 'stash' the sessionToken
+      // TODO: Investigate how long sessionTokens last for, and ensure that
+      // if the token expires, the login flow is invoked once again
+      sessionToken = json.sessionToken
     })
