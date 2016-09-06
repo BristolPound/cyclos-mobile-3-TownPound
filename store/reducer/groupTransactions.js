@@ -1,7 +1,8 @@
 import dateFormat from 'dateformat'
 
-const groupTransactions = (transactions) => {
-  transactions = transactions.sort((a, b) => new Date(b.date) - new Date(a.date))
+export const sortTransactions = (transactions) => transactions.sort((a, b) => new Date(b.date) - new Date(a.date))
+
+const groupSortedTransactions = (transactions) => {
   let groups = {}
   let groupOrder = []
   transactions.forEach((transaction) => {
@@ -15,4 +16,4 @@ const groupTransactions = (transactions) => {
   return {groups, groupOrder}
 }
 
-export default groupTransactions
+export default groupSortedTransactions

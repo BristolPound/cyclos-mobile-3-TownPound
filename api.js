@@ -5,6 +5,8 @@ import NetworkError from './networkError'
 
 const BASE_URL = 'https://bristol.cyclos.org/bristolpoundsandbox03/api/'
 let sessionToken = ''
+export const PAGE_SIZE = 20
+export const formatDate = (stringDate) => (new Date(stringDate)).toJSON()
 
 const httpHeaders = () => {
   const headers = new Headers()
@@ -60,8 +62,8 @@ export const getAccount = () =>
   }).then((res) => res[0].status.balance) // get first item in list for now
 
 
-export const getTransactions = (page = 0) =>
-  get('self/accounts/member/history', {
+export const getTransactions = (beforeTransaction) =>
+  get('self/accounts/member/history', merge({
     fields: [
       'id',
       'transactionNumber',
@@ -71,9 +73,12 @@ export const getTransactions = (page = 0) =>
       'type',
       'relatedAccount'
     ],
-    page,
-    pageSize: 20
-  })
+    page: 0,
+    pageSize: PAGE_SIZE
+  }, beforeTransaction ? {
+    datePeriod: ',' + formatDate(beforeTransaction.date),
+    excludedIds: beforeTransaction.id
+  } : {}))
 
 export const putTransaction = (payment) =>
   get('self/payments/data-for-perform', {
