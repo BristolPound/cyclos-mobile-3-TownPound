@@ -4,14 +4,14 @@ import {throwOnError} from './apiError'
 import NetworkError from './networkError'
 
 const BASE_URL = 'https://bristol.cyclos.org/bristolpoundsandbox03/api/'
-let sessionToken = ''
 
-const httpHeaders = () => {
+const httpHeaders = (sessionToken = '') => {
   const headers = new Headers()
   if (sessionToken) {
     headers.append('Session-Token', sessionToken)
   }
   headers.append('Accept', 'application/json')
+  headers.append('Content-Type', 'application/json')
   return headers
 }
 
@@ -25,16 +25,33 @@ const basicAuthHeaders = (username, password) => {
 const querystring = params =>
   Object.keys(params).map(key => key + '=' + params[key]).join('&')
 
-const get = (url, params) =>
-  fetch(BASE_URL + url + (params ? '?' + querystring(params) : ''), {headers: httpHeaders()})
-    .then(response => response.text())
-    .then(JSON.parse)
-    .catch(console.error)
+const get = (url, params, sessionToken) =>
+  fetch(BASE_URL + url + (params ? '?' + querystring(params) : ''), {headers: httpHeaders(sessionToken)})
+    .catch((err) => {
+      if (err.message === 'Network request failed') {
+        throw new NetworkError(err)
+      }
+      throw err
+    })
+    .then(decodeResponse)
+    .then((data) => {
+      throwOnError(data.response, data.json)
+      return data.json
+    })
 
-const post = (url, params) =>
-  fetch(BASE_URL + url, merge({headers: httpHeaders()}, {method: 'POST', body: JSON.stringify(params)}))
-    .then(response => response.text())
-    .then(JSON.parse)
+const post = (sessionToken, url, params) =>
+  fetch(BASE_URL + url, merge({headers: httpHeaders(sessionToken)}, {method: 'POST', body: JSON.stringify(params)}))
+    .catch((err) => {
+      if (err.message === 'Network request failed') {
+        throw new NetworkError(err)
+      }
+      console.error(err)
+    })
+    .then(decodeResponse)
+    .then((data) => {
+      throwOnError(data.response, data.json, 201)
+      return data.response
+    })
 
 export const getBusinesses = () =>
   get('users', {
@@ -54,13 +71,13 @@ export const getBusinesses = () =>
     ]
   })
 
-export const getAccount = () =>
+export const getAccount = (sessionToken) =>
   get('self/accounts', {
     fields: ['status.balance']
-  }).then((res) => res[0].status.balance) // get first item in list for now
+  }, sessionToken)
 
 
-export const getTransactions = (page = 0) =>
+export const getTransactions = (sessionToken, page = 0) =>
   get('self/accounts/member/history', {
     fields: [
       'id',
@@ -73,19 +90,18 @@ export const getTransactions = (page = 0) =>
     ],
     page,
     pageSize: 20
-  })
+  }, sessionToken)
 
-export const putTransaction = (payment) =>
+export const putTransaction = (sessionToken, payment) =>
   get('self/payments/data-for-perform', {
       to: payment.subject,
       fields: 'paymentTypes.id'
-  })
-  .then((res) =>
-    post('self/payments', ({
-      ...payment,
-      type: res.paymentTypes[0].id
-    }))
-  )
+  }, sessionToken)
+  .then(json => {
+    return post(sessionToken,
+      'self/payments',
+      {...payment, type: json.paymentTypes[0].id})
+    })
 
 // decodes the response via the json() function, which returns a promise, combining
 // the results with the original response object. This allows access to both
@@ -103,15 +119,10 @@ export const authenticate = (username, password) =>
       if (err.message === 'Network request failed') {
         throw new NetworkError(err)
       }
+      console.error(err)
     })
     .then(decodeResponse)
     .then((data) => {
       throwOnError(data.response, data.json)
-      return data
-    })
-    .then(({json}) => {
-      // 'stash' the sessionToken
-      // TODO: Investigate how long sessionTokens last for, and ensure that
-      // if the token expires, the login flow is invoked once again
-      sessionToken = json.sessionToken
+      return data.json.sessionToken
     })

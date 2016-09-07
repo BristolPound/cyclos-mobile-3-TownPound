@@ -23,7 +23,7 @@ const BusinessDetails = props =>
         underlayColor='transparent'>
       { props.business.image ? <Image style={style.image} source={{uri: props.business.image.url}}/> : <View style={style.image}/> }
     </TouchableHighlight>
-    <DefaultText style={style.title}>{props.business.name}</DefaultText>
+    <DefaultText style={style.title}>{props.business.display}</DefaultText>
   </View>
 
 export default BusinessDetails
