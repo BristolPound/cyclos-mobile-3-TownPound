@@ -97,11 +97,12 @@ export const putTransaction = (sessionToken, payment) =>
       to: payment.subject,
       fields: 'paymentTypes.id'
   }, sessionToken)
-  .then(json => {
-    return post(sessionToken,
-      'self/payments',
-      {...payment, type: json.paymentTypes[0].id})
-    })
+  .then(json => post(sessionToken,
+    'self/payments',
+      {...payment,
+        type: json.paymentTypes[0].id
+      }
+    ))
 
 // decodes the response via the json() function, which returns a promise, combining
 // the results with the original response object. This allows access to both
