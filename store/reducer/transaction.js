@@ -13,8 +13,6 @@ const initialState = {
   loadingBalance: true,
   transactions: [],
   refreshing: false,
-  oldestTransaction: null,
-  newestTransaction: null,
   noMoreTransactionsToLoad: false,
   dataSource: new ListView.DataSource({
     rowHasChanged: (a, b) => a.transactionNumber === b.transactionNumber,
@@ -41,17 +39,25 @@ const updateRefreshing = () => ({
   type: 'account/UPDATE_REFRESHING'
 })
 
+//TODO: optimise as we know the list is sorted and the date is at the end of the list
+const transactionsWithSameDate = (transactions, date) =>
+  transactions.filter((tr) => tr.date === date).map((tr) => tr.id)
+
 export const loadMoreTransactions = () =>
   (dispatch, getState) => {
     dispatch(loadingMore())
-    getTransactionsBefore(getState().transaction.oldestTransaction)
+    const transactions = getState().transaction.transactions
+    const lastDate = transactions[transactions.length - 1].date
+    getTransactionsBefore(lastDate, transactionsWithSameDate(transactions, lastDate))
       .then(transactions => dispatch(transactionsReceived(transactions, true)))
   }
 
 export const loadNewTransactions = () =>
   (dispatch, getState) => {
     dispatch(loadingMore())
-    getTransactionsAfter(getState().transaction.newestTransaction)
+    const transactions = getState().transaction.transactions
+    const firstDate = transactions[0].date
+    getTransactionsAfter(firstDate, transactionsWithSameDate(transactions, firstDate))
       .then(transactions => dispatch(transactionsReceived(transactions, false)))
   }
 
@@ -68,6 +74,10 @@ export const loadTransactions = () =>
                 : loadTransactionsFromApi()))
     }
 
+export const clearTransactions = () => ({
+  type: 'account/CLEAR_TRANSACTIONS'
+})
+
 const loadTransactionsFromApi = () =>
     (dispatch) =>
       getTransactions()
@@ -76,9 +86,8 @@ const loadTransactionsFromApi = () =>
 
 export const refreshTransactions = () =>
     (dispatch) => {
-      localStorage.remove(storageKey)
       dispatch(updateRefreshing())
-      dispatch(loadTransactionsFromApi())
+      dispatch(loadNewTransactions())
     }
 
 const reducer = (state = initialState, action) => {
@@ -90,15 +99,13 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'account/TRANSACTIONS_RECEIVED':
-      const mergedTransactions = state.refreshing ? action.transactions : [...state.transactions, ...action.transactions]
+      const mergedTransactions = [...state.transactions, ...action.transactions]
       const sortedTransactions = sortTransactions(mergedTransactions)
       localStorage.save(storageKey, sortedTransactions)
       const grouped = groupTransactions(sortedTransactions)
       state = merge(state, {
         loadingTransactions: false,
         dataSource: state.dataSource.cloneWithRowsAndSections(grouped.groups, grouped.groupOrder),
-        oldestTransaction: sortedTransactions[sortedTransactions.length - 1],
-        newestTransaction: sortedTransactions[0],
         transactions: sortedTransactions,
         loadingMoreTransactions: false,
         refreshing: false,
@@ -112,10 +119,12 @@ const reducer = (state = initialState, action) => {
       break
     case 'account/UPDATE_REFRESHING':
       state = merge(state, {
-        refreshing: true,
-        oldestTransaction: null,
-        newestTransaction: null
+        refreshing: true
       })
+      break
+    case 'account/CLEAR_TRANSACTIONS':
+      localStorage.remove(storageKey)
+      state = merge(initialState)
       break
   }
   return state

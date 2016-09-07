@@ -76,16 +76,16 @@ const defaultTransactionParams = {
   pageSize: PAGE_SIZE
 }
 
-export const getTransactionsBefore = (transaction) =>
-  get('self/accounts/member/history', merge(defaultTransactionParams, transaction ? {
-    datePeriod: ',' + formatDate(transaction.date),
-    excludedIds: transaction.id
+export const getTransactionsBefore = (transactionDate, exclude) =>
+  get('self/accounts/member/history', merge(defaultTransactionParams, transactionDate ? {
+    datePeriod: ',' + formatDate(transactionDate),
+    excludedIds: exclude
   } : {}))
 
-export const getTransactionsAfter = (transaction) =>
-  get('self/accounts/member/history', merge(defaultTransactionParams, transaction ? {
-    datePeriod: formatDate(transaction.date) + ',',
-    excludedIds: transaction.id
+export const getTransactionsAfter = (transactionDate, exclude) =>
+  get('self/accounts/member/history', merge(defaultTransactionParams, transactionDate ? {
+    datePeriod: formatDate(transactionDate) + ',',
+    excludedIds: exclude
   } : {}))
 
 export const getTransactions = () =>

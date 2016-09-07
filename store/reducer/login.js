@@ -2,7 +2,7 @@ import merge from '../../util/merge'
 import { authenticate } from '../../api'
 import ApiError, { UNAUTHORIZED_ACCESS } from '../../apiError'
 import NetworkError from '../../networkError'
-import { loadTransactions } from './transaction'
+import { clearTransactions, loadTransactions } from './transaction'
 import { networkConnectionChanged } from './status'
 
 const initialState = {
@@ -43,6 +43,8 @@ export const login = (username, password) =>
         .then(() => {
           dispatch(loginInProgress(false))
           dispatch(loggedIn())
+          //TODO: Should clear transactions on log out when it is implemented
+          dispatch(clearTransactions())
           dispatch(loadTransactions())
         })
         .catch((err) => {
