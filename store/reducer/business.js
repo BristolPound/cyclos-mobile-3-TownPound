@@ -38,6 +38,11 @@ export const loadBusinesses = () =>
 const loadBusinessesFromApi = () =>
     (dispatch) =>
       getBusinesses()
+        .then(({response, json}) => {
+          // do something with the response
+          console.log(response)
+          return json
+        })
         .then(businesses => {
           if (isValidList(businesses)) {
             localStorage.save(storageKey, businesses)

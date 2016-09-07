@@ -36,13 +36,16 @@ export const loadMoreTransactions = (page) =>
       .then(transactions => dispatch(transactionsReceived(transactions, page)))
   }
 
-export const loadTransactions = () =>
+export const loadTransactions = (sessionToken) =>
     (dispatch) => {
-        getAccount()
+        getAccount(sessionToken)
+          .then((json) => {
+            return json[0].status.balance // get first item in list for now
+          })
           .then(account => dispatch(accountDetailsReceived(account)))
           .catch(console.error)
 
-        getTransactions()
+        getTransactions(sessionToken)
           .then(transactions => dispatch(transactionsReceived(transactions)))
           .catch(console.error)
     }
