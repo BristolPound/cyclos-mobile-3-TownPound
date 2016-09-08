@@ -2,6 +2,7 @@ import { ListView } from 'react-native'
 import merge from '../../util/merge'
 import groupTransactions from './groupTransactions'
 import { getTransactions, getAccount } from '../../api'
+import { successfulConnection } from './networkConnection'
 
 const initialState = {
   loadingTransactions: true,
@@ -36,16 +37,17 @@ export const loadMoreTransactions = (page) =>
       .then(transactions => dispatch(transactionsReceived(transactions, page)))
   }
 
-export const loadTransactions = (sessionToken) =>
-    (dispatch) => {
-        getAccount(sessionToken)
+export const loadTransactions = () =>
+    (dispatch, getState) => {
+        getAccount(getState().login.sessionToken)
           .then((json) => {
             return json[0].status.balance // get first item in list for now
           })
           .then(account => dispatch(accountDetailsReceived(account)))
           .catch(console.error)
 
-        getTransactions(sessionToken)
+        getTransactions(getState().login.sessionToken)
+          .then(dispatch(successfulConnection()))
           .then(transactions => dispatch(transactionsReceived(transactions)))
           .catch(console.error)
     }

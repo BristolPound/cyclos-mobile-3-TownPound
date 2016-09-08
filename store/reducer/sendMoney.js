@@ -1,5 +1,7 @@
 import { putTransaction } from '../../api'
 import merge from '../../util/merge'
+import { successfulConnection, connectionFailed } from './networkConnection'
+import NetworkError from '../../networkError'
 
 const initialState = {
   payee: '',
@@ -26,12 +28,22 @@ export const sendTransaction = () =>
   (dispatch, getState) => {
     dispatch(setLoading())
     putTransaction(getState().login.sessionToken, {
-        subject: getState().sendMoney.payee,
-        description: 'Test description',
-        amount: getState().sendMoney.amount
-      })
-      .then(response => dispatch(transactionComplete(response)))
-      .catch(console.error)
+      subject: getState().sendMoney.payee,
+      description: 'Test description',
+      amount: getState().sendMoney.amount
+    })
+    .then((response) =>{
+      dispatch(successfulConnection())
+      return response
+    })
+    .catch((err) => {
+      if (err instanceof NetworkError) {
+        dispatch(connectionFailed())
+      } else {
+        console.error(err)
+      }
+    })
+    .then(response => dispatch(transactionComplete(response)))
   }
 
 const setLoading = () => ({

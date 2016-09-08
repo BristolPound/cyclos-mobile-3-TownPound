@@ -5,7 +5,7 @@ import business, { loadBusinesses } from './reducer/business'
 import navigation from './reducer/navigation'
 import login from './reducer/login'
 import sendMoney from './reducer/sendMoney'
-import status from './reducer/status'
+import networkConnection from './reducer/networkConnection'
 
 export const reducer = combineReducers({
   transaction,
@@ -13,7 +13,7 @@ export const reducer = combineReducers({
   navigation,
   login,
   sendMoney,
-  status
+  networkConnection
 })
 
 export const initialise = (store) => {

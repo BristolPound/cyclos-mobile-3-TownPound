@@ -1,6 +1,8 @@
 import {encode} from 'base-64'
 import merge from './util/merge'
 import {throwOnError} from './apiError'
+
+import {successfulConnection} from './store/reducer/networkConnection'
 import NetworkError from './networkError'
 
 const BASE_URL = 'https://bristol.cyclos.org/bristolpoundsandbox03/api/'
@@ -27,6 +29,10 @@ const querystring = params =>
 
 const get = (url, params, sessionToken) =>
   fetch(BASE_URL + url + (params ? '?' + querystring(params) : ''), {headers: httpHeaders(sessionToken)})
+    // .then((response) => {
+    //   dispatch(successfulConnection())
+    //   return response
+    // })
     .catch((err) => {
       if (err.message === 'Network request failed') {
         throw new NetworkError(err)
@@ -74,7 +80,8 @@ export const getBusinesses = () =>
 export const getAccount = (sessionToken) =>
   get('self/accounts', {
     fields: ['status.balance']
-  }, sessionToken)
+  },
+  sessionToken)
 
 
 export const getTransactions = (sessionToken, page = 0) =>
@@ -113,17 +120,17 @@ const decodeResponse =
 
 export const authenticate = (username, password) =>
   fetch(BASE_URL + 'auth/session', {
-      headers: basicAuthHeaders(username, password),
-      method: 'POST'
-    })
-    .catch((err) => {
-      if (err.message === 'Network request failed') {
-        throw new NetworkError(err)
-      }
-      console.error(err)
-    })
-    .then(decodeResponse)
-    .then((data) => {
-      throwOnError(data.response, data.json)
-      return data.json.sessionToken
-    })
+    headers: basicAuthHeaders(username, password),
+    method: 'POST'
+  })
+  .catch((err) => {
+    if (err.message === 'Network request failed') {
+      throw new NetworkError(err)
+    }
+    console.error(err)
+  })
+  .then(decodeResponse)
+  .then((data) => {
+    throwOnError(data.response, data.json)
+    return data.json.sessionToken
+  })

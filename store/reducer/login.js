@@ -3,7 +3,7 @@ import { authenticate } from '../../api'
 import ApiError, { UNAUTHORIZED_ACCESS } from '../../apiError'
 import NetworkError from '../../networkError'
 import { loadTransactions } from './transaction'
-import { networkConnectionChanged } from './status'
+import { connectionFailed } from './networkConnection'
 
 const initialState = {
   loggedIn: false,
@@ -52,15 +52,15 @@ export const login = (username, password) =>
       dispatch(loginInProgress(true))
       authenticate(username, password)
         .then((sessionToken) => {
-          dispatch(sessionTokenUpdated(sessionToken))
           dispatch(loginInProgress(false))
           dispatch(loggedIn())
-          dispatch(loadTransactions(sessionToken))
+          dispatch(sessionTokenUpdated(sessionToken))
+          dispatch(loadTransactions())
         })
-        .catch((err) => {
+        .catch (err => {
           dispatch(loginInProgress(false))
           if (err instanceof NetworkError) {
-            dispatch(networkConnectionChanged(false))
+            dispatch(connectionFailed())
           } else if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
             switch (err.json.code) {
               case 'loggedOut':
@@ -82,7 +82,7 @@ export const login = (username, password) =>
             console.error(err)
           }
         })
-    }
+      }
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
