@@ -1,7 +1,4 @@
 import merge from '../../util/merge'
-// import { _get, _post, _authenticate } from '../../api'
-// import NetworkError from '../../networkError'
-// import { sessionTokenUpdated } from './login'
 
 const initialState = {
   status: true
@@ -14,39 +11,6 @@ export const connectionFailed = () => ({
 export const successfulConnection = () => ({
   type: 'networkConnection/CONNECTION_SUCCESSFUL'
 })
-
-// export const get = (url, params) =>
-//   (dispatch, getState) =>
-//     _get(url, params, getState().login.sessionToken)
-//       .then(() => dispatch(successfulConnection()))
-//       .catch((err) => {
-//         if (err instanceof NetworkError) {
-//           dispatch(connectionFailed())
-//         }
-//       })
-//
-// export const post = (url, params) =>
-//   (dispatch, getState) =>
-//     _post(url, params, getState().login.sessionToken)
-//       .then((sessionToken) => dispatch(successfulConnection(sessionToken)))
-//       .catch((err) => {
-//         if (err instanceof NetworkError) {
-//           dispatch(connectionFailed())
-//         }
-//       })
-//
-// export const authenticate = (username, password) =>
-//   (dispatch) =>
-//     _authenticate(username, password)
-//       .then((sessionToken) => {
-//         dispatch(successfulConnection())
-//         dispatch(sessionTokenUpdated(sessionToken))
-//       })
-//       .catch((err) => {
-//         if (err instanceof NetworkError) {
-//           dispatch(connectionFailed())
-//         }
-//       })
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {

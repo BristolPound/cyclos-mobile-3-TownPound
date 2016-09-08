@@ -2,8 +2,6 @@ import { ListView } from 'react-native'
 import merge from '../../util/merge'
 import { getBusinesses } from '../../api'
 import * as localStorage from '../../localStorage'
-import { successfulConnection, connectionFailed } from './networkConnection'
-import NetworkError from '../../networkError'
 
 const isValidList = (businessList) => businessList !== null && businessList.length > 0
 const storageKey = localStorage.storageKeys.BUSINESS_KEY
@@ -39,18 +37,10 @@ export const loadBusinesses = () =>
 
 const loadBusinessesFromApi = () =>
     (dispatch) =>
-      getBusinesses()
-        .then((res) => {
-          dispatch(successfulConnection())
-          return res
-        })
+      getBusinesses(dispatch)
         .catch((err) => {
-          if (err instanceof NetworkError) {
-            dispatch(connectionFailed())
-          } else {
-            // do something with the response
-            console.error(err.response)
-          }
+          // do something with the response
+          console.error(err.response)
         })
         .then(businesses => {
           if (isValidList(businesses)) {
