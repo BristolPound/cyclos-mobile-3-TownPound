@@ -4,8 +4,6 @@ import ApiError, { UNAUTHORIZED_ACCESS } from '../../apiError'
 
 import { clearTransactions, loadTransactions } from './transaction'
 
-import { loadTransactions } from './transaction'
-
 
 const initialState = {
   loggedIn: false,
