@@ -1,9 +1,7 @@
 import merge from '../../util/merge'
 import { authenticate } from '../../api'
 import ApiError, { UNAUTHORIZED_ACCESS } from '../../apiError'
-import NetworkError from '../../networkError'
 import { loadTransactions } from './transaction'
-import { connectionFailed } from './networkConnection'
 
 const initialState = {
   loggedIn: false,
@@ -50,7 +48,7 @@ export const loggedOut = () => ({
 export const login = (username, password) =>
   (dispatch) => {
       dispatch(loginInProgress(true))
-      authenticate(username, password)
+      authenticate(username, password, dispatch)
         .then((sessionToken) => {
           dispatch(loginInProgress(false))
           dispatch(loggedIn())
@@ -59,9 +57,7 @@ export const login = (username, password) =>
         })
         .catch (err => {
           dispatch(loginInProgress(false))
-          if (err instanceof NetworkError) {
-            dispatch(connectionFailed())
-          } else if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
+          if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
             switch (err.json.code) {
               case 'loggedOut':
                 dispatch(loggedOut())
