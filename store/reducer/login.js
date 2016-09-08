@@ -53,11 +53,13 @@ export const login = (username, password) =>
       authenticate(username, password, dispatch)
         .then((sessionToken) => {
           dispatch(loginInProgress(false))
-          dispatch(loggedIn())
-          //TODO: Should clear transactions on log out when it is implemented
-          dispatch(clearTransactions())
-          dispatch(sessionTokenUpdated(sessionToken))
-          dispatch(loadTransactions())
+          if (sessionToken) {
+            dispatch(loggedIn())
+            //TODO: Should clear transactions on log out when it is implemented
+            dispatch(clearTransactions())
+            dispatch(sessionTokenUpdated(sessionToken))
+            dispatch(loadTransactions())
+          }
         })
         .catch (err => {
           dispatch(loginInProgress(false))
