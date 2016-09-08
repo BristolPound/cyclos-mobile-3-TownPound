@@ -43,22 +43,22 @@ const dispatchConnectionFailed = dispatch => err => {
 const get = (url, params, sessionToken, dispatch) =>
   fetch(BASE_URL + url + (params ? '?' + querystring(params) : ''), {headers: httpHeaders(sessionToken)})
     .then(dispatchSuccessfulConnection(dispatch))
-    .catch(dispatchConnectionFailed(dispatch))
     .then(decodeResponse)
     .then((data) => {
       throwOnError(data.response, data.json)
       return data.json
     })
+    .catch(dispatchConnectionFailed(dispatch))
 
 const post = (sessionToken, url, params, dispatch) =>
   fetch(BASE_URL + url, merge({headers: httpHeaders(sessionToken)}, {method: 'POST', body: JSON.stringify(params)}))
     .then(dispatchSuccessfulConnection(dispatch))
-    .catch(dispatchConnectionFailed(dispatch))
     .then(decodeResponse)
     .then((data) => {
       throwOnError(data.response, data.json, 201)
       return data.response
     })
+    .catch(dispatchConnectionFailed(dispatch))
 
 export const getBusinesses = (dispatch) =>
   get('users', {
@@ -127,9 +127,9 @@ export const authenticate = (username, password, dispatch) =>
     method: 'POST'
   })
   .then(dispatchSuccessfulConnection(dispatch))
-  .catch(dispatchConnectionFailed(dispatch))
   .then(decodeResponse)
   .then((data) => {
     throwOnError(data.response, data.json)
     return data.json.sessionToken
   })
+  .catch(dispatchConnectionFailed(dispatch))
