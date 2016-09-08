@@ -2,7 +2,8 @@ import merge from '../../util/merge'
 
 const initialState = {
   tabIndex: 0,
-  sendMoneyVisible: false
+  sendMoneyVisible: false,
+  businessDetailsVisible: false
 }
 
 export const navigateToTab = (tabIndex) => ({
@@ -12,6 +13,11 @@ export const navigateToTab = (tabIndex) => ({
 
 export const showSendMoney = (show) => ({
   type: 'navigation/SHOW_SEND_MONEY',
+  show
+})
+
+export const showBusinessDetails = (show) => ({
+  type: 'navigation/SHOW_BUSINESS_DETAILS',
   show
 })
 
@@ -27,6 +33,10 @@ const reducer = (state = initialState, action) => {
         sendMoneyVisible: action.show
       })
       break
+    case 'navigation/SHOW_BUSINESS_DETAILS':
+      state = merge(state, {
+        businessDetailsVisible: action.show
+      })
   }
   return state
 }
