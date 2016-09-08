@@ -31,15 +31,18 @@ const dispatchSuccessfulConnection = dispatch => response => {
   return response
 }
 
+const dispatchConnectionFailed = dispatch => err => {
+  if (err.message === 'Network request failed') {
+    dispatch(connectionFailed())
+  } else {
+    throw err
+  }
+}
+
 const get = (url, params, sessionToken, dispatch) =>
   fetch(BASE_URL + url + (params ? '?' + querystring(params) : ''), {headers: httpHeaders(sessionToken)})
     .then(dispatchSuccessfulConnection(dispatch))
-    .catch((err) => {
-      if (err.message === 'Network request failed') {
-        dispatch(connectionFailed())
-      }
-      throw err
-    })
+    .catch(dispatchConnectionFailed(dispatch))
     .then(decodeResponse)
     .then((data) => {
       throwOnError(data.response, data.json)
@@ -48,17 +51,8 @@ const get = (url, params, sessionToken, dispatch) =>
 
 const post = (sessionToken, url, params, dispatch) =>
   fetch(BASE_URL + url, merge({headers: httpHeaders(sessionToken)}, {method: 'POST', body: JSON.stringify(params)}))
-    .then((response) => {
-      dispatch(successfulConnection)
-      return response
-    })
-    .catch((err) => {
-      if (err.message === 'Network request failed') {
-        dispatch(connectionFailed)
-      } else {
-        console.error(err)
-      }
-    })
+    .then(dispatchSuccessfulConnection(dispatch))
+    .catch(dispatchConnectionFailed(dispatch))
     .then(decodeResponse)
     .then((data) => {
       throwOnError(data.response, data.json, 201)
@@ -130,17 +124,8 @@ export const authenticate = (username, password, dispatch) =>
     headers: basicAuthHeaders(username, password),
     method: 'POST'
   })
-  .then((response) => {
-    dispatch(successfulConnection)
-    return response
-  })
-  .catch((err) => {
-    if (err.message === 'Network request failed') {
-      dispatch(connectionFailed())
-    } else {
-      console.error(err)
-    }
-  })
+  .then(dispatchSuccessfulConnection(dispatch))
+  .catch(dispatchConnectionFailed(dispatch))
   .then(decodeResponse)
   .then((data) => {
     throwOnError(data.response, data.json)
