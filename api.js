@@ -6,7 +6,6 @@ import NetworkError from './networkError'
 const BASE_URL = 'https://bristol.cyclos.org/bristolpoundsandbox03/api/'
 let sessionToken = ''
 export const PAGE_SIZE = 20
-export const formatDate = (stringDate) => (new Date(stringDate)).toJSON()
 
 const httpHeaders = () => {
   const headers = new Headers()
@@ -62,34 +61,20 @@ export const getAccount = () =>
     fields: ['status.balance']
   }).then((res) => res[0].status.balance) // get first item in list for now
 
-const defaultTransactionParams = {
-  fields: [
-    'id',
-    'transactionNumber',
-    'date',
-    'description',
-    'amount',
-    'type',
-    'relatedAccount'
-  ],
-  page: 0,
-  pageSize: PAGE_SIZE
-}
-
-export const getTransactionsBefore = (transactionDate, exclude) =>
-  get('self/accounts/member/history', merge(defaultTransactionParams, transactionDate ? {
-    datePeriod: ',' + formatDate(transactionDate),
-    excludedIds: exclude
-  } : {}))
-
-export const getTransactionsAfter = (transactionDate, exclude) =>
-  get('self/accounts/member/history', merge(defaultTransactionParams, transactionDate ? {
-    datePeriod: formatDate(transactionDate) + ',',
-    excludedIds: exclude
-  } : {}))
-
-export const getTransactions = () =>
-  get('self/accounts/member/history', defaultTransactionParams)
+export const getTransactions = (additionalParams) =>
+  get('self/accounts/member/history', merge({
+    fields: [
+      'id',
+      'transactionNumber',
+      'date',
+      'description',
+      'amount',
+      'type',
+      'relatedAccount'
+    ],
+    page: 0,
+    pageSize: PAGE_SIZE
+  }, additionalParams ? additionalParams : {}))
 
 export const putTransaction = (payment) =>
   get('self/payments/data-for-perform', {

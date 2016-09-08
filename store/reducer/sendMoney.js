@@ -1,6 +1,5 @@
 import { putTransaction } from '../../api'
 import merge from '../../util/merge'
-import { loadNewTransactions } from './transaction'
 
 const initialState = {
   payee: '',
@@ -32,14 +31,8 @@ export const sendTransaction = () =>
         description: 'Test description',
         amount: getState().sendMoney.amount
       })
-      .then(response => {
-        if (response.transactionNumber) {
-          dispatch(loadNewTransactions())
-          dispatch(transactionComplete(response))
-        } else {
-          dispatch(paymentFailed())
-        }
-      })
+      .then(response =>
+        dispatch(response.transactionNumber ? transactionComplete(response) : paymentFailed()))
       .catch(console.error)
   }
 

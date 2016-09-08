@@ -84,6 +84,16 @@ const renderFooter = (onPress) =>
     </View>
   </TouchableHighlight>
 
+const loadTransactions = (dispatchedFunction, useFirstDate, transactions) => {
+  if (transactions.length > 0) {
+    const transactionDate = transactions[useFirstDate ? 0 : transactions.length - 1].date
+    //TODO: optimise as we know the list is sorted and the date is at the end of the list
+    const excludeIdList = transactions
+                            .filter((tr) => tr.date === transactionDate)
+                            .map((tr) => tr.id)
+    dispatchedFunction(transactionDate, excludeIdList)
+  }
+}
 
 const TransactionsList = (props) =>
   <View style={{flex:1}}>
@@ -99,13 +109,13 @@ const TransactionsList = (props) =>
           renderFooter={() =>
               props.noMoreTransactionsToLoad
               ? undefined
-              : (props.loadingMoreTransactions
+              : ( props.loadingMoreTransactions
                 ? renderLoadingFooter()
-                : renderFooter(() => props.loadMoreTransactions()))}
+                : renderFooter(() => loadTransactions(props.loadTransactionsBefore, false, props.transactions)))}
           renderRow={renderRow}
           refreshControl={<RefreshControl
             refreshing={props.refreshing}
-            onRefresh={props.refreshTransactions} />
+            onRefresh={() => loadTransactions(props.loadTransactionsAfter, true, props.transactions)} />
           }/>}
   </View>
 
