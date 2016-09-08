@@ -1,5 +1,8 @@
 import React from 'react'
-import { View, TouchableHighlight, Image } from 'react-native'
+import { View, Image, TouchableHighlight } from 'react-native'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import * as actions from '../store/reducer/navigation'
 import DefaultText from './DefaultText'
 
 const style = {
@@ -18,12 +21,18 @@ const style = {
 }
 
 const BusinessDetails = props =>
-  <View style={{ height: 500 }}>
-    <TouchableHighlight onPress={() => props.navigator.pop()}
-        underlayColor='transparent'>
+  <TouchableHighlight onPress={() => props.showBusinessDetails(false)}>
+    <View style={{ height: 500 }}>
       { props.business.image ? <Image style={style.image} source={{uri: props.business.image.url}}/> : <View style={style.image}/> }
-    </TouchableHighlight>
-    <DefaultText style={style.title}>{props.business.name}</DefaultText>
-  </View>
+      <DefaultText style={style.title}>{props.business.display}</DefaultText>
+    </View>
+  </TouchableHighlight>
 
-export default BusinessDetails
+const mapStateToProps = (state) => ({
+  business: state.navigation.businessDetailsVisible
+})
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(actions, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(BusinessDetails)

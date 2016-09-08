@@ -5,12 +5,8 @@ import { connect } from 'react-redux'
 import BusinessListItem from './BusinessListItem'
 import * as actions from '../store/reducer/business'
 
-const renderRow = (navigator) =>
-  (business) =>
-    <BusinessListItem business={business} businessClicked={() => navigator.push({
-      id: 'BusinessDetails',
-      business
-    })}/>
+const renderRow = (business) =>
+  <BusinessListItem business={business}/>
 
 const BusinessList = (props) =>
   props.loading
@@ -20,7 +16,7 @@ const BusinessList = (props) =>
           style={{flex: 1}}
           pageSize={10}
           dataSource={props.dataSource}
-          renderRow={renderRow(props.navigator)}
+          renderRow={renderRow}
           refreshControl={<RefreshControl
             refreshing={props.refreshing}
             onRefresh={props.refreshBusinesses} />
