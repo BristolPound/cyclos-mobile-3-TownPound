@@ -18,6 +18,10 @@ const style = {
   label: {
     width: 90
   },
+  error: {
+    fontSize: 14,
+    color: 'red'
+  },
   textInput: {
     flex: 1,
     fontFamily: 'HelveticaNeue-Light',
@@ -89,11 +93,9 @@ const Login = (props) =>
         <DefaultText style={style.loginText}>Login</DefaultText>
       </View>
     </TouchableHighlight>
-    { props.state.loginFailed
-      ? <View style={style.formGroup}>
-          <DefaultText>Login failed :-(</DefaultText>
-        </View>
-      : <View/> }
+    <View style={style.formGroup}>
+        <DefaultText style={style.error}>{props.state.loginFailed}</DefaultText>
+      </View>
   </View>
 
 const mapDispatchToProps = (dispatch) =>

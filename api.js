@@ -1,13 +1,13 @@
 import {encode} from 'base-64'
 import merge from './util/merge'
 import {throwOnError} from './apiError'
-import NetworkError from './networkError'
+
+import {successfulConnection, connectionFailed} from './store/reducer/networkConnection'
 
 const BASE_URL = 'https://bristol.cyclos.org/bristolpoundsandbox03/api/'
-let sessionToken = ''
 export const PAGE_SIZE = 20
 
-const httpHeaders = () => {
+const httpHeaders = (sessionToken = '') => {
   const headers = new Headers()
   if (sessionToken) {
     headers.append('Session-Token', sessionToken)
@@ -27,17 +27,40 @@ const basicAuthHeaders = (username, password) => {
 const querystring = params =>
   Object.keys(params).map(key => key + '=' + params[key]).join('&')
 
-const get = (url, params) =>
-  fetch(BASE_URL + url + (params ? '?' + querystring(params) : ''), {headers: httpHeaders()})
-    .then(response => response.json())
-    .catch(console.error)
+const dispatchSuccessfulConnection = dispatch => response => {
+  dispatch(successfulConnection())
+  return response
+}
 
-const post = (url, params) =>
-  fetch(BASE_URL + url, merge({headers: httpHeaders()}, {method: 'POST', body: JSON.stringify(params)}))
-    .then(response => response.json())
-    .catch(console.error)
+const dispatchConnectionFailed = dispatch => err => {
+  if (err.message === 'Network request failed') {
+    dispatch(connectionFailed())
+  } else {
+    throw err
+  }
+}
 
-export const getBusinesses = () =>
+const get = (url, params, sessionToken, dispatch) =>
+  fetch(BASE_URL + url + (params ? '?' + querystring(params) : ''), {headers: httpHeaders(sessionToken)})
+    .then(dispatchSuccessfulConnection(dispatch))
+    .catch(dispatchConnectionFailed(dispatch))
+    .then(decodeResponse)
+    .then((data) => {
+      throwOnError(data.response, data.json)
+      return data.json
+    })
+
+const post = (sessionToken, url, params, dispatch) =>
+  fetch(BASE_URL + url, merge({headers: httpHeaders(sessionToken)}, {method: 'POST', body: JSON.stringify(params)}))
+    .then(dispatchSuccessfulConnection(dispatch))
+    .catch(dispatchConnectionFailed(dispatch))
+    .then(decodeResponse)
+    .then((data) => {
+      throwOnError(data.response, data.json, 201)
+      return data.response
+    })
+
+export const getBusinesses = (dispatch) =>
   get('users', {
     fields: [
       'email',
@@ -55,14 +78,15 @@ export const getBusinesses = () =>
     ],
     pageSize: 1000000,
     addressResult: 'primary'
-  })
+  }, dispatch)
 
-export const getAccount = () =>
+export const getAccount = (sessionToken, dispatch) =>
   get('self/accounts', {
     fields: ['status.balance']
-  }).then((res) => res[0].status.balance) // get first item in list for now
+  },
+  sessionToken, dispatch)
 
-export const getTransactions = (additionalParams) =>
+export const getTransactions = (sessionToken, dispatch, additionalParams) =>
   get('self/accounts/member/history', merge({
     fields: [
       'id',
@@ -75,19 +99,20 @@ export const getTransactions = (additionalParams) =>
     ],
     page: 0,
     pageSize: PAGE_SIZE
-  }, additionalParams ? additionalParams : {}))
+  }, additionalParams ? additionalParams : {}), sessionToken, dispatch)
 
-export const putTransaction = (payment) =>
+export const putTransaction = (sessionToken, payment, dispatch) =>
   get('self/payments/data-for-perform', {
       to: payment.subject,
       fields: 'paymentTypes.id'
-  })
-  .then((res) =>
-    post('self/payments', ({
-      ...payment,
-      type: res.paymentTypes[0].id
-    }))
-  )
+  }, sessionToken, dispatch)
+  .then(json => post(sessionToken,
+    'self/payments',
+    {...payment,
+      type: json.paymentTypes[0].id
+    },
+    dispatch
+    ))
 
 // decodes the response via the json() function, which returns a promise, combining
 // the results with the original response object. This allows access to both
@@ -96,24 +121,15 @@ const decodeResponse =
   response => response.json()
     .then(json => ({response, json}))
 
-export const authenticate = (username, password) =>
+export const authenticate = (username, password, dispatch) =>
   fetch(BASE_URL + 'auth/session', {
-      headers: basicAuthHeaders(username, password),
-      method: 'POST'
-    })
-    .catch((err) => {
-      if (err.message === 'Network request failed') {
-        throw new NetworkError(err)
-      }
-    })
-    .then(decodeResponse)
-    .then((data) => {
-      throwOnError(data.response, data.json)
-      return data
-    })
-    .then(({json}) => {
-      // 'stash' the sessionToken
-      // TODO: Investigate how long sessionTokens last for, and ensure that
-      // if the token expires, the login flow is invoked once again
-      sessionToken = json.sessionToken
-    })
+    headers: basicAuthHeaders(username, password),
+    method: 'POST'
+  })
+  .then(dispatchSuccessfulConnection(dispatch))
+  .catch(dispatchConnectionFailed(dispatch))
+  .then(decodeResponse)
+  .then((data) => {
+    throwOnError(data.response, data.json)
+    return data.json.sessionToken
+  })

@@ -50,17 +50,20 @@ export const loadTransactionsBefore = (lastDate, excludeIdList) =>
   }
 
 export const loadTransactionsAfter = (firstDate, excludeIdList) =>
-  (dispatch) => {
+  (dispatch, getState) => {
     dispatch(updateRefreshing())
-    getTransactions({
+    getTransactions(getState().login.sessionToken, dispatch,{
       datePeriod: formatDate(firstDate) + ',',
       excludedIds: excludeIdList
     }).then(transactions => dispatch(transactionsReceived(transactions, false)))
   }
 
 export const loadTransactions = () =>
-    (dispatch) => {
-        getAccount()
+    (dispatch, getState) => {
+        getAccount(getState().login.sessionToken, dispatch)
+          .then((json) => {
+            return json[0].status.balance // get first item in list for now
+          })
           .then(account => dispatch(accountDetailsReceived(account)))
           .catch(console.error)
 

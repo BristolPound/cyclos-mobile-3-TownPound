@@ -1,11 +1,13 @@
 import React from 'react'
-import { View, StatusBar, Text, Modal } from 'react-native'
+import { View, StatusBar, Modal } from 'react-native'
 import ScrollableTabView, { DefaultTabBar } from 'react-native-scrollable-tab-view'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from '../store/reducer/navigation'
 
+
 import SearchTab from './SearchTab'
+import NetworkConnection from './NetworkConnection'
 import TransactionsList from './TransactionsList'
 import Login from './Login'
 import color from '../util/colors'
@@ -26,16 +28,6 @@ const style = {
   },
   flex: {
     flex: 1
-  },
-  banner: {
-    position: 'absolute',
-    top:0,
-    height: 60,
-    left: 0,
-    right: 0,
-    backgroundColor: color.lightGray,
-    paddingTop: 30,
-    paddingLeft: 10
   }
 }
 
@@ -63,11 +55,7 @@ const Tabs = (props) =>
         ? <TransactionsList tabLabel='Transactions'/>
         : <Login tabLabel='Transactions'/> }
     </ScrollableTabView>
-    { props.status.networkConnection
-      ? null
-      : <View style={style.banner}>
-          <Text>Network connection issues, some features won{'\''}t work</Text>
-        </View> }
+    <NetworkConnection/>
     <Modal
       animationType={'slide'}
       transparent={false}
@@ -83,7 +71,7 @@ const mapDispatchToProps = (dispatch) =>
 const mapStateToProps = (state) => ({
   navigation: state.navigation,
   loggedIn: state.login.loggedIn,
-  status: state.status
+  networkConnection: state.networkConnection.status
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tabs)
