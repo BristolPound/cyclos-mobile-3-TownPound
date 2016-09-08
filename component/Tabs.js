@@ -1,15 +1,15 @@
 import React from 'react'
-import { View, StatusBar, Text, TouchableHighlight, Modal } from 'react-native'
+import { View, StatusBar, Text, Modal } from 'react-native'
 import ScrollableTabView, { DefaultTabBar } from 'react-native-scrollable-tab-view'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from '../store/reducer/navigation'
 
-import Business from './Business'
+import BusinessList from './BusinessList'
 import TransactionsList from './TransactionsList'
-import SendMoney from './SendMoney'
 import Login from './Login'
 import color from '../util/colors'
+import BusinessDetails from './BusinessDetails'
 
 const style = {
   container: {
@@ -39,19 +39,16 @@ const style = {
   }
 }
 
-const TabBar = ({sendMoney, ...otherProps}) =>
+const TabBar = ({...props}) =>
   <View style={style.flexRow}>
-    <DefaultTabBar {...otherProps} style={style.flex}/>
-    <TouchableHighlight onPress={() => sendMoney()} style={style.flexRow}>
-      <Text style={{alignSelf: 'center'}}>Send Money</Text>
-    </TouchableHighlight>
+    <DefaultTabBar {...props} style={style.flex}/>
   </View>
 
 const Tabs = (props) =>
   <View style={style.container}>
     <StatusBar barStyle='light-content'/>
     <ScrollableTabView
-        renderTabBar={() => <TabBar sendMoney={props.showSendMoney}/>}
+        renderTabBar={() => <TabBar/>}
         tabBarPosition='bottom'
         initialPage={props.navigation.tabIndex}
         tabBarActiveTextColor={color.bristolBlue}
@@ -61,7 +58,7 @@ const Tabs = (props) =>
         locked={true}
         onChangeTab={({i}) => props.navigateToTab(i)}
         tabBarUnderlineColor={color.transparent}>
-      <Business tabLabel='Directory'/>
+      <BusinessList tabLabel='Directory'/>
       { props.loggedIn
         ? <TransactionsList tabLabel='Transactions'/>
         : <Login tabLabel='Transactions'/> }
@@ -69,14 +66,14 @@ const Tabs = (props) =>
     { props.status.networkConnection
       ? null
       : <View style={style.banner}>
-          <Text>Network connection issues, some features won't work</Text>
+          <Text>Network connection issues, some features won{'\''}t work</Text>
         </View> }
     <Modal
       animationType={'slide'}
       transparent={false}
-      onRequestClose={() => props.showSendMoney(false)}
-      visible={props.navigation.sendMoneyVisible}>
-      <SendMoney cancel={() => props.showSendMoney(false)}/>
+      onRequestClose={() => props.showBusinessDetails(false)}
+      visible={props.navigation.businessDetailsVisible && !props.navigation.sendMoneyVisible}>
+      <BusinessDetails/>
     </Modal>
   </View>
 
