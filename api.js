@@ -59,7 +59,7 @@ const post = (sessionToken, url, params, dispatch) =>
       return data.response
     })
 
-export const getBusinesses = () =>
+export const getBusinesses = (dispatch) =>
   get('users', {
     fields: [
       'email',
