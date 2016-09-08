@@ -2,7 +2,7 @@ import React from 'react'
 import { Text } from 'react-native'
 
 const defaultTextStyle = {
-  fontFamily: 'HelveticaNeue-Light',
+  fontFamily: 'MuseoSans-300',
   fontSize: 18
 }
 
