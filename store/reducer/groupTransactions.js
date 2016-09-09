@@ -4,6 +4,9 @@ import { floorMonth, convert, compare, format } from '../../util/date'
 
 export const sortTransactions = (transactions) => transactions.sort((a, b) => compare(convert.fromString(b.date), convert.fromString(a.date)))
 
+export const filterTransactions = (transactions, selectedMonth) =>
+  transactions.filter(tr => compare(selectedMonth, floorMonth(convert.fromString(tr.date))) === 0)
+
 export const calculateMonthlyTotalSpent = (monthlyTotals, newTransactions) => {
   let newMonthlyTotals = merge(monthlyTotals)
   newTransactions.forEach(tr => {
