@@ -7,6 +7,7 @@ import login from './reducer/login'
 import sendMoney from './reducer/sendMoney'
 import status from './reducer/status'
 import account from './reducer/account'
+import map from './reducer/map'
 
 export const reducer = combineReducers({
   transaction,
@@ -16,6 +17,7 @@ export const reducer = combineReducers({
   sendMoney,
   status,
   account,
+  map
 })
 
 export const initialise = (store) => {
