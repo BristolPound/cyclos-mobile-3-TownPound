@@ -1,7 +1,7 @@
 import { ListView } from 'react-native'
 import merge from '../../util/merge'
 import * as date from '../../util/date'
-import groupTransactions, { calculateMonthlyTotalSpent, sortTransactions } from './groupTransactions'
+import groupTransactions, { calculateMonthlyTotalSpent, filterTransactions, sortTransactions } from './groupTransactions'
 import { getTransactions, PAGE_SIZE } from '../../api'
 import * as localStorage from '../../localStorage'
 import { findTransactionsByDate } from '../../util/transaction'
@@ -85,12 +85,12 @@ const loadTransactionsBefore = (maximumDate, excludeIdList, loadToTarget = null)
     }, tr => !loadToTarget || date.compare(loadToTarget, last(tr).date) >= 0)
       .then(transactions => {
         if (transactions.length === 0 || (transactions.length % PAGE_SIZE !== 0)) {
-          dispatch(noMoreTransactions())
-        }
-        if (transactions.length !== 0) {
+        dispatch(noMoreTransactions())
+      }
+      if (transactions.length !== 0) {
           dispatch(transactionsReceived(transactions))
         }
-      })
+    })
   }
 
 export const loadTransactionsAfter = (firstDate, excludeIdList) =>
@@ -110,17 +110,22 @@ export const loadInitialTransactions = () =>
                 ? transactionsReceived(storedTransactions)
                 : loadTransactionsBefore(new Date().toString(), [], date.previousMonth(getState().transaction.selectedMonth))))
 
+const calculateNewDateSource = (previousDataSource, sortedTransactions, selectedMonth) => {
+  const filteredTransactions = filterTransactions(sortedTransactions, selectedMonth)
+  const grouped = groupTransactions(filteredTransactions)
+  return previousDataSource.cloneWithRowsAndSections(grouped.groups, grouped.groupOrder)
+}
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'transaction/TRANSACTIONS_RECEIVED':
       const mergedTransactions = [...state.transactions, ...action.transactions]
       const sortedTransactions = sortTransactions(mergedTransactions)
       localStorage.save(storageKey, sortedTransactions)
-      const grouped = groupTransactions(sortedTransactions)
       const monthlyTotalSpent = calculateMonthlyTotalSpent(state.monthlyTotalSpent, action.transactions)
       state = merge(state, {
         monthlyTotalSpent: monthlyTotalSpent,
-        dataSource: state.dataSource.cloneWithRowsAndSections(grouped.groups, grouped.groupOrder),
+        dataSource: calculateNewDateSource(state.dataSource, sortedTransactions, state.selectedMonth),
         transactions: sortedTransactions,
         loadingTransactions: false,
         loadingMoreTransactions: false,
@@ -149,13 +154,17 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'transaction/SHOW_NEXT_MONTH':
+      const nextMonth = date.nextMonth(state.selectedMonth)
       state = merge(state, {
-        selectedMonth: date.nextMonth(state.selectedMonth)
+        dataSource: calculateNewDateSource(state.dataSource, state.transactions, nextMonth),
+        selectedMonth: nextMonth,
       })
       break
     case 'transaction/SHOW_PREVIOUS_MONTH':
+      const previousMonth = date.previousMonth(state.selectedMonth)
       state = merge(state, {
-        selectedMonth: date.previousMonth(state.selectedMonth)
+        dataSource: calculateNewDateSource(state.dataSource, state.transactions, previousMonth),
+        selectedMonth: previousMonth,
       })
       break
   }
