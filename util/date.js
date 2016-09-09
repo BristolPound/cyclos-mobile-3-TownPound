@@ -2,6 +2,8 @@ import moment from 'moment'
 
 export const currentMonth = () => moment().startOf('month')
 
+export const floorMonth = (mmt) => moment(mmt).startOf('month')
+
 export const nextMonth = mmt => moment(mmt).add(1, 'months')
 
 export const previousMonth = mmt => moment(mmt).subtract(1, 'months')
@@ -13,6 +15,9 @@ export const compare = (a, b) =>
 
 export const toMonthString = mmt =>
   isCurrentMonth(mmt) ? 'This Month' : moment(mmt).format('MMMM')
+
+export const format = (mmt, format = 'YYYY-MM') =>
+  moment(mmt).format(format)
 
 export const convert = {
   fromDate: d => moment(d),

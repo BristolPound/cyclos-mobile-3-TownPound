@@ -2,7 +2,7 @@ import React from 'react'
 import { View, TouchableHighlight } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { toMonthString, isCurrentMonth } from '../util/date'
+import { toMonthString, isCurrentMonth, format } from '../util/date'
 // import moment from 'moment'
 
 import DefaultText from './DefaultText'
@@ -24,6 +24,9 @@ const NavBarButton = ({style, children, onPress}) =>
     </View>
   </TouchableHighlight>
 
+const MonthlyTotal = ({style, selectedMonth, monthlyTotals}) =>
+  <DefaultText style={style}>£{(-monthlyTotals[format(selectedMonth)] || 0).toFixed(2)}</DefaultText>
+
 const TransactionHeader = (props) => {
   const isOnCurrentMonth = isCurrentMonth(props.selectedMonth)
   return <View style={{flexDirection: 'row', height: 50}}>
@@ -32,8 +35,9 @@ const TransactionHeader = (props) => {
     </NavBarButton>
     <View style={styles.flex}>
       <DefaultText style={styles.text}>{ toMonthString(props.selectedMonth) }</DefaultText>
+      <MonthlyTotal style={styles.text} selectedMonth={props.selectedMonth} monthlyTotals={props.monthlyTotalSpent} />
     </View>
-    <NavBarButton style={styles.flex} onPress={ () => isOnCurrentMonth ? undefined : props.nextMonth() }>
+    <NavBarButton style={styles.flex} onPress={() => isOnCurrentMonth ? undefined : props.nextMonth()}>
       { isOnCurrentMonth
         ? undefined
         : <DefaultText style={styles.text}>Next</DefaultText>}
@@ -43,6 +47,6 @@ const TransactionHeader = (props) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators(actions, dispatch)
 
-const mapStateToProps = (state) => ({selectedMonth: state.transaction.selectedMonth})
+const mapStateToProps = (state) => ({selectedMonth: state.transaction.selectedMonth, monthlyTotalSpent: state.transaction.monthlyTotalSpent})
 
 export default connect(mapStateToProps, mapDispatchToProps)(TransactionHeader)

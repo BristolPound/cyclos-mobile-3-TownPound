@@ -1,7 +1,7 @@
 import { ListView } from 'react-native'
 import merge from '../../util/merge'
 import * as date from '../../util/date'
-import groupTransactions, { sortTransactions } from './groupTransactions'
+import groupTransactions, { calculateMonthlyTotalSpent, sortTransactions } from './groupTransactions'
 import { getTransactions, PAGE_SIZE } from '../../api'
 import * as localStorage from '../../localStorage'
 import { findTransactionsByDate } from '../../util/transaction'
@@ -18,6 +18,7 @@ const initialState = {
   transactions: [],
   refreshing: false,
   noMoreTransactionsToLoad: false,
+  monthlyTotalSpent: {},
   dataSource: new ListView.DataSource({
     rowHasChanged: (a, b) => a.transactionNumber !== b.transactionNumber,
     sectionHeaderHasChanged: (a, b) => a !== b
@@ -122,7 +123,9 @@ const reducer = (state = initialState, action) => {
       const sortedTransactions = sortTransactions(mergedTransactions)
       localStorage.save(storageKey, sortedTransactions)
       const grouped = groupTransactions(sortedTransactions)
+      const monthlyTotalSpent = calculateMonthlyTotalSpent(state.monthlyTotalSpent, action.transactions)
       state = merge(state, {
+        monthlyTotalSpent: monthlyTotalSpent,
         dataSource: state.dataSource.cloneWithRowsAndSections(grouped.groups, grouped.groupOrder),
         transactions: sortedTransactions,
       }, action.finished ? {
