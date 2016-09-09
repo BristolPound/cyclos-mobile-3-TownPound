@@ -1,21 +1,18 @@
 import { ListView } from 'react-native'
 import merge from '../../util/merge'
-import { getNextMonth, getPreviousMonth } from '../../util/date'
+import * as date from '../../util/date'
 import groupTransactions, { sortTransactions } from './groupTransactions'
-import { getTransactions } from '../../api'
+import { getTransactions, PAGE_SIZE } from '../../api'
 import * as localStorage from '../../localStorage'
+import { findTransactionsByDate } from '../../util/transaction'
+import moment from 'moment'
 
 const isValidList = (transactionList) => transactionList !== undefined && transactionList !== null && transactionList.length > 0
-const formatDate = (stringDate) => (new Date(stringDate)).toJSON()
 const storageKey = localStorage.storageKeys.TRANSACTION_KEY
-
-const initDate = new Date()
+const last = (arr) => arr.length > 0 ? arr[arr.length - 1] : undefined
 
 const initialState = {
-  selectedMonth: {
-    month: initDate.getMonth(),
-    year: initDate.getFullYear()
-  },
+  selectedMonth: date.currentMonth(),
   loadingTransactions: true,
   loadingMoreTransactions: false,
   transactions: [],
@@ -31,7 +28,7 @@ export const nextMonth = () => ({
   type: 'transaction/SHOW_NEXT_MONTH'
 })
 
-export const previousMonth = () => ({
+const switchViewToPreviousMonth = () => ({
   type: 'transaction/SHOW_PREVIOUS_MONTH'
 })
 
@@ -39,9 +36,10 @@ const noMoreTransactions = () => ({
   type: 'transaction/NO_MORE_TRANSACTIONS'
 })
 
-const transactionsReceived = (transactions) => ({
+const transactionsReceived = (transactions, finished) => ({
   type: 'transaction/TRANSACTIONS_RECEIVED',
-  transactions
+  transactions,
+  finished
 })
 
 export const loadingMore = () => ({
@@ -52,41 +50,70 @@ const updateRefreshing = () => ({
   type: 'transaction/UPDATE_REFRESHING'
 })
 
-export const loadTransactionsBefore = (lastDate, excludeIdList) =>
+export const clearTransactions = () => ({
+  type: 'transaction/CLEAR_TRANSACTIONS'
+})
+
+export const fetchPreviousMonth = () =>
+  (dispatch, getState) => {
+    dispatch(switchViewToPreviousMonth())
+    const state = getState().transaction
+    const transactions = state.transactions
+    const loadingMoreTransactions = state.loadingMoreTransactions
+    const noMoreTransactionsToLoad = state.noMoreTransactionsToLoad
+
+    const earliestViewedDate = date.previousMonth(state.selectedMonth)
+    const earliestTransaction = last(transactions)
+    const earliestTransactionDate = earliestTransaction ? earliestTransaction.date : moment()
+    if (!loadingMoreTransactions && !noMoreTransactionsToLoad && date.compare(earliestViewedDate, earliestTransactionDate) < 0) {
+      const excludeIdList = findTransactionsByDate(transactions, earliestTransactionDate)
+      dispatch(loadTransactionsBefore(earliestTransactionDate, excludeIdList, earliestViewedDate))
+    }
+  }
+
+// excludeIdList - required to prevent fetching the transactions we have already fetched.
+//                 Using maximumDate in the cyclos call will include transactions with the maximumDate or earlier,
+//                 so we need to exlcude the transactions we have that have the date = maximumDate
+// loadToTarget  - the minimum date we are attempting to load to. Each time we fetch a page of transactions we check if
+//                 loadToTarget has been reached yet, and if not we make a request for another page.
+const loadTransactionsBefore = (maximumDate, excludeIdList, loadToTarget = null) =>
   (dispatch, getState) => {
     dispatch(loadingMore())
     getTransactions(getState().login.sessionToken, dispatch, {
-      datePeriod: ',' + formatDate(lastDate),
+      datePeriod: ',' + date.convert.stringToJson(maximumDate),
       excludedIds: excludeIdList
-    }).then(transactions => dispatch(transactions.length === 0 ? noMoreTransactions() : transactionsReceived(transactions)))
+    }).then(transactions => {
+      if (transactions.length < PAGE_SIZE) {
+        dispatch(noMoreTransactions())
+      }
+      if (transactions.length !== 0) {
+        const lastDateFetched = last(transactions).date
+        if (transactions.length === PAGE_SIZE && loadToTarget && date.compare(loadToTarget, lastDateFetched) < 0) {
+          dispatch(transactionsReceived(transactions, false))
+          dispatch(loadTransactionsBefore(lastDateFetched, findTransactionsByDate(transactions, lastDateFetched), loadToTarget))
+        } else {
+          dispatch(transactionsReceived(transactions, true))
+        }
+      }
+    })
   }
 
 export const loadTransactionsAfter = (firstDate, excludeIdList) =>
   (dispatch, getState) => {
     dispatch(updateRefreshing())
     getTransactions(getState().login.sessionToken, dispatch,{
-      datePeriod: formatDate(firstDate) + ',',
+      datePeriod: date.convert.stringToJson(firstDate) + ',',
       excludedIds: excludeIdList
-    }).then(transactions => dispatch(transactionsReceived(transactions)))
+    }).then(transactions => dispatch(transactionsReceived(transactions, true)))
   }
 
-export const loadTransactions = () =>
-    (dispatch) =>
+export const loadInitialTransactions = () =>
+    (dispatch, getState) =>
         localStorage.get(storageKey)
           .then(storedTransactions =>
               dispatch(isValidList(storedTransactions)
-                ? transactionsReceived(storedTransactions)
-                : loadTransactionsFromApi()))
-
-export const clearTransactions = () => ({
-  type: 'transaction/CLEAR_TRANSACTIONS'
-})
-
-const loadTransactionsFromApi = () =>
-    (dispatch, getState) =>
-      getTransactions(getState().login.sessionToken, dispatch)
-        .then(transactions => dispatch(transactionsReceived(transactions)))
-        .catch(console.error)
+                ? transactionsReceived(storedTransactions, true)
+                : loadTransactionsBefore(new Date().toString(), [], date.previousMonth(getState().transaction.selectedMonth))))
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -96,12 +123,13 @@ const reducer = (state = initialState, action) => {
       localStorage.save(storageKey, sortedTransactions)
       const grouped = groupTransactions(sortedTransactions)
       state = merge(state, {
-        loadingTransactions: false,
         dataSource: state.dataSource.cloneWithRowsAndSections(grouped.groups, grouped.groupOrder),
         transactions: sortedTransactions,
+      }, action.finished ? {
+        loadingTransactions: false,
         loadingMoreTransactions: false,
         refreshing: false
-      })
+      } : {})
       break
     case 'transaction/LOADING_MORE_TRANSACTIONS':
       state = merge(state, {
@@ -126,12 +154,12 @@ const reducer = (state = initialState, action) => {
       break
     case 'transaction/SHOW_NEXT_MONTH':
       state = merge(state, {
-        selectedMonth: getNextMonth(state.selectedMonth)
+        selectedMonth: date.nextMonth(state.selectedMonth)
       })
       break
     case 'transaction/SHOW_PREVIOUS_MONTH':
       state = merge(state, {
-        selectedMonth: getPreviousMonth(state.selectedMonth)
+        selectedMonth: date.previousMonth(state.selectedMonth)
       })
       break
   }
