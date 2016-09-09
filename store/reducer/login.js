@@ -3,6 +3,7 @@ import { authenticate } from '../../api'
 import ApiError, { UNAUTHORIZED_ACCESS } from '../../apiError'
 import NetworkError from '../../networkError'
 import { clearTransactions, loadTransactions } from './transaction'
+import { loadAccountDetails } from './account'
 import { networkConnectionChanged } from './status'
 
 const initialState = {
@@ -46,6 +47,7 @@ export const login = (username, password) =>
           //TODO: Should clear transactions on log out when it is implemented
           dispatch(clearTransactions())
           dispatch(loadTransactions())
+          dispatch(loadAccountDetails())
         })
         .catch((err) => {
           dispatch(loginInProgress(false))

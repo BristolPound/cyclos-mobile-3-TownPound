@@ -6,7 +6,7 @@ import { StyleSheet, ListView, View, Image, ActivityIndicator, TouchableHighligh
 import DefaultText from './DefaultText'
 import Price from './Price'
 import merge from '../util/merge'
-import BalanceHeader from './BalanceHeader'
+import TransactionHeader from './TransactionHeader'
 import * as actions from '../store/reducer/transaction'
 
 const borderColor = '#ddd'
@@ -97,7 +97,7 @@ const loadTransactions = (dispatchedFunction, useFirstDate, transactions) => {
 
 const TransactionsList = (props) =>
   <View style={{flex:1}}>
-    <BalanceHeader balance={props.balance} loadingBalance={props.loadingBalance}/>
+    <TransactionHeader />
     {props.loadingTransactions
       ? <ActivityIndicator size='large' style={{flex: 1}}/>
       : <ListView
