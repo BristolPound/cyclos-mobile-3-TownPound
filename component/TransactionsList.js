@@ -8,6 +8,7 @@ import Price from './Price'
 import merge from '../util/merge'
 import BalanceHeader from './BalanceHeader'
 import * as actions from '../store/reducer/transaction'
+import { openDetailsModal } from '../store/reducer/navigation'
 
 const borderColor = '#ddd'
 const marginSize = 8
@@ -61,16 +62,20 @@ const renderSectionHeader = (sectionData, sectionID) =>
    </DefaultText>
   </View>
 
-const renderRow = (transaction) =>
-  <View style={styles.rowContainer} key={transaction.transactionNumber}>
-    { transaction.relatedAccount.user && transaction.relatedAccount.user.image ?
-      <Image style={styles.image} source={{uri: transaction.relatedAccount.user.image.url}}/>
-      : <View style={styles.image} /> }
-    { transaction.relatedAccount.user ?
-      <DefaultText style={{marginLeft: 10}}>{transaction.relatedAccount.user.display}</DefaultText>
-      : <DefaultText style={{marginLeft: 10}}>'System'</DefaultText> }
-    <Price price={transaction.amount}/>
-  </View>
+const renderRow = (transaction, openDetailsModal) =>
+  <TouchableHighlight
+      onPress={() => transaction.relatedAccount.user && openDetailsModal(transaction.relatedAccount.user)}
+      key={transaction.transactionNumber}>
+    <View style={styles.rowContainer}>
+      { transaction.relatedAccount.user && transaction.relatedAccount.user.image
+        ? <Image style={styles.image} source={{uri: transaction.relatedAccount.user.image.url}}/>
+        : <View style={styles.image} /> }
+      { transaction.relatedAccount.user
+        ? <DefaultText style={{marginLeft: 10}}>{transaction.relatedAccount.user.display}</DefaultText>
+        : <DefaultText style={{marginLeft: 10}}>'System'</DefaultText> }
+      <Price price={transaction.amount}/>
+    </View>
+  </TouchableHighlight>
 
 const renderLoadingFooter = () =>
   <View style={merge(styles.section, styles.sectionBorder, {justifyContent: 'center'})}>
@@ -112,7 +117,7 @@ const TransactionsList = (props) =>
               : ( props.loadingMoreTransactions
                 ? renderLoadingFooter()
                 : renderFooter(() => loadTransactions(props.loadTransactionsBefore, false, props.transactions)))}
-          renderRow={renderRow}
+          renderRow={transaction => renderRow(transaction, props.openDetailsModal)}
           refreshControl={<RefreshControl
             refreshing={props.refreshing}
             onRefresh={() => loadTransactions(props.loadTransactionsAfter, true, props.transactions)} />
@@ -121,7 +126,7 @@ const TransactionsList = (props) =>
 
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(actions, dispatch)
+  bindActionCreators({ ...actions, openDetailsModal: openDetailsModal }, dispatch)
 
 const mapStateToProps = (state) => ({...state.transaction})
 
