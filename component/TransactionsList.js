@@ -6,6 +6,7 @@ import { StyleSheet, ListView, View, Image, ActivityIndicator, TouchableHighligh
 import DefaultText from './DefaultText'
 import Price from './Price'
 import merge from '../util/merge'
+import { findTransactionsByDate } from '../util/transaction'
 import TransactionHeader from './TransactionHeader'
 import * as actions from '../store/reducer/transaction'
 import { openDetailsModal } from '../store/reducer/navigation'
@@ -69,36 +70,18 @@ const renderRow = (transaction, openDetailsModal) =>
     <View style={styles.rowContainer}>
       { transaction.relatedAccount.user && transaction.relatedAccount.user.image
         ? <Image style={styles.image} source={{uri: transaction.relatedAccount.user.image.url}}/>
-        : <View style={styles.image} /> }
+      : <View style={styles.image} /> }
       { transaction.relatedAccount.user
         ? <DefaultText style={{marginLeft: 10}}>{transaction.relatedAccount.user.display}</DefaultText>
-        : <DefaultText style={{marginLeft: 10}}>'System'</DefaultText> }
-      <Price price={transaction.amount}/>
-    </View>
+      : <DefaultText style={{marginLeft: 10}}>'System'</DefaultText> }
+    <Price price={transaction.amount}/>
+  </View>
   </TouchableHighlight>
 
 const renderLoadingFooter = () =>
   <View style={merge(styles.section, styles.sectionBorder, {justifyContent: 'center'})}>
     <ActivityIndicator/>
   </View>
-
-const renderFooter = (onPress) =>
-  <TouchableHighlight onPress={onPress}>
-    <View style={merge(styles.section, styles.sectionBorder)}>
-      <DefaultText style={merge(styles.sectionHeader, {color: '#1480ba'})}>Load more ...</DefaultText>
-    </View>
-  </TouchableHighlight>
-
-const loadTransactions = (dispatchedFunction, useFirstDate, transactions) => {
-  if (transactions.length > 0) {
-    const transactionDate = transactions[useFirstDate ? 0 : transactions.length - 1].date
-    //TODO: optimise as we know the list is sorted and the date is at the end of the list
-    const excludeIdList = transactions
-                            .filter((tr) => tr.date === transactionDate)
-                            .map((tr) => tr.id)
-    dispatchedFunction(transactionDate, excludeIdList)
-  }
-}
 
 const TransactionsList = (props) =>
   <View style={{flex:1}}>
@@ -112,15 +95,15 @@ const TransactionsList = (props) =>
           renderSeparator={renderSeparator}
           renderSectionHeader={renderSectionHeader}
           renderFooter={() =>
-              props.noMoreTransactionsToLoad
-              ? undefined
-              : ( props.loadingMoreTransactions
+              ( props.loadingMoreTransactions
                 ? renderLoadingFooter()
-                : renderFooter(() => loadTransactions(props.loadTransactionsBefore, false, props.transactions)))}
+                : undefined)}
           renderRow={transaction => renderRow(transaction, props.openDetailsModal)}
           refreshControl={<RefreshControl
             refreshing={props.refreshing}
-            onRefresh={() => loadTransactions(props.loadTransactionsAfter, true, props.transactions)} />
+            onRefresh={() => !props.refreshing && props.transactions.length > 0
+              ? props.loadTransactionsAfter(props.transactions[0].date, findTransactionsByDate(props.transactions, props.transactions[0].date))
+              : undefined} />
           }/>}
   </View>
 
