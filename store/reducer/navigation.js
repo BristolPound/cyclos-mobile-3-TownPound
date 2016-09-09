@@ -16,6 +16,15 @@ export const showSendMoney = (show) => ({
   show
 })
 
+export const openDetailsModal = toOpen =>
+  (dispatch, getState) => {
+    // TODO: open user details here when someone clicks on a user in transaction list
+    const businessToShow = getState().business.business.find(bu => bu.id === toOpen.id)
+    if (businessToShow) {
+      dispatch(showBusinessDetails(businessToShow))
+    }
+  }
+
 export const showBusinessDetails = (show) => ({
   type: 'navigation/SHOW_BUSINESS_DETAILS',
   show
