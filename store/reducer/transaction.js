@@ -1,7 +1,7 @@
 import { ListView } from 'react-native'
 import merge from '../../util/merge'
 import groupTransactions, { sortTransactions } from './groupTransactions'
-import { getTransactions, getAccount, PAGE_SIZE } from '../../api'
+import { getTransactions, PAGE_SIZE } from '../../api'
 import * as localStorage from '../../localStorage'
 
 const isValidList = (transactionList) => transactionList !== undefined && transactionList !== null && transactionList.length > 0
@@ -11,7 +11,6 @@ const storageKey = localStorage.storageKeys.TRANSACTION_KEY
 const initialState = {
   loadingTransactions: true,
   loadingMoreTransactions: false,
-  loadingBalance: true,
   transactions: [],
   refreshing: false,
   noMoreTransactionsToLoad: false,
@@ -21,23 +20,18 @@ const initialState = {
   })
 }
 
-export const accountDetailsReceived = (account) => ({
-  type: 'account/ACCOUNT_DETAILS_RECEIVED',
-  account
-})
-
 const transactionsReceived = (transactions, addToEnd) => ({
-  type: 'account/TRANSACTIONS_RECEIVED',
+  type: 'transaction/TRANSACTIONS_RECEIVED',
   transactions,
   addToEnd
 })
 
 export const loadingMore = () => ({
-  type: 'account/LOADING_MORE_TRANSACTIONS'
+  type: 'transaction/LOADING_MORE_TRANSACTIONS'
 })
 
 const updateRefreshing = () => ({
-  type: 'account/UPDATE_REFRESHING'
+  type: 'transaction/UPDATE_REFRESHING'
 })
 
 export const loadTransactionsBefore = (lastDate, excludeIdList) =>
@@ -59,20 +53,15 @@ export const loadTransactionsAfter = (firstDate, excludeIdList) =>
   }
 
 export const loadTransactions = () =>
-    (dispatch) => {
-        getAccount()
-          .then(account => dispatch(accountDetailsReceived(account)))
-          .catch(console.error)
-
+    (dispatch) =>
         localStorage.get(storageKey)
           .then(storedTransactions =>
               dispatch(isValidList(storedTransactions)
                 ? transactionsReceived(storedTransactions)
                 : loadTransactionsFromApi()))
-    }
 
 export const clearTransactions = () => ({
-  type: 'account/CLEAR_TRANSACTIONS'
+  type: 'transaction/CLEAR_TRANSACTIONS'
 })
 
 const loadTransactionsFromApi = () =>
@@ -83,13 +72,7 @@ const loadTransactionsFromApi = () =>
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'account/ACCOUNT_DETAILS_RECEIVED':
-      state = merge(state, {
-        balance: action.account,
-        loadingBalance: false
-      })
-      break
-    case 'account/TRANSACTIONS_RECEIVED':
+    case 'transaction/TRANSACTIONS_RECEIVED':
       const mergedTransactions = [...state.transactions, ...action.transactions]
       const sortedTransactions = sortTransactions(mergedTransactions)
       localStorage.save(storageKey, sortedTransactions)
@@ -103,17 +86,17 @@ const reducer = (state = initialState, action) => {
         noMoreTransactionsToLoad: action.addToEnd && action.transactions.length < PAGE_SIZE
       })
       break
-    case 'account/LOADING_MORE_TRANSACTIONS':
+    case 'transaction/LOADING_MORE_TRANSACTIONS':
       state = merge(state, {
         loadingMoreTransactions: true
       })
       break
-    case 'account/UPDATE_REFRESHING':
+    case 'transaction/UPDATE_REFRESHING':
       state = merge(state, {
         refreshing: true
       })
       break
-    case 'account/CLEAR_TRANSACTIONS':
+    case 'transaction/CLEAR_TRANSACTIONS':
       localStorage.remove(storageKey)
       state = merge(initialState)
       break

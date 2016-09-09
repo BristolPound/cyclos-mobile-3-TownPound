@@ -6,6 +6,7 @@ import navigation from './reducer/navigation'
 import login from './reducer/login'
 import sendMoney from './reducer/sendMoney'
 import status from './reducer/status'
+import account from './reducer/account'
 
 export const reducer = combineReducers({
   transaction,
@@ -13,7 +14,8 @@ export const reducer = combineReducers({
   navigation,
   login,
   sendMoney,
-  status
+  status,
+  account,
 })
 
 export const initialise = (store) => {
