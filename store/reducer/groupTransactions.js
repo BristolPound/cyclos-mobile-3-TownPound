@@ -22,7 +22,7 @@ export const calculateMonthlyTotalSpent = (monthlyTotals, newTransactions) => {
   return newMonthlyTotals
 }
 
-const groupSortedTransactions = (transactions) => {
+export const groupTransactionsByDate = (transactions) => {
   let groups = {}
   let groupOrder = []
   transactions.forEach((transaction) => {
@@ -36,4 +36,28 @@ const groupSortedTransactions = (transactions) => {
   return {groups, groupOrder}
 }
 
-export default groupSortedTransactions
+export const groupTransactionsByBusiness = (transactions) => {
+  let totalSpent = {}
+  transactions.forEach(transaction => {
+    const transactionAmount = Number(transaction.amount)
+    if (transactionAmount < 0 && transaction.relatedAccount.user) {
+      if (transaction.relatedAccount.user.id in totalSpent) {
+        totalSpent[transaction.relatedAccount.user.id].amount += transactionAmount
+      } else {
+        totalSpent[transaction.relatedAccount.user.id] = {
+          amount: transactionAmount,
+          id: transaction.relatedAccount.id,
+          relatedAccount: transaction.relatedAccount
+        }
+      }
+    }
+  })
+
+  let listOfTotals = []
+  for(var key in totalSpent) {
+    listOfTotals.push(totalSpent[key])
+  }
+  listOfTotals.sort((a,b) => a.amount - b.amount)
+
+  return listOfTotals
+}
