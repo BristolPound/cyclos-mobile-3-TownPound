@@ -26,11 +26,11 @@ export const updateAmount = (amount) => ({
 export const sendTransaction = () =>
   (dispatch, getState) => {
     dispatch(setLoading())
-    putTransaction({
+    putTransaction(getState().login.sessionToken, {
         subject: getState().sendMoney.payee,
         description: 'Test description',
         amount: getState().sendMoney.amount
-      })
+      }, dispatch)
       .then(response =>
         dispatch(response.transactionNumber ? transactionComplete(response) : paymentFailed()))
       .catch(console.error)

@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, StatusBar, Text, Modal } from 'react-native'
+import { View, StatusBar, Modal } from 'react-native'
 import ScrollableTabView, { DefaultTabBar } from 'react-native-scrollable-tab-view'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -7,6 +7,7 @@ import * as actions from '../store/reducer/navigation'
 
 import Price from './Price'
 import SearchTab from './SearchTab'
+import NetworkConnection from './NetworkConnection'
 import TransactionsList from './TransactionsList'
 import Login from './Login'
 import BusinessDetails from './BusinessDetails'
@@ -29,16 +30,6 @@ const style = {
   },
   flex: {
     flex: 1
-  },
-  banner: {
-    position: 'absolute',
-    top:0,
-    height: 60,
-    left: 0,
-    right: 0,
-    backgroundColor: color.lightGray,
-    paddingTop: 30,
-    paddingLeft: 10
   }
 }
 
@@ -47,7 +38,7 @@ const TabBar = ({...props}) =>
     <DefaultTabBar {...props} style={merge(style.flex, { backgroundColor: 'white', borderColor: color.lightGray, borderTopWidth: 4})}/>
     {props.balance
       ? <View style={{flex: 0.5, backgroundColor: color.lightGray}}>
-          <Price prefix={'£'} price={props.balance} color={color.bristolBlue} size={35} />
+          <Price prefix={'ï¿½'} price={props.balance} color={color.bristolBlue} size={35} />
         </View>
       : undefined}
   </View>
@@ -71,11 +62,7 @@ const Tabs = (props) =>
         ? <TransactionsList tabLabel='Transactions'/>
         : <Login tabLabel='Transactions'/> }
     </ScrollableTabView>
-    { props.status.networkConnection
-      ? null
-      : <View style={style.banner}>
-          <Text>Network connection issues, some features won{'\''}t work</Text>
-        </View> }
+    <NetworkConnection/>
     <Modal
       animationType={'slide'}
       transparent={false}
