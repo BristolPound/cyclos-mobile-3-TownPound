@@ -5,10 +5,10 @@ import business, { loadBusinesses } from './reducer/business'
 import navigation from './reducer/navigation'
 import login from './reducer/login'
 import sendMoney from './reducer/sendMoney'
-import status from './reducer/status'
 import position, { updatePosition } from './reducer/position'
 import account from './reducer/account'
 import map from './reducer/map'
+import networkConnection from './reducer/networkConnection'
 
 export const reducer = combineReducers({
   transaction,
@@ -17,11 +17,12 @@ export const reducer = combineReducers({
   login,
   sendMoney,
 
-  status,
   position,
 
   account,
-  map
+  map,
+
+  networkConnection
 })
 
 const GEOLOCATION_SETTINGS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }

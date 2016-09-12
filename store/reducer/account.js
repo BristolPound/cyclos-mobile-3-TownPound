@@ -13,18 +13,17 @@ export const accountDetailsReceived = (account) => ({
   account
 })
 
-export const loadAccountDetails = () =>
-    (dispatch) => {
-        getAccount()
-          .then(account => dispatch(accountDetailsReceived(account)))
-          .catch(console.error)
-    }
+export const loadAccountDetails = (sessionToken) =>
+  (dispatch) =>
+    getAccount(sessionToken, dispatch)
+      .then(account => dispatch(accountDetailsReceived(account)))
+      .catch(console.error)
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'account/ACCOUNT_DETAILS_RECEIVED':
       state = merge(state, {
-        balance: action.account,
+        balance: action.account[0].status.balance,
         loadingBalance: false
       })
       break
