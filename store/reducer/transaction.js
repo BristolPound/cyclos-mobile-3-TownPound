@@ -28,12 +28,9 @@ const initialState = {
   }),
 }
 
-export const nextMonth = () => ({
-  type: 'transaction/SHOW_NEXT_MONTH'
-})
-
-const switchViewToPreviousMonth = () => ({
-  type: 'transaction/SHOW_PREVIOUS_MONTH'
+const selectMonth = month => ({
+  type: 'transaction/SELECT_MONTH',
+  month
 })
 
 const noMoreTransactions = () => ({
@@ -57,9 +54,20 @@ export const clearTransactions = () => ({
   type: 'transaction/CLEAR_TRANSACTIONS'
 })
 
+export const setSelectedMonth = (newSelectedMonth) =>
+  (dispatch, getState) => {
+    const state = getState().transaction
+    const noMoreTransactionsToLoad = state.noMoreTransactionsToLoad
+    const earliestTransaction = last(state.transactions)
+    const earliestTransactionDate = earliestTransaction ? earliestTransaction.date : moment()
+    if(!noMoreTransactionsToLoad && date.compare(newSelectedMonth, earliestTransactionDate) < 0) {
+      dispatch(fetchPreviousMonth())
+    }
+    dispatch(selectMonth(newSelectedMonth))
+  }
+
 export const fetchPreviousMonth = () =>
   (dispatch, getState) => {
-    dispatch(switchViewToPreviousMonth())
     const state = getState().transaction
     const transactions = state.transactions
     const loadingMoreTransactions = state.loadingMoreTransactions
@@ -159,16 +167,9 @@ const reducer = (state = initialState, action) => {
         noMoreTransactionsToLoad: true
       })
       break
-    case 'transaction/SHOW_NEXT_MONTH':
-      const nextMonth = date.nextMonth(state.selectedMonth)
-      state = merge(state, newDataSources(state.transactionsDataSource, state.traderDataSource, state.transactions, nextMonth), {
-        selectedMonth: nextMonth,
-      })
-      break
-    case 'transaction/SHOW_PREVIOUS_MONTH':
-      const previousMonth = date.previousMonth(state.selectedMonth)
-      state = merge(state, newDataSources(state.transactionsDataSource, state.traderDataSource, state.transactions, previousMonth), {
-        selectedMonth: previousMonth,
+    case 'transaction/SELECT_MONTH':
+      state = merge(state, newDataSources(state.transactionsDataSource, state.traderDataSource, state.transactions, action.month), {
+        selectedMonth: action.month,
       })
       break
   }

@@ -7,7 +7,7 @@ import merge from '../util/merge'
 const numberWithCommas = x =>
   x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
-const Price = ({prefix, price, color, size, style}) => {
+const Price = ({prefix, price, color, size, style, center}) => {
   const priceComponents = Math.abs(price).toFixed(2).split('.')
   const priceBeforeDecimal = numberWithCommas(priceComponents[0])
   const priceAfterDecimal = priceComponents[1]
@@ -17,11 +17,12 @@ const Price = ({prefix, price, color, size, style}) => {
   const margin = size * 0.06
   color = color ? color : (isCredit ? '#484' : 'black')
   prefix = prefix !== undefined ? prefix : (isCredit ? '+' : '')
+  const alignment = center ? 'center': 'flex-end'
   return (
-    <View style={merge(style, {justifyContent: 'flex-end', flexDirection: 'row'})}>
-      <DefaultText style={{fontSize: smallFontSize, alignSelf: 'flex-end', marginBottom: margin, color}}>{prefix}</DefaultText>
-      <DefaultText style={{fontSize: size, alignSelf: 'flex-end', color}}>{priceBeforeDecimal}</DefaultText>
-      <DefaultText style={{fontSize: smallFontSize, alignSelf: 'flex-end', marginBottom: margin, color}}>.{priceAfterDecimal}</DefaultText>
+    <View style={merge(style, {justifyContent: alignment, flexDirection: 'row'})}>
+      <DefaultText style={{fontSize: smallFontSize, alignSelf: alignment, marginBottom: margin, color}}>{prefix}</DefaultText>
+      <DefaultText style={{fontSize: size, alignSelf: alignment, color}}>{priceBeforeDecimal}</DefaultText>
+      <DefaultText style={{fontSize: smallFontSize, alignSelf: alignment, marginBottom: margin, color}}>.{priceAfterDecimal}</DefaultText>
     </View>
   )
 }

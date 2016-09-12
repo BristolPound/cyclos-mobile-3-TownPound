@@ -27,3 +27,20 @@ export const convert = {
   fromString: (s, format = undefined) => moment(s, format),
   stringToJson: s => (new Date(s)).toJSON()
 }
+
+// Returns a list of moments - the floored (i.e. round to the start of the month) date
+//                             between the floored start and floored end.
+export const monthRange = (start, end) => {
+  const startMonth = floorMonth(start)
+  const endMonth = floorMonth(end)
+  if (compare(startMonth, end) > 0) {
+    return []
+  }
+  let rangeList = [startMonth]
+  let currentDate = nextMonth(startMonth)
+  while (compare(currentDate, endMonth) <= 0) {
+    rangeList.push(moment(currentDate))
+    currentDate = nextMonth(currentDate)
+  }
+  return rangeList
+}
