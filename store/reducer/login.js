@@ -1,17 +1,17 @@
 import merge from '../../util/merge'
 import { authenticate } from '../../api'
 import ApiError, { UNAUTHORIZED_ACCESS } from '../../apiError'
-import NetworkError from '../../networkError'
+
 import { clearTransactions, loadTransactions } from './transaction'
 import { loadAccountDetails } from './account'
-import { networkConnectionChanged } from './status'
 
 const initialState = {
   loggedIn: false,
-  loginFailed: false,
+  loginFailed: '',
   loginInProgress: false,
-  username: 'test1',
-  password: 'testing123'
+  username: 'pshek',
+  password: 'testing123',
+  sessionToken: ''
 }
 
 export const usernameUpdated = (username) => ({
@@ -28,8 +28,9 @@ export const loggedIn = () => ({
   type: 'login/LOGGED_IN'
 })
 
-export const loginFailed = () => ({
-  type: 'login/LOGIN_FAILED'
+export const loginFailed = (loginFailed) => ({
+  type: 'login/LOGIN_FAILED',
+  loginFailed
 })
 
 export const passwordUpdated = (password) => ({
@@ -37,29 +38,54 @@ export const passwordUpdated = (password) => ({
   password
 })
 
+export const sessionTokenUpdated = (sessionToken) => ({
+  type: 'login/SESSION_TOKEN_UPDATED',
+  sessionToken
+})
+
+export const loggedOut = () => ({
+  type: 'login/LOGGED_OUT'
+})
+
 export const login = (username, password) =>
   (dispatch) => {
       dispatch(loginInProgress(true))
-      authenticate(username, password)
-        .then(() => {
+      authenticate(username, password, dispatch)
+        .then((sessionToken) => {
           dispatch(loginInProgress(false))
-          dispatch(loggedIn())
-          //TODO: Should clear transactions on log out when it is implemented
-          dispatch(clearTransactions())
-          dispatch(loadTransactions())
-          dispatch(loadAccountDetails())
-        })
-        .catch((err) => {
-          dispatch(loginInProgress(false))
-          if (err instanceof NetworkError) {
-            dispatch(networkConnectionChanged(false))
-          } else if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
-            dispatch(loginFailed())
-          } else {
-            // TODO: What to do with unexpected errors?
+          if (sessionToken) {
+            dispatch(loggedIn())
+            //TODO: Should clear transactions on log out when it is implemented
+            dispatch(clearTransactions())
+            dispatch(sessionTokenUpdated(sessionToken))
+            dispatch(loadTransactions())
+            dispatch(loadAccountDetails(sessionToken))
           }
         })
-    }
+        .catch (err => {
+          dispatch(loginInProgress(false))
+          if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
+            switch (err.json.code) {
+              case 'loggedOut':
+                dispatch(loggedOut())
+                break
+              case 'invalidClient':
+                dispatch(loginFailed('Username and/or password are incorrect. Please try again.'))
+                break
+              case 'login':
+                err.json.passwordStatus
+                  ? dispatch(loginFailed('Password Status: ' + err.json.passwordStatus))
+                  : dispatch(loginFailed('User Status: ' + err.json.userStatus))
+                break
+              default:
+                dispatch(loginFailed('Login failed: ' + err.json.passwordStatus))
+            }
+          } else {
+            // TODO: What to do with unexpected errors?
+            console.error(err)
+          }
+        })
+      }
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -73,6 +99,11 @@ const reducer = (state = initialState, action) => {
         password: action.password
       })
       break
+    case 'login/SESSION_TOKEN_UPDATED':
+      state = merge(state, {
+        sessionToken: action.sessionToken
+      })
+      break
     case 'login/LOGGED_IN':
       state = merge(state, {
         loggedIn: true
@@ -80,13 +111,17 @@ const reducer = (state = initialState, action) => {
       break
     case 'login/LOGIN_FAILED':
       state = merge(state, {
-        loginFailed: true
+        loginFailed: action.loginFailed
       })
       break
     case 'login/LOGIN_IN_PROGRESS_CHANGED':
       state = merge(state, {
         loginInProgress: action.loginInProgress
       })
+      break
+    case 'login/LOGGED_OUT':
+      // TODO: the session token is invalid so we need to log the user out
+      // clear transactions etc.
       break
   }
   return state
