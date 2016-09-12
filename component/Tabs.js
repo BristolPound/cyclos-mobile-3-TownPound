@@ -70,8 +70,7 @@ const mapDispatchToProps = (dispatch) =>
 
 const mapStateToProps = (state) => ({
   navigation: state.navigation,
-  loggedIn: state.login.loggedIn,
-  networkConnection: state.networkConnection.status
+  loggedIn: state.login.loggedIn
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tabs)

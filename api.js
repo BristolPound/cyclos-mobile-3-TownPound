@@ -7,7 +7,7 @@ import {successfulConnection, connectionFailed} from './store/reducer/networkCon
 const BASE_URL = 'https://bristol.cyclos.org/bristolpoundsandbox03/api/'
 export const PAGE_SIZE = 20
 
-const httpHeaders = (sessionToken = '') => {
+const httpHeaders = (sessionToken) => {
   const headers = new Headers()
   if (sessionToken) {
     headers.append('Session-Token', sessionToken)
