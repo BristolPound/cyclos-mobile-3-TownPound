@@ -35,18 +35,18 @@ const updateRefreshing = () => ({
 })
 
 export const loadTransactionsBefore = (lastDate, excludeIdList) =>
-  (dispatch) => {
+  (dispatch, getState) => {
     dispatch(loadingMore())
-    getTransactions({
+    getTransactions(getState().login.sessionToken, dispatch, {
       datePeriod: ',' + formatDate(lastDate),
       excludedIds: excludeIdList
     }).then(transactions => dispatch(transactionsReceived(transactions, true)))
   }
 
 export const loadTransactionsAfter = (firstDate, excludeIdList) =>
-  (dispatch) => {
+  (dispatch, getState) => {
     dispatch(updateRefreshing())
-    getTransactions({
+    getTransactions(getState().login.sessionToken, dispatch,{
       datePeriod: formatDate(firstDate) + ',',
       excludedIds: excludeIdList
     }).then(transactions => dispatch(transactionsReceived(transactions, false)))
@@ -65,8 +65,8 @@ export const clearTransactions = () => ({
 })
 
 const loadTransactionsFromApi = () =>
-    (dispatch) =>
-      getTransactions()
+    (dispatch, getState) =>
+      getTransactions(getState().login.sessionToken, dispatch)
         .then(transactions => dispatch(transactionsReceived(transactions, true)))
         .catch(console.error)
 
