@@ -40,7 +40,7 @@ const loadBusinessesFromApi = () =>
       getBusinesses(dispatch)
         .catch((err) => {
           // do something with the response
-          console.error(err.response)
+          console.error(err)
         })
         .then(businesses => {
           if (isValidList(businesses)) {

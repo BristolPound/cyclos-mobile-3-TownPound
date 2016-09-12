@@ -78,7 +78,7 @@ export const getBusinesses = (dispatch) =>
     ],
     pageSize: 1000000,
     addressResult: 'primary'
-  }, dispatch)
+  }, '', dispatch)
 
 export const getAccount = (sessionToken, dispatch) =>
   get('self/accounts', {
