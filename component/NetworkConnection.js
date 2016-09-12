@@ -20,7 +20,7 @@ const NetworkConnection = (props) => {
     if (!props.status) {
       return (
         <View style={style.banner}>
-          <Text>{"Network connection issues, some features won't work"}</Text>
+          <Text>Network connection issues, some features won't work</Text>
         </View>
       )
     }
