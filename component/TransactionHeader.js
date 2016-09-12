@@ -1,11 +1,16 @@
 import React from 'react'
-import { View, TouchableHighlight } from 'react-native'
+import _ from 'lodash'
+import { View } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { toMonthString, isCurrentMonth, format, isSameMonth } from '../util/date'
-// import moment from 'moment'
-
 import DefaultText from './DefaultText'
+import Price from './Price'
+
+import merge from '../util/merge'
+import color from '../util/colors'
+import { toMonthString, format, monthRange, floorMonth, convert, currentMonth, isSameMonth } from '../util/date'
+
+import Carousel from 'react-native-carousel-control'
 import * as actions from '../store/reducer/transaction'
 const last = arr => arr.length > 0 ? arr[arr.length - 1] : undefined
 
@@ -13,37 +18,43 @@ const styles = {
   flex: {
     flex: 1,
   },
+  unselectedContainer: {
+    opacity: 0.5,
+  },
   text: {
     textAlign: 'center',
-  }
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 }
 
-const NavBarButton = ({text, hide, onPress}) =>
-  <TouchableHighlight style={styles.flex} onPress={onPress}>
-    <View>
-      { hide
-        ? undefined
-        : <DefaultText style={styles.text}>{text}</DefaultText>}
-    </View>
-  </TouchableHighlight>
+const MonthOption = ({month, monthlyTotals, selected}) =>
+  <View style={!selected ? merge(styles.flex, styles.unselectedContainer) : styles.flex} key={toMonthString(month)}>
+    <DefaultText style={styles.text}>{ ((selected ? 'Spent ': '') + toMonthString(month)).toUpperCase() }</DefaultText>
+    <Price price={monthlyTotals[format(month)] || 0} size={selected ? 35 : 20} center={true} color={color.bristolBlue} />
+  </View>
 
-const MonthlyTotal = ({style, selectedMonth, monthlyTotals}) =>
-  <DefaultText style={style}>£{(-monthlyTotals[format(selectedMonth)] || 0).toFixed(2)}</DefaultText>
+const TransactionHeader = (props) => {
+  if (props.transactions.length === 0) {
+    return null
+  }
 
-const TransactionHeader = props => {
-  const buttonDisabled = props.loadingTransactions || props.loadingMoreTransactions || props.refreshing
-  const nextButtonHidden = isCurrentMonth(props.selectedMonth)
   const lastTransaction = last(props.transactions)
-  const prevButtonHidden = !lastTransaction || (props.noMoreTransactionsToLoad && isSameMonth(props.selectedMonth, last(props.transactions).date))
+  const allAvailableMonths = monthRange(floorMonth(convert.fromString(lastTransaction.date)), currentMonth())
 
-  return (<View style={{flexDirection: 'row', height: 50}}>
-      <NavBarButton text='Prev' hide={prevButtonHidden} onPress={ () => buttonDisabled || prevButtonHidden ? undefined : props.fetchPreviousMonth() } />
-      <View style={styles.flex}>
-        <DefaultText style={styles.text}>{ toMonthString(props.selectedMonth) }</DefaultText>
-      <MonthlyTotal style={styles.text} selectedMonth={props.selectedMonth} monthlyTotals={props.monthlyTotalSpent} />
-      </View>
-      <NavBarButton text='Next' hide={nextButtonHidden} onPress={ () => buttonDisabled || nextButtonHidden ? undefined : props.nextMonth() }/>
-    </View>)
+  const initPage = _.findIndex(allAvailableMonths, month => isSameMonth(props.selectedMonth, month))
+
+  return <View style={{height: 70}} >
+      <Carousel initialPage={initPage} pageWidth={200} sneak={150} onPageChange={i => props.setSelectedMonth(allAvailableMonths[i])}>
+        { allAvailableMonths.map(month =>
+          <MonthOption
+              key={toMonthString(month)}
+              month={month}
+              monthlyTotals={props.monthlyTotalSpent}
+              selected={isSameMonth(props.selectedMonth, month)} />
+        ) }
+      </Carousel>
+    </View>
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators(actions, dispatch)
