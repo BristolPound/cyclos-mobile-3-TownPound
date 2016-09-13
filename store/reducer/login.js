@@ -73,12 +73,13 @@ export const login = (username, password) =>
                 dispatch(loginFailed('Username and/or password are incorrect. Please try again.'))
                 break
               case 'login':
-                err.json.passwordStatus
-                  ? dispatch(loginFailed('Password Status: ' + err.json.passwordStatus))
-                  : dispatch(loginFailed('User Status: ' + err.json.userStatus))
+                const errMessage = err.json.passwordStatus==='temporarilyBlocked'
+                  ? 'Your account has been temporarily blocked'
+                  : 'Username and/or password are incorrect. Please try again.'
+                dispatch(loginFailed(errMessage))
                 break
               default:
-                dispatch(loginFailed('Login failed: ' + err.json.passwordStatus))
+                dispatch(loginFailed('Login failed: ' + JSON.stringify(err.json)))
             }
           } else {
             // TODO: What to do with unexpected errors?
