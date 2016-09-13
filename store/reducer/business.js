@@ -80,7 +80,7 @@ businesses ?
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'business/BUSINESS_DETAILS_RECEIVED':
-      const sorted = sortBusinessesByLocation(action.business, state.position).slice()
+      const sorted = sortBusinessesByLocation(action.business.slice(), state.position)
       state = merge(state, {
         loading: false,
         dataSource: state.dataSource.cloneWithRows(sorted),
@@ -95,7 +95,7 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'position/POSITION_UPDATED':
-      const sorted2 = sortBusinessesByLocation(state.business, action.position).slice()
+      const sorted2 = sortBusinessesByLocation(state.business.slice(), action.position)
       state = merge(state, {
         business: sorted2,
         dataSource: state.dataSource.cloneWithRows(sorted2),
