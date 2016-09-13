@@ -1,6 +1,6 @@
 import {encode} from 'base-64'
 import merge from './util/merge'
-import ApiError, { UNAUTHORIZED_ACCESS, throwOnError } from '../../apiError'
+import ApiError, { UNAUTHORIZED_ACCESS, throwOnError } from './apiError'
 
 import {successfulConnection, connectionFailed} from './store/reducer/networkConnection'
 import {loggedOut} from './store/reducer/login'
