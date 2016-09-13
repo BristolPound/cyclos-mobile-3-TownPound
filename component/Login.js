@@ -81,7 +81,8 @@ const Login = (props) =>
       <OptionalTextInput
         enabled={!props.state.loginInProgress}
         onChangeText={props.passwordUpdated}
-        value={props.state.password}/>
+        value={props.state.password}
+        secureTextEntry={true}/>
     </View>
     <TouchableHighlight style={style.loginButton}
         onPress={() => {
