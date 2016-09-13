@@ -1,8 +1,8 @@
 import { ListView } from 'react-native'
+import haversine from 'haversine'
 import merge from '../../util/merge'
-import { getBusinesses, getAddresses } from '../../api'
+import { getBusinesses } from '../../api'
 import * as localStorage from '../../localStorage'
-import { selectClosestBusinessId } from './position'
 
 const isValidList = (businessList) => businessList !== null && businessList.length > 0
 const storageKey = localStorage.storageKeys.BUSINESS_KEY
@@ -12,7 +12,7 @@ const initialState = {
   loading: true,
   refreshing: false,
   dataSource: new ListView.DataSource({
-    rowHasChanged: (a, b) => a.userName === b.userName
+    rowHasChanged: (a, b) => a.userName !== b.userName
   })
 }
 
@@ -58,14 +58,35 @@ export const refreshBusinesses = () =>
       dispatch(loadBusinessesFromApi())
     }
 
+
+const sortBusinessesByLocation = (businesses, position) =>
+businesses ?
+  (position ?
+    businesses
+      .sort((a, b) => {
+        if (!b.address) {
+          return -1
+        }
+        if (!a.address) {
+          return 1
+        }
+        a.distance = haversine(position.coords, a.address.location)
+        b.distance = haversine(position.coords, b.address.location)
+        return a.distance - b.distance
+      })
+    : businesses)
+  : []
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'business/BUSINESS_DETAILS_RECEIVED':
+      const sorted = sortBusinessesByLocation(action.business.slice(), state.position)
       state = merge(state, {
         loading: false,
-        dataSource: state.dataSource.cloneWithRows(action.business),
-        business: action.business,
-        refreshing: false
+        dataSource: state.dataSource.cloneWithRows(sorted),
+        business: sorted,
+        refreshing: false,
+        selected: sorted[0].id
       })
       break
     case 'business/UPDATE_REFRESHING':
@@ -74,9 +95,11 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'position/POSITION_UPDATED':
-      const closestId = selectClosestBusinessId(state.business, action.position)
+      const sorted2 = sortBusinessesByLocation(state.business.slice(), action.position)
       state = merge(state, {
-        selected: closestId
+        business: sorted2,
+        dataSource: state.dataSource.cloneWithRows(sorted2),
+        selected: sorted2[0].id
       })
       break
     case 'business/BUSINESS_SELECTED':
