@@ -1,8 +1,9 @@
 import {encode} from 'base-64'
 import merge from './util/merge'
-import {throwOnError} from './apiError'
+import ApiError, { UNAUTHORIZED_ACCESS, throwOnError } from '../../apiError'
 
 import {successfulConnection, connectionFailed} from './store/reducer/networkConnection'
+import {loggedOut} from './store/reducer/login'
 
 const BASE_URL = 'https://bristol.cyclos.org/bristolpoundsandbox03/api/'
 export const PAGE_SIZE = 20
@@ -32,9 +33,11 @@ const dispatchSuccessfulConnection = dispatch => response => {
   return response
 }
 
-const dispatchConnectionFailed = dispatch => err => {
+const maybeDispatchFailure = dispatch => err => {
   if (err.message === 'Network request failed') {
     dispatch(connectionFailed())
+  } else if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
+    dispatch(loggedOut())
   } else {
     throw err
   }
@@ -48,7 +51,7 @@ const get = (url, params, sessionToken, dispatch) =>
       throwOnError(data.response, data.json)
       return data.json
     })
-    .catch(dispatchConnectionFailed(dispatch))
+    .catch(maybeDispatchFailure(dispatch))
 
 const post = (sessionToken, url, params, dispatch) =>
   fetch(BASE_URL + url, merge({headers: httpHeaders(sessionToken)}, {method: 'POST', body: JSON.stringify(params)}))
@@ -58,7 +61,7 @@ const post = (sessionToken, url, params, dispatch) =>
       throwOnError(data.response, data.json, 201)
       return data.response
     })
-    .catch(dispatchConnectionFailed(dispatch))
+    .catch(maybeDispatchFailure(dispatch))
 
 export const getBusinesses = (dispatch) =>
   get('users', {
@@ -132,4 +135,4 @@ export const authenticate = (username, password, dispatch) =>
     throwOnError(data.response, data.json)
     return data.json.sessionToken
   })
-  .catch(dispatchConnectionFailed(dispatch))
+  .catch(maybeDispatchFailure(dispatch))
