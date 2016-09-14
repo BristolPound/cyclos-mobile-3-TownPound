@@ -44,7 +44,7 @@ const BusinessListItem = props =>
         <DefaultText style={styles.title} numberOfLines={1}>
           {props.business.display}
         </DefaultText>
-        <DefaultText style={{color: '#777', fontSize: 16}}>
+        <DefaultText style={{color: '#777', fontSize: 12}}>
           @{props.business.shortDisplay}
         </DefaultText>
       </View>
