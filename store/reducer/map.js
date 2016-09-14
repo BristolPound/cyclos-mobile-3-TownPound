@@ -8,8 +8,8 @@ export const updateMap = (params) => ({
 const initialState = {
   latitude: 51.455,
   longitude: -2.588,
-  latitudeDelta: 0.092,
-  longitudeDelta: 0.042
+  latitudeDelta: 0.1,
+  longitudeDelta: 0.1
 }
 
 const reducer = (state = initialState, action) => {
