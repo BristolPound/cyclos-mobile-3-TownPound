@@ -21,7 +21,6 @@ const style = {
     flex: 1
   },
   tabs: {
-    marginTop: 20,
     flex: 1,
     backgroundColor: 'white'
   },
