@@ -96,12 +96,9 @@ const SendMoney = (props) =>
         </View>
       : undefined
     }
-    { props.paymentFailed
-      ? <View>
-          <DefaultText>Payment has not succeeded.</DefaultText>
-        </View>
-      : undefined
-    }
+    <View>
+      <DefaultText>{props.paymentFailed}</DefaultText>
+    </View>
   </View>
 
 const mapDispatchToProps = (dispatch) =>
