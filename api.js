@@ -5,7 +5,7 @@ import ApiError, { UNAUTHORIZED_ACCESS, throwOnError } from './apiError'
 import {successfulConnection, connectionFailed} from './store/reducer/networkConnection'
 import {loggedOut} from './store/reducer/login'
 
-const BASE_URL = 'https://bristol.cyclos.org/bristolpoundsandbox03/api/'
+const BASE_URL = 'https://bristol-stage.community-currency.org/cyclos/api/'
 export const PAGE_SIZE = 20
 
 const httpHeaders = (sessionToken) => {

@@ -8,18 +8,29 @@ import { updateMap } from '../store/reducer/map'
 
 // This slightly strange structure (taking the first element out of the array)
 // is to avoid pins getting 'stuck' on blue (yes this really happens!)
+
+const renderClosestMarker = (business, selected) => {
+  if (!selected) {
+    return undefined
+  }
+  const selectedBusinessAddress = business.find(b => b.id === selected).address
+  if (!selectedBusinessAddress) {
+    return undefined
+  }
+  return <MapView.Marker coordinate={selectedBusinessAddress.location} pinColor={'blue'}/>
+}
+
 const BackgroundMap = (props) =>
-    <MapView style={{...StyleSheet.absoluteFillObject}}
+  <MapView style={{...StyleSheet.absoluteFillObject}}
         region={props.mapPosition}
         onRegionChange={props.updateMap}>
-      {props.selected ?
-        <MapView.Marker coordinate={props.business.find(b => b.id === props.selected).address.location} pinColor={'blue'} />
-        : undefined}
+      {renderClosestMarker(props.business, props.selected)}
       {props.business.filter(b => b.address)
-        .map(b =>{
-            return b.id !== props.selected ? <MapView.Marker key={b.shortDisplay}
+        .map(b =>
+          b.id !== props.selected ?
+            <MapView.Marker key={b.shortDisplay}
                 coordinate={b.address.location}
-                /> : undefined}
+            /> : undefined
       )}
     </MapView>
 
