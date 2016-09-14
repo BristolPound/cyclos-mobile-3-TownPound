@@ -3,7 +3,7 @@ export const updatePosition = (position) => ({
   position
 })
 
-const reducer = (state = {}, action) => {
+const reducer = (state = { latitude: 51.455, longitude:  -2.588 }, action) => {
   switch (action.type) {
     case 'position/POSITION_UPDATED':
       state = action.position

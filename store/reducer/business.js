@@ -16,10 +16,12 @@ const initialState = {
   })
 }
 
-export const businessDetailsReceived = (business) => ({
-  type: 'business/BUSINESS_DETAILS_RECEIVED',
-  business
-})
+export const businessDetailsReceived = (business) =>
+  (dispatch, getState) => dispatch({
+    type: 'business/BUSINESS_DETAILS_RECEIVED',
+    business,
+    mapPosition: getState().map
+  })
 
 const updateRefreshing = () => ({
   type: 'business/UPDATE_REFRESHING'
@@ -70,17 +72,21 @@ businesses ?
         if (!a.address) {
           return 1
         }
-        a.distance = haversine(position.coords, a.address.location)
-        b.distance = haversine(position.coords, b.address.location)
+        a.distance = haversine(position, a.address.location)
+        b.distance = haversine(position, b.address.location)
         return a.distance - b.distance
-      })
+      }).filter(b =>
+        b.address
+        && Math.abs(b.address.location.latitude - position.latitude) < position.latitudeDelta
+        && Math.abs(b.address.location.longitude - position.longitude) < position.longitudeDelta
+      )
     : businesses)
   : []
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'business/BUSINESS_DETAILS_RECEIVED':
-      const sorted = sortBusinessesByLocation(action.business.slice(), state.position)
+      const sorted = sortBusinessesByLocation(action.business, action.mapPosition)
       state = merge(state, {
         loading: false,
         dataSource: state.dataSource.cloneWithRows(sorted),
@@ -94,17 +100,17 @@ const reducer = (state = initialState, action) => {
         refreshing: true
       })
       break
-    case 'position/POSITION_UPDATED':
-      const sorted2 = sortBusinessesByLocation(state.business.slice(), action.position)
-      state = merge(state, {
-        business: sorted2,
-        dataSource: state.dataSource.cloneWithRows(sorted2),
-        selected: sorted2[0].id
-      })
-      break
     case 'business/BUSINESS_SELECTED':
       state = merge(state, {
         selected: action.selected
+      })
+      break
+    case 'map/UPDATE_MAP':
+      const sorted2 = sortBusinessesByLocation(state.business.slice(), action.params)
+      state = merge(state, {
+        business: sorted2,
+        dataSource: state.dataSource.cloneWithRows(sorted2),
+        selected: sorted2[0].id,
       })
       break
   }
