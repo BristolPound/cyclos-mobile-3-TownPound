@@ -1,12 +1,13 @@
 import { putTransaction } from '../../api'
 import merge from '../../util/merge'
+import ApiError, {UNEXPECTED_ERROR} from '../../apiError'
 
 const initialState = {
   payee: '',
   amount: undefined,
   loading: false,
   newTransaction: undefined,
-  paymentFailed: false
+  paymentFailed: ''
 }
 
 export const resetForm = () => ({
@@ -32,8 +33,22 @@ export const sendTransaction = () =>
         amount: getState().sendMoney.amount
       }, dispatch)
       .then(response =>
-        dispatch(response.transactionNumber ? transactionComplete(response) : paymentFailed()))
-      .catch(console.error)
+        dispatch(response.transactionNumber ? transactionComplete(response) : paymentFailed('Transaction did not complete.')))
+      .catch(err => {
+        if (err instanceof ApiError && err.type === UNEXPECTED_ERROR && err.json) {
+          switch (err.json.code) {
+            case 'dailyAmountExceeded':
+              dispatch(paymentFailed('Daily amount has been exceeded.'))
+              break
+            case 'insufficientBalance':
+              dispatch(paymentFailed('Insufficient balance.'))
+              break
+          }
+        } else {
+          dispatch(paymentFailed('Error on sending transaction.'))
+          console.err(err)
+        }
+      })
   }
 
 const setLoading = () => ({
@@ -45,8 +60,9 @@ const transactionComplete = (newTransaction) => ({
   newTransaction
 })
 
-const paymentFailed = () => ({
+const paymentFailed = (paymentFailed) => ({
   type: 'sendMoney/PAYMENT_FAILED',
+  paymentFailed
 })
 
 const reducer = (state = initialState, action) => {
@@ -72,13 +88,13 @@ const reducer = (state = initialState, action) => {
     case 'sendMoney/TRANSACTION_COMPLETE':
       state = merge(initialState, {
         newTransaction: action.newTransaction,
-        paymentFailed: false
+        paymentFailed: ''
       })
       break
     case 'sendMoney/PAYMENT_FAILED':
       state = merge(initialState, {
         newTransaction: undefined,
-        paymentFailed: true
+        paymentFailed: action.paymentFailed
       })
       break
   }
