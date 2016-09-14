@@ -12,7 +12,7 @@ const initialState = {
   loading: true,
   refreshing: false,
   dataSource: new ListView.DataSource({
-    rowHasChanged: (a, b) => a.userName !== b.userName
+    rowHasChanged: (a, b) => a.shortDisplay !== b.shortDisplay
   })
 }
 
