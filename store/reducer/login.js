@@ -9,7 +9,7 @@ const initialState = {
   loggedIn: false,
   loginFailed: '',
   loginInProgress: false,
-  username: 'pshek',
+  username: 'testmember',
   password: 'testing123',
   sessionToken: ''
 }
