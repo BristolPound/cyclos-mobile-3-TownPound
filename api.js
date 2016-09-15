@@ -53,6 +53,27 @@ const get = (url, params, sessionToken, dispatch) =>
     })
     .catch(maybeDispatchFailure(dispatch))
 
+// Will continually load pages of a get request until successCriteria is met.
+// successCriteria - should be a function with takes the result of the get request
+//                   and returns a boolean as to whether the request is complete. It
+//                   will be called on each individual get request.
+const getPages = (url, params, sessionToken, dispatch, successCriteria, pageNo = 0) => {
+  params = merge(params, { page: pageNo })
+  return new Promise(function(resolve, reject) {
+    get(url, params, sessionToken, dispatch)
+      .then(results => {
+        if (results.length < PAGE_SIZE || successCriteria === undefined || successCriteria(results)){
+          resolve(results)
+        } else {
+          getPages(url, params, sessionToken, dispatch, successCriteria, pageNo + 1)
+            .then(nextResults => resolve(results.concat(nextResults)))
+            .catch(reject)
+        }
+      })
+      .catch(reject)
+  })
+}
+
 const post = (sessionToken, url, params, dispatch) =>
   fetch(BASE_URL + url, merge({headers: httpHeaders(sessionToken)}, {method: 'POST', body: JSON.stringify(params)}))
     .then(dispatchSuccessfulConnection(dispatch))
@@ -89,8 +110,8 @@ export const getAccount = (sessionToken, dispatch) =>
   },
   sessionToken, dispatch)
 
-export const getTransactions = (sessionToken, dispatch, additionalParams) =>
-  get('self/accounts/member/history', merge({
+export const getTransactions = (sessionToken, dispatch, additionalParams, successCriteria) =>
+  getPages('self/accounts/member/history', merge({
     fields: [
       'id',
       'transactionNumber',
@@ -100,9 +121,8 @@ export const getTransactions = (sessionToken, dispatch, additionalParams) =>
       'type',
       'relatedAccount'
     ],
-    page: 0,
     pageSize: PAGE_SIZE
-  }, additionalParams ? additionalParams : {}), sessionToken, dispatch)
+  }, additionalParams ? additionalParams : {}), sessionToken, dispatch, successCriteria)
 
 export const putTransaction = (sessionToken, payment, dispatch) =>
   get('self/payments/data-for-perform', {

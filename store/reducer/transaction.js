@@ -37,10 +37,9 @@ const noMoreTransactions = () => ({
   type: 'transaction/NO_MORE_TRANSACTIONS'
 })
 
-const transactionsReceived = (transactions, finished) => ({
+const transactionsReceived = transactions => ({
   type: 'transaction/TRANSACTIONS_RECEIVED',
-  transactions,
-  finished
+  transactions
 })
 
 export const loadingMore = () => ({
@@ -83,20 +82,15 @@ const loadTransactionsBefore = (maximumDate, excludeIdList, loadToTarget = null)
     getTransactions(getState().login.sessionToken, dispatch, {
       datePeriod: ',' + date.convert.stringToJson(maximumDate),
       excludedIds: excludeIdList
-    }).then(transactions => {
-      if (transactions.length < PAGE_SIZE) {
-        dispatch(noMoreTransactions())
-      }
-      if (transactions.length !== 0) {
-        const lastDateFetched = last(transactions).date
-        if (transactions.length === PAGE_SIZE && loadToTarget && date.compare(loadToTarget, lastDateFetched) < 0) {
-          dispatch(transactionsReceived(transactions, false))
-          dispatch(loadTransactionsBefore(lastDateFetched, findTransactionsByDate(transactions, lastDateFetched), loadToTarget))
-        } else {
-          dispatch(transactionsReceived(transactions, true))
+    }, tr => !loadToTarget || date.compare(loadToTarget, last(tr).date) >= 0)
+      .then(transactions => {
+        if (transactions.length === 0 || (transactions.length % PAGE_SIZE !== 0)) {
+          dispatch(noMoreTransactions())
         }
-      }
-    })
+        if (transactions.length !== 0) {
+          dispatch(transactionsReceived(transactions))
+        }
+      })
   }
 
 export const loadTransactionsAfter = (firstDate, excludeIdList) =>
@@ -105,7 +99,7 @@ export const loadTransactionsAfter = (firstDate, excludeIdList) =>
     getTransactions(getState().login.sessionToken, dispatch,{
       datePeriod: date.convert.stringToJson(firstDate) + ',',
       excludedIds: excludeIdList
-    }).then(transactions => dispatch(transactionsReceived(transactions, true)))
+    }).then(transactions => dispatch(transactionsReceived(transactions)))
   }
 
 export const loadInitialTransactions = () =>
@@ -113,7 +107,7 @@ export const loadInitialTransactions = () =>
         localStorage.get(storageKey)
           .then(storedTransactions =>
               dispatch(isValidList(storedTransactions)
-                ? transactionsReceived(storedTransactions, true)
+                ? transactionsReceived(storedTransactions)
                 : loadTransactionsBefore(new Date().toString(), [], date.previousMonth(getState().transaction.selectedMonth))))
 
 const reducer = (state = initialState, action) => {
@@ -128,11 +122,10 @@ const reducer = (state = initialState, action) => {
         monthlyTotalSpent: monthlyTotalSpent,
         dataSource: state.dataSource.cloneWithRowsAndSections(grouped.groups, grouped.groupOrder),
         transactions: sortedTransactions,
-      }, action.finished ? {
         loadingTransactions: false,
         loadingMoreTransactions: false,
         refreshing: false
-      } : {})
+      })
       break
     case 'transaction/LOADING_MORE_TRANSACTIONS':
       state = merge(state, {
