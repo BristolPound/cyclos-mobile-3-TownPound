@@ -105,7 +105,7 @@ const reducer = (state = initialState, action) => {
         selected: action.selected
       })
       break
-    case 'map/UPDATE_MAP':
+    case 'map/UPDATE_MAP_VIEWPORT':
       const sorted2 = sortBusinessesByLocation(state.business.slice(), action.params)
       state = merge(state, {
         business: sorted2,

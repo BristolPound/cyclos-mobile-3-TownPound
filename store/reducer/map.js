@@ -1,7 +1,7 @@
 import merge from '../../util/merge'
 
-export const updateMap = (params) => ({
-  type: 'map/UPDATE_MAP',
+export const updateMapViewport = (params) => ({
+  type: 'map/UPDATE_MAP_VIEWPORT',
   params
 })
 
@@ -14,7 +14,7 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'map/UPDATE_MAP':
+    case 'map/UPDATE_MAP_VIEWPORT':
       state = merge(state, action.params)
       break
   }
