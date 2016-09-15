@@ -3,12 +3,7 @@ import MapView from 'react-native-maps'
 import { connect } from 'react-redux'
 import { StyleSheet } from 'react-native'
 
-import { updateMap } from '../store/reducer/map'
-import merge from '../util/merge'
-
-
-// This slightly strange structure (taking the first element out of the array)
-// is to avoid pins getting 'stuck' on blue (yes this really happens!)
+import { updateMapViewport } from '../store/reducer/map'
 
 const renderClosestMarker = (business, selected) => {
   if (!selected) {
@@ -24,14 +19,19 @@ const renderClosestMarker = (business, selected) => {
 const BackgroundMap = (props) =>
   <MapView style={{...StyleSheet.absoluteFillObject}}
         region={props.mapPosition}
-        onRegionChange={props.updateMap}>
+        onRegionChange={props.updateMapViewport}>
       {renderClosestMarker(props.business, props.selected)}
       {props.business.filter(b => b.address)
         .map(b =>
           b.id !== props.selected ?
             <MapView.Marker key={b.shortDisplay}
                 coordinate={b.address.location}
-                onPress={() => props.updateMap(merge(props.mapPosition, b.address.location))}
+                onPress={() => props.updateMapViewport({
+                  latitude: b.address.location.latitude,
+                  longitude: b.address.location.longitude,
+                  latitudeDelta: props.mapPosition.latitudeDelta,
+                  longitudeDelta: props.mapPosition.longitudeDelta
+                })}
             /> : undefined
       )}
     </MapView>
@@ -42,7 +42,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  updateMap: (params) => dispatch(updateMap(params))
+  updateMapViewport: (params) => dispatch(updateMapViewport(params))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(BackgroundMap)
