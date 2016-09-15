@@ -2,7 +2,7 @@ import merge from '../../util/merge'
 import { authenticate } from '../../api'
 import ApiError, { UNAUTHORIZED_ACCESS } from '../../apiError'
 
-import { clearTransactions, loadTransactions } from './transaction'
+import { clearTransactions, loadInitialTransactions } from './transaction'
 import { loadAccountDetails } from './account'
 
 const initialState = {
@@ -54,11 +54,11 @@ export const login = (username, password) =>
         .then((sessionToken) => {
           dispatch(loginInProgress(false))
           if (sessionToken) {
-            dispatch(loggedIn())
-            //TODO: Should clear transactions on log out when it is implemented
-            dispatch(clearTransactions())
+          dispatch(loggedIn())
+          //TODO: Should clear transactions on log out when it is implemented
+          dispatch(clearTransactions())
+          dispatch(loadInitialTransactions())
             dispatch(sessionTokenUpdated(sessionToken))
-            dispatch(loadTransactions())
             dispatch(loadAccountDetails(sessionToken))
           }
         })
@@ -86,7 +86,7 @@ export const login = (username, password) =>
             console.error(err)
           }
         })
-      }
+    }
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
