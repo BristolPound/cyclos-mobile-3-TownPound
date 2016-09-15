@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { StyleSheet } from 'react-native'
 
 import { updateMap } from '../store/reducer/map'
+import merge from '../util/merge'
 
 
 // This slightly strange structure (taking the first element out of the array)
@@ -30,6 +31,7 @@ const BackgroundMap = (props) =>
           b.id !== props.selected ?
             <MapView.Marker key={b.shortDisplay}
                 coordinate={b.address.location}
+                onPress={() => props.updateMap(merge(props.mapPosition, b.address.location))}
             /> : undefined
       )}
     </MapView>
