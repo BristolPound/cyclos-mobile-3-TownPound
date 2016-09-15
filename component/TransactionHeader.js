@@ -2,7 +2,8 @@ import React from 'react'
 import { View, TouchableHighlight } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import dateFormat from 'dateformat'
+import { toMonthString, isCurrentMonth } from '../util/date'
+// import moment from 'moment'
 
 import DefaultText from './DefaultText'
 import * as actions from '../store/reducer/transaction'
@@ -24,16 +25,15 @@ const NavBarButton = ({style, children, onPress}) =>
   </TouchableHighlight>
 
 const TransactionHeader = (props) => {
-  const currentDate = new Date()
-  const isOnCurrentMonth = currentDate.getMonth() === props.selectedMonth.month && currentDate.getFullYear() === props.selectedMonth.year
+  const isOnCurrentMonth = isCurrentMonth(props.selectedMonth)
   return <View style={{flexDirection: 'row', height: 50}}>
-    <NavBarButton style={styles.flex} onPress={() => props.previousMonth()}>
+    <NavBarButton style={styles.flex} onPress={() => props.fetchPreviousMonth()}>
       <DefaultText style={styles.text}>Prev</DefaultText>
     </NavBarButton>
     <View style={styles.flex}>
-      <DefaultText style={styles.text}>{isOnCurrentMonth ? 'This Month' : dateFormat(new Date(props.selectedMonth.year, props.selectedMonth.month, 10), 'mmmm, yyyy')}</DefaultText>
+      <DefaultText style={styles.text}>{ toMonthString(props.selectedMonth) }</DefaultText>
     </View>
-    <NavBarButton style={styles.flex} onPress={() => isOnCurrentMonth ? undefined : props.nextMonth()}>
+    <NavBarButton style={styles.flex} onPress={ () => isOnCurrentMonth ? undefined : props.nextMonth() }>
       { isOnCurrentMonth
         ? undefined
         : <DefaultText style={styles.text}>Next</DefaultText>}

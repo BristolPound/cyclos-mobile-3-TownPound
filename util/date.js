@@ -1,17 +1,22 @@
-// Util to deal with date including the {month, year} object used for transaction view
+import moment from 'moment'
 
-export const getNextMonth = date => {
-  const nextMonth = (date.month + 1) % 12
-  return {
-    month: nextMonth,
-    year: nextMonth === 0 ? date.year + 1 : date.year,
-  }
-}
+export const currentMonth = () => moment().startOf('month')
 
-export const getPreviousMonth = date => {
-  const prevMonth = (date.month + 11) % 12
-  return {
-    month: prevMonth,
-    year: prevMonth === 11 ? date.year - 1 : date.year,
-  }
+export const nextMonth = mmt => moment(mmt).add(1, 'months')
+
+export const previousMonth = mmt => moment(mmt).subtract(1, 'months')
+
+export const isCurrentMonth = mmt =>  moment().isSame(mmt, 'month')
+
+export const compare = (a, b) =>
+  moment(a).isBefore(b) ? -1 : (moment(a).isSame(b) ? 0 : 1)
+
+export const toMonthString = mmt =>
+  isCurrentMonth(mmt) ? 'This Month' : moment(mmt).format('MMMM')
+
+export const convert = {
+  fromDate: d => moment(d),
+  toDate: m => m.toDate(),
+  fromString: (s, format = undefined) => moment(s, format),
+  stringToJson: s => (new Date(s)).toJSON()
 }
