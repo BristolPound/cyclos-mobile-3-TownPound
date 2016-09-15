@@ -12,7 +12,7 @@ class App extends React.Component {
 
   constructor(){
     super()
-    const enhancer = process.env.PROD ? applyMiddleware(thunk)
+    const enhancer = __DEV__ ? applyMiddleware(thunk)
     : compose(
       applyMiddleware(thunk),
       devTools()
