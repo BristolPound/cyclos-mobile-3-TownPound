@@ -10,6 +10,8 @@ export const previousMonth = mmt => moment(mmt).subtract(1, 'months')
 
 export const isCurrentMonth = mmt =>  moment().isSame(mmt, 'month')
 
+export const isSameMonth = (a, b) =>  moment(a).isSame(b, 'month')
+
 export const compare = (a, b) =>
   moment(a).isBefore(b) ? -1 : (moment(a).isSame(b) ? 0 : 1)
 
