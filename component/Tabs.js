@@ -11,6 +11,7 @@ import NetworkConnection from './NetworkConnection'
 import TransactionsList from './TransactionsList'
 import Login from './Login'
 import BusinessDetails from './BusinessDetails'
+import SwitchServerButton from './SwitchServerButton'
 
 import color from '../util/colors'
 import merge from '../util/merge'
@@ -40,6 +41,7 @@ const TabBar = ({...props}) =>
           <Price prefix={'�'} price={props.balance} color={color.bristolBlue} size={35} />
         </View>
       : undefined}
+      <SwitchServerButton />
   </View>
 
 const Tabs = (props) =>

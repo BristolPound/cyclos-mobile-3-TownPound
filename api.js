@@ -6,6 +6,15 @@ import {successfulConnection, connectionFailed} from './store/reducer/networkCon
 import {loggedOut} from './store/reducer/login'
 
 const BASE_URL = 'https://bristol-stage.community-currency.org/cyclos/api/'
+
+export const switchBaseUrl = () => {
+  if (BASE_URL === 'https://bristol-stage.community-currency.org/cyclos/api/'){
+    BASE_URL = 'https://bristol.cyclos.org/bristolpoundsandbox03/api/'
+  } else {
+    BASE_URL = 'https://bristol-stage.community-currency.org/cyclos/api/'
+  }
+}
+
 export const PAGE_SIZE = 20
 
 const httpHeaders = (sessionToken) => {
