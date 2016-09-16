@@ -1,8 +1,10 @@
 import { ListView } from 'react-native'
 import haversine from 'haversine'
+import _ from 'lodash'
 import merge from '../../util/merge'
 import { getBusinesses } from '../../api'
 import * as localStorage from '../../localStorage'
+
 
 const isValidList = (businessList) => businessList !== null && businessList.length > 0
 const storageKey = localStorage.storageKeys.BUSINESS_KEY
@@ -60,39 +62,23 @@ export const refreshBusinesses = () =>
       dispatch(loadBusinessesFromApi())
     }
 
+const distanceFromPosition = (position) => (business) =>
+  business.address ? haversine(position, business.address.location) : Number.MAX_VALUE
 
-const sortBusinessesByLocation = (businesses, position) =>
-businesses ?
-  (position ?
-    businesses
-      .sort((a, b) => {
-        if (!b.address) {
-          return -1
-        }
-        if (!a.address) {
-          return 1
-        }
-        a.distance = haversine(position, a.address.location)
-        b.distance = haversine(position, b.address.location)
-        return a.distance - b.distance
-      }).filter(b =>
-        b.address
-        && Math.abs(b.address.location.latitude - position.latitude) < position.latitudeDelta
-        && Math.abs(b.address.location.longitude - position.longitude) < position.longitudeDelta
-      )
-    : businesses)
-  : []
+const isWithinViewport = (position) => (business) =>
+  business.address &&
+  Math.abs(business.address.location.latitude - position.latitude) < position.latitudeDelta &&
+  Math.abs(business.address.location.longitude - position.longitude) < position.longitudeDelta
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'business/BUSINESS_DETAILS_RECEIVED':
-      const sorted = sortBusinessesByLocation(action.business, action.mapPosition)
       state = merge(state, {
         loading: false,
-        dataSource: state.dataSource.cloneWithRows(sorted),
-        business: sorted,
+        dataSource: state.dataSource.cloneWithRows(action.business),
+        business: action.business,
         refreshing: false,
-        selected: sorted[0].id
+        selected: action.business[0].id
       })
       break
     case 'business/UPDATE_REFRESHING':
@@ -106,11 +92,11 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'map/UPDATE_MAP_VIEWPORT':
-      const sorted2 = sortBusinessesByLocation(state.business.slice(), action.params)
+      const sorted = _.sortBy(state.business, distanceFromPosition(action.params))
+      const filtered = sorted.filter(isWithinViewport(action.params))
       state = merge(state, {
-        business: sorted2,
-        dataSource: state.dataSource.cloneWithRows(sorted2),
-        selected: sorted2[0].id,
+        dataSource: state.dataSource.cloneWithRows(filtered),
+        selected: filtered.length > 0 ? filtered[0].id : undefined,
       })
       break
   }
