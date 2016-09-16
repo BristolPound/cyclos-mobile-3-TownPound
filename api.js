@@ -110,7 +110,8 @@ export const getBusinesses = (dispatch) =>
       'shortDisplay'
     ],
     pageSize: 1000000,
-    addressResult: 'primary'
+    addressResult: 'primary',
+    orderBy: 'alphabeticallyAsc'
   }, '', dispatch)
 
 export const getAccount = (sessionToken, dispatch) =>

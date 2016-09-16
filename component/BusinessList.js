@@ -1,10 +1,32 @@
 import React from 'react'
-import { ListView, Animated, Easing } from 'react-native'
+import { ListView, Animated, Easing, View } from 'react-native'
 import BusinessListItem from './BusinessListItem'
 import { bindActionCreators } from 'redux'
 import merge from '../util/merge'
 import { connect } from 'react-redux'
+import DefaultText from './DefaultText'
 import * as actions from '../store/reducer/business'
+
+const style = {
+  invisible: {
+    height: 0
+  },
+  visible: {
+    backgroundColor: 'white'
+  }
+}
+
+const renderSectionHeader = (props) =>
+    (sectionData, sectionId) => {
+      if (props.business.searchMode) {
+        const headingMessage = sectionData.length
+          ? sectionId
+          : 'No businesses in this area'
+        return <DefaultText style={style.visible}>{headingMessage}</DefaultText>
+      }
+      return <View style={style.invisible}/>
+    }
+
 
 class BusinessList extends React.Component {
 
@@ -49,7 +71,7 @@ class BusinessList extends React.Component {
       this.isExpanded = true
 
     // if the user scrolls the list down, when expanded, make it compact
-    } else if (this.isExpanded && evt.nativeEvent.contentOffset.y <= 0) {
+  } else if (this.isExpanded && evt.nativeEvent.contentOffset.y <= 0 && !this.props.business.searchMode) {
       // in order to maintain smooth scrolling, defer the action which changes app state
       this.animateTopTo(this.topWhenCompact, () => this.props.expandBusinessList(false))
       this.isExpanded = false
@@ -106,7 +128,9 @@ class BusinessList extends React.Component {
             onScroll={this.onScroll.bind(this)}
             scrollEventThrottle={16}
             dataSource={this.props.business.dataSource}
-            renderRow={(business) => <BusinessListItem business={business}/>}/>
+            renderRow={(business) => <BusinessListItem business={business}/>}
+            renderSectionHeader={renderSectionHeader(this.props)}
+            enableEmptySections={true}/>
       </Animated.View>
     )
   }

@@ -1,7 +1,7 @@
 import { ListView } from 'react-native'
 import merge from '../../util/merge'
 import * as date from '../../util/date'
-import { groupTransactionsByDate, groupTransactionsByBusiness, calculateMonthlyTotalSpent, filterTransactions, sortTransactions } from './groupTransactions'
+import { groupTransactionsByDate, groupTransactionsByBusiness, calculateMonthlyTotalSpent, filterTransactions, sortTransactions } from '../../util/transaction'
 import { getTransactions, PAGE_SIZE } from '../../api'
 import * as localStorage from '../../localStorage'
 import { findTransactionsByDate } from '../../util/transaction'
