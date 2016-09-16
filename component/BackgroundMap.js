@@ -1,29 +1,20 @@
 import React from 'react'
 import MapView from 'react-native-maps'
+import _ from 'lodash'
 import { connect } from 'react-redux'
 import { StyleSheet } from 'react-native'
 
-import { updateMapViewport } from '../store/reducer/map'
+// throttle map location updates to a maximum of 5 per second
+const DEBOUNCE_DURATION = 200
 
-const renderClosestMarker = (business, selected) => {
-  if (!selected) {
-    return undefined
-  }
-  const selectedBusinessAddress = business.find(b => b.id === selected).address
-  if (!selectedBusinessAddress) {
-    return undefined
-  }
-  return <MapView.Marker coordinate={selectedBusinessAddress.location} pinColor={'blue'}/>
-}
+import { updateMapViewport } from '../store/reducer/map'
 
 const BackgroundMap = (props) =>
   <MapView style={{...StyleSheet.absoluteFillObject}}
         region={props.mapPosition}
-        onRegionChange={props.updateMapViewport}>
-      {renderClosestMarker(props.business, props.selected)}
+        onRegionChange={_.debounce(props.updateMapViewport, DEBOUNCE_DURATION)}>
       {props.business.filter(b => b.address)
         .map(b =>
-          b.id !== props.selected ?
             <MapView.Marker key={b.shortDisplay}
                 coordinate={b.address.location}
                 onPress={() => props.updateMapViewport({
@@ -32,8 +23,9 @@ const BackgroundMap = (props) =>
                   latitudeDelta: props.mapPosition.latitudeDelta,
                   longitudeDelta: props.mapPosition.longitudeDelta
                 })}
-            /> : undefined
-      )}
+                pinColor={b.id !== props.selected ? 'red' : 'blue'}/>
+              )
+      }
     </MapView>
 
 const mapStateToProps = (state) => ({
