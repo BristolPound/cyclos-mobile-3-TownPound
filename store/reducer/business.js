@@ -5,7 +5,6 @@ import merge from '../../util/merge'
 import { getBusinesses } from '../../api'
 import * as localStorage from '../../localStorage'
 
-
 const isValidList = (businessList) => businessList !== null && businessList.length > 0
 const storageKey = localStorage.storageKeys.BUSINESS_KEY
 
@@ -15,7 +14,14 @@ const initialState = {
   refreshing: false,
   dataSource: new ListView.DataSource({
     rowHasChanged: (a, b) => a.shortDisplay !== b.shortDisplay
-  })
+  }),
+  userLocation: { latitude: 51.455, longitude:  -2.588 },
+  mapViewport: {
+    latitude: 51.455,
+    longitude: -2.588,
+    latitudeDelta: 0.1,
+    longitudeDelta: 0.1
+  }
 }
 
 export const businessDetailsReceived = (business) =>
@@ -27,6 +33,16 @@ export const businessDetailsReceived = (business) =>
 
 const updateRefreshing = () => ({
   type: 'business/UPDATE_REFRESHING'
+})
+
+export const updatePosition = (position) => ({
+  type: 'business/POSITION_UPDATED',
+  position
+})
+
+export const updateMapViewport = (viewport) => ({
+  type: 'business/UPDATE_MAP_VIEWPORT',
+  viewport
 })
 
 export const loadBusinesses = () =>
@@ -77,8 +93,7 @@ const reducer = (state = initialState, action) => {
         loading: false,
         dataSource: state.dataSource.cloneWithRows(action.business),
         business: action.business,
-        refreshing: false,
-        selected: action.business[0].id
+        refreshing: false
       })
       break
     case 'business/UPDATE_REFRESHING':
@@ -86,17 +101,18 @@ const reducer = (state = initialState, action) => {
         refreshing: true
       })
       break
-    case 'business/BUSINESS_SELECTED':
-      state = merge(state, {
-        selected: action.selected
-      })
-      break
-    case 'map/UPDATE_MAP_VIEWPORT':
-      const sorted = _.sortBy(state.business, distanceFromPosition(action.params))
-      const filtered = sorted.filter(isWithinViewport(action.params))
+    case 'business/UPDATE_MAP_VIEWPORT':
+      const newViewport = merge(state.mapViewport, action.viewport)
+      const sorted = _.sortBy(state.business, distanceFromPosition(newViewport))
+      const filtered = sorted.filter(isWithinViewport(newViewport))
       state = merge(state, {
         dataSource: state.dataSource.cloneWithRows(filtered),
-        selected: filtered.length > 0 ? filtered[0].id : undefined,
+        mapViewport: newViewport
+      })
+      break
+    case 'business/POSITION_UPDATED':
+      state = merge(state, {
+        userLocation: action.position
       })
       break
   }
