@@ -1,5 +1,6 @@
 import React from 'react'
 import MapView from 'react-native-maps'
+import _ from 'lodash'
 import { connect } from 'react-redux'
 import { StyleSheet } from 'react-native'
 
@@ -19,7 +20,7 @@ const renderClosestMarker = (business, selected) => {
 const BackgroundMap = (props) =>
   <MapView style={{...StyleSheet.absoluteFillObject}}
         region={props.mapPosition}
-        onRegionChange={props.updateMapViewport}>
+        onRegionChange={_.debounce(props.updateMapViewport, 200)}>
       {renderClosestMarker(props.business, props.selected)}
       {props.business.filter(b => b.address)
         .map(b =>
