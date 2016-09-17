@@ -16,11 +16,6 @@ export const showSendMoney = (show) => ({
   show
 })
 
-export const enableSearchMode = (enabled) => ({
-  type: 'navigation/SEARCH_DIRECTORY',
-  enabled
-})
-
 export const openDetailsModal = toOpen =>
   (dispatch, getState) => {
     // TODO: open user details here when someone clicks on a user in transaction list
@@ -50,11 +45,6 @@ const reducer = (state = initialState, action) => {
     case 'navigation/SHOW_BUSINESS_DETAILS':
       state = merge(state, {
         businessDetailsVisible: action.show
-      })
-      break
-    case 'navigation/SEARCH_DIRECTORY':
-      state = merge(state, {
-        searchMode: action.enabled
       })
       break
   }
