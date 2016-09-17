@@ -10,7 +10,7 @@ const storageKey = localStorage.storageKeys.BUSINESS_KEY
 
 const initialState = {
   business: [],
-  loading: true,
+  searchMode: false,
   refreshing: false,
   dataSource: new ListView.DataSource({
     rowHasChanged: (a, b) => a.shortDisplay !== b.shortDisplay
@@ -23,6 +23,11 @@ const initialState = {
     longitudeDelta: 0.1
   }
 }
+
+export const enableSearchMode = (enabled) => ({
+  type: 'business/ENABLE_SEARCH_MODE',
+  enabled
+})
 
 export const businessDetailsReceived = (business) =>
   (dispatch, getState) => dispatch({
@@ -90,7 +95,6 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'business/BUSINESS_DETAILS_RECEIVED':
       state = merge(state, {
-        loading: false,
         dataSource: state.dataSource.cloneWithRows(action.business),
         business: action.business,
         refreshing: false
@@ -113,6 +117,11 @@ const reducer = (state = initialState, action) => {
     case 'business/POSITION_UPDATED':
       state = merge(state, {
         userLocation: action.position
+      })
+      break
+    case 'business/ENABLE_SEARCH_MODE':
+      state = merge(state, {
+        searchMode: action.enabled
       })
       break
   }
