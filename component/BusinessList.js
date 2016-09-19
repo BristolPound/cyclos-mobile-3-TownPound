@@ -20,6 +20,7 @@ class BusinessList extends React.Component {
     this.isMeasured = false
     this.topWhenCompact = 0
     this.topWhenExpanded = 0
+    this.height = 0
   }
 
   animateTopTo(value, callback) {
@@ -31,9 +32,14 @@ class BusinessList extends React.Component {
   }
 
   onScroll(evt) {
-    // remove duplicated scroll events
-    if (evt.nativeEvent.contentOffset.y === this.lastScrollY)
+    if (!this.props.expandOnScroll) {
       return
+    }
+
+    // remove duplicated scroll events
+    if (evt.nativeEvent.contentOffset.y === this.lastScrollY) {
+      return
+    }
     this.lastScrollY = evt.nativeEvent.contentOffset.y
 
     // if the user scrolls the list up when compact, expand
@@ -57,11 +63,23 @@ class BusinessList extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.business.businessListExpanded === this.props.business.businessListExpanded) {
-      return
-    }
     // when the businessListExpanded state property changes, animate the state change
-    this.animateTopTo(nextProps.business.businessListExpanded ? this.topWhenExpanded : this.topWhenCompact)
+    if (nextProps.business.businessListExpanded !== this.props.business.businessListExpanded) {
+      this.animateTopTo(nextProps.business.businessListExpanded ? this.topWhenExpanded : this.topWhenCompact)
+    }
+
+    if (nextProps.compactHeight !== this.props.compactHeight) {
+      this.computeComponentHeight(nextProps.compactHeight)
+    }
+  }
+
+  computeComponentHeight(compactHeight) {
+    this.topWhenCompact = this.height - compactHeight
+    this.topWhenExpanded = this.props.style.top
+
+    this.setState({
+      top: new Animated.Value(this.topWhenCompact)
+    })
   }
 
   onLayout(event) {
@@ -71,15 +89,9 @@ class BusinessList extends React.Component {
     }
     this.isMeasured = true
 
-    // determine the 'top' property value for expanded and compact state
-    const height = event.nativeEvent.layout.height
-    this.topWhenCompact = height - this.props.compactHeight
-    this.topWhenExpanded = this.props.style.top
-
-    // start in the compact state
-    this.setState({
-      top: new Animated.Value(this.topWhenCompact)
-    })
+    // measure the height of this component
+    this.height = event.nativeEvent.layout.height
+    this.computeComponentHeight(this.props.compactHeight)
   }
 
   render() {
