@@ -5,20 +5,21 @@ import thunk from 'redux-thunk'
 import devTools from 'remote-redux-devtools'
 
 import Tabs from './component/Tabs'
-import {reducer, initialise} from './store/reducer'
+import { reducer, initialise } from './store/reducer'
 
 class App extends React.Component {
   store = undefined
 
   constructor(){
     super()
-    const enhancer = __DEV__ ? applyMiddleware(thunk)
-    : compose(
-      applyMiddleware(thunk),
-      devTools()
-    )
+    const enhancer = __DEV__
+      ? compose(
+        applyMiddleware(thunk),
+        devTools()
+      )
+      : applyMiddleware(thunk)
     this.store = createStore(reducer, enhancer)
-    if (!process.env.PROD) {
+    if (__DEV__) {
       devTools.updateStore(this.store)
     }
     initialise(this.store)

@@ -94,8 +94,10 @@ const isWithinViewport = (position) => (business) =>
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'business/BUSINESS_DETAILS_RECEIVED':
+      const sortedBusiness = _.sortBy(action.business, distanceFromPosition(state.mapViewport))
+      const filteredBusiness = sortedBusiness.filter(isWithinViewport(state.mapViewport))
       state = merge(state, {
-        dataSource: state.dataSource.cloneWithRows(action.business),
+        dataSource: state.dataSource.cloneWithRows(filteredBusiness),
         business: action.business,
         refreshing: false
       })
