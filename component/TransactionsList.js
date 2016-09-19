@@ -76,7 +76,7 @@ const renderRow = (transaction, openDetailsModal) =>
       { transaction.relatedAccount.user
         ? <DefaultText style={{marginLeft: 10}}>{transaction.relatedAccount.user.display}</DefaultText>
       : <DefaultText style={{marginLeft: 10}}>'System'</DefaultText> }
-    <Price price={transaction.amount}/>
+    <Price price={transaction.amount} style={{flex: 1}}/>
   </View>
   </TouchableHighlight>
 

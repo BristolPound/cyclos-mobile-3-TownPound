@@ -1,5 +1,5 @@
 const color = {
-  bristolBlue: '#34a0da',
+  bristolBlue: '#158ACB',
   lightGray: '#eee',
   transparent: '#00000000'
 }
