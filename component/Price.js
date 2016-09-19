@@ -1,20 +1,27 @@
 import React from 'react'
 import { View } from 'react-native'
 import DefaultText from './DefaultText'
+import merge from '../util/merge'
 
-const Price = ({prefix, price, color, size}) => {
+// see: http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
+const numberWithCommas = x =>
+  x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+
+const Price = ({prefix, price, color, size, style}) => {
   const priceComponents = Math.abs(price).toFixed(2).split('.')
+  const priceBeforeDecimal = numberWithCommas(priceComponents[0])
+  const priceAfterDecimal = priceComponents[1]
   const isCredit = price > 0
   size = size || 25
-  const smallFontSize = size * 0.7
-  const margin = size * 0.08
+  const smallFontSize = size * 0.8
+  const margin = size * 0.06
   color = color ? color : (isCredit ? '#484' : 'black')
-  prefix = prefix || (isCredit ? '+' : '')
+  prefix = prefix !== undefined ? prefix : (isCredit ? '+' : '')
   return (
-    <View style={{flex: 1, justifyContent: 'flex-end', flexDirection: 'row'}}>
+    <View style={merge(style, {justifyContent: 'flex-end', flexDirection: 'row'})}>
       <DefaultText style={{fontSize: smallFontSize, alignSelf: 'flex-end', marginBottom: margin, color}}>{prefix}</DefaultText>
-      <DefaultText style={{fontSize: size, alignSelf: 'flex-end', color}}>{priceComponents[0]}</DefaultText>
-      <DefaultText style={{fontSize: smallFontSize, alignSelf: 'flex-end', marginBottom: margin, color}}>.{priceComponents[1]}</DefaultText>
+      <DefaultText style={{fontSize: size, alignSelf: 'flex-end', color}}>{priceBeforeDecimal}</DefaultText>
+      <DefaultText style={{fontSize: smallFontSize, alignSelf: 'flex-end', marginBottom: margin, color}}>.{priceAfterDecimal}</DefaultText>
     </View>
   )
 }
