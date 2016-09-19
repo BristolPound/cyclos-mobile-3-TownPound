@@ -7,6 +7,7 @@ import BusinessList from './BusinessList'
 import * as actions from '../store/reducer/business'
 
 const ROW_HEIGHT = 71
+const VISIBLE_ROWS = 3
 const SEARCH_BAR_HEIGHT = 50
 const MARGIN_SIZE = 20
 
@@ -25,6 +26,9 @@ const style = {
   }
 }
 
+const computeHeight = (dataSource) =>
+  Math.min(VISIBLE_ROWS, dataSource.getRowCount()) * ROW_HEIGHT
+
 const SearchTab = (props) =>
   <View style={{flex: 1}}>
     <BackgroundMap/>
@@ -32,11 +36,12 @@ const SearchTab = (props) =>
         onFocus={() => props.expandBusinessList(true)}
         onBlur={() => props.expandBusinessList(false)}/>
     <BusinessList
-        compactHeight={ROW_HEIGHT * 3}
+        compactHeight={computeHeight(props.business.dataSource)}
+        expandOnScroll={props.business.dataSource.getRowCount() > VISIBLE_ROWS}
         style={style.businessList}/>
   </View>
 
-const mapStateToProps = () => ({})
+const mapStateToProps = (state) => ({business: state.business})
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(actions, dispatch)
