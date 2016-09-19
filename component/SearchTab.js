@@ -29,8 +29,8 @@ const SearchTab = (props) =>
   <View style={{flex: 1}}>
     <BackgroundMap/>
     <TextInput style={style.searchBar}
-        onFocus={() => props.enableSearchMode(true)}
-        onBlur={() => props.enableSearchMode(false)}/>
+        onFocus={() => props.expandBusinessList(true)}
+        onBlur={() => props.expandBusinessList(false)}/>
     <BusinessList
         compactHeight={ROW_HEIGHT * 3}
         style={style.businessList}/>

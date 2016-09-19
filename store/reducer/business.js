@@ -10,7 +10,7 @@ const storageKey = localStorage.storageKeys.BUSINESS_KEY
 
 const initialState = {
   business: [],
-  searchMode: false,
+  businessListExpanded: false,
   refreshing: false,
   dataSource: new ListView.DataSource({
     rowHasChanged: (a, b) => a.shortDisplay !== b.shortDisplay
@@ -24,9 +24,9 @@ const initialState = {
   }
 }
 
-export const enableSearchMode = (enabled) => ({
-  type: 'business/ENABLE_SEARCH_MODE',
-  enabled
+export const expandBusinessList = (expand) => ({
+  type: 'business/EXPAND_BUSINESS_LIST',
+  expand
 })
 
 export const businessDetailsReceived = (business) =>
@@ -119,9 +119,9 @@ const reducer = (state = initialState, action) => {
         userLocation: action.position
       })
       break
-    case 'business/ENABLE_SEARCH_MODE':
+    case 'business/EXPAND_BUSINESS_LIST':
       state = merge(state, {
-        searchMode: action.enabled
+        businessListExpanded: action.expand
       })
       break
   }
