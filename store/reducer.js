@@ -22,11 +22,11 @@ const GEOLOCATION_SETTINGS = { enableHighAccuracy: true, timeout: 20000, maximum
 
 export const initialise = (store) => {
   store.dispatch(loadBusinesses())
-    .then(() => navigator.geolocation.getCurrentPosition(
-      (position) => store.dispatch(updatePosition(position)),
-      () => alert('Cannot get location. Is GPS enabled?'),
-      GEOLOCATION_SETTINGS
-    ))
+  navigator.geolocation.getCurrentPosition(
+    (position) => store.dispatch(updatePosition(position)),
+    () => alert('Cannot get location. Is GPS enabled?'),
+    GEOLOCATION_SETTINGS
+  )
   navigator.geolocation.watchPosition(
     (position) => store.dispatch(updatePosition(position)),
     () => alert('Cannot get location. Is GPS enabled?'),
