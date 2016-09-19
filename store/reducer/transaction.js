@@ -1,7 +1,7 @@
 import { ListView } from 'react-native'
 import merge from '../../util/merge'
 import * as date from '../../util/date'
-import groupTransactions, { calculateMonthlyTotalSpent, filterTransactions, sortTransactions } from './groupTransactions'
+import { groupTransactionsByDate, groupTransactionsByBusiness, calculateMonthlyTotalSpent, filterTransactions, sortTransactions } from './groupTransactions'
 import { getTransactions, PAGE_SIZE } from '../../api'
 import * as localStorage from '../../localStorage'
 import { findTransactionsByDate } from '../../util/transaction'
@@ -19,10 +19,13 @@ const initialState = {
   refreshing: false,
   noMoreTransactionsToLoad: false,
   monthlyTotalSpent: {},
-  dataSource: new ListView.DataSource({
+  transactionsDataSource: new ListView.DataSource({
     rowHasChanged: (a, b) => a.transactionNumber !== b.transactionNumber,
     sectionHeaderHasChanged: (a, b) => a !== b
-  })
+  }),
+  traderDataSource: new ListView.DataSource({
+    rowHasChanged: (a, b) => a.id !== b.id
+  }),
 }
 
 export const nextMonth = () => ({
@@ -110,10 +113,14 @@ export const loadInitialTransactions = () =>
                 ? transactionsReceived(storedTransactions)
                 : loadTransactionsBefore(new Date().toString(), [], date.previousMonth(getState().transaction.selectedMonth))))
 
-const calculateNewDateSource = (previousDataSource, sortedTransactions, selectedMonth) => {
+const newDataSources = (previousTransactionsDataSource, previousTradersDataSource, sortedTransactions, selectedMonth) => {
   const filteredTransactions = filterTransactions(sortedTransactions, selectedMonth)
-  const grouped = groupTransactions(filteredTransactions)
-  return previousDataSource.cloneWithRowsAndSections(grouped.groups, grouped.groupOrder)
+  const grouped = groupTransactionsByDate(filteredTransactions)
+  const tradersData = groupTransactionsByBusiness(filteredTransactions)
+  return {
+    transactionsDataSource: previousTransactionsDataSource.cloneWithRowsAndSections(grouped.groups, grouped.groupOrder),
+    traderDataSource: previousTradersDataSource.cloneWithRows(tradersData),
+  }
 }
 
 const reducer = (state = initialState, action) => {
@@ -123,13 +130,12 @@ const reducer = (state = initialState, action) => {
       const sortedTransactions = sortTransactions(mergedTransactions)
       localStorage.save(storageKey, sortedTransactions)
       const monthlyTotalSpent = calculateMonthlyTotalSpent(state.monthlyTotalSpent, action.transactions)
-      state = merge(state, {
+      state = merge(state, newDataSources(state.transactionsDataSource, state.traderDataSource, sortedTransactions, state.selectedMonth), {
         monthlyTotalSpent: monthlyTotalSpent,
-        dataSource: calculateNewDateSource(state.dataSource, sortedTransactions, state.selectedMonth),
-        transactions: sortedTransactions,
-        loadingTransactions: false,
-        loadingMoreTransactions: false,
-        refreshing: false
+          transactions: sortedTransactions,
+          loadingTransactions: false,
+          loadingMoreTransactions: false,
+          refreshing: false
       })
       break
     case 'transaction/LOADING_MORE_TRANSACTIONS':
@@ -155,15 +161,13 @@ const reducer = (state = initialState, action) => {
       break
     case 'transaction/SHOW_NEXT_MONTH':
       const nextMonth = date.nextMonth(state.selectedMonth)
-      state = merge(state, {
-        dataSource: calculateNewDateSource(state.dataSource, state.transactions, nextMonth),
+      state = merge(state, newDataSources(state.transactionsDataSource, state.traderDataSource, state.transactions, nextMonth), {
         selectedMonth: nextMonth,
       })
       break
     case 'transaction/SHOW_PREVIOUS_MONTH':
       const previousMonth = date.previousMonth(state.selectedMonth)
-      state = merge(state, {
-        dataSource: calculateNewDateSource(state.dataSource, state.transactions, previousMonth),
+      state = merge(state, newDataSources(state.transactionsDataSource, state.traderDataSource, state.transactions, previousMonth), {
         selectedMonth: previousMonth,
       })
       break

@@ -60,8 +60,8 @@ const Tabs = (props) =>
         tabBarUnderlineColor={color.transparent}>
       <SearchTab tabLabel='Search'/>
       { props.loggedIn
-        ? <TransactionsList tabLabel='Transactions'/>
-        : <Login tabLabel='Transactions'/> }
+        ? <TransactionsList tabLabel='Spending'/>
+        : <Login tabLabel='Log in'/> }
     </ScrollableTabView>
     <NetworkConnection/>
     <Modal
