@@ -25,6 +25,9 @@ const styles = {
     borderColor: borderColor,
     borderWidth: 1
   },
+  imageVisible: {
+    backgroundColor: 'transparent'
+  },
   rowContainer: {
     flexDirection: 'row',
     margin: marginSize,
@@ -71,13 +74,13 @@ const renderRow = (transaction, openDetailsModal) =>
       key={transaction.transactionNumber}>
     <View style={styles.rowContainer}>
       { transaction.relatedAccount.user && transaction.relatedAccount.user.image
-        ? <Image style={styles.image} source={{uri: transaction.relatedAccount.user.image.url}}/>
+        ? <Image style={merge(styles.image, styles.imageVisible)} source={{uri: transaction.relatedAccount.user.image.url}}/>
       : <View style={styles.image} /> }
       { transaction.relatedAccount.user
         ? <DefaultText style={{marginLeft: 10}}>{transaction.relatedAccount.user.display}</DefaultText>
       : <DefaultText style={{marginLeft: 10}}>'System'</DefaultText> }
     <Price price={transaction.amount} style={{flex: 1}}/>
-  </View>
+    </View>
   </TouchableHighlight>
 
 const renderLoadingFooter = () =>
