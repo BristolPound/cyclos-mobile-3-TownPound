@@ -1,4 +1,5 @@
 import dateFormat from 'dateformat'
+import _ from 'lodash'
 import merge from '../../util/merge'
 import { floorMonth, convert, compare, format } from '../../util/date'
 
@@ -9,55 +10,36 @@ export const filterTransactions = (transactions, selectedMonth) =>
 
 export const calculateMonthlyTotalSpent = (monthlyTotals, newTransactions) => {
   let newMonthlyTotals = merge(monthlyTotals)
-  newTransactions.forEach(tr => {
-    const transactionAmount = Number(tr.amount)
-    if (!isNaN(transactionAmount) && transactionAmount < 0) {
-      const transactionMonth = format(floorMonth(convert.fromString(tr.date)))
-      if (!(transactionMonth in newMonthlyTotals)) {
-        newMonthlyTotals[transactionMonth] = 0
-      }
-      newMonthlyTotals[transactionMonth] += transactionAmount
+  let filtered = newTransactions.filter(tr => Number(tr.amount) < 0)
+  let grouped = _.groupBy(filtered, tr => format(floorMonth(convert.fromString(tr.date))))
+
+  _.keys(grouped).forEach(k => {
+    if (!(k in newMonthlyTotals)) {
+      newMonthlyTotals[k] = 0
     }
+    newMonthlyTotals[k] += _.sumBy(grouped[k], tr => Number(tr.amount))
   })
+
   return newMonthlyTotals
 }
 
-export const groupTransactionsByDate = (transactions) => {
-  let groups = {}
-  let groupOrder = []
-  transactions.forEach((transaction) => {
-    const category = dateFormat(new Date(transaction.date), 'mmmm dS, yyyy')
-    if (groupOrder.indexOf(category) === -1) {
-      groups[category] = []
-      groupOrder.push(category)
-    }
-    groups[category].push(transaction)
-  })
-  return {groups, groupOrder}
+export const groupTransactionsByDate = transactions => {
+  const groups = _.groupBy(transactions, tr => dateFormat(new Date(tr.date), 'mmmm dS, yyyy'))
+  return { groups, groupOrder: _.keys(groups) }
 }
 
-export const groupTransactionsByBusiness = (transactions) => {
-  let totalSpent = {}
-  transactions.forEach(transaction => {
-    const transactionAmount = Number(transaction.amount)
-    if (transactionAmount < 0 && transaction.relatedAccount.user) {
-      if (transaction.relatedAccount.user.id in totalSpent) {
-        totalSpent[transaction.relatedAccount.user.id].amount += transactionAmount
-      } else {
-        totalSpent[transaction.relatedAccount.user.id] = {
-          amount: transactionAmount,
-          id: transaction.relatedAccount.id,
-          relatedAccount: transaction.relatedAccount
-        }
-      }
+export const groupTransactionsByBusiness = transactions => {
+  let filtered = transactions.filter(tr => Number(tr.amount) < 0 && tr.relatedAccount.user)
+  let grouped = _.groupBy(filtered, tr => tr.relatedAccount.user.id)
+
+  let results = _.keys(grouped).map(k => {
+    let account = grouped[k][0].relatedAccount
+    return {
+      id: account.user.id,
+      relatedAccount: account,
+      amount: _.sumBy(grouped[k], tr => Number(tr.amount))
     }
   })
 
-  let listOfTotals = []
-  for(var key in totalSpent) {
-    listOfTotals.push(totalSpent[key])
-  }
-  listOfTotals.sort((a,b) => a.amount - b.amount)
-
-  return listOfTotals
+  return _.sortBy(results, 'amount')
 }
