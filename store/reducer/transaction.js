@@ -60,26 +60,14 @@ export const setSelectedMonth = (newSelectedMonth) =>
     const noMoreTransactionsToLoad = state.noMoreTransactionsToLoad
     const earliestTransaction = last(state.transactions)
     const earliestTransactionDate = earliestTransaction ? earliestTransaction.date : moment()
-    if(!noMoreTransactionsToLoad && date.compare(newSelectedMonth, earliestTransactionDate) < 0) {
-      dispatch(fetchPreviousMonth())
-    }
-    dispatch(selectMonth(newSelectedMonth))
-  }
 
-export const fetchPreviousMonth = () =>
-  (dispatch, getState) => {
-    const state = getState().transaction
     const transactions = state.transactions
     const loadingMoreTransactions = state.loadingMoreTransactions
-    const noMoreTransactionsToLoad = state.noMoreTransactionsToLoad
-
-    const earliestViewedDate = date.previousMonth(state.selectedMonth)
-    const earliestTransaction = last(transactions)
-    const earliestTransactionDate = earliestTransaction ? earliestTransaction.date : moment()
-    if (!loadingMoreTransactions && !noMoreTransactionsToLoad && date.compare(earliestViewedDate, earliestTransactionDate) < 0) {
+    if(!loadingMoreTransactions && !noMoreTransactionsToLoad && date.compare(newSelectedMonth, earliestTransactionDate) < 0) {
       const excludeIdList = findTransactionsByDate(transactions, earliestTransactionDate)
-      dispatch(loadTransactionsBefore(earliestTransactionDate, excludeIdList, earliestViewedDate))
+      dispatch(loadTransactionsBefore(earliestTransactionDate, excludeIdList, newSelectedMonth))
     }
+    dispatch(selectMonth(newSelectedMonth))
   }
 
 // excludeIdList - required to prevent fetching the transactions we have already fetched.

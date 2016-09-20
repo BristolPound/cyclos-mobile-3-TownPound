@@ -28,10 +28,12 @@ const styles = {
   },
 }
 
-const MonthOption = ({month, monthlyTotals, selected}) =>
+const MonthOption = ({month, showMonthlyTotal, monthlyTotals, selected}) =>
   <View style={!selected ? merge(styles.flex, styles.unselectedContainer) : styles.flex} key={toMonthString(month)}>
-    <DefaultText style={styles.text}>{ ((selected ? 'Spent ': '') + toMonthString(month)).toUpperCase() }</DefaultText>
-    <Price price={monthlyTotals[format(month)] || 0} size={selected ? 35 : 20} center={true} color={color.bristolBlue} />
+    <DefaultText style={styles.text}>{ toMonthString(month).toUpperCase() }</DefaultText>
+    { showMonthlyTotal
+      ? <Price price={monthlyTotals[format(month)] || 0} size={selected ? 35 : 20} center={true} color={color.bristolBlue} />
+      : undefined }
   </View>
 
 const TransactionHeader = (props) => {
@@ -46,10 +48,11 @@ const TransactionHeader = (props) => {
 
   return <View style={{height: 70}} >
       <Carousel initialPage={initPage} pageWidth={200} sneak={150} onPageChange={i => props.setSelectedMonth(allAvailableMonths[i])}>
-        { allAvailableMonths.map(month =>
+        { allAvailableMonths.map((month, i) =>
           <MonthOption
               key={toMonthString(month)}
               month={month}
+              showMonthlyTotal={props.noMoreTransactionsToLoad || i !== 0}
               monthlyTotals={props.monthlyTotalSpent}
               selected={isSameMonth(props.selectedMonth, month)} />
         ) }
