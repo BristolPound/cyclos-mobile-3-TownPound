@@ -9,8 +9,10 @@ import TabBar from './tabbar/TabBar'
 import SearchTab from './SearchTab'
 import NetworkConnection from './NetworkConnection'
 import TransactionsList from './TransactionsList'
+import Account from './Account'
 import Login from './Login'
 import TraderScreen from './TraderScreen'
+import DeveloperOptions from './DeveloperOptions'
 import color from '../util/colors'
 
 const style = {
@@ -45,6 +47,9 @@ const Tabs = (props) =>
       { props.loggedIn
         ? <TransactionsList tabLabel='Spending'/>
         : <Login tabLabel='Log in'/> }
+      { props.loggedIn
+        ? <Account tabLabel='Account' />
+        : <DeveloperOptions tabLabel='Developer Options'/> }
     </ScrollableTabView>
     <NetworkConnection/>
     <Modal

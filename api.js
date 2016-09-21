@@ -7,12 +7,8 @@ import {loggedOut} from './store/reducer/login'
 
 const BASE_URL = 'https://bristol-stage.community-currency.org/cyclos/api/'
 
-export const switchBaseUrl = () => {
-  if (BASE_URL === 'https://bristol-stage.community-currency.org/cyclos/api/'){
-    BASE_URL = 'https://bristol.cyclos.org/bristolpoundsandbox03/api/'
-  } else {
-    BASE_URL = 'https://bristol-stage.community-currency.org/cyclos/api/'
-  }
+export const setBaseUrl = newUrl => {
+  BASE_URL = newUrl
 }
 
 export const PAGE_SIZE = 20
@@ -118,9 +114,15 @@ export const getBusinessProfile = (businessId, dispatch) =>
     ]
   }, '', dispatch)
 
-export const getAccount = (sessionToken, dispatch) =>
+export const getAccountBalance = (sessionToken, dispatch) =>
   get('self/accounts', {
     fields: ['status.balance']
+  },
+  sessionToken, dispatch)
+
+export const getAccountDetails = (sessionToken, dispatch) =>
+  get('users/self', {
+    fields: ['display', 'shortDisplay', 'image.url', 'email', 'phones']
   },
   sessionToken, dispatch)
 
