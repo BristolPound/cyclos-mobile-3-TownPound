@@ -88,7 +88,7 @@ const TABS = [
 const TabBar = (props) =>
   <View style={style.tabBar}>
     {TABS.map((tab, index) =>
-      <View style={style.centerChildren}>
+      <View style={style.centerChildren} key={index}>
         <TouchableHighlight
             style={style.iconContainer}
             onPress={() => props.goToPage(index)}
