@@ -25,7 +25,7 @@ const initialState = {
     longitudeDelta: 0.1
   },
   searchMode: false
-}
+  }
 
 export const expandBusinessList = (expand) => ({
   type: 'business/EXPAND_BUSINESS_LIST',
@@ -37,10 +37,14 @@ export const businessDetailsReceived = (business) => ({
     business
   })
 
+export const updateRefreshing = () => ({
+  type: 'business/UPDATE_REFRESHING'
+})
+
 export const businessProfileReceived = (businessProfile) => ({
       type: 'business/BUSINESS_PROFILE_RECEIVED',
       businessProfile: businessProfile
-    })
+})
 
 export const updatePosition = (position) => ({
   type: 'business/POSITION_UPDATED',
@@ -73,7 +77,7 @@ export const loadBusinesses = () =>
           }
         })
 
-const loadBusinessesFromApi = () =>
+export const loadBusinessesFromApi = () =>
     (dispatch) =>
       getBusinesses(dispatch)
         .then(businesses => {

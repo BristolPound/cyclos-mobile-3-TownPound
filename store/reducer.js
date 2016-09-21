@@ -7,6 +7,7 @@ import login from './reducer/login'
 import sendMoney from './reducer/sendMoney'
 import account from './reducer/account'
 import networkConnection from './reducer/networkConnection'
+import developerOptions from './reducer/developerOptions'
 
 export const reducer = combineReducers({
   transaction,
@@ -15,7 +16,8 @@ export const reducer = combineReducers({
   login,
   sendMoney,
   account,
-  networkConnection
+  networkConnection,
+  developerOptions,
 })
 
 const GEOLOCATION_SETTINGS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }

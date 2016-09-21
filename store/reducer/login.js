@@ -3,7 +3,7 @@ import { authenticate } from '../../api'
 import ApiError, { UNAUTHORIZED_ACCESS } from '../../apiError'
 
 import { clearTransactions, loadInitialTransactions } from './transaction'
-import { loadAccountDetails } from './account'
+import { clearAccountDetails, loadAccountDetails } from './account'
 
 const initialState = {
   loggedIn: false,
@@ -54,10 +54,10 @@ export const login = (username, password) =>
         .then((sessionToken) => {
           dispatch(loginInProgress(false))
           if (sessionToken) {
-          dispatch(loggedIn())
-          //TODO: Should clear transactions on log out when it is implemented
-          dispatch(clearTransactions())
-          dispatch(loadInitialTransactions())
+            dispatch(loggedIn())
+            //TODO: Should check if same user logging in and clear transactions on log in only if it is a different user
+            dispatch(clearTransactions())
+            dispatch(loadInitialTransactions())
             dispatch(sessionTokenUpdated(sessionToken))
             dispatch(loadAccountDetails(sessionToken))
           }
@@ -87,6 +87,12 @@ export const login = (username, password) =>
           }
         })
     }
+
+export const logout = () => dispatch => {
+    dispatch(loggedOut())
+    dispatch(clearTransactions())
+    dispatch(clearAccountDetails())
+  }
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -121,8 +127,12 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'login/LOGGED_OUT':
-      // TODO: the session token is invalid so we need to log the user out
-      // clear transactions etc.
+      state = merge(state, {
+        loggedIn: false,
+        username: 'testmember',
+        password: 'testing123',
+        sessionToken: ''
+      })
       break
   }
   return state
