@@ -11,7 +11,7 @@ import color from '../util/colors'
 import { findTransactionsByDate } from '../util/transaction'
 import TransactionHeader from './TransactionHeader'
 import * as actions from '../store/reducer/transaction'
-import { openDetailsModal, navigateToTransactionTab } from '../store/reducer/navigation'
+import { openTraderModal, navigateToTransactionTab } from '../store/reducer/navigation'
 
 const borderColor = '#ddd'
 const marginSize = 8
@@ -68,9 +68,9 @@ const renderSectionHeader = (sectionData, sectionID) =>
    </DefaultText>
   </View>
 
-const renderRow = (transaction, openDetailsModal) =>
+const renderRow = (transaction, openTraderModal) =>
   <TouchableHighlight
-      onPress={() => transaction.relatedAccount.user && openDetailsModal(transaction.relatedAccount.user)}
+      onPress={() => transaction.relatedAccount.user && openTraderModal(transaction.relatedAccount.user.id)}
       key={transaction.transactionNumber}>
     <View style={styles.rowContainer}>
       { transaction.relatedAccount.user && transaction.relatedAccount.user.image
@@ -113,7 +113,7 @@ const TransactionsList = (props) =>
             {...standardListViewProps}
             dataSource={props.transactionsDataSource}
             renderSectionHeader={renderSectionHeader}
-            renderRow={transaction => renderRow(transaction, props.openDetailsModal)}
+            renderRow={transaction => renderRow(transaction, props.openTraderModal)}
             renderFooter={() =>
                 ( props.loadingMoreTransactions
                   ? renderLoadingFooter()
@@ -144,7 +144,7 @@ const TransactionsList = (props) =>
 
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({...actions, navigateToTransactionTab: navigateToTransactionTab, openDetailsModal: openDetailsModal}, dispatch)
+  bindActionCreators({...actions, navigateToTransactionTab: navigateToTransactionTab, openTraderModal: openTraderModal}, dispatch)
 
 const mapStateToProps = (state) => ({...state.transaction, transactionTabIndex: state.navigation.transactionTabIndex})
 
