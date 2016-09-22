@@ -31,7 +31,7 @@ export const enableSearchMode = (enabled) => ({
 export const openTraderModal = toOpenId =>
   (dispatch, getState) => {
     // TODO: open user details here when someone clicks on a user in transaction list
-    const originalBusinessProfile = getState().business.business.find(bu => bu.id === toOpenId)
+    const originalBusinessProfile = getState().business.businessList.find(bu => bu.id === toOpenId)
     if (originalBusinessProfile) {
       // find out if business profile is missing and get from API if so
       loadBusinessProfile(originalBusinessProfile,dispatch).then((profile) => {

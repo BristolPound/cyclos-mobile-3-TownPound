@@ -1,5 +1,5 @@
 
-import { updateRefreshing, loadBusinessesFromApi } from './business'
+import { updateRefreshing, loadBusinessListFromApi } from './business'
 import { clearTransactions, loadInitialTransactions } from './transaction'
 
 import { setBaseUrl } from '../../api'
@@ -21,7 +21,7 @@ export const clearStoredBusinesses = () =>
   (dispatch) => {
       dispatch(updateRefreshing())
       localStorage.remove(localStorage.storageKeys.BUSINESS_KEY)
-      dispatch(loadBusinessesFromApi())
+      dispatch(loadBusinessListFromApi())
     }
 
 export const clearStoredTransactions = () =>

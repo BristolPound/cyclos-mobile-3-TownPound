@@ -10,7 +10,7 @@ const isValidList = (businessList) => businessList !== null && businessList.leng
 const storageKey = localStorage.storageKeys.BUSINESS_KEY
 
 const initialState = {
-  business: [],
+  businessList: [],
   visibleBusinesses: [],
   businessListExpanded: false,
   selectedBusiness: {},
@@ -32,9 +32,9 @@ export const expandBusinessList = (expand) => ({
   expand
 })
 
-export const businessDetailsReceived = (business) => ({
-    type: 'business/BUSINESS_DETAILS_RECEIVED',
-    business
+export const businessListReceived = (businessList) => ({
+    type: 'business/BUSINESS_LIST_RECEIVED',
+    businessList
   })
 
 export const updateRefreshing = () => ({
@@ -66,25 +66,25 @@ export const selectBusiness = (businessProfile) => ({
   selectedBusiness: businessProfile
 })
 
-export const loadBusinesses = () =>
+export const loadBusinessList = () =>
     (dispatch) =>
       localStorage.get(storageKey)
         .then(storedBusinesses => {
           if (!isValidList(storedBusinesses)) {
-            dispatch(loadBusinessesFromApi())
+            dispatch(loadBusinessListFromApi())
           } else {
-            dispatch(businessDetailsReceived(storedBusinesses))
+            dispatch(businessListReceived(storedBusinesses))
           }
         })
 
-export const loadBusinessesFromApi = () =>
+export const loadBusinessListFromApi = () =>
     (dispatch) =>
       getBusinesses(dispatch)
         .then(businesses => {
           if (isValidList(businesses)) {
             localStorage.save(storageKey, businesses)
           }
-          dispatch(businessDetailsReceived(businesses))
+          dispatch(businessListReceived(businesses))
         })
         .catch(console.error)
 
@@ -129,29 +129,29 @@ const isWithinViewport = (position) => (business) =>
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'business/BUSINESS_DETAILS_RECEIVED':
-      const sortedBusiness = _.sortBy(action.business, distanceFromPosition(state.mapViewport))
+    case 'business/BUSINESS_LIST_RECEIVED':
+      const sortedBusiness = _.sortBy(action.businessList, distanceFromPosition(state.mapViewport))
       const filteredBusiness = sortedBusiness.filter(isWithinViewport(state.mapViewport))
       state = merge(state, {
         dataSource: state.dataSource.cloneWithRows(filteredBusiness),
-        business: action.business,
-        visibleBusinesses: action.business
+        businessList: action.businessList,
+        visibleBusinesses: action.businessList
       })
       break
     case 'business/BUSINESS_PROFILE_RECEIVED':
-      const index  = _.findIndex(state.business, {id: action.businessProfile.id})
+      const index  = _.findIndex(state.businessList, {id: action.businessProfile.id})
       const newBusinessList = [
-        ..._.slice(state.business, 0, index),
+        ..._.slice(state.businessList, 0, index),
         action.businessProfile,
-        ..._.slice(state.business, index + 1)
+        ..._.slice(state.businessList, index + 1)
       ]
       state = merge(state, {
-        business: newBusinessList
+        businessList: newBusinessList
       })
       break
     case 'business/UPDATE_MAP_VIEWPORT':
       const newViewport = merge(state.mapViewport, action.viewport)
-      const sorted = _.sortBy(state.business, distanceFromPosition(newViewport))
+      const sorted = _.sortBy(state.businessList, distanceFromPosition(newViewport))
       const filtered = sorted.filter(isWithinViewport(newViewport))
       state = merge(state, {
         dataSource: state.dataSource.cloneWithRows(filtered),
