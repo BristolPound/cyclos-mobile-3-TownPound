@@ -1,10 +1,11 @@
 import merge from '../../util/merge'
+import {loadBusinessProfile, selectBusiness} from './business'
 
 const initialState = {
   tabIndex: 0,
   transactionTabIndex: 0,
   sendMoneyVisible: false,
-  businessDetailsVisible: false
+  traderScreenVisible: false
 }
 
 export const navigateToTab = (tabIndex) => ({
@@ -22,17 +23,26 @@ export const showSendMoney = (show) => ({
   show
 })
 
-export const openDetailsModal = toOpen =>
+export const enableSearchMode = (enabled) => ({
+  type: 'navigation/SEARCH_DIRECTORY',
+  enabled
+})
+
+export const openTraderModal = toOpenId =>
   (dispatch, getState) => {
     // TODO: open user details here when someone clicks on a user in transaction list
-    const businessToShow = getState().business.business.find(bu => bu.id === toOpen.id)
-    if (businessToShow) {
-      dispatch(showBusinessDetails(businessToShow))
+    const originalBusinessProfile = getState().business.business.find(bu => bu.id === toOpenId)
+    if (originalBusinessProfile) {
+      // find out if business profile is missing and get from API if so
+      loadBusinessProfile(originalBusinessProfile,dispatch).then((profile) => {
+        dispatch(selectBusiness(profile)) // updates the selectedBusiness in the state
+        dispatch(showTraderScreen(true))
+      })
     }
   }
 
-export const showBusinessDetails = (show) => ({
-  type: 'navigation/SHOW_BUSINESS_DETAILS',
+export const showTraderScreen = (show) => ({
+  type: 'navigation/SHOW_TRADER_SCREEN',
   show
 })
 
@@ -53,9 +63,9 @@ const reducer = (state = initialState, action) => {
         sendMoneyVisible: action.show
       })
       break
-    case 'navigation/SHOW_BUSINESS_DETAILS':
+    case 'navigation/SHOW_TRADER_SCREEN':
       state = merge(state, {
-        businessDetailsVisible: action.show
+        traderScreenVisible: action.show
       })
       break
   }
