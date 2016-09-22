@@ -12,7 +12,7 @@ const BackgroundMap = (props) =>
   <MapView style={{...StyleSheet.absoluteFillObject}}
       region={props.mapViewport}
       onRegionChange={_.debounce(props.updateMapViewport, DEBOUNCE_DURATION)}>
-    {props.business.filter(b => b.address)
+    {props.businessList.filter(b => b.address)
       .map(b =>
           <MapView.Marker key={b.shortDisplay}
               coordinate={b.address.location}
