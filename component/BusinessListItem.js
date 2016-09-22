@@ -36,10 +36,12 @@ const styles = {
 }
 
 const BusinessListItem = props =>
-  <TouchableHighlight onPress={() => props.showBusinessDetails(props.business)}
+  <TouchableHighlight onPress={() => {props.openTraderModal(props.business.id)}}
             underlayColor='#dddddd' key={props.business.id}>
     <View style={styles.container}>
-      { props.business.image ? <Image style={styles.image} source={{uri: props.business.image.url}}/> : <View style={styles.image}/> }
+      { props.business.image
+          ? <Image style={styles.image} source={{uri: props.business.image.url}}/>
+          : <View style={styles.image}/> }
       <View style={styles.verticalStack}>
         <DefaultText style={styles.title} numberOfLines={1}>
           {props.business.display}

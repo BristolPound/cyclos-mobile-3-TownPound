@@ -10,7 +10,7 @@ import SearchTab from './SearchTab'
 import NetworkConnection from './NetworkConnection'
 import TransactionsList from './TransactionsList'
 import Login from './Login'
-import BusinessDetails from './BusinessDetails'
+import TraderScreen from './TraderScreen'
 import color from '../util/colors'
 
 const style = {
@@ -50,9 +50,9 @@ const Tabs = (props) =>
     <Modal
       animationType={'slide'}
       transparent={false}
-      onRequestClose={() => props.showBusinessDetails(false)}
-      visible={props.navigation.businessDetailsVisible && !props.navigation.sendMoneyVisible}>
-      <BusinessDetails/>
+      onRequestClose={() => props.showTraderScreen(false)}
+      visible={props.navigation.traderScreenVisible && !props.navigation.sendMoneyVisible}>
+      <TraderScreen/>
     </Modal>
   </View>
 

@@ -96,22 +96,26 @@ const post = (sessionToken, url, params, dispatch) =>
 export const getBusinesses = (dispatch) =>
   get('users', {
     fields: [
-      'email',
       'id',
-      'name',
-      'username',
       'address.addressLine1',
       'address.addressLine2',
       'address.zip',
       'address.location',
       'image.url',
-      'phone',
       'display',
-      'shortDisplay'
+      'shortDisplay',
+      'email'
     ],
     pageSize: 1000000,
     addressResult: 'primary',
     orderBy: 'alphabeticallyAsc'
+  }, '', dispatch)
+
+export const getBusinessProfile = (businessId, dispatch) =>
+  get('users/' + businessId, {
+    fields: [
+      'customValues'
+    ]
   }, '', dispatch)
 
 export const getAccount = (sessionToken, dispatch) =>
