@@ -71,7 +71,7 @@ class BusinessList extends React.Component {
       this.isExpanded = true
 
     // if the user scrolls the list down, when expanded, make it compact
-  } else if (this.isExpanded && evt.nativeEvent.contentOffset.y <= 0 && !this.props.business.searchMode) {
+  } else if (this.isExpanded && evt.nativeEvent.contentOffset.y < 0 && !this.props.business.searchMode) {
       // in order to maintain smooth scrolling, defer the action which changes app state
       this.animateTopTo(this.topWhenCompact, () => this.props.expandBusinessList(false))
       this.isExpanded = false
