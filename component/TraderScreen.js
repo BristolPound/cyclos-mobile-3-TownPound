@@ -6,7 +6,7 @@ import * as actions from '../store/reducer/navigation'
 import DefaultText from './DefaultText'
 import Price from './Price'
 import merge from '../util/merge'
-import {BusinessDetails} from './businessdetails/BusinessDetails'
+import {BusinessDetails} from './businessDetails/BusinessDetails'
 
 const borderColor = '#ddd'
 const marginSize = 8
