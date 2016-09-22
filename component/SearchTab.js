@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TextInput } from 'react-native'
+import { View, TextInput, TouchableHighlight, Text } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import BackgroundMap from './BackgroundMap'
@@ -22,7 +22,8 @@ const style = {
   searchBar: {
     height: SEARCH_BAR_HEIGHT,
     margin: MARGIN_SIZE,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    flexDirection: 'row'
   }
 }
 
@@ -32,9 +33,17 @@ const computeHeight = (dataSource) =>
 const SearchTab = (props) =>
   <View style={{flex: 1}}>
     <BackgroundMap/>
-    <TextInput style={style.searchBar}
-        onFocus={() => props.enableSearchMode(true)}
-        onBlur={() => props.enableSearchMode(false)}/>
+    <View style={style.searchBar}>
+      <TextInput
+          style={{ flex: 7}}
+          onFocus={() => props.enableSearchMode(true)}
+          onBlur={() => props.enableSearchMode(false)}/>
+        <TouchableHighlight
+            style={{ flex: 1 }}
+            onPress={() => props.enableSearchMode(false)}>
+          <Text>X</Text>
+        </TouchableHighlight>
+    </View>
     <BusinessList
         compactHeight={computeHeight(props.business.dataSource)}
         expandOnScroll={props.business.dataSource.getRowCount() > VISIBLE_ROWS}
