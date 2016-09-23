@@ -2,16 +2,15 @@ import merge from '../../util/merge'
 import { authenticate } from '../../api'
 import ApiError, { UNAUTHORIZED_ACCESS } from '../../apiError'
 
-import { clearTransactions, loadInitialTransactions } from './transaction'
-import { clearAccountDetails, loadAccountDetails } from './account'
+import { loadInitialTransactions } from './transaction'
+import { loadAccountDetails } from './account'
 
 const initialState = {
   loggedIn: false,
   loginFailed: '',
   loginInProgress: false,
   username: 'testmember',
-  password: 'testing123',
-  sessionToken: ''
+  password: 'testing123'
 }
 
 export const usernameUpdated = (username) => ({
@@ -38,11 +37,6 @@ export const passwordUpdated = (password) => ({
   password
 })
 
-export const sessionTokenUpdated = (sessionToken) => ({
-  type: 'login/SESSION_TOKEN_UPDATED',
-  sessionToken
-})
-
 export const loggedOut = () => ({
   type: 'login/LOGGED_OUT'
 })
@@ -56,10 +50,8 @@ export const login = (username, password) =>
           if (sessionToken) {
             dispatch(loggedIn())
             //TODO: Should check if same user logging in and clear transactions on log in only if it is a different user
-            dispatch(clearTransactions())
             dispatch(loadInitialTransactions())
-            dispatch(sessionTokenUpdated(sessionToken))
-            dispatch(loadAccountDetails(sessionToken))
+            dispatch(loadAccountDetails())
           }
         })
         .catch (err => {
@@ -90,8 +82,6 @@ export const login = (username, password) =>
 
 export const logout = () => dispatch => {
     dispatch(loggedOut())
-    dispatch(clearTransactions())
-    dispatch(clearAccountDetails())
   }
 
 const reducer = (state = initialState, action) => {
@@ -104,11 +94,6 @@ const reducer = (state = initialState, action) => {
     case 'login/PASSWORD_UPDATED':
       state = merge(state, {
         password: action.password
-      })
-      break
-    case 'login/SESSION_TOKEN_UPDATED':
-      state = merge(state, {
-        sessionToken: action.sessionToken
       })
       break
     case 'login/LOGGED_IN':
@@ -130,8 +115,8 @@ const reducer = (state = initialState, action) => {
       state = merge(state, {
         loggedIn: false,
         username: 'testmember',
-        password: 'testing123',
-        sessionToken: ''
+        password: 'testing123'
+        // TODO: clear the session token?
       })
       break
   }
