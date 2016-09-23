@@ -19,16 +19,12 @@ export const accountDetailsReceived = details => ({
   details
 })
 
-export const clearAccountDetails = () => ({
-  type: 'account/CLEAR_ACCOUNT_DETAILS'
-})
-
-export const loadAccountDetails = sessionToken =>
+export const loadAccountDetails = () =>
   (dispatch) => {
-    getAccountBalance(sessionToken, dispatch)
+    getAccountBalance(dispatch)
       .then(account => dispatch(accountBalanceReceived(account)))
       .catch(console.error)
-    getAccountDetails(sessionToken, dispatch)
+    getAccountDetails(dispatch)
       .then(details => dispatch(accountDetailsReceived(details)))
       .catch(console.error)
   }
@@ -46,9 +42,6 @@ const reducer = (state = initialState, action) => {
         details: action.details,
         loadingDetails: false
       })
-      break
-    case 'account/CLEAR_ACCOUNT_DETAILS':
-      state = merge(initialState)
       break
   }
   return state

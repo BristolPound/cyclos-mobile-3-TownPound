@@ -1,16 +1,14 @@
 import { ListView } from 'react-native'
 import haversine from 'haversine'
 import _ from 'lodash'
+import moment from 'moment'
 import merge from '../../util/merge'
 import { getBusinesses, getBusinessProfile } from '../../api'
-import * as localStorage from '../../localStorage'
 import APIError from '../../apiError'
-
-const isValidList = (businessList) => businessList !== null && businessList.length > 0
-const storageKey = localStorage.storageKeys.BUSINESS_KEY
 
 const initialState = {
   businessList: [],
+  businessListTimestamp: null,
   visibleBusinesses: [],
   businessListExpanded: false,
   selectedBusiness: {},
@@ -25,7 +23,7 @@ const initialState = {
     longitudeDelta: 0.1
   },
   searchMode: false
-  }
+}
 
 export const expandBusinessList = (expand) => ({
   type: 'business/EXPAND_BUSINESS_LIST',
@@ -33,17 +31,13 @@ export const expandBusinessList = (expand) => ({
 })
 
 export const businessListReceived = (businessList) => ({
-    type: 'business/BUSINESS_LIST_RECEIVED',
-    businessList
-  })
-
-export const updateRefreshing = () => ({
-  type: 'business/UPDATE_REFRESHING'
+  type: 'business/BUSINESS_LIST_RECEIVED',
+  businessList
 })
 
 export const businessProfileReceived = (businessProfile) => ({
-      type: 'business/BUSINESS_PROFILE_RECEIVED',
-      businessProfile: businessProfile
+  type: 'business/BUSINESS_PROFILE_RECEIVED',
+  businessProfile: businessProfile
 })
 
 export const updatePosition = (position) => ({
@@ -67,26 +61,14 @@ export const selectBusiness = (businessProfile) => ({
 })
 
 export const loadBusinessList = () =>
-    (dispatch) =>
-      localStorage.get(storageKey)
-        .then(storedBusinesses => {
-          if (!isValidList(storedBusinesses)) {
-            dispatch(loadBusinessListFromApi())
-          } else {
-            dispatch(businessListReceived(storedBusinesses))
-          }
-        })
-
-export const loadBusinessListFromApi = () =>
-    (dispatch) =>
+  (dispatch, getState) => {
+    const persistedDate = getState().business.businessListTimestamp
+    if (Date.now() - persistedDate > moment.duration(2, 'days')) {
       getBusinesses(dispatch)
-        .then(businesses => {
-          if (isValidList(businesses)) {
-            localStorage.save(storageKey, businesses)
-          }
-          dispatch(businessListReceived(businesses))
-        })
+        .then(businesses => dispatch(businessListReceived(businesses)))
         .catch(console.error)
+    }
+  }
 
 export const loadBusinessProfile = (originalBusinessProfile, dispatch) =>
     originalBusinessProfile.profileComplete
@@ -135,6 +117,7 @@ const reducer = (state = initialState, action) => {
       state = merge(state, {
         dataSource: state.dataSource.cloneWithRows(filteredBusiness),
         businessList: action.businessList,
+        businessListTimestamp: new Date(),
         visibleBusinesses: action.businessList
       })
       break
