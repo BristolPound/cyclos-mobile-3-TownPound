@@ -1,9 +1,9 @@
 
-import { updateRefreshing, loadBusinessListFromApi } from './business'
-import { clearTransactions, loadInitialTransactions } from './transaction'
-
+import { loadBusinessList } from './business'
+import { loadInitialTransactions } from './transaction'
 import { setBaseUrl } from '../../api'
-import * as localStorage from '../../localStorage'
+import { purgeStoredState } from 'redux-persist'
+import { AsyncStorage } from 'react-native'
 import merge from '../../util/merge'
 
 const PROD_SERVER = 'https://bristol-stage.community-currency.org/cyclos/api/'
@@ -17,18 +17,12 @@ export const switchBaseUrl = () => ({
   type: 'developerOptions/SWITCH_BASE_URL'
 })
 
-export const clearStoredBusinesses = () =>
-  (dispatch) => {
-      dispatch(updateRefreshing())
-      localStorage.remove(localStorage.storageKeys.BUSINESS_KEY)
-      dispatch(loadBusinessListFromApi())
-    }
-
-export const clearStoredTransactions = () =>
-  (dispatch) => {
-      dispatch(clearTransactions())
+export const clearStorage = () =>
+  (dispatch) =>
+    purgeStoredState({storage: AsyncStorage}).then(() => {
+      dispatch(loadBusinessList())
       dispatch(loadInitialTransactions())
-    }
+    })
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
