@@ -3,12 +3,9 @@ import merge from '../../util/merge'
 import * as date from '../../util/date'
 import { groupTransactionsByDate, groupTransactionsByBusiness, calculateMonthlyTotalSpent, filterTransactions, sortTransactions } from '../../util/transaction'
 import { getTransactions, PAGE_SIZE } from '../../api'
-import * as localStorage from '../../localStorage'
 import { findTransactionsByDate } from '../../util/transaction'
 import moment from 'moment'
 
-const isValidList = (transactionList) => transactionList !== undefined && transactionList !== null && transactionList.length > 0
-const storageKey = localStorage.storageKeys.TRANSACTION_KEY
 const last = (arr) => arr.length > 0 ? arr[arr.length - 1] : undefined
 
 const initialState = {
@@ -50,10 +47,6 @@ const updateRefreshing = () => ({
   type: 'transaction/UPDATE_REFRESHING'
 })
 
-export const clearTransactions = () => ({
-  type: 'transaction/CLEAR_TRANSACTIONS'
-})
-
 export const setSelectedMonth = (newSelectedMonth) =>
   (dispatch, getState) => {
     const state = getState().transaction
@@ -76,9 +69,9 @@ export const setSelectedMonth = (newSelectedMonth) =>
 // loadToTarget  - the minimum date we are attempting to load to. Each time we fetch a page of transactions we check if
 //                 loadToTarget has been reached yet, and if not we make a request for another page.
 const loadTransactionsBefore = (maximumDate, excludeIdList, loadToTarget = null) =>
-  (dispatch, getState) => {
+  (dispatch) => {
     dispatch(loadingMore())
-    getTransactions(getState().login.sessionToken, dispatch, {
+    getTransactions(dispatch, {
       datePeriod: ',' + date.convert.stringToJson(maximumDate),
       excludedIds: excludeIdList
     }, tr => !loadToTarget || date.compare(loadToTarget, last(tr).date) >= 0)
@@ -93,21 +86,16 @@ const loadTransactionsBefore = (maximumDate, excludeIdList, loadToTarget = null)
   }
 
 export const loadTransactionsAfter = (firstDate, excludeIdList) =>
-  (dispatch, getState) => {
+  (dispatch) => {
     dispatch(updateRefreshing())
-    getTransactions(getState().login.sessionToken, dispatch,{
+    getTransactions(dispatch,{
       datePeriod: date.convert.stringToJson(firstDate) + ',',
       excludedIds: excludeIdList
     }).then(transactions => dispatch(transactionsReceived(transactions)))
   }
 
 export const loadInitialTransactions = () =>
-    (dispatch, getState) =>
-        localStorage.get(storageKey)
-          .then(storedTransactions =>
-              dispatch(isValidList(storedTransactions)
-                ? transactionsReceived(storedTransactions)
-                : loadTransactionsBefore(new Date().toString(), [], date.previousMonth(getState().transaction.selectedMonth))))
+  loadTransactionsBefore(new Date(), [], date.previousMonth(new Date()))
 
 const newDataSources = (previousTransactionsDataSource, previousTradersDataSource, sortedTransactions, selectedMonth) => {
   const filteredTransactions = filterTransactions(sortedTransactions, selectedMonth)
@@ -124,7 +112,6 @@ const reducer = (state = initialState, action) => {
     case 'transaction/TRANSACTIONS_RECEIVED':
       const mergedTransactions = [...state.transactions, ...action.transactions]
       const sortedTransactions = sortTransactions(mergedTransactions)
-      localStorage.save(storageKey, sortedTransactions)
       const monthlyTotalSpent = calculateMonthlyTotalSpent(state.monthlyTotalSpent, action.transactions)
       state = merge(state, newDataSources(state.transactionsDataSource, state.traderDataSource, sortedTransactions, state.selectedMonth), {
         monthlyTotalSpent: monthlyTotalSpent,
@@ -143,10 +130,6 @@ const reducer = (state = initialState, action) => {
       state = merge(state, {
         refreshing: true
       })
-      break
-    case 'transaction/CLEAR_TRANSACTIONS':
-      localStorage.remove(storageKey)
-      state = merge(initialState)
       break
     case 'transaction/NO_MORE_TRANSACTIONS':
       state = merge(state, {

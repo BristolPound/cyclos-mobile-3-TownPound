@@ -27,7 +27,7 @@ export const updateAmount = (amount) => ({
 export const sendTransaction = () =>
   (dispatch, getState) => {
     dispatch(setLoading())
-    putTransaction(getState().login.sessionToken, {
+    putTransaction({
         subject: getState().sendMoney.payee,
         description: 'Test description',
         amount: getState().sendMoney.amount

@@ -6,6 +6,7 @@ import {successfulConnection, connectionFailed} from './store/reducer/networkCon
 import {loggedOut} from './store/reducer/login'
 
 const BASE_URL = 'https://bristol-stage.community-currency.org/cyclos/api/'
+let globalSessionToken = ''
 
 export const setBaseUrl = newUrl => {
   BASE_URL = newUrl
@@ -13,10 +14,10 @@ export const setBaseUrl = newUrl => {
 
 export const PAGE_SIZE = 20
 
-const httpHeaders = (sessionToken) => {
+const httpHeaders = () => {
   const headers = new Headers()
-  if (sessionToken) {
-    headers.append('Session-Token', sessionToken)
+  if (globalSessionToken) {
+    headers.append('Session-Token', globalSessionToken)
   }
   headers.append('Accept', 'application/json')
   headers.append('Content-Type', 'application/json')
@@ -48,8 +49,8 @@ const maybeDispatchFailure = dispatch => err => {
   }
 }
 
-const get = (url, params, sessionToken, dispatch) =>
-  fetch(BASE_URL + url + (params ? '?' + querystring(params) : ''), {headers: httpHeaders(sessionToken)})
+const get = (url, params, dispatch) =>
+  fetch(BASE_URL + url + (params ? '?' + querystring(params) : ''), {headers: httpHeaders()})
     .then(dispatchSuccessfulConnection(dispatch))
     .then(decodeResponse)
     .then((data) => {
@@ -62,15 +63,15 @@ const get = (url, params, sessionToken, dispatch) =>
 // successCriteria - should be a function with takes the result of the get request
 //                   and returns a boolean as to whether the request is complete. It
 //                   will be called on each individual get request.
-const getPages = (url, params, sessionToken, dispatch, successCriteria, pageNo = 0) => {
+const getPages = (url, params, dispatch, successCriteria, pageNo = 0) => {
   params = merge(params, { page: pageNo })
   return new Promise(function(resolve, reject) {
-    get(url, params, sessionToken, dispatch)
+    get(url, params, dispatch)
       .then(results => {
         if (results.length < PAGE_SIZE || successCriteria === undefined || successCriteria(results)){
           resolve(results)
         } else {
-          getPages(url, params, sessionToken, dispatch, successCriteria, pageNo + 1)
+          getPages(url, params, dispatch, successCriteria, pageNo + 1)
             .then(nextResults => resolve(results.concat(nextResults)))
             .catch(reject)
         }
@@ -79,8 +80,8 @@ const getPages = (url, params, sessionToken, dispatch, successCriteria, pageNo =
   })
 }
 
-const post = (sessionToken, url, params, dispatch) =>
-  fetch(BASE_URL + url, merge({headers: httpHeaders(sessionToken)}, {method: 'POST', body: JSON.stringify(params)}))
+const post = (url, params, dispatch) =>
+  fetch(BASE_URL + url, merge({headers: httpHeaders()}, {method: 'POST', body: JSON.stringify(params)}))
     .then(dispatchSuccessfulConnection(dispatch))
     .then(decodeResponse)
     .then((data) => {
@@ -114,19 +115,19 @@ export const getBusinessProfile = (businessId, dispatch) =>
     ]
   }, '', dispatch)
 
-export const getAccountBalance = (sessionToken, dispatch) =>
+export const getAccountBalance = (dispatch) =>
   get('self/accounts', {
     fields: ['status.balance']
   },
-  sessionToken, dispatch)
+  dispatch)
 
-export const getAccountDetails = (sessionToken, dispatch) =>
+export const getAccountDetails = (dispatch) =>
   get('users/self', {
     fields: ['display', 'shortDisplay', 'image.url', 'email', 'phones']
   },
-  sessionToken, dispatch)
+  dispatch)
 
-export const getTransactions = (sessionToken, dispatch, additionalParams, successCriteria) =>
+export const getTransactions = (dispatch, additionalParams, successCriteria) =>
   getPages('self/accounts/member/history', merge({
     fields: [
       'id',
@@ -138,20 +139,17 @@ export const getTransactions = (sessionToken, dispatch, additionalParams, succes
       'relatedAccount'
     ],
     pageSize: PAGE_SIZE
-  }, additionalParams ? additionalParams : {}), sessionToken, dispatch, successCriteria)
+  }, additionalParams ? additionalParams : {}), dispatch, successCriteria)
 
-export const putTransaction = (sessionToken, payment, dispatch) =>
+export const putTransaction = (payment, dispatch) =>
   get('self/payments/data-for-perform', {
       to: payment.subject,
       fields: 'paymentTypes.id'
-  }, sessionToken, dispatch)
-  .then(json => post(sessionToken,
-    'self/payments',
-    {...payment,
+  }, dispatch)
+  .then(json => post('self/payments', {
+      ...payment,
       type: json.paymentTypes[0].id
-    },
-    dispatch
-    ))
+    }, dispatch))
 
 // decodes the response via the json() function, which returns a promise, combining
 // the results with the original response object. This allows access to both
@@ -169,6 +167,7 @@ export const authenticate = (username, password, dispatch) =>
   .then(decodeResponse)
   .then((data) => {
     throwOnError(data.response, data.json)
+    globalSessionToken = data.json.sessionToken
     return data.json.sessionToken
   })
   .catch(maybeDispatchFailure(dispatch))

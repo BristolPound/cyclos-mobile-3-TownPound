@@ -25,14 +25,11 @@ const DeveloperOptions = props => {
         text: 'Using: ' + (props.usingProdServer ? 'Prod' : 'Dev') + ' server',
         onPress: onPressChangeServer(props)
       }, {
-        text: 'Clear Search Business Cache',
-        onPress: props.clearStoredBusinesses,
-        disabled: props.reloadingBusinesses,
-      }, {
-        text: 'Clear Spending Transaction Cache',
-        onPress: props.clearStoredTransactions,
-        disabled: props.reloadingTransactions,
-      } ]
+        text: 'Clear Persisted State',
+        onPress: props.clearStorage,
+        disabled: false,
+      }
+    ]
   }, ['Developer Options'])
 
   return (
