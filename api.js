@@ -106,14 +106,14 @@ export const getBusinesses = (dispatch) =>
     pageSize: 1000000,
     addressResult: 'primary',
     orderBy: 'alphabeticallyAsc'
-  }, '', dispatch)
+  }, dispatch)
 
 export const getBusinessProfile = (businessId, dispatch) =>
   get('users/' + businessId, {
     fields: [
       'customValues'
     ]
-  }, '', dispatch)
+  }, dispatch)
 
 export const getAccountBalance = (dispatch) =>
   get('self/accounts', {

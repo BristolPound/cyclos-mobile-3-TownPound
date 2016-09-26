@@ -7,6 +7,7 @@ import DefaultText from './DefaultText'
 import Price from './Price'
 import merge from '../util/merge'
 import {BusinessDetails} from './businessDetails/BusinessDetails'
+import CategoryImage from './categoryImage/CategoryImage'
 
 const borderColor = '#ddd'
 const marginSize = 8
@@ -75,7 +76,7 @@ const renderHeader = ({showTraderScreen, selectedBusiness}) => () =>
     <View style={{ height: 250 }}>
       { selectedBusiness.image
         ? <Image style={styles.image} source={{uri: selectedBusiness.image.url}}/>
-        : <View style={styles.image}/> }
+      : <CategoryImage style={styles.image} category={'shop'}/> }
       <DefaultText style={styles.title}>{selectedBusiness.display}</DefaultText>
       <DefaultText style={styles.subtitle}>{selectedBusiness.shortDisplay}</DefaultText>
       <BusinessDetails business={selectedBusiness}/>
