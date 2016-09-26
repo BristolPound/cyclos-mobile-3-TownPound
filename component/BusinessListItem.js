@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as actions from '../store/reducer/navigation'
 import DefaultText from './DefaultText'
+import CategoryImage from './categoryImage/CategoryImage'
 
 const styles = {
   container: {
@@ -41,7 +42,7 @@ const BusinessListItem = props =>
     <View style={styles.container}>
       { props.business.image
           ? <Image style={styles.image} source={{uri: props.business.image.url}}/>
-          : <View style={styles.image}/> }
+        : <CategoryImage style={styles.image} category='shop'/> }
       <View style={styles.verticalStack}>
         <DefaultText style={styles.title} numberOfLines={1}>
           {props.business.display}
