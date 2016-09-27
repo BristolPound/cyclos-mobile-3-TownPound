@@ -4,14 +4,13 @@ import _ from 'lodash'
 import moment from 'moment'
 import merge from '../../util/merge'
 import { getBusinesses, getBusinessProfile } from '../../api'
-import APIError from '../../apiError'
 
 const initialState = {
   businessList: [],
   businessListTimestamp: null,
   visibleBusinesses: [],
   businessListExpanded: false,
-  selectedBusiness: {},
+  selectedBusinessId: undefined,
   dataSource: new ListView.DataSource({
     rowHasChanged: (a, b) => a.shortDisplay !== b.shortDisplay
   }),
@@ -37,7 +36,7 @@ export const businessListReceived = (businessList) => ({
 
 export const businessProfileReceived = (businessProfile) => ({
   type: 'business/BUSINESS_PROFILE_RECEIVED',
-  businessProfile: businessProfile
+  businessProfile
 })
 
 export const updatePosition = (position) => ({
@@ -55,10 +54,22 @@ export const enableSearchMode = (enable) => ({
   enable
 })
 
-export const selectBusiness = (businessProfile) => ({
+const selectBusiness = (businessId) => ({
   type: 'business/SELECTED_BUSINESS',
-  selectedBusiness: businessProfile
+  businessId
 })
+
+export const selectAndLoadBusiness = (businessId) =>
+  (dispatch, getState) => {
+    dispatch(selectBusiness(businessId))
+    const businessList = getState().business.businessList
+    const business = businessList.find(b => b.id === businessId)
+    if (!business.profilePopulated) {
+      getBusinessProfile(businessId, dispatch)
+        .then(businessProfile => dispatch(businessProfileReceived(businessProfile)))
+        .catch(console.error)
+    }
+  }
 
 export const loadBusinessList = () =>
   (dispatch, getState) => {
@@ -69,37 +80,6 @@ export const loadBusinessList = () =>
         .catch(console.error)
     }
   }
-
-export const loadBusinessProfile = (originalBusinessProfile, dispatch) =>
-    originalBusinessProfile.profileComplete
-      ? Promise.resolve(originalBusinessProfile)
-      : loadBusinessProfileFromApi(originalBusinessProfile, dispatch)
-
-export const loadBusinessProfileFromApi = (originalBusinessProfile, dispatch) =>
-    getBusinessProfile(originalBusinessProfile.id, dispatch)
-      .then(({customValues}) => {
-        let profile = merge(
-          originalBusinessProfile,
-          {'profileComplete': true})
-
-        if (customValues) {
-          const additionalFields = _.fromPairs(
-            _.map(customValues, fieldEntry => [
-              fieldEntry.field.internalName,
-              fieldEntry.stringValue
-            ])// shape: list of 2-element lists ([[name, value],[name1, value1], ...])
-          ) // turns into object from key-value pairs ({name:value, name1:value1})
-          profile = merge(profile, additionalFields)
-        }
-        dispatch(businessProfileReceived(profile))
-        return profile // this is the full, merged profile
-      })
-      .catch((err) => {
-        console.log(err)
-        if (err instanceof APIError) {
-          // TODO
-        }
-      })
 
 const distanceFromPosition = (position) => (business) =>
   business.address ? haversine(position, business.address.location) : Number.MAX_VALUE
@@ -123,9 +103,26 @@ const reducer = (state = initialState, action) => {
       break
     case 'business/BUSINESS_PROFILE_RECEIVED':
       const index  = _.findIndex(state.businessList, {id: action.businessProfile.id})
+
+      let additionalFields = {}
+      if (action.businessProfile.customValues) {
+        additionalFields = _.fromPairs(
+          _.map(action.businessProfile.customValues, fieldEntry => [
+            fieldEntry.field.internalName,
+            fieldEntry.stringValue
+          ])// shape: list of 2-element lists ([[name, value],[name1, value1], ...])
+        ) // turns into object from key-value pairs ({name:value, name1:value1})
+      }
+
+      const updatedBusiness = merge(
+        state.businessList[index],
+        {profilePopulated: true},
+        action.businessProfile,
+        additionalFields
+      )
       const newBusinessList = [
         ..._.slice(state.businessList, 0, index),
-        action.businessProfile,
+        updatedBusiness,
         ..._.slice(state.businessList, index + 1)
       ]
       state = merge(state, {
@@ -167,7 +164,7 @@ const reducer = (state = initialState, action) => {
       break
     case 'business/SELECTED_BUSINESS':
       state = merge(state, {
-        selectedBusiness: action.selectedBusiness
+        selectedBusinessId: action.businessId
       })
       break
   }

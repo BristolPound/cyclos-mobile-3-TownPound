@@ -1,5 +1,5 @@
 import merge from '../../util/merge'
-import {loadBusinessProfile, selectBusiness} from './business'
+import { selectAndLoadBusiness } from './business'
 
 const initialState = {
   tabIndex: 0,
@@ -28,17 +28,10 @@ export const enableSearchMode = (enabled) => ({
   enabled
 })
 
-export const openTraderModal = toOpenId =>
-  (dispatch, getState) => {
-    // TODO: open user details here when someone clicks on a user in transaction list
-    const originalBusinessProfile = getState().business.businessList.find(bu => bu.id === toOpenId)
-    if (originalBusinessProfile) {
-      // find out if business profile is missing and get from API if so
-      loadBusinessProfile(originalBusinessProfile,dispatch).then((profile) => {
-        dispatch(selectBusiness(profile)) // updates the selectedBusiness in the state
-        dispatch(showTraderScreen(true))
-      })
-    }
+export const openTraderModal = businessId =>
+  (dispatch) => {
+    dispatch(selectAndLoadBusiness(businessId))
+    dispatch(showTraderScreen(true))
   }
 
 export const showTraderScreen = (show) => ({
