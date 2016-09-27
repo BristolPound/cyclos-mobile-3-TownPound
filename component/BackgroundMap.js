@@ -14,7 +14,7 @@ const BackgroundMap = (props) =>
       onRegionChange={_.debounce(props.updateMapViewport, DEBOUNCE_DURATION)}>
     {props.businessList.filter(b => b.address)
       .map(b =>
-          <MapView.Marker key={b.shortDisplay}
+          <MapView.Marker key={b.id}
               coordinate={b.address.location}
               onPress={() => props.updateMapViewport(b.address.location)}/>
     )}

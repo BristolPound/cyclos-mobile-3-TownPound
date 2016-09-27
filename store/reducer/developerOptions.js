@@ -1,6 +1,6 @@
 
-import { loadBusinessList } from './business'
-import { loadInitialTransactions } from './transaction'
+import { loadBusinessList, resetBusinesses } from './business'
+import { setSelectedMonth, resetTransactions } from './transaction'
 import { setBaseUrl } from '../../api'
 import { purgeStoredState } from 'redux-persist'
 import { AsyncStorage } from 'react-native'
@@ -17,11 +17,20 @@ export const switchBaseUrl = () => ({
   type: 'developerOptions/SWITCH_BASE_URL'
 })
 
-export const clearStorage = () =>
+export const clearBusinesses = () =>
   (dispatch) =>
-    purgeStoredState({storage: AsyncStorage}).then(() => {
+    purgeStoredState({storage: AsyncStorage}, ['business']).then(() => {
+      dispatch(resetBusinesses())
       dispatch(loadBusinessList())
-      dispatch(loadInitialTransactions())
+    })
+
+export const clearTransactions = (reloadTransactions) =>
+  (dispatch) =>
+    purgeStoredState({storage: AsyncStorage}, ['transaction']).then(() => {
+      dispatch(resetTransactions())
+      if (reloadTransactions) {
+        dispatch(setSelectedMonth())
+      }
     })
 
 const reducer = (state = initialState, action) => {

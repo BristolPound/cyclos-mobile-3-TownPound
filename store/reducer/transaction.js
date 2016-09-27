@@ -9,7 +9,7 @@ import moment from 'moment'
 const last = (arr) => arr.length > 0 ? arr[arr.length - 1] : undefined
 
 const initialState = {
-  selectedMonth: date.currentMonth(),
+  selectedMonth: undefined,
   loadingTransactions: true,
   loadingMoreTransactions: false,
   transactions: [],
@@ -47,8 +47,13 @@ const updateRefreshing = () => ({
   type: 'transaction/UPDATE_REFRESHING'
 })
 
+export const resetTransactions = () => ({
+  type: 'transaction/RESET_TRANSACTIONS'
+})
+
 export const setSelectedMonth = (newSelectedMonth) =>
   (dispatch, getState) => {
+    newSelectedMonth = newSelectedMonth ? newSelectedMonth : date.currentMonth()
     const state = getState().transaction
     const noMoreTransactionsToLoad = state.noMoreTransactionsToLoad
     const earliestTransaction = last(state.transactions)
@@ -80,8 +85,8 @@ const loadTransactionsBefore = (maximumDate, excludeIdList, loadToTarget = null)
         dispatch(noMoreTransactions())
       }
       if (transactions.length !== 0) {
-          dispatch(transactionsReceived(transactions))
-        }
+        dispatch(transactionsReceived(transactions))
+      }
     })
   }
 
@@ -96,9 +101,6 @@ export const loadTransactionsAfterLast = () =>
       excludedIds: excludeIdList
     }).then(transactions => dispatch(transactionsReceived(transactions)))
   }
-
-export const loadInitialTransactions = () =>
-  loadTransactionsBefore(new Date(), [], date.previousMonth(new Date()))
 
 const newDataSources = (previousTransactionsDataSource, previousTradersDataSource, sortedTransactions, selectedMonth) => {
   const filteredTransactions = filterTransactions(sortedTransactions, selectedMonth)
@@ -144,6 +146,17 @@ const reducer = (state = initialState, action) => {
     case 'transaction/SELECT_MONTH':
       state = merge(state, newDataSources(state.transactionsDataSource, state.traderDataSource, state.transactions, action.month), {
         selectedMonth: action.month,
+        loadingTransactions: state.loadingTransactions && state.transactions.length === 0,
+      })
+      break
+    case 'transaction/RESET_TRANSACTIONS':
+      state = merge(state, {
+        selectedMonth: date.currentMonth(),
+        transactions: [],
+        noMoreTransactionsToLoad: false,
+        monthlyTotalSpent: {},
+        transactionsDataSource: state.transactionsDataSource.cloneWithRowsAndSections({}, []),
+        traderDataSource: state.traderDataSource.cloneWithRows([]),
       })
       break
   }

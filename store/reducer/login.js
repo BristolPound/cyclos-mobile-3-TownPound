@@ -2,7 +2,7 @@ import merge from '../../util/merge'
 import { authenticate } from '../../api'
 import ApiError, { UNAUTHORIZED_ACCESS } from '../../apiError'
 
-import { loadInitialTransactions } from './transaction'
+import { clearTransactions } from './developerOptions'
 import { loadAccountDetails } from './account'
 
 const initialState = {
@@ -50,7 +50,7 @@ export const login = (username, password) =>
           if (sessionToken) {
             dispatch(loggedIn())
             //TODO: Should check if same user logging in and clear transactions on log in only if it is a different user
-            dispatch(loadInitialTransactions())
+            dispatch(clearTransactions(true))
             dispatch(loadAccountDetails())
           }
         })
@@ -82,6 +82,7 @@ export const login = (username, password) =>
 
 export const logout = () => dispatch => {
     dispatch(loggedOut())
+    dispatch(clearTransactions())
   }
 
 const reducer = (state = initialState, action) => {
