@@ -94,14 +94,9 @@ export const getBusinesses = (dispatch) =>
   get('users', {
     fields: [
       'id',
-      'address.addressLine1',
-      'address.addressLine2',
-      'address.zip',
-      'address.location',
       'image.url',
       'display',
-      'shortDisplay',
-      'email'
+      'shortDisplay'
     ],
     pageSize: 1000000,
     addressResult: 'primary',
@@ -109,11 +104,7 @@ export const getBusinesses = (dispatch) =>
   }, dispatch)
 
 export const getBusinessProfile = (businessId, dispatch) =>
-  get('users/' + businessId, {
-    fields: [
-      'customValues'
-    ]
-  }, dispatch)
+  get('users/' + businessId, {}, dispatch)
 
 export const getAccountBalance = (dispatch) =>
   get('self/accounts', {

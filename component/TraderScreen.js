@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, StyleSheet, View, Image, TouchableHighlight, ListView } from 'react-native'
+import { Text, StyleSheet, View, Image, TouchableHighlight, ListView, ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from '../store/reducer/navigation'
@@ -59,24 +59,26 @@ const styles = {
 }
 
 const TraderScreen = props =>
-  <View style={{flex:1}}>
-    <ListView
-      style={{flex:10}}
-      renderHeader={renderHeader(props)}
-      dataSource={props.transaction.transactionsDataSource}
-      renderRow={renderRow}
-      renderSeparator={renderSeparator}
-      renderSectionHeader={renderSectionHeader}
-      />
-    <BusinessDetailsFooterButton/>
-  </View>
+  props.selectedBusiness.profilePopulated
+   ? <View style={{flex:1}}>
+      <ListView
+        style={{flex:10}}
+        renderHeader={renderHeader(props)}
+        dataSource={props.transaction.transactionsDataSource}
+        renderRow={renderRow}
+        renderSeparator={renderSeparator}
+        renderSectionHeader={renderSectionHeader}
+        />
+      <BusinessDetailsFooterButton/>
+    </View>
+  : <ActivityIndicator size='large'/>
 
 const renderHeader = ({showTraderScreen, selectedBusiness}) => () =>
   <TouchableHighlight onPress={() => showTraderScreen(false)}>
     <View style={{ height: 250 }}>
       { selectedBusiness.image
         ? <Image style={styles.image} source={{uri: selectedBusiness.image.url}}/>
-      : <CategoryImage style={styles.image} category={'shop'}/> }
+      : <CategoryImage style={styles.image} category='shop'/> }
       <DefaultText style={styles.title}>{selectedBusiness.display}</DefaultText>
       <DefaultText style={styles.subtitle}>{selectedBusiness.shortDisplay}</DefaultText>
       <BusinessDetails business={selectedBusiness}/>
@@ -112,7 +114,7 @@ const BusinessDetailsFooterButton = () =>
   </TouchableHighlight>
 
 const mapStateToProps = (state) => ({
-  selectedBusiness: state.business.selectedBusiness,
+  selectedBusiness: state.business.businessList.find(b => b.id === state.business.selectedBusinessId),
   transaction: state.transaction
 })
 
