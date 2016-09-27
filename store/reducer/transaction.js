@@ -85,8 +85,11 @@ const loadTransactionsBefore = (maximumDate, excludeIdList, loadToTarget = null)
     })
   }
 
-export const loadTransactionsAfter = (firstDate, excludeIdList) =>
-  (dispatch) => {
+export const loadTransactionsAfterLast = () =>
+  (dispatch, getState) => {
+    const transactions = getState().transaction.transactions
+    const firstDate = transactions[0].date
+    const excludeIdList = findTransactionsByDate(transactions, firstDate)
     dispatch(updateRefreshing())
     getTransactions(dispatch,{
       datePeriod: date.convert.stringToJson(firstDate) + ',',

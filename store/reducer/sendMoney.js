@@ -1,13 +1,14 @@
 import { putTransaction } from '../../api'
 import merge from '../../util/merge'
+import { loadTransactionsAfterLast } from './transaction'
 import ApiError, {UNEXPECTED_ERROR} from '../../apiError'
 
 const initialState = {
   payee: '',
   amount: undefined,
   loading: false,
-  newTransaction: undefined,
-  paymentFailed: ''
+  success: undefined,
+  message: ''
 }
 
 export const resetForm = () => ({
@@ -24,6 +25,16 @@ export const updateAmount = (amount) => ({
   amount
 })
 
+const setLoading = () => ({
+  type: 'sendMoney/SET_LOADING'
+})
+
+const transactionComplete = (success, message) => ({
+  type: 'sendMoney/TRANSACTION_COMPLETE',
+  success,
+  message
+})
+
 export const sendTransaction = () =>
   (dispatch, getState) => {
     dispatch(setLoading())
@@ -32,43 +43,35 @@ export const sendTransaction = () =>
         description: 'Test description',
         amount: getState().sendMoney.amount
       }, dispatch)
-      .then(response =>
-        dispatch(response.transactionNumber ? transactionComplete(response) : paymentFailed('Transaction did not complete.')))
+      .then(response => {
+        if (response.status === 201) {
+          dispatch(loadTransactionsAfterLast())
+          dispatch(transactionComplete(true))
+        } else {
+          dispatch(transactionComplete(false, 'Transaction did not complete.'))
+        }
+      })
       .catch(err => {
         if (err instanceof ApiError && err.type === UNEXPECTED_ERROR && err.json) {
           switch (err.json.code) {
             case 'dailyAmountExceeded':
-              dispatch(paymentFailed('Daily amount has been exceeded.'))
+              dispatch(transactionComplete(false, 'Daily amount has been exceeded.'))
               break
             case 'insufficientBalance':
-              dispatch(paymentFailed('Insufficient balance.'))
+              dispatch(transactionComplete(false, 'Insufficient balance.'))
               break
           }
         } else {
-          dispatch(paymentFailed('Error on sending transaction.'))
+          dispatch(transactionComplete(false, 'Error on sending transaction.'))
           console.err(err)
         }
       })
   }
 
-const setLoading = () => ({
-  type: 'sendMoney/SET_LOADING'
-})
-
-const transactionComplete = (newTransaction) => ({
-  type: 'sendMoney/TRANSACTION_COMPLETE',
-  newTransaction
-})
-
-const paymentFailed = (paymentFailed) => ({
-  type: 'sendMoney/PAYMENT_FAILED',
-  paymentFailed
-})
-
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'sendMoney/RESET_FORM':
-      state = merge({}, initialState)
+      state = merge(initialState)
       break
     case 'sendMoney/UPDATE_PAYEE':
       state = merge(state, {
@@ -87,14 +90,8 @@ const reducer = (state = initialState, action) => {
       break
     case 'sendMoney/TRANSACTION_COMPLETE':
       state = merge(initialState, {
-        newTransaction: action.newTransaction,
-        paymentFailed: ''
-      })
-      break
-    case 'sendMoney/PAYMENT_FAILED':
-      state = merge(initialState, {
-        newTransaction: undefined,
-        paymentFailed: action.paymentFailed
+        success: action.success,
+        message: action.message,
       })
       break
   }

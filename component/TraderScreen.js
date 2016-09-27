@@ -7,10 +7,12 @@ import DefaultText from './DefaultText'
 import Price from './Price'
 import merge from '../util/merge'
 import {BusinessDetails} from './businessDetails/BusinessDetails'
+import SendMoney from './SendMoney'
 import CategoryImage from './categoryImage/CategoryImage'
 
 const borderColor = '#ddd'
 const marginSize = 8
+const parseShortDisplay = fullDisplay => fullDisplay.substring(fullDisplay.indexOf('(') + 1, fullDisplay.indexOf(')'))
 
 const styles = {
   title: {
@@ -51,26 +53,22 @@ const styles = {
     marginRight: marginSize,
     borderBottomColor: borderColor,
     borderBottomWidth: StyleSheet.hairlineWidth
-  },
-  buttonText: {
-    alignSelf: 'center',
-    fontSize: 18
   }
 }
 
 const TraderScreen = props =>
   props.selectedBusiness.profilePopulated
    ? <View style={{flex:1}}>
-      <ListView
-        style={{flex:10}}
-        renderHeader={renderHeader(props)}
-        dataSource={props.transaction.transactionsDataSource}
-        renderRow={renderRow}
-        renderSeparator={renderSeparator}
-        renderSectionHeader={renderSectionHeader}
-        />
-      <BusinessDetailsFooterButton/>
-    </View>
+    <ListView
+      style={{flex:10}}
+      renderHeader={renderHeader(props)}
+      dataSource={props.transaction.transactionsDataSource}
+      renderRow={renderRow}
+      renderSeparator={renderSeparator}
+      renderSectionHeader={renderSectionHeader}
+      />
+    <SendMoney payeeDisplay={props.selectedBusiness.display} payeeShortDisplay={parseShortDisplay(props.selectedBusiness.shortDisplay)}/>
+  </View>
   : <ActivityIndicator size='large'/>
 
 const renderHeader = ({showTraderScreen, selectedBusiness}) => () =>
@@ -106,16 +104,9 @@ const renderSectionHeader = (sectionData, sectionID) =>
    </DefaultText>
   </View>
 
-const BusinessDetailsFooterButton = () =>
-  <TouchableHighlight
-     style={{flex:1}}
-     onPress={() => console.log('TODO: Send payment')}>
-    <Text style={styles.buttonText}>Send Payment</Text>
-  </TouchableHighlight>
-
 const mapStateToProps = (state) => ({
   selectedBusiness: state.business.businessList.find(b => b.id === state.business.selectedBusinessId),
-  transaction: state.transaction
+  transaction: state.transaction,
 })
 
 const mapDispatchToProps = (dispatch) =>

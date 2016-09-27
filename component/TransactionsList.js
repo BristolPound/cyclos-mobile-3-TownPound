@@ -8,7 +8,6 @@ import DefaultText from './DefaultText'
 import Price from './Price'
 import merge from '../util/merge'
 import color from '../util/colors'
-import { findTransactionsByDate } from '../util/transaction'
 import TransactionHeader from './TransactionHeader'
 import * as actions from '../store/reducer/transaction'
 import { openTraderModal, navigateToTransactionTab } from '../store/reducer/navigation'
@@ -121,7 +120,7 @@ const TransactionsList = (props) =>
             refreshControl={<RefreshControl
               refreshing={props.refreshing}
             onRefresh={() => !props.refreshing && props.transactions.length > 0
-              ? props.loadTransactionsAfter(props.transactions[0].date, findTransactionsByDate(props.transactions, props.transactions[0].date))
+              ? props.loadTransactionsAfterLast()
                 : undefined} />
             }/>
           <ListView
@@ -136,7 +135,7 @@ const TransactionsList = (props) =>
             refreshControl={<RefreshControl
               refreshing={props.refreshing}
               onRefresh={() => !props.refreshing && props.transactions && props.transactions.length > 0
-                ? props.loadTransactionsAfter(props.transactions[0].date, findTransactionsByDate(props.transactions, props.transactions[0].date))
+                ? props.loadTransactionsAfterLast()
                 : undefined} />
             }/>
         </ScrollableTabView>)}

@@ -6,7 +6,7 @@ const color = {
   secondaryBlue: '#5CCAF2',
   secondaryBlue2: '#7BD7F3',
   secondaryBlue3: '#ABE5F7',
-  orange: 'F28F30',
+  orange: '#F28F30',
   orange2: '#F6A166',
   offBlack: '#393939',
   grey: '#6A6A6A',
@@ -15,7 +15,7 @@ const color = {
   grey4: '#D2D2D2',
   grey5: '#E2E2E2',
   offWhite: '#F4F4F4',
-  white: '#FFFFF',
+  white: '#FFFFFF',
   pink: '#DD1565',
   lightGray: '#eee',
   transparent: '#00000000'
