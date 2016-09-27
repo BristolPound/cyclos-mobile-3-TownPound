@@ -94,6 +94,10 @@ export const getBusinesses = (dispatch) =>
   get('users', {
     fields: [
       'id',
+      'address.addressLine1',
+      'address.addressLine2',
+      'address.zip',
+      'address.location',
       'image.url',
       'display',
       'shortDisplay'

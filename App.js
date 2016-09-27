@@ -27,13 +27,18 @@ class App extends React.Component {
     this.store = createStore(reducer, compose(...enhancers))
 
     persistStore(this.store, {
-      whitelist: ['business'],
+      whitelist: ['business', 'transaction'],
       storage: AsyncStorage,
       transforms: [
         createTransform(
           (state) => _.pick(state, ['businessList', 'businessListTimestamp']),
           (state) => state,
           {whitelist: ['business']}
+        ),
+        createTransform(
+          (state) => _.pick(state, ['transactions', 'monthlyTotalSpent']),
+          (state) => state,
+          {whitelist: ['transaction']}
         )
       ]
     }, () => {

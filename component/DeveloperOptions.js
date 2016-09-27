@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { View, ListView } from 'react-native'
 
 import { DisplayAccountOptions } from './Account'
-import { switchBaseUrl, clearStoredBusinesses, clearStoredTransactions } from '../store/reducer/developerOptions'
+import * as actions from '../store/reducer/developerOptions'
 import { logout } from '../store/reducer/login'
 
 const onPressChangeServer = props => () => {
@@ -25,9 +25,13 @@ const DeveloperOptions = props => {
         text: 'Using: ' + (props.usingProdServer ? 'Prod' : 'Dev') + ' server',
         onPress: onPressChangeServer(props)
       }, {
-        text: 'Clear Persisted State',
-        onPress: props.clearStorage,
-        disabled: false,
+        text: 'Clear Business State',
+        onPress: () => props.clearBusinesses(),
+        disabled: props.reloadingBusinesses,
+      }, {
+        text: 'Clear Spending State',
+        onPress: () => props.clearTransactions(true),
+        disabled: props.reloadingTransactions,
       }
     ]
   }, ['Developer Options'])
@@ -47,10 +51,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    logout,
-    switchBaseUrl,
-    clearStoredBusinesses,
-    clearStoredTransactions
+    ...actions,
+    logout
   }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeveloperOptions)

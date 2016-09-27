@@ -59,6 +59,10 @@ const selectBusiness = (businessId) => ({
   businessId
 })
 
+export const resetBusinesses = () => ({
+  type: 'business/RESET_BUSINESSES',
+})
+
 export const selectAndLoadBusiness = (businessId) =>
   (dispatch, getState) => {
     dispatch(selectBusiness(businessId))
@@ -165,6 +169,15 @@ const reducer = (state = initialState, action) => {
     case 'business/SELECTED_BUSINESS':
       state = merge(state, {
         selectedBusinessId: action.businessId
+      })
+      break
+    case 'business/RESET_BUSINESSES':
+      state = merge(state, {
+        businessList: [],
+        businessListTimestamp: null,
+        visibleBusinesses: [],
+        businessListExpanded: false,
+        dataSource: state.dataSource.cloneWithRows([]),
       })
       break
   }
