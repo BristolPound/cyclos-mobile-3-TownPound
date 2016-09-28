@@ -27,28 +27,42 @@ const style = {
   }
 }
 
-const computeHeight = (dataSource) =>
+const computeListHeight = (dataSource) =>
   Math.min(VISIBLE_ROWS, dataSource.getRowCount()) * ROW_HEIGHT
 
-const SearchTab = (props) =>
-  <View style={{flex: 1}}>
-    <BackgroundMap/>
-    <View style={style.searchBar}>
-      <TextInput
-          style={{ flex: 7}}
-          onFocus={() => props.enableSearchMode(true)}
-          onBlur={() => props.enableSearchMode(false)}/>
-        <TouchableHighlight
-            style={{ flex: 1 }}
-            onPress={() => props.enableSearchMode(false)}>
-          <Text>X</Text>
-        </TouchableHighlight>
-    </View>
-    <BusinessList
-        compactHeight={computeHeight(props.business.dataSource)}
-        expandOnScroll={props.business.dataSource.getRowCount() > VISIBLE_ROWS}
-        style={style.businessList}/>
-  </View>
+class SearchTab extends React.Component {
+  constructor() {
+    super()
+    this.searchBarRef = undefined
+  }
+  closeButtonPressed() {
+    this.searchBarRef.blur()
+    this.props.enableSearchMode(false)
+  }
+  render() {
+    return (
+      <View style={{flex: 1}}>
+        <BackgroundMap/>
+        <View style={style.searchBar}>
+          <TextInput
+              ref={(ref) => this.searchBarRef = ref}
+              style={{ flex: 7}}
+              onFocus={() => this.props.enableSearchMode(true)}
+              onBlur={() => this.props.enableSearchMode(false)}/>
+            <TouchableHighlight
+                style={{ flex: 1 }}
+                onPress={this.closeButtonPressed.bind(this)}>
+              <Text>X</Text>
+            </TouchableHighlight>
+        </View>
+        <BusinessList
+            compactHeight={computeListHeight(this.props.business.dataSource)}
+            expandOnScroll={this.props.business.dataSource.getRowCount() > VISIBLE_ROWS}
+            style={style.businessList}/>
+      </View>
+    )
+  }
+}
 
 const mapStateToProps = (state) => ({business: state.business})
 

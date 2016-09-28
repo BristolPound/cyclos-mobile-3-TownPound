@@ -13,7 +13,8 @@ const initialState = {
   businessListExpanded: false,
   selectedBusinessId: undefined,
   dataSource: new ListView.DataSource({
-    rowHasChanged: (a, b) => a.shortDisplay !== b.shortDisplay
+    rowHasChanged: (a, b) => a.shortDisplay !== b.shortDisplay,
+    sectionHeaderHasChanged: (a, b) => a !== b
   }),
   userLocation: { latitude: 51.455, longitude:  -2.588 },
   mapViewport: {
