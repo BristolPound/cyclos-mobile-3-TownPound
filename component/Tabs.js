@@ -11,7 +11,7 @@ import NetworkConnection from './NetworkConnection'
 import TransactionsList from './TransactionsList'
 import Account from './Account'
 import Login from './Login'
-import TraderScreen from './TraderScreen'
+import TraderScreen from './traderScreen/TraderScreen'
 import DeveloperOptions from './DeveloperOptions'
 import color from '../util/colors'
 
