@@ -1,14 +1,31 @@
-import React from 'react'
+import React, {Component} from 'react'
 import { Text } from 'react-native'
+import colors from '../util/colors'
+import merge from '../util/merge'
 
-const defaultTextStyle = {
+const style = {
   fontFamily: 'MuseoSans-300',
-  fontSize: 18
+  fontSize: 18,
+  color: colors.offBlack
 }
 
-const DefaultText = ({ style, children, ...otherProps }) =>
-  <Text style={Object.assign({}, defaultTextStyle, style)} {...otherProps}>
-    {children}
-  </Text>
+class DefaultText extends Component {
+  setNativeProps(nativeProps) {
+    this._root.setNativeProps(nativeProps)
+  }
+
+  render(){
+    const newStyle = merge(style, this.props.style)
+    return (
+      <Text
+        ref={component => this._root = component}
+        {...merge(this.props, {style: newStyle})}>
+        {this.props.children}
+      </Text>
+    )
+  }
+}
+
+
 
 export default DefaultText

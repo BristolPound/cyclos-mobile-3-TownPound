@@ -1,17 +1,32 @@
 import React from 'react'
 import {View, Image} from 'react-native'
 import DefaultText from '../DefaultText'
+import colors from '../../util/colors'
 
 const styles = {
   container: {
+    marginBottom: 18
+  },
+  row: {
     flexDirection: 'row',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-    backgroundColor: 'white'
+    paddingTop: 1,
+    backgroundColor: colors.white,
+    marginTop: 18,
+    marginLeft: 24,
+    marginRight: 24
   },
   image: {
+    height: 26,
+    width: 18,
+    marginTop: 1,
+    marginRight:16
   },
+  text: {
+    flex:1,
+    fontSize: 16,
+    color: colors.grey1,
+    flexWrap: 'wrap'
+  }
 }
 
 export const BusinessDetails = ({business}) => {
@@ -54,7 +69,7 @@ export const BusinessDetails = ({business}) => {
   }
 
   return (
-    <View>
+    <View style={styles.container}>
       {businessFields.map((singleField) => (
         singleField.fieldText
           ? <BusinessField
@@ -69,7 +84,9 @@ export const BusinessDetails = ({business}) => {
 }
 
 const BusinessField = ({icon, fieldText}) =>
-  <View style={styles.container}>
+  <View style={styles.row}>
     <Image style={styles.image} source={icon}/>
-      <DefaultText>{fieldText}</DefaultText>
+    <View style={{flexDirection:'column', flex: 1}}>
+      <DefaultText style={styles.text}>{fieldText}</DefaultText>
+    </View>
   </View>
