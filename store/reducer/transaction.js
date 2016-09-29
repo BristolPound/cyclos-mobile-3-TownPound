@@ -22,7 +22,7 @@ const initialState = {
   }),
   traderDataSource: new ListView.DataSource({
     rowHasChanged: (a, b) => a.id !== b.id
-  }),
+  })
 }
 
 const selectMonth = month => ({
