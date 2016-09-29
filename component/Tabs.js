@@ -8,7 +8,7 @@ import * as actions from '../store/reducer/navigation'
 import TabBar from './tabbar/TabBar'
 import SearchTab from './SearchTab'
 import NetworkConnection from './NetworkConnection'
-import TransactionsList from './TransactionsList'
+import TransactionList from './spending/TransactionList'
 import Account from './Account'
 import Login from './Login'
 import TraderScreen from './traderScreen/TraderScreen'
@@ -45,7 +45,7 @@ const Tabs = (props) =>
         tabBarUnderlineColor={color.transparent}>
       <SearchTab tabLabel='Search'/>
       { props.loggedIn
-        ? <TransactionsList tabLabel='Spending'/>
+        ? <TransactionList tabLabel='Spending'/>
         : <Login tabLabel='Log in'/> }
       { props.loggedIn
         ? <Account tabLabel='Account' />
