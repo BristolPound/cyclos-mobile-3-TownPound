@@ -16,7 +16,7 @@ const styles = {
     marginRight: 24
   },
   image: {
-    height: 26,
+    height: 20,
     width: 18,
     marginTop: 1,
     marginRight:16
@@ -41,14 +41,14 @@ export const BusinessDetails = ({business}) => {
 
   businessFields.push({
     attrId: 'addressField',
-    icon: require('./temp_location.png'),
+    icon: require('./Address.png'),
     fieldText: addressLines.join(', ')
   })
 
   if (business.openingTimes) {
     businessFields.push({
         attrId: 'openingField',
-        icon: require('./temp_opening.png'),
+        icon: require('./Opening times.png'),
         fieldText: business.businessopeningtimes // TODO: FIND THIS!
     })
   }
@@ -56,14 +56,14 @@ export const BusinessDetails = ({business}) => {
   if (business.businessemail) {
     businessFields.push({
         attrId: 'emailField',
-        icon: require('./temp_email.png'),
+        icon: require('./Email.png'),
         fieldText: business.businessemail
     })
   }
   if (business.businessphone) {
     businessFields.push({
         attrId: 'phoneField',
-        icon: require('./temp_phone.png'),
+        icon: require('./Phone.png'),
         fieldText: business.businessphone
     })
   }
