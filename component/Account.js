@@ -94,7 +94,8 @@ const renderSectionHeader = (sectionData, sectionID) =>
 const AccountOption = ({text, secondaryText, onPress, index, disabled}) =>
   <TouchableHighlight
       onPress={() => onPress && !disabled ? onPress() : undefined}
-      key={index}>
+      key={index}
+      underlayColor={color.transparent}>
     <View style={styles.rowContainer}>
       <DefaultText style={merge(styles.rowText, { flex: 1 }, disabled ? styles.disabledButton : {})}>{text}</DefaultText>
       { secondaryText
