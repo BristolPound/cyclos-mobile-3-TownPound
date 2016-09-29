@@ -23,9 +23,16 @@ const styles = {
   },
   header: {
     closeIcon: {
-      marginLeft: 20,
+      marginLeft: 24,
       marginTop: 40,
-      height: 18
+      height: 17,
+      width: 17
+    },
+    expandIcon: {
+      marginRight: 24,
+      marginTop: 40,
+      height: 16,
+      width: 16
     },
     businessLogo: {
       height: 84,
@@ -130,12 +137,20 @@ const TraderScreen = props =>
 
   const renderHeader = ({showTraderScreen, selectedBusiness}) => () =>
     <View style={{flex:1}}>
-      <TouchableHighlight onPress={() => showTraderScreen(false)}>
-        <Image
-          style={styles.header.closeIcon}
-          source={require('./temp_closetrader.png')}
-        />
-      </TouchableHighlight>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <TouchableHighlight onPress={() => showTraderScreen(false)}>
+          <Image
+            style={styles.header.closeIcon}
+            source={require('./Close.png')}
+          />
+        </TouchableHighlight>
+        <TouchableHighlight onPress={() => showTraderScreen(false)}>
+          <Image
+            style={styles.header.expandIcon}
+            source={require('./Expand.png')}
+          />
+        </TouchableHighlight>
+      </View>
       { selectedBusiness.image
         ? <Image style={styles.header.businessLogo} source={{uri: selectedBusiness.image.url}}/>
         : <CategoryImage style={styles.header.businessLogo} category='shop'/> }
