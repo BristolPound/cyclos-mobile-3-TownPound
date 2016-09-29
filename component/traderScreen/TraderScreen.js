@@ -119,7 +119,7 @@ const TraderScreen = props =>
     <ListView
       style={{flex:10}}
       renderHeader={renderHeader(props)}
-      dataSource={props.transaction.transactionsDataSource}
+      dataSource={props.dataSource}
       renderRow={renderRow}
       renderSeparator={renderSeparator}
       renderSectionHeader={renderSectionHeader}
@@ -170,7 +170,7 @@ const renderSectionHeader = (sectionData, sectionID) =>
 
 const mapStateToProps = (state) => ({
   selectedBusiness: state.business.businessList.find(b => b.id === state.business.selectedBusinessId),
-  transaction: state.transaction,
+  dataSource: state.business.traderTransactionsDataSource,
 })
 
 const mapDispatchToProps = (dispatch) =>

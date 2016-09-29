@@ -4,6 +4,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import merge from '../../util/merge'
 import { getBusinesses, getBusinessProfile } from '../../api'
+import { sortTransactions, groupTransactionsByDate } from '../../util/transaction'
 
 const initialState = {
   businessList: [],
@@ -21,7 +22,11 @@ const initialState = {
     latitudeDelta: 0.1,
     longitudeDelta: 0.1
   },
-  searchMode: false
+  searchMode: false,
+  traderTransactionsDataSource: new ListView.DataSource({
+    rowHasChanged: (a, b) => a.transactionNumber !== b.transactionNumber,
+    sectionHeaderHasChanged: (a, b) => a !== b
+  })
 }
 
 export const expandBusinessList = (expand) => ({
@@ -54,10 +59,18 @@ export const enableSearchMode = (enable) => ({
   enable
 })
 
-const selectBusiness = (businessId) => ({
-  type: 'business/SELECTED_BUSINESS',
-  businessId
-})
+const selectBusiness = (businessId) => (dispatch, getState) =>{
+  const traderTransactions = 
+    getState().transaction.transactions.filter(transaction =>
+      transaction.relatedAccount.kind==='user'
+      ? transaction.relatedAccount.user.id===businessId
+      : false)
+  dispatch({
+    type: 'business/SELECTED_BUSINESS',
+    businessId,
+    traderTransactions
+  })
+}
 
 export const resetBusinesses = () => ({
   type: 'business/RESET_BUSINESSES',
@@ -167,8 +180,11 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'business/SELECTED_BUSINESS':
+    const sortedTransactions = sortTransactions(action.traderTransactions)
+    const group = groupTransactionsByDate(sortedTransactions)
       state = merge(state, {
-        selectedBusinessId: action.businessId
+        selectedBusinessId: action.businessId,
+        traderTransactionsDataSource: state.traderTransactionsDataSource.cloneWithRowsAndSections(group.groups, group.groupOrder)
       })
       break
     case 'business/RESET_BUSINESSES':
