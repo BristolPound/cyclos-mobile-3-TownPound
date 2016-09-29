@@ -16,16 +16,18 @@ class DefaultText extends Component {
 
   render(){
     const newStyle = merge(style, this.props.style)
+    const defaultProps = {
+      numberOfLines: 1,
+      ellipsizeMode: 'tail'
+    }
     return (
       <Text
-        ref={component => this._root = component}
-        {...merge(this.props, {style: newStyle})}>
+          ref={component => this._root = component}
+          {...merge(defaultProps, this.props, {style: newStyle})}>
         {this.props.children}
       </Text>
     )
   }
 }
-
-
 
 export default DefaultText

@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import merge from '../../util/merge'
 import { selectAndLoadBusiness } from './business'
 
@@ -27,6 +28,13 @@ export const enableSearchMode = (enabled) => ({
   type: 'navigation/SEARCH_DIRECTORY',
   enabled
 })
+
+export const openDetailsModal = id =>
+  (dispatch, getState) => {
+    if (_.some(getState().business.businessList, b => b.id === id)) {
+      dispatch(openTraderModal(id))
+    }
+  }
 
 export const openTraderModal = businessId =>
   (dispatch) => {
