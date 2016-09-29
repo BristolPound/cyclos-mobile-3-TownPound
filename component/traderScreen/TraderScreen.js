@@ -10,7 +10,6 @@ import {BusinessDetails} from '../businessDetails/BusinessDetails'
 import SendMoney from '../SendMoney'
 import CategoryImage from '../categoryImage/CategoryImage'
 import colors from '../../util/colors'
-const parseShortDisplay = fullDisplay => fullDisplay.substring(fullDisplay.indexOf('(') + 1, fullDisplay.indexOf(')'))
 import HTMLView from 'react-native-htmlview'
 import {format} from '../../util/date'
 
@@ -131,7 +130,7 @@ const TraderScreen = props =>
       renderSeparator={renderSeparator}
       renderSectionHeader={renderSectionHeader}
       />
-    <SendMoney payeeDisplay={props.selectedBusiness.display} payeeShortDisplay={parseShortDisplay(props.selectedBusiness.shortDisplay)}/>
+    <SendMoney payeeDisplay={props.selectedBusiness.display} payeeShortDisplay={props.selectedBusiness.shortDisplay}/>
   </View>
   : <ActivityIndicator size='large'/>
 
