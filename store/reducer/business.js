@@ -19,8 +19,8 @@ const initialState = {
   mapViewport: {
     latitude: 51.455,
     longitude: -2.588,
-    latitudeDelta: 0.1,
-    longitudeDelta: 0.1
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01
   },
   searchMode: false,
   traderTransactionsDataSource: new ListView.DataSource({
@@ -103,8 +103,8 @@ const distanceFromPosition = (position) => (business) =>
 
 const isWithinViewport = (position) => (business) =>
   business.address &&
-  Math.abs(business.address.location.latitude - position.latitude) < position.latitudeDelta &&
-  Math.abs(business.address.location.longitude - position.longitude) < position.longitudeDelta
+  Math.abs(business.address.location.latitude - position.latitude) < position.latitudeDelta / 2 &&
+  Math.abs(business.address.location.longitude - position.longitude) < position.longitudeDelta / 2
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
