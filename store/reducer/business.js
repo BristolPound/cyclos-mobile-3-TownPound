@@ -60,7 +60,7 @@ export const enableSearchMode = (enable) => ({
 })
 
 const selectBusiness = (businessId) => (dispatch, getState) =>{
-  const traderTransactions = 
+  const traderTransactions =
     getState().transaction.transactions.filter(transaction =>
       transaction.relatedAccount.kind==='user'
       ? transaction.relatedAccount.user.id===businessId
@@ -181,7 +181,7 @@ const reducer = (state = initialState, action) => {
       break
     case 'business/SELECTED_BUSINESS':
     const sortedTransactions = sortTransactions(action.traderTransactions)
-    const group = groupTransactionsByDate(sortedTransactions)
+    const group = groupTransactionsByDate(sortedTransactions, 'mmmm yyyy', true)
       state = merge(state, {
         selectedBusinessId: action.businessId,
         traderTransactionsDataSource: state.traderTransactionsDataSource.cloneWithRowsAndSections(group.groups, group.groupOrder)
