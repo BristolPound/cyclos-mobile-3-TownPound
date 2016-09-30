@@ -19,13 +19,9 @@ import color from '../util/colors'
 import merge from '../util/merge'
 
 const style = {
-  container: {
-    backgroundColor: color.offBlack,
-    flex: 1
-  },
   tabs: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: color.white
   },
   flex: {
     flex: 1
@@ -68,7 +64,7 @@ const Tabs = (props) => {
     </Modal>
   </View>
 
-  return <View style={style.container}>
+  return <View style={style.tabs}>
     {props.dialogOpen
       ? <TouchableHighlight
             style={merge(style.flex, style.backgroundView)}

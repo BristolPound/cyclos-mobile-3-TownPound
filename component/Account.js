@@ -120,10 +120,10 @@ const Account = props => {
   ds = ds.cloneWithRowsAndSections({
     'Profile Settings': [{
         text: 'Email',
-        secondaryText: props.details.email
+        secondaryText: (props.details && props.details.email) || 'Not set'
       }, {
         text: 'Phone',
-        secondaryText: (props.details.phones && props.details.phones.length > 0) ? props.details.phones[0].normalizedNumber : 'Not set'
+        secondaryText: (props.details && props.details.phones && props.details.phones.length > 0) ? props.details.phones[0].normalizedNumber : 'Not set'
       }, {
         text: 'Log out',
         onPress: props.logout
