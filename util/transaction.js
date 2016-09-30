@@ -23,8 +23,11 @@ export const calculateMonthlyTotalSpent = (monthlyTotals, newTransactions) => {
   return newMonthlyTotals
 }
 
-export const groupTransactionsByDate = transactions => {
-  const groups = _.groupBy(transactions, tr => dateFormat(new Date(tr.date), 'mmmm dS, yyyy'))
+export const groupTransactionsByDate = (transactions, formatString='mmmm dS, yyyy', toUpper=false) => {
+  const groups = _.groupBy(transactions, tr => {
+    const groupTitle = dateFormat(new Date(tr.date), formatString)
+    return toUpper ? groupTitle.toUpperCase() : groupTitle
+  })
   return { groups, groupOrder: _.keys(groups) }
 }
 
