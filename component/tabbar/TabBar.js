@@ -1,9 +1,11 @@
 import React from 'react'
 import { View, Image, TouchableHighlight } from 'react-native'
+import { bindActionCreators } from 'redux'
 import DefaultText from '../DefaultText'
 import Price from '../Price'
 import { connect } from 'react-redux'
 import color from '../../util/colors'
+import { openForm } from '../../store/reducer/login'
 
 const TAB_BAR_HEIGHT = 45
 const BASELINE = 9
@@ -112,7 +114,7 @@ const TabBar = (props) =>
             </View>
           : <TouchableHighlight
                 style={style.centerChildren}
-                onPress={() => props.goToPage(1)}
+                onPress={() => props.openLogin(true)}
                 underlayColor={color.transparent}>
               <View>
                 <DefaultText style={style.loginText}>Login</DefaultText>
@@ -129,4 +131,7 @@ const mapStateToProps = (state) => ({
   balance: state.account.balance
 })
 
-export default connect(mapStateToProps)(TabBar)
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators({openLogin: openForm}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(TabBar)

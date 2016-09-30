@@ -10,7 +10,8 @@ const initialState = {
   loginFailed: '',
   loginInProgress: false,
   username: 'testmember',
-  password: 'testing123'
+  password: 'testing123',
+  open: false,
 }
 
 export const usernameUpdated = (username) => ({
@@ -40,6 +41,12 @@ export const passwordUpdated = (password) => ({
 export const loggedOut = () => ({
   type: 'login/LOGGED_OUT'
 })
+
+export const resetForm = () => ({
+  type: 'login/RESET_FORM'
+})
+
+export const openForm = () => ({ type: 'login/OPEN_FORM' })
 
 export const login = (username, password) =>
   (dispatch) => {
@@ -118,6 +125,17 @@ const reducer = (state = initialState, action) => {
         username: 'testmember',
         password: 'testing123'
         // TODO: clear the session token?
+      })
+      break
+    case 'login/RESET_FORM': {
+      state = merge(state, {
+        open: false
+      })
+      break
+    }
+    case 'login/OPEN_FORM':
+      state = merge(state, {
+        open: true
       })
       break
   }

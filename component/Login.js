@@ -1,103 +1,85 @@
 import React from 'react'
-import { View, TextInput, StyleSheet, TouchableHighlight } from 'react-native'
-import DefaultText from './DefaultText'
-import color from '../util/colors'
-import merge from '../util/merge'
-import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import * as actions from '../store/reducer/login'
+import { connect } from 'react-redux'
+import { View } from 'react-native'
 
-const style = {
-  formGroup: {
-    margin: 10,
-    padding: 5,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#ddd',
-    flexDirection: 'row'
-  },
-  label: {
-    width: 90
-  },
-  error: {
-    fontSize: 14,
-    color: 'red'
-  },
-  textInput: {
-    flex: 1,
-    fontFamily: 'HelveticaNeue-Light',
-    fontSize: 18,
-    marginLeft: 10
-  },
-  disabled: {
-    opacity: 0.5
-  },
-  heading: {
-    backgroundColor: color.bristolBlue,
-    alignItems: 'center',
-    padding: 10,
-    paddingTop: 10,
-    flexDirection: 'row',
-    justifyContent: 'center'
-  },
-  headingText: {
-    color: 'white',
-    fontWeight: 'bold'
-  },
-  loginButton: {
-    margin: 10,
-    padding: 5,
-    backgroundColor: color.bristolBlue,
-    borderRadius: 5,
-    flexDirection: 'row',
-    justifyContent: 'center'
-  },
-  loginText: {
-    color: 'white'
+import merge from '../util/merge'
+import * as actions from '../store/reducer/login'
+import InputComponent from './InputComponent'
+
+class Login extends React.Component {
+
+  constructor() {
+    super()
+    this.state = {
+      inputPage: 0,
+    }
+  }
+
+  nextPage() {
+    this.setState({ inputPage: (this.state.inputPage + 1) % 4 })
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.loginInProgress && !this.props.state.loginInProgress && this.state.inputPage === 2) {
+      this.nextPage()
+    }
+  }
+
+  render() {
+    let inputProps = {
+      onRequestClose: () => { this.props.resetForm(); this.setState({ inputPage: 0 }) },
+    }
+
+    switch (this.state.inputPage){
+      case 0:
+        inputProps = merge(inputProps, {
+          buttonText: 'Enter username:',
+          onButtonPress: () => { this.nextPage() },
+          input: {
+            keyboardType: 'default',
+            value: this.props.state.username,
+            placeholder: 'Username',
+            onChangeText: this.props.usernameUpdated,
+          },
+          invalidInput: this.props.state.username.trim().length === 0,
+        })
+        break
+      case 1:
+        inputProps = merge(inputProps, {
+          buttonText: 'Enter password:',
+          onButtonPress: () => { this.props.login(this.props.state.username, this.props.state.password); this.nextPage() },
+          input: {
+            keyboardType: 'default',
+            placeholder: 'password',
+            onChangeText: this.props.passwordUpdated,
+            value: this.props.state.password,
+            secureTextEntry: true
+          },
+          invalidInput: this.props.state.password.length === 0,
+        })
+        break
+      case 2:
+        inputProps = merge(inputProps, {
+          buttonText: 'Logging in',
+          loading: true,
+        })
+        break
+      case 3:
+        inputProps = merge(inputProps, {
+          buttonText: 'Login failed. ' + this.props.state.loginFailed,
+          onButtonPress: () => { this.props.resetForm(); this.nextPage() },
+        })
+        break
+    }
+
+    return <View>
+      { !this.props.state.loggedIn && this.props.state.open
+        ? <InputComponent {...inputProps} />
+        : undefined }
+    </View>
   }
 }
-
-const OptionalTextInput = ({enabled, value, ...otherProps}) =>
-  enabled
-    ? <TextInput
-        style={style.textInput}
-        value={value}
-        {...otherProps}/>
-    : <DefaultText style={merge(style.textInput, style.disabled)}>{value}</DefaultText>
-
-const Login = (props) =>
-  <View>
-    <View style={style.heading}>
-      <DefaultText style={style.headingText}>Login</DefaultText>
-    </View>
-    <View style={style.formGroup}>
-      <DefaultText style={style.label}>Username:</DefaultText>
-      <OptionalTextInput
-        enabled={!props.state.loginInProgress}
-        onChangeText={props.usernameUpdated}
-        value={props.state.username}/>
-    </View>
-    <View style={style.formGroup}>
-      <DefaultText style={style.label}>Password:</DefaultText>
-      <OptionalTextInput
-        enabled={!props.state.loginInProgress}
-        onChangeText={props.passwordUpdated}
-        value={props.state.password}
-        secureTextEntry={true}/>
-    </View>
-    <TouchableHighlight style={style.loginButton}
-        onPress={() => {
-          if (!props.state.loginInProgress) {
-            props.login(props.state.username, props.state.password)
-          }
-        }}>
-      <View>
-        <DefaultText style={style.loginText}>Login</DefaultText>
-      </View>
-    </TouchableHighlight>
-    <View style={style.formGroup}>
-        <DefaultText style={style.error}>{props.state.loginFailed}</DefaultText>
-      </View>
-  </View>
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(actions, dispatch)

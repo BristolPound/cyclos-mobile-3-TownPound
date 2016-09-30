@@ -12,7 +12,8 @@ const styles = {
     flex: 0,
     position: 'absolute',
     width: width,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    bottom: 0
   },
   buttonContainer: {
     height: sectionHeight,
@@ -65,7 +66,7 @@ class InputComponent extends React.Component {
   render() {
     let { onButtonPress, buttonText, loading, input, invalidInput, textBelowInput } = this.props
 
-    return <View style={merge(styles.container, { bottom: this.state.keyboardOpen ? 40 : 0 })}>
+    return <View style={styles.container}>
       <TouchableHighlight
           onPress={() => !invalidInput && onButtonPress ? onButtonPress() : undefined }>
         <View style={merge(styles.buttonContainer, invalidInput ? {backgroundColor: color.grey} : {})}>
