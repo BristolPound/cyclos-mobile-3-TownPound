@@ -21,7 +21,7 @@ const initialState = {
     sectionHeaderHasChanged: (a, b) => a !== b
   }),
   traderDataSource: new ListView.DataSource({
-    rowHasChanged: (a, b) => a.id !== b.id
+    rowHasChanged: (a, b) => a !== b
   })
 }
 
@@ -106,6 +106,7 @@ const newDataSources = (previousTransactionsDataSource, previousTradersDataSourc
   const filteredTransactions = filterTransactions(sortedTransactions, selectedMonth)
   const grouped = groupTransactionsByDate(filteredTransactions)
   const tradersData = groupTransactionsByBusiness(filteredTransactions)
+  console.log('new traderDataSource: ', tradersData)
   return {
     transactionsDataSource: previousTransactionsDataSource.cloneWithRowsAndSections(grouped.groups, grouped.groupOrder),
     traderDataSource: previousTradersDataSource.cloneWithRows(tradersData),

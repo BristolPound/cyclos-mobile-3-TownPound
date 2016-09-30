@@ -12,12 +12,14 @@ const BackgroundMap = (props) =>
   <MapView style={{...StyleSheet.absoluteFillObject}}
       region={props.mapViewport}
       onRegionChange={_.debounce(props.updateMapViewport, DEBOUNCE_DURATION)}>
-    {props.businessList.filter(b => b.address)
-      .map(b =>
-          <MapView.Marker key={b.id}
-              coordinate={b.address.location}
-              onPress={() => props.updateMapViewport(b.address.location)}/>
-    )}
+    {props.businessList
+      ?  props.businessList.filter(b => b.address)
+          .map(b =>
+              <MapView.Marker key={b.id}
+                  coordinate={b.address.location}
+                  onPress={() => props.updateMapViewport(b.address.location)}/>
+                )
+      : undefined}
   </MapView>
 
 const mapStateToProps = (state) => ({
