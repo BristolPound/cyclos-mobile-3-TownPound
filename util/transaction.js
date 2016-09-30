@@ -1,12 +1,16 @@
 import dateFormat from 'dateformat'
 import _ from 'lodash'
 import merge from './merge'
-import { floorMonth, convert, compare, format } from './date'
+import { floorMonth, convert, isSameMonth, format } from './date'
 
-export const sortTransactions = (transactions) => transactions.sort((a, b) => compare(convert.fromString(b.date), convert.fromString(a.date)))
+export const sortTransactions = transactions =>
+  _(transactions)
+    .sortBy([tr => convert.fromString(tr.date), tr => tr.relatedAccount.user ? tr.relatedAccount.user.display : undefined])
+    .reverse()
+    .value()
 
 export const filterTransactions = (transactions, selectedMonth) =>
-  transactions.filter(tr => compare(selectedMonth, floorMonth(convert.fromString(tr.date))) === 0)
+  transactions.filter(tr => isSameMonth(tr.date, selectedMonth))
 
 export const calculateMonthlyTotalSpent = (monthlyTotals, newTransactions) => {
   let newMonthlyTotals = merge(monthlyTotals)
@@ -44,7 +48,7 @@ export const groupTransactionsByBusiness = transactions => {
     }
   })
 
-  return _.sortBy(results, 'amount')
+  return _.sortBy(results, ['amount', 'relatedAccount.user.display'])
 }
 
 //TODO: optimise as this is currently only used to find transactions at the start or end of the list
