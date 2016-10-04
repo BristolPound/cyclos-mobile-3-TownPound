@@ -77,6 +77,10 @@ export const resetBusinesses = () => ({
   type: 'business/RESET_BUSINESSES',
 })
 
+export const resetTraderTransactions = () => ({
+  type: 'business/RESET_TRADER_TRANSACTIONS'
+})
+
 export const selectAndLoadBusiness = (businessId) =>
   (dispatch, getState) => {
     dispatch(selectBusiness(businessId))
@@ -89,10 +93,10 @@ export const selectAndLoadBusiness = (businessId) =>
     }
   }
 
-export const loadBusinessList = () =>
+export const loadBusinessList = (force = false) =>
   (dispatch, getState) => {
     const persistedDate = getState().business.businessListTimestamp
-    if (Date.now() - persistedDate > moment.duration(2, 'days')) {
+    if (Date.now() - persistedDate > moment.duration(2, 'days') || force) {
       getBusinesses(dispatch)
         .then(businesses => dispatch(businessListReceived(businesses)))
         .catch(console.error)
@@ -195,6 +199,11 @@ const reducer = (state = initialState, action) => {
         visibleBusinesses: [],
         businessListExpanded: false,
         dataSource: state.dataSource.cloneWithRows([]),
+      })
+      break
+    case 'business/RESET_TRADER_TRANSACTIONS':
+      state = merge(state, {
+        traderTransactionsDataSource: state.traderTransactionsDataSource.cloneWithRows([])
       })
       break
   }
