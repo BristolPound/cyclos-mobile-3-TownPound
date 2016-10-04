@@ -12,6 +12,7 @@ import CategoryImage from '../categoryImage/CategoryImage'
 import HTMLView from 'react-native-htmlview'
 import {format} from '../../util/date'
 import styles from './TraderStyle'
+import color from '../../util/colors'
 
 const buttonHeight= 60
 
@@ -38,13 +39,19 @@ const TraderScreen = props =>
     <View style={styles.flex}>
       <View style={styles.dropshadow}>
         <View style={styles.rowLayout}>
-          <TouchableHighlight onPress={() => showTraderScreen(false)}>
+          <TouchableHighlight
+            hitSlop={{right: 20,bottom: 20}}
+            onPress={() => showTraderScreen(false)}
+            underlayColor={color.white}>
             <Image
               style={styles.header.closeIcon}
               source={require('./Close.png')}
             />
           </TouchableHighlight>
-          <TouchableHighlight onPress={() => showTraderScreen(false)}>
+          <TouchableHighlight
+            hitSlop={{left: 20,bottom: 20}}
+            onPress={() => showTraderScreen(false)}
+            underlayColor={color.white}>
             <Image
               style={styles.header.expandIcon}
               source={require('./Expand.png')}
