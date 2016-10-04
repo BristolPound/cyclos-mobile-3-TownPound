@@ -5,6 +5,7 @@ import { groupTransactionsByDate, groupTransactionsByBusiness, calculateMonthlyT
 import { getTransactions, PAGE_SIZE } from '../../api'
 import { findTransactionsByDate } from '../../util/transaction'
 import moment from 'moment'
+import { selectAndLoadBusiness } from './business'
 
 const last = (arr) => arr.length > 0 ? arr[arr.length - 1] : undefined
 
@@ -99,14 +100,19 @@ export const loadTransactionsAfterLast = () =>
     getTransactions(dispatch,{
       datePeriod: date.convert.stringToJson(firstDate) + ',',
       excludedIds: excludeIdList
-    }).then(transactions => dispatch(transactionsReceived(transactions)))
+    }).then(transactions => {
+      dispatch(transactionsReceived(transactions))
+      dispatch(refreshTraderTransactions())
+    })
   }
+
+const refreshTraderTransactions = () => (dispatch, getState) =>
+  dispatch(selectAndLoadBusiness(getState().business.selectedBusinessId)) // refresh trader transaction list
 
 const newDataSources = (previousTransactionsDataSource, previousTradersDataSource, sortedTransactions, selectedMonth) => {
   const filteredTransactions = filterTransactions(sortedTransactions, selectedMonth)
   const grouped = groupTransactionsByDate(filteredTransactions)
   const tradersData = groupTransactionsByBusiness(filteredTransactions)
-  console.log('new traderDataSource: ', tradersData)
   return {
     transactionsDataSource: previousTransactionsDataSource.cloneWithRowsAndSections(grouped.groups, grouped.groupOrder),
     traderDataSource: previousTradersDataSource.cloneWithRows(tradersData),

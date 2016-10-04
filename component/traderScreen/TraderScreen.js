@@ -30,7 +30,7 @@ const TraderScreen = props =>
     <View style={styles.footer}>
       <SendMoney
         payeeDisplay={props.selectedBusiness.display}
-        payeeShortDisplay={props.selectedBusiness.shortDisplay}/>
+        payeeShortDisplay={props.selectedBusiness.username}/>
     </View>
   </View>
   : <ActivityIndicator size='large'/>
