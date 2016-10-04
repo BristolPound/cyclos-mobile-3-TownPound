@@ -1,10 +1,10 @@
 import React from 'react'
-import { View, TouchableHighlight, Image } from 'react-native'
+import { View, TouchableHighlight} from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as actions from '../store/reducer/navigation'
 import DefaultText from './DefaultText'
-import CategoryImage from './categoryImage/CategoryImage'
+import ProfileImage from './profileImage/ProfileImage'
 
 const styles = {
   container: {
@@ -40,9 +40,11 @@ const BusinessListItem = props =>
   <TouchableHighlight onPress={() => {props.openTraderModal(props.business.id)}}
             underlayColor='#dddddd' key={props.business.id}>
     <View style={styles.container}>
-      { props.business.image
-          ? <Image style={styles.image} source={{uri: props.business.image.url}}/>
-        : <CategoryImage style={styles.image} category='shop'/> }
+      <ProfileImage
+        img={props.business.image}
+        style={styles.image}
+        alternativeStyle={styles.image}
+        category='shop'/>
       <View style={styles.verticalStack}>
         <DefaultText style={styles.title} numberOfLines={1}>
           {props.business.display}

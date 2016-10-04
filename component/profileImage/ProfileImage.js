@@ -1,7 +1,11 @@
 import React from 'react'
 import {Image} from 'react-native'
 
-const CategoryImage = ({category, style}) => {
+const ProfileImage = ({img, category, style, alternativeStyle}) => {
+  if (img) {
+    return <Image style={style} source={{uri: img.url}}/>
+  }
+
   let imgSource = require('./temp_shop.png')
 
   switch (category) {
@@ -13,7 +17,7 @@ const CategoryImage = ({category, style}) => {
       break
   }
 
-  return <Image style={style} source={imgSource}/>
+  return <Image style={alternativeStyle} source={imgSource}/>
 }
 
-export default CategoryImage
+export default ProfileImage

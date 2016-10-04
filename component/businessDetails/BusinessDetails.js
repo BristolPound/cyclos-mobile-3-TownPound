@@ -3,7 +3,7 @@ import {View, Image} from 'react-native'
 import DefaultText from '../DefaultText'
 import styles from './BusinessDetailsStyle'
 
-export const BusinessDetails = ({business}) => {
+const BusinessDetails = ({business}) => {
   let businessFields = []
 
   let addressLines = []
@@ -64,3 +64,5 @@ const BusinessField = ({icon, fieldText}) =>
       <DefaultText style={styles.text}>{fieldText}</DefaultText>
     </View>
   </View>
+
+export default BusinessDetails
