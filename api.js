@@ -82,12 +82,12 @@ const getPages = (url, params, dispatch, successCriteria, pageNo = 0) => {
   })
 }
 
-const post = (url, params, dispatch) =>
+const post = (url, params, dispatch, expectedResponse=201) =>
   fetch(BASE_URL + url, merge({headers: httpHeaders()}, {method: 'POST', body: JSON.stringify(params)}))
     .then(dispatchSuccessfulConnection(dispatch))
     .then(decodeResponse)
     .then((data) => {
-      throwOnError(data.response, data.json, 201)
+      throwOnError(data.response, data.json, expectedResponse)
       return data.response
     })
     .catch(maybeDispatchFailure(dispatch))
@@ -121,6 +121,13 @@ export const getBusinesses = (dispatch) =>
 
 export const getBusinessProfile = (businessId, dispatch) =>
   get('users/' + businessId, {}, dispatch)
+
+// person can be an id or a username
+// 1. add contact
+// 2. get updated contact list
+export const addContact = (person, dispatch) =>
+  post('self/contacts/' + person, {}, dispatch, 200).then(() =>
+    get('self/contacts', {}, dispatch))
 
 export const getAccountBalance = (dispatch) =>
   get('self/accounts', {

@@ -14,6 +14,7 @@ import Account from './Account'
 import LoginToView from './LoginToView'
 import Login from './Login'
 import TraderScreen from './TraderScreen'
+import PersonScreen from './PersonScreen'
 import DeveloperOptions from './DeveloperOptions'
 import color from '../util/colors'
 import merge from '../util/merge'
@@ -59,8 +60,15 @@ const Tabs = (props) => {
       animationType={'slide'}
       transparent={false}
       onRequestClose={() => props.showTraderScreen(false)}
-      visible={props.navigation.traderScreenVisible && !props.navigation.sendMoneyVisible}>
+      visible={props.navigation.traderScreenVisible && !props.navigation.sendMoneyVisible && !props.navigation.personScreenVisible}>
       <TraderScreen/>
+    </Modal>
+    <Modal
+      animationType={'slide'}
+      transparent={false}
+      onRequestClose={() => props.showPersonScreen(false)}
+      visible={props.navigation.personScreenVisible && !props.navigation.sendMoneyVisible && !props.navigation.traderScreenVisible}>
+      <PersonScreen/>
     </Modal>
   </View>
 

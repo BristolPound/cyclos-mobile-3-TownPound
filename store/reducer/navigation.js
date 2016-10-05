@@ -1,12 +1,14 @@
 import _ from 'lodash'
 import merge from '../../util/merge'
 import { selectAndLoadBusiness } from './business'
+import { selectAndLoadPerson } from './person'
 
 const initialState = {
   tabIndex: 0,
   transactionTabIndex: 0,
   sendMoneyVisible: false,
-  traderScreenVisible: false
+  traderScreenVisible: false,
+  personScreenVisible: false
 }
 
 export const navigateToTab = (tabIndex) => ({
@@ -33,6 +35,8 @@ export const openDetailsModal = id =>
   (dispatch, getState) => {
     if (_.some(getState().business.businessList, b => b.id === id)) {
       dispatch(openTraderModal(id))
+    } else {
+      dispatch(openPersonModal(id))
     }
   }
 
@@ -42,8 +46,19 @@ export const openTraderModal = businessId =>
     dispatch(showTraderScreen(true))
   }
 
+export const openPersonModal = personId =>
+  dispatch => {
+    dispatch(selectAndLoadPerson(personId))
+    //dispatch(showPersonScreen(true))
+  }
+
 export const showTraderScreen = (show) => ({
   type: 'navigation/SHOW_TRADER_SCREEN',
+  show
+})
+
+export const showPersonScreen = (show) => ({
+  type: 'navigation/SHOW_PERSON_SCREEN',
   show
 })
 
@@ -67,6 +82,11 @@ const reducer = (state = initialState, action) => {
     case 'navigation/SHOW_TRADER_SCREEN':
       state = merge(state, {
         traderScreenVisible: action.show
+      })
+      break
+    case 'navigation/SHOW_PERSON_SCREEN':
+      state = merge(state, {
+        personScreenVisible: action.show
       })
       break
   }
