@@ -6,21 +6,37 @@ import { StyleSheet } from 'react-native'
 import _ from 'lodash'
 import * as actions from '../store/reducer/business'
 
-const DEBOUNCE_DURATION = 200
+const DEBOUNCE_DURATION = 50
 
-const BackgroundMap = (props) =>
-  <MapView style={{...StyleSheet.absoluteFillObject}}
-      region={props.mapViewport}
-      onRegionChange={_.debounce(props.updateMapViewport, DEBOUNCE_DURATION)}>
-    {props.businessList
-      ?  props.businessList.filter(b => b.address)
-          .map(b =>
-              <MapView.Marker key={b.id}
-                  coordinate={b.address.location}
-                  onPress={() => props.updateMapViewport(b.address.location)}/>
-                )
-      : undefined}
-  </MapView>
+class BackgroundMap extends React.Component {
+  constructor() {
+    super()
+    this.panned = false
+  }
+
+  updateViewport(...args) {
+    this.panned = true
+    this.props.updateMapViewport(...args)
+  }
+
+  render() {
+    return (
+      <MapView style={{...StyleSheet.absoluteFillObject}}
+          region={this.panned ? undefined : this.props.mapViewport}
+          onRegionChange={_.debounce(this.updateViewport.bind(this), DEBOUNCE_DURATION)}>
+        {this.props.businessList
+          ?  this.props.businessList.filter(b => b.address)
+              .map(b =>
+                  <MapView.Marker key={b.id}
+                      coordinate={b.address.location}
+                      onPress={() => this.updateViewport(b.address.location)}/>
+                    )
+          : undefined}
+      </MapView>
+    )
+  }
+}
+
 
 const mapStateToProps = (state) => ({
   ...state.business
