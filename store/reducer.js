@@ -2,6 +2,7 @@ import { combineReducers } from 'redux'
 
 import transaction from './reducer/transaction'
 import business, { loadBusinessList, updatePosition } from './reducer/business'
+import person from './reducer/person'
 import navigation from './reducer/navigation'
 import login from './reducer/login'
 import sendMoney from './reducer/sendMoney'
@@ -12,6 +13,7 @@ import developerOptions from './reducer/developerOptions'
 export const reducer = combineReducers({
   transaction,
   business,
+  person,
   navigation,
   login,
   sendMoney,
