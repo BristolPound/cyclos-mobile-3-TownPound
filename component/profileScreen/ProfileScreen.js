@@ -35,7 +35,6 @@ const ProfileScreen = (props) =>
       <View style={styles.dropshadow}>
         <View style={styles.rowLayout}>
           <TouchableHighlight
-            hitSlop={{right: 20,bottom: 20}}
             onPress={props.onPressClose}
             underlayColor={color.white}>
             <Image
@@ -44,7 +43,6 @@ const ProfileScreen = (props) =>
             />
           </TouchableHighlight>
           <TouchableHighlight
-            hitSlop={{left: 20,bottom: 20}}
             onPress={props.onPressExpand}
             underlayColor={color.white}>
             <Image
