@@ -25,7 +25,7 @@ const ProfileScreen = (props) =>
     <View style={styles.footer}>
       <SendMoney
         payeeDisplay={props.name}
-        payeeShortDisplay={props.username}/>
+        payeeShortDisplay={props.shortDisplay}/>
     </View>
   </View>
   : <ActivityIndicator size='large'/>
