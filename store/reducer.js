@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux'
+import { NetInfo } from 'react-native'
 
 import transaction from './reducer/transaction'
 import business, { loadBusinessList, updatePosition } from './reducer/business'
@@ -7,7 +8,7 @@ import navigation from './reducer/navigation'
 import login from './reducer/login'
 import sendMoney from './reducer/sendMoney'
 import account from './reducer/account'
-import networkConnection from './reducer/networkConnection'
+import networkConnection, {connectivityChanged} from './reducer/networkConnection'
 import developerOptions from './reducer/developerOptions'
 
 export const reducer = combineReducers({
@@ -23,6 +24,11 @@ export const reducer = combineReducers({
 })
 
 export const initialise = (store) => {
+    NetInfo.isConnected.addEventListener(
+      'change',
+      (status) => store.dispatch(connectivityChanged(status))
+    )
+
   store.dispatch(loadBusinessList())
   navigator.geolocation.getCurrentPosition(
     (position) => store.dispatch(updatePosition(position)),

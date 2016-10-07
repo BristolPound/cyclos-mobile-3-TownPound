@@ -2,7 +2,7 @@ import {encode} from 'base-64'
 import merge from './util/merge'
 import ApiError, { UNAUTHORIZED_ACCESS, throwOnError } from './apiError'
 
-import {successfulConnection, connectionFailed} from './store/reducer/networkConnection'
+import {connectivityChanged} from './store/reducer/networkConnection'
 import {loggedOut} from './store/reducer/login'
 
 const parseShortDisplay = fullDisplay => fullDisplay.includes('(') ? fullDisplay.substring(fullDisplay.indexOf('(') + 1, fullDisplay.indexOf(')')) : fullDisplay
@@ -37,13 +37,13 @@ const querystring = params =>
   Object.keys(params).map(key => key + '=' + params[key]).join('&')
 
 const dispatchSuccessfulConnection = dispatch => response => {
-  dispatch(successfulConnection())
+  dispatch(connectivityChanged(true))
   return response
 }
 
 const maybeDispatchFailure = dispatch => err => {
   if (err.message === 'Network request failed') {
-    dispatch(connectionFailed())
+    dispatch(connectivityChanged(false))
   } else if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
     dispatch(loggedOut())
   } else {
