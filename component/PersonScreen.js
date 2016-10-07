@@ -12,7 +12,7 @@ const PersonScreen = ({selectedPerson, dataSource, showPersonScreen}) =>(
     defaultImage={!Boolean(selectedPerson.image)}
     name={'@'+(selectedPerson.username)}
     username={''}
-    headerExtension={() => null}
+    renderHeaderExtension={() => null}
     dataSource={dataSource}
     onPressClose={() => showPersonScreen(false)}
     onPressExpand={()=> showPersonScreen(false)}

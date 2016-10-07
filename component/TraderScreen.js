@@ -16,14 +16,14 @@ const TraderScreen = ({selectedBusiness, dataSource, showTraderScreen}) =>(
     defaultImage={!Boolean(selectedBusiness.image)}
     name={selectedBusiness.display}
     username={selectedBusiness.shortDisplay}
-    headerExtension={headerExtension(selectedBusiness)}
+    renderHeaderExtension={renderHeaderExtension(selectedBusiness)}
     dataSource={dataSource}
     onPressClose={() => showTraderScreen(false)}
     onPressExpand={()=> showTraderScreen(false)}
     />
 )
 
-const headerExtension = (selectedBusiness) => () => (
+const renderHeaderExtension = (selectedBusiness) => () => (
   <View style={styles.dropshadow}>
      <BusinessDetails business={selectedBusiness}/>
     {selectedBusiness.description ? <View style={styles.separator}/> : null}
