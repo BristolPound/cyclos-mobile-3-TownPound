@@ -20,18 +20,14 @@ export const reducer = combineReducers({
   developerOptions,
 })
 
-const GEOLOCATION_SETTINGS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-
 export const initialise = (store) => {
   store.dispatch(loadBusinessList())
   navigator.geolocation.getCurrentPosition(
     (position) => store.dispatch(updatePosition(position)),
-    () => alert('Cannot get location. Is GPS enabled?'),
-    GEOLOCATION_SETTINGS
+    () => alert('Cannot get location. Is GPS enabled?')
   )
   navigator.geolocation.watchPosition(
     (position) => store.dispatch(updatePosition(position)),
-    () => alert('Cannot get location. Is GPS enabled?'),
-    GEOLOCATION_SETTINGS
+    () => alert('Cannot get location. Is GPS enabled?')
   )
 }
