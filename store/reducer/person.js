@@ -47,6 +47,10 @@ const updatePersonList = (newPersonList) => ({
   newPersonList
 })
 
+export const resetPersonTransactions = () => ({
+  type: 'person/RESET_PERSON_TRANSACTIONS'
+})
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'person/SELECT_PERSON':
@@ -60,6 +64,11 @@ const reducer = (state = initialState, action) => {
     case 'person/UPDATE_PERSON_LIST':
       state = merge(state, {
         personList: action.newPersonList
+      })
+      break
+    case 'person/RESET_PERSON_TRANSACTIONS':
+      state = merge(state, {
+        personTransactionsDataSource: state.personTransactionsDataSource.cloneWithRows([])
       })
       break
   }
