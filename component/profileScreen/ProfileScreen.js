@@ -59,7 +59,7 @@ const ProfileScreen = (props) =>
         <DefaultText style={styles.header.title}>{props.name}</DefaultText>
         <DefaultText style={styles.header.subtitle}>{props.username}</DefaultText>
       </View>
-      {props.headerExtension()}
+      {props.renderHeaderExtension()}
     </View>
 
 const renderRow = (transaction) =>
