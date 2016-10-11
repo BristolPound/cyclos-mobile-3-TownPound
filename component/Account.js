@@ -3,13 +3,13 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { View, TouchableHighlight, ListView } from 'react-native'
 
-import DefaultText from '../DefaultText'
-import { logout } from '../../store/reducer/login'
-import merge from '../../util/merge'
-import color from '../../util/colors'
-import ProfileScreen from '../profileScreen/ProfileScreen'
-import * as actions from '../../store/reducer/developerOptions'
-import { onPressChangeServer } from '../DeveloperOptions'
+import DefaultText from './DefaultText'
+import { logout } from './../store/reducer/login'
+import merge from './../util/merge'
+import color from './../util/colors'
+import ProfileScreen from './profileScreen/ProfileScreen'
+import * as actions from './../store/reducer/developerOptions'
+import { onPressChangeServer } from './DeveloperOptions'
 
 const styles = {
   rowContainer: {
