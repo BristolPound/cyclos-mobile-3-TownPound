@@ -24,6 +24,15 @@ const styles = {
     elevation: 5 //TODO: check this
   },
   header: {
+    backgroundImage: {
+      flex: 1,
+      position: 'absolute',
+      resizeMode: 'cover',
+      height: 244
+    },
+    topSpace: {
+      height: 58
+    },
     closeIcon: {
       marginLeft: headerMargin,
       marginTop: 40,
@@ -54,13 +63,15 @@ const styles = {
       alignSelf: 'center',
       marginTop: 8,
       fontSize: 20,
-      color: colors.offBlack
+      color: colors.offBlack,
+      backgroundColor: colors.transparent
     },
     subtitle: {
       alignSelf: 'center',
       marginBottom: 46,
       fontSize: 18,
-      color: colors.grey
+      color: colors.grey,
+      backgroundColor: colors.transparent
     },
   },
   businessDetails: {

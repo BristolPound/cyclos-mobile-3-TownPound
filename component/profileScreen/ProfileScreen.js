@@ -3,7 +3,6 @@ import { View, Image, TouchableHighlight, ListView, ActivityIndicator, Dimension
 import DefaultText from '../DefaultText'
 import Price from '../Price'
 import merge from '../../util/merge'
-import SendMoney from '../SendMoney'
 import ProfileImage from '../profileImage/ProfileImage'
 import {format} from '../../util/date'
 import color from '../../util/colors'
@@ -13,44 +12,23 @@ const buttonHeight= 60
 
 const ProfileScreen = (props) =>
   props.loaded
-   ? <View style={styles.flex}>
-    <ListView
+   ? <ListView
       style= {{flex: 0, maxHeight: Dimensions.get('window').height - buttonHeight}}
       renderHeader={renderHeader(props)}
       dataSource={props.dataSource}
-      renderRow={renderRow}
+      renderRow={props.renderRow || renderRow}
       renderSeparator={renderSeparator}
       renderSectionHeader={renderSectionHeader}
       />
-    <View style={styles.footer}>
-      <SendMoney
-        payeeDisplay={props.name}
-        payeeShortDisplay={props.shortDisplay}/>
-    </View>
-  </View>
   : <ActivityIndicator size='large'/>
 
   const renderHeader = props => () =>
     <View style={styles.flex}>
       <View style={styles.dropshadow}>
-        <View style={styles.rowLayout}>
-          <TouchableHighlight
-            onPress={props.onPressClose}
-            underlayColor={color.white}>
-            <Image
-              style={styles.header.closeIcon}
-              source={require('./Close.png')}
-            />
-          </TouchableHighlight>
-          <TouchableHighlight
-            onPress={props.onPressExpand}
-            underlayColor={color.white}>
-            <Image
-              style={styles.header.expandIcon}
-              source={require('./Expand.png')}
-            />
-          </TouchableHighlight>
-        </View>
+        <Image source={require('./gorilla.png')} style={styles.header.backgroundImage} />
+          { props.isTabItem
+            ? <View style={styles.header.topSpace} />
+            : renderCloseExpandIcons(props)}
         <ProfileImage
           img={props.image}
           style={styles.header.businessLogo}
@@ -61,6 +39,26 @@ const ProfileScreen = (props) =>
       </View>
       {props.renderHeaderExtension()}
     </View>
+
+const renderCloseExpandIcons = (props) =>
+  <View style={styles.rowLayout}>
+    <TouchableHighlight
+        onPress={props.onPressClose}
+        underlayColor={color.white}>
+        <Image
+          style={styles.header.closeIcon}
+          source={require('./Close.png')}
+        />
+      </TouchableHighlight>
+    <TouchableHighlight
+      onPress={props.onPressExpand}
+      underlayColor={color.white}>
+      <Image
+        style={styles.header.expandIcon}
+        source={require('./Expand.png')}
+      />
+    </TouchableHighlight>
+  </View>
 
 const renderRow = (transaction) =>
   <View style={styles.list.rowContainer} key={transaction.transactionNumber}>

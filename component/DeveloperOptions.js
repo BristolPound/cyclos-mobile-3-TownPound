@@ -1,18 +1,11 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { View, ListView } from 'react-native'
+import { ListView } from 'react-native'
 
-import { DisplayAccountOptions } from './Account'
 import * as actions from '../store/reducer/developerOptions'
 import { logout } from '../store/reducer/login'
-
-const onPressChangeServer = props => () => {
-  props.switchBaseUrl()
-  if (props.loggedIn) {
-    props.logout()
-  }
-}
+import { AccountOption } from './meScreen/Account'
 
 const DeveloperOptions = props => {
   let ds = new ListView.DataSource({
@@ -36,11 +29,17 @@ const DeveloperOptions = props => {
     ]
   }, ['Developer Options'])
 
-  return (
-    <View style={{flex: 0}}>
-      <DisplayAccountOptions datasource={ds} />
-    </View>
-  )
+  return <ListView
+    dataSource={ds}
+    renderRow={(accountOption, i) => <AccountOption {...accountOption} index={i}/> }
+    />
+}
+
+export const onPressChangeServer = props => () => {
+  props.switchBaseUrl()
+  if (props.loggedIn) {
+    props.logout()
+  }
 }
 
 const mapStateToProps = state => ({
