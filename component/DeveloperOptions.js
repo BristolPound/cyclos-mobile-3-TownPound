@@ -5,7 +5,7 @@ import { ListView } from 'react-native'
 
 import * as actions from '../store/reducer/developerOptions'
 import { logout } from '../store/reducer/login'
-import { AccountOption } from './meScreen/Account'
+import { AccountOption } from './Account'
 
 const DeveloperOptions = props => {
   let ds = new ListView.DataSource({
