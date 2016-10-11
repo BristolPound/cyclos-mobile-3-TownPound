@@ -7,20 +7,28 @@ import ProfileScreen from './profileScreen/ProfileScreen'
 import BusinessDetails from './businessDetails/BusinessDetails'
 import HTMLView from 'react-native-htmlview'
 import {View} from 'react-native'
+import SendMoney from './SendMoney'
 
 const TraderScreen = ({selectedBusiness, dataSource, showTraderScreen}) =>(
-  <ProfileScreen
-    loaded={selectedBusiness.profilePopulated}
-    image={selectedBusiness.image}
-    category={'shop'}
-    defaultImage={!Boolean(selectedBusiness.image)}
-    name={selectedBusiness.display}
-    username={selectedBusiness.shortDisplay}
-    renderHeaderExtension={renderHeaderExtension(selectedBusiness)}
-    dataSource={dataSource}
-    onPressClose={() => showTraderScreen(false)}
-    onPressExpand={()=> showTraderScreen(false)}
-    />
+  <View style={{flex: 1}}>
+    <ProfileScreen
+      loaded={selectedBusiness.profilePopulated}
+      image={selectedBusiness.image}
+      category={'shop'}
+      defaultImage={!Boolean(selectedBusiness.image)}
+      name={selectedBusiness.display}
+      username={selectedBusiness.shortDisplay}
+      renderHeaderExtension={renderHeaderExtension(selectedBusiness)}
+      dataSource={dataSource}
+      onPressClose={() => showTraderScreen(false)}
+      onPressExpand={()=> showTraderScreen(false)}
+      />
+    <View style={styles.footer}>
+      <SendMoney
+        payeeDisplay={selectedBusiness.name}
+        payeeShortDisplay={selectedBusiness.shortDisplay}/>
+    </View>
+  </View>
 )
 
 const renderHeaderExtension = (selectedBusiness) => () => (
