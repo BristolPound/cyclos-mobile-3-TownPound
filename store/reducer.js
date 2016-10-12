@@ -23,6 +23,8 @@ export const reducer = combineReducers({
   developerOptions,
 })
 
+//TODO: Handle GPS errors
+
 export const initialise = (store) => {
     NetInfo.isConnected.addEventListener(
       'change',
@@ -32,10 +34,10 @@ export const initialise = (store) => {
   store.dispatch(loadBusinessList())
   navigator.geolocation.getCurrentPosition(
     (position) => store.dispatch(updatePosition(position)),
-    () => alert('Cannot get location. Is GPS enabled?')
+    () => {}
   )
   navigator.geolocation.watchPosition(
     (position) => store.dispatch(updatePosition(position)),
-    () => alert('Cannot get location. Is GPS enabled?')
+    () => {}
   )
 }
