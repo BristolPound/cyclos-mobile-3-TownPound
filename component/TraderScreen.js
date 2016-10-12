@@ -7,7 +7,7 @@ import ProfileScreen from './profileScreen/ProfileScreen'
 import BusinessDetails from './businessDetails/BusinessDetails'
 import HTMLView from 'react-native-htmlview'
 import {View} from 'react-native'
-import SendMoney from './SendMoney'
+import SendMoney from './sendMoney/SendMoney'
 
 const TraderScreen = ({selectedBusiness, dataSource, showTraderScreen}) =>(
   <View style={{flex: 1}}>

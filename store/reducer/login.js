@@ -4,14 +4,14 @@ import ApiError, { UNAUTHORIZED_ACCESS } from '../../apiError'
 
 import { clearTransactions } from './developerOptions'
 import { loadAccountDetails } from './account'
+import LOGIN_STATUSES from '../../stringConstants/loginStatus'
 
 const initialState = {
-  loggedIn: false,
-  loginFailed: '',
-  loginInProgress: false,
+  loginStatus: LOGIN_STATUSES.LOGGED_OUT,
+  loginFormOpen: false,
   username: 'testmember',
   password: 'testing123',
-  open: false,
+  failureMessage: ''
 }
 
 export const usernameUpdated = (username) => ({
@@ -19,18 +19,17 @@ export const usernameUpdated = (username) => ({
   username
 })
 
-export const loginInProgress = (loginInProgress) => ({
-  type: 'login/LOGIN_IN_PROGRESS_CHANGED',
-  loginInProgress
+export const loginInProgress = () => ({
+  type: 'login/LOGIN_IN_PROGRESS'
 })
 
 export const loggedIn = () => ({
   type: 'login/LOGGED_IN'
 })
 
-export const loginFailed = (loginFailed) => ({
+export const loginFailed = (message) => ({
   type: 'login/LOGIN_FAILED',
-  loginFailed
+  message
 })
 
 export const passwordUpdated = (password) => ({
@@ -42,18 +41,19 @@ export const loggedOut = () => ({
   type: 'login/LOGGED_OUT'
 })
 
-export const resetForm = () => ({
-  type: 'login/RESET_FORM'
+export const closeLoginForm = () => ({
+  type: 'login/CLOSE_LOGIN_FORM'
 })
 
-export const openForm = () => ({ type: 'login/OPEN_FORM' })
+export const openLoginForm = () => ({
+  type: 'login/OPEN_LOGIN_FORM'
+})
 
 export const login = (username, password) =>
   (dispatch) => {
-      dispatch(loginInProgress(true))
+      dispatch(loginInProgress())
       authenticate(username, password, dispatch)
         .then((sessionToken) => {
-          dispatch(loginInProgress(false))
           if (sessionToken) {
             dispatch(loggedIn())
             //TODO: Should check if same user logging in and clear transactions on log in only if it is a different user
@@ -62,7 +62,6 @@ export const login = (username, password) =>
           }
         })
         .catch (err => {
-          dispatch(loginInProgress(false))
           if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
             switch (err.json.code) {
               case 'loggedOut':
@@ -106,36 +105,37 @@ const reducer = (state = initialState, action) => {
       break
     case 'login/LOGGED_IN':
       state = merge(state, {
-        loggedIn: true
+        loginStatus: LOGIN_STATUSES.LOGGED_IN,
+        loginFormOpen: false
       })
       break
     case 'login/LOGIN_FAILED':
       state = merge(state, {
-        loginFailed: action.loginFailed
+        loginStatus: LOGIN_STATUSES.LOGIN_FAILED,
+        failureMessage: action.message
       })
       break
-    case 'login/LOGIN_IN_PROGRESS_CHANGED':
+    case 'login/LOGIN_IN_PROGRESS':
       state = merge(state, {
-        loginInProgress: action.loginInProgress
+        loginStatus: LOGIN_STATUSES.LOGIN_IN_PROGRESS
       })
       break
     case 'login/LOGGED_OUT':
       state = merge(state, {
-        loggedIn: false,
+        loginStatus: LOGIN_STATUSES.LOGGED_OUT,
         username: 'testmember',
         password: 'testing123'
         // TODO: clear the session token?
       })
       break
-    case 'login/RESET_FORM': {
+    case 'login/OPEN_LOGIN_FORM':
       state = merge(state, {
-        open: false
+        loginFormOpen: true
       })
       break
-    }
-    case 'login/OPEN_FORM':
+    case 'login/CLOSE_LOGIN_FORM':
       state = merge(state, {
-        open: true
+        loginFormOpen: false
       })
       break
   }

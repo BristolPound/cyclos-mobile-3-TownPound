@@ -4,8 +4,9 @@ import { connect } from 'react-redux'
 import { View } from 'react-native'
 
 import InputComponent from './InputComponent'
-import * as actions from '../store/reducer/sendMoney'
-import merge from '../util/merge'
+import * as actions from '../../store/reducer/sendMoney'
+import merge from '../../util/merge'
+import LOGIN_STATUSES from '../../stringConstants/loginStatus'
 
 class SendMoney extends React.Component {
 
@@ -77,6 +78,10 @@ class SendMoney extends React.Component {
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(actions, dispatch)
 
-const mapStateToProps = (state) => ({...state.sendMoney, balance: state.account.balance, loggedIn: state.login.loggedIn})
+const mapStateToProps = (state) => ({
+  ...state.sendMoney,
+  balance: state.account.balance,
+  loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendMoney)
