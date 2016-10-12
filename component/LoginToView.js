@@ -10,12 +10,12 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     padding: 50,
-    backgroundColor: color.grey5
+    backgroundColor: color.gray5
   },
   text: {
     fontFamily: 'MuseoSans-300',
     fontSize: 30,
-    color: color.grey2
+    color: color.gray2
   }
 }
 const LoginToView = () =>

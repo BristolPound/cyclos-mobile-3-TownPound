@@ -11,13 +11,13 @@ const styles = {
   flex: {flex: 1},
   rowLayout: {flexDirection: 'row', justifyContent: 'space-between', flex: 1},
   separator: {
-    borderBottomColor: colors.grey5,
+    borderBottomColor: colors.gray5,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.grey5,
+    borderTopColor: colors.gray5,
     borderTopWidth: StyleSheet.hairlineWidth
   },
   dropshadow: {
-    shadowColor: colors.grey,
+    shadowColor: colors.gray,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 10,
     shadowRadius: 2,
@@ -70,7 +70,7 @@ const styles = {
       alignSelf: 'center',
       marginBottom: 46,
       fontSize: 18,
-      color: colors.grey,
+      color: colors.gray,
       backgroundColor: colors.transparent
     },
   },
@@ -101,7 +101,7 @@ const styles = {
       fontFamily: museo100,
       fontSize: 16,
       alignSelf: 'center',
-      color: colors.grey
+      color: colors.gray
     },
     price: {
       flex: 1,
@@ -109,7 +109,7 @@ const styles = {
       alignSelf: 'center'
     },
     sectionBorder: {
-      borderColor: colors.grey5,
+      borderColor: colors.gray5,
       borderWidth: StyleSheet.hairlineWidth,
     },
     sectionHeader: {
@@ -117,7 +117,7 @@ const styles = {
       flexDirection: 'row'
     },
     sectionHeaderText: {
-      color: colors.grey3,
+      color: colors.gray3,
       fontSize: 14,
       marginLeft: listMargin,
       marginTop: 10,
@@ -125,12 +125,12 @@ const styles = {
     },
     separator: {
       marginLeft: listMargin,
-      borderColor: colors.grey5,
+      borderColor: colors.gray5,
       borderWidth: StyleSheet.hairlineWidth
     }
   },
   footer: {
-    borderTopColor: colors.grey5,
+    borderTopColor: colors.gray5,
     borderTopWidth: StyleSheet.hairlineWidth,
     backgroundColor: colors.offWhite,
     flex: 1,

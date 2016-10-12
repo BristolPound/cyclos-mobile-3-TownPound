@@ -49,9 +49,9 @@ const styles = {
     marginRight: 10
   },
   headerContainer: {
-    borderBottomColor: color.grey5,
+    borderBottomColor: color.gray5,
     borderBottomWidth: 1,
-    borderTopColor: color.grey5,
+    borderTopColor: color.gray5,
     borderTopWidth: 1,
     height: 34,
     backgroundColor: color.offWhite,
@@ -60,7 +60,7 @@ const styles = {
   sectionHeader: {
     fontFamily: museo700,
     fontSize: 14,
-    color: color.grey2,
+    color: color.gray2,
     marginLeft: 14,
     marginBottom: 10,
     alignSelf: 'flex-end'
@@ -68,7 +68,7 @@ const styles = {
   separator: {
     marginLeft: 61,
     marginRight: 0,
-    borderBottomColor: color.grey5,
+    borderBottomColor: color.gray5,
     borderBottomWidth: 1
   },
   flex: {
@@ -116,9 +116,9 @@ export const headerStyles = {
     elevation: 5
   },
   monthlyOption: [
-    merge(defaultMonthlyOptionText, { color: color.grey }),
-    merge(defaultMonthlyOptionText, { color: color.grey2 }),
-    merge(defaultMonthlyOptionText, { color: color.grey3 })
+    merge(defaultMonthlyOptionText, { color: color.gray }),
+    merge(defaultMonthlyOptionText, { color: color.gray2 }),
+    merge(defaultMonthlyOptionText, { color: color.gray3 })
   ],
   container: {
     top: 38
