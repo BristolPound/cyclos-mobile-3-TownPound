@@ -22,7 +22,7 @@ const NavBar = props =>
             style={navBarStyle.textContainer}
             onPress={() => props.goToPage(i)}
             underlayColor={color.transparent}>
-          <Text style={merge(navBarStyle.text, {color: props.activeTab === i ? color.bristolBlue : color.grey})}>{tab}</Text>
+          <Text style={merge(navBarStyle.text, {color: props.activeTab === i ? color.bristolBlue : color.gray})}>{tab}</Text>
         </TouchableHighlight>
       </View>
     )}

@@ -30,7 +30,7 @@ const styles = {
   },
   textBelowInput: {
     height: sectionHeight,
-    backgroundColor: color.grey4,
+    backgroundColor: color.gray4,
     alignItems: 'center',
     justifyContent: 'center',
     width: width
@@ -69,7 +69,7 @@ class InputComponent extends React.Component {
     return <View style={styles.container}>
       <TouchableHighlight
           onPress={() => !invalidInput && onButtonPress ? onButtonPress() : undefined }>
-        <View style={merge(styles.buttonContainer, invalidInput ? {backgroundColor: color.grey} : {})}>
+        <View style={merge(styles.buttonContainer, invalidInput ? {backgroundColor: color.gray} : {})}>
           <View style={{flexDirection: 'row'}}>
             <DefaultText style={{color: 'white'}}>
               {buttonText}
