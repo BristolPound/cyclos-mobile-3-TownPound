@@ -5,7 +5,8 @@ import DefaultText from '../DefaultText'
 import Price from '../Price'
 import { connect } from 'react-redux'
 import color from '../../util/colors'
-import { openForm } from '../../store/reducer/login'
+import { openLoginForm } from '../../store/reducer/login'
+import LOGIN_STATUSES from '../../stringConstants/loginStatus'
 
 const TAB_BAR_HEIGHT = 45
 const BASELINE = 9
@@ -127,11 +128,11 @@ const TabBar = (props) =>
 
 
 const mapStateToProps = (state) => ({
-  loggedIn: state.login.loggedIn,
+  loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
   balance: state.account.balance
 })
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({openLogin: openForm}, dispatch)
+  bindActionCreators({openLogin: openLoginForm}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TabBar)

@@ -6,7 +6,7 @@ const initialState = {
   loadingBalance: true,
   loadingDetails: true,
   balance: undefined,
-  details: undefined,
+  details: {},
 }
 
 export const accountBalanceReceived = account => ({
@@ -14,7 +14,7 @@ export const accountBalanceReceived = account => ({
   account
 })
 
-export const accountDetailsReceived = details => ({
+const accountDetailsReceived = details => ({
   type: 'account/ACCOUNT_DETAILS_RECEIVED',
   details
 })

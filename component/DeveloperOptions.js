@@ -6,6 +6,7 @@ import { ListView } from 'react-native'
 import * as actions from '../store/reducer/developerOptions'
 import { logout } from '../store/reducer/login'
 import { AccountOption } from './Account'
+import LOGIN_STATUSES from '../stringConstants/loginStatus'
 
 const DeveloperOptions = props => {
   let ds = new ListView.DataSource({
@@ -43,7 +44,7 @@ export const onPressChangeServer = props => () => {
 }
 
 const mapStateToProps = state => ({
-  loggedIn: state.login.loggedIn,
+  loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
   reloadingBusinesses: state.business.refreshing,
   reloadingTransactions: state.transaction.loadingTransactions,
   usingProdServer: state.developerOptions.prodServer

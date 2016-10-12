@@ -1,8 +1,8 @@
 import React from 'react'
 import { View, TextInput, TouchableHighlight, ActivityIndicator, Dimensions, Keyboard } from 'react-native'
-import DefaultText from './DefaultText'
-import color from '../util/colors'
-import merge from '../util/merge'
+import DefaultText from '../DefaultText'
+import color from '../../util/colors'
+import merge from '../../util/merge'
 
 const { width } = Dimensions.get('window')
 const sectionHeight = 40
