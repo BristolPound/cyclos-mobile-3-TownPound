@@ -39,7 +39,7 @@ class Login extends React.Component {
           input: {
             keyboardType: 'default',
             value: this.props.state.username,
-            placeholder: 'Username',
+            placeholder: 'username',
             onChangeText: this.props.usernameUpdated,
           },
           invalidInput: this.props.state.username.trim().length === 0,
