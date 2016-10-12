@@ -83,7 +83,10 @@ class InputComponent extends React.Component {
       </TouchableHighlight>
 
       { input
-        ? <TextInput style={styles.textInput} {...input} autoFocus={true} />
+        ? <TextInput style={styles.textInput}
+              {...input}
+              autoFocus={true}
+              accessibilityLabel={input.placeholder} />
         : undefined }
 
       {textBelowInput
