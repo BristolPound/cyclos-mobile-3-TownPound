@@ -2,19 +2,10 @@ import React from 'react'
 import { ListView, Animated, Easing, View } from 'react-native'
 import BusinessListItem from './BusinessListItem'
 import { bindActionCreators } from 'redux'
-import merge from '../util/merge'
+import merge from '../../util/merge'
 import { connect } from 'react-redux'
-import DefaultText from './DefaultText'
-import * as actions from '../store/reducer/business'
-
-const style = {
-  invisible: {
-    height: 0
-  },
-  visible: {
-    backgroundColor: 'white'
-  }
-}
+import DefaultText from '../DefaultText'
+import * as actions from '../../store/reducer/business'
 
 const renderSectionHeader = (props) =>
     (sectionData, sectionId) => {
@@ -22,9 +13,9 @@ const renderSectionHeader = (props) =>
         const headingMessage = sectionData.length
           ? sectionId
           : 'No businesses in this area'
-        return <DefaultText style={style.visible}>{headingMessage}</DefaultText>
+        return <DefaultText>{headingMessage}</DefaultText>
       }
-      return <View style={style.invisible}/>
+      return <View/>
     }
 
 
@@ -79,7 +70,7 @@ class BusinessList extends React.Component {
   }
 
   componentWillMount() {
-    if (!this.props.style.position || this.props.style.position !== 'absolute') {
+    if (this.props.style.position !== 'absolute') {
       throw new Error('The ExpandoList component must be absolute positioned')
     }
   }

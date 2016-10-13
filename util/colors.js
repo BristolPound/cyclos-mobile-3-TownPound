@@ -1,4 +1,4 @@
-const color = {
+const colors = {
   darkBlue: '#46ABA8',
   bristolBlue: '#158ACB',
   bristolBlue2: '#3AA3D2',
@@ -21,4 +21,4 @@ const color = {
   transparent: '#00000000'
 }
 
-export default color
+export default colors

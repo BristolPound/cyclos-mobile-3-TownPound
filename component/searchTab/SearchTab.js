@@ -4,31 +4,12 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import BackgroundMap from './BackgroundMap'
 import BusinessList from './BusinessList'
-import * as actions from '../store/reducer/business'
-
-const ROW_HEIGHT = 71
-const VISIBLE_ROWS = 3
-const SEARCH_BAR_HEIGHT = 50
-const MARGIN_SIZE = 20
-
-const style = {
-  businessList: {
-    position: 'absolute',
-    top: MARGIN_SIZE + SEARCH_BAR_HEIGHT,
-    left: MARGIN_SIZE,
-    right: MARGIN_SIZE,
-    bottom: MARGIN_SIZE
-  },
-  searchBar: {
-    height: SEARCH_BAR_HEIGHT,
-    margin: MARGIN_SIZE,
-    backgroundColor: 'white',
-    flexDirection: 'row'
-  }
-}
+import * as actions from '../../store/reducer/business'
+import { TRADER_LIST_ROW_HEIGHT, DOCKED_LIST_VISIBLE_ROWS } from './constants'
+import styles from './SearchTabStyle'
 
 const computeListHeight = (dataSource) =>
-  Math.min(VISIBLE_ROWS, dataSource.getRowCount()) * ROW_HEIGHT
+  Math.min(DOCKED_LIST_VISIBLE_ROWS, dataSource.getRowCount()) * TRADER_LIST_ROW_HEIGHT
 
 class SearchTab extends React.Component {
   constructor() {
@@ -43,7 +24,7 @@ class SearchTab extends React.Component {
     return (
       <View style={{flex: 1}}>
         <BackgroundMap/>
-        <View style={style.searchBar}>
+        <View style={styles.searchTab.searchBar}>
           <TextInput
               ref={(ref) => this.searchBarRef = ref}
               style={{ flex: 7}}
@@ -57,8 +38,8 @@ class SearchTab extends React.Component {
         </View>
         <BusinessList
             compactHeight={computeListHeight(this.props.business.dataSource)}
-            expandOnScroll={this.props.business.dataSource.getRowCount() > VISIBLE_ROWS}
-            style={style.businessList}/>
+            expandOnScroll={this.props.business.dataSource.getRowCount() > DOCKED_LIST_VISIBLE_ROWS}
+            style={styles.searchTab.list}/>
       </View>
     )
   }

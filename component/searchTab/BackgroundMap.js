@@ -4,9 +4,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { StyleSheet } from 'react-native'
 import _ from 'lodash'
-import * as actions from '../store/reducer/business'
-
-const DEBOUNCE_DURATION = 50
+import * as actions from '../../store/reducer/business'
+import { MAP_PAN_DEBOUNCE_DURATION } from './constants'
 
 class BackgroundMap extends React.Component {
   constructor() {
@@ -23,14 +22,14 @@ class BackgroundMap extends React.Component {
     return (
       <MapView style={{...StyleSheet.absoluteFillObject}}
           region={this.panned ? undefined : this.props.mapViewport}
-          onRegionChange={_.debounce(this.updateViewport.bind(this), DEBOUNCE_DURATION)}>
+          onRegionChange={_.debounce(this.updateViewport.bind(this), MAP_PAN_DEBOUNCE_DURATION)}>
         {this.props.businessList
-          ?  this.props.businessList.filter(b => b.address)
+          ? this.props.businessList.filter(b => b.address)
               .map(b =>
-                  <MapView.Marker key={b.id}
-                      coordinate={b.address.location}
-                      onPress={() => this.updateViewport(b.address.location)}/>
-                    )
+                <MapView.Marker key={b.id}
+                    coordinate={b.address.location}
+                    onPress={() => this.updateViewport(b.address.location)}/>
+              )
           : undefined}
       </MapView>
     )

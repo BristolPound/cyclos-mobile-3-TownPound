@@ -7,7 +7,7 @@ import * as actions from '../store/reducer/navigation'
 import { resetForm } from '../store/reducer/login'
 
 import TabBar from './tabbar/TabBar'
-import SearchTab from './SearchTab'
+import SearchTab from './searchTab/SearchTab'
 import NetworkConnection from './NetworkConnection'
 import TransactionList from './spending/TransactionList'
 import Account from './Account'
