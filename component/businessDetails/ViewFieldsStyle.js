@@ -4,7 +4,7 @@ const styles = {
   container: {
     marginBottom: 18
   },
-  row: {
+  field: {
     flexDirection: 'row',
     paddingTop: 1,
     backgroundColor: colors.white,
@@ -18,12 +18,16 @@ const styles = {
     marginTop: 1,
     marginRight:16
   },
+  item: {
+    flexDirection:'column',
+    flex: 1
+  },
   text: {
     flex:1,
     fontSize: 16,
     color: colors.gray1,
     flexWrap: 'wrap'
-  }
+  },
 }
 
 export default styles
