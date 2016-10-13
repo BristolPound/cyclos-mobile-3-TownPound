@@ -81,14 +81,16 @@ const Tabs = (props) => {
   return (
     <View style={style.tabs}>
       {props.dialogOpen
-        ? <TouchableHighlight
+      ? <View style={style.flex}>
+          <TouchableHighlight
               style={merge(style.flex, style.backgroundView)}
-            onPress={() => props.closeLoginForm()}
+              onPress={() => props.closeLoginForm()}
               underlayColor={color.transparent}>
             {content}
           </TouchableHighlight>
-        : content}
-      <Login />
+          <Login />
+        </View>
+      : content}
     </View> )
 }
 
