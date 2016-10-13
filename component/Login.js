@@ -31,7 +31,9 @@ const style = {
   input: {
     height: 68,
     fontSize: 20,
-    color: colors.bristolBlue
+    color: colors.bristolBlue,
+    backgroundColor: 'white',
+    textAlign: 'center'
   },
   separatorBelow: {
     borderBottomWidth: 1,
