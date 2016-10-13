@@ -125,7 +125,9 @@ export const getBusinesses = (dispatch) =>
   })
 
 export const getBusinessProfile = (businessId, dispatch) =>
-  get('users/' + businessId, {}, dispatch)
+  get('users/' + businessId, {
+    fields: ['id', 'customValues']
+  }, dispatch)
 
 // person can be an id or a username
 // 1. add contact
