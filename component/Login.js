@@ -1,7 +1,7 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { View, TouchableOpacity, TextInput } from 'react-native'
+import { View, TouchableOpacity, TextInput, Keyboard } from 'react-native'
 import DefaultText from './DefaultText'
 import Platform from 'Platform'
 import colors from '../util/colors'
@@ -41,13 +41,37 @@ const style = {
 
 //TODO: make it focus username field again on second log in
 class Login extends React.Component {
+  constructor() {
+    super()
+    this.state = { keyboardHeight: 0 }
+    // On iOS the keyboard is overlaid on top of the content,
+    // while on android everything is moved up to make space
+    if (Platform.OS === 'ios') {
+      this.keyboardShowListener = Keyboard.addListener(
+        'keyboardDidShow',
+        (e) => this.setState({ keyboardHeight: e.endCoordinates.height })
+      )
+      this.keyboardHideListener = Keyboard.addListener(
+        'keyboardDidHide',
+        () => this.setState({ keyboardHeight: 0 })
+      )
+    }
+  }
+
+  ComponentWillUnmount() {
+    if (Platform.OS === 'ios') {
+      this.keyboardShowListener.remove()
+      this.keyboardHideListener.remove()
+    }
+  }
+
   selectPasswordField() {
     this.passwordInputRef.focus()
   }
 
   render() {
     return (
-      <View style={Platform.OS === 'ios' ? style.containerIOS : style.containerAndroid}>
+      <View style={{ bottom: this.state.keyboardHeight }}>
         <TouchableOpacity style={style.loginButton}
             onPress={() => this.props.login(this.props.username, this.props.password)}>
           <DefaultText style={style.loginButtonText}>Log in</DefaultText>
