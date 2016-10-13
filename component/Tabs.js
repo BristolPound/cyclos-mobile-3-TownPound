@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, StatusBar, TouchableHighlight, Modal } from 'react-native'
+import { View, TouchableHighlight, Modal } from 'react-native'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -37,7 +37,6 @@ const style = {
 const Tabs = (props) => {
   const content =
     <View style={merge(style.flex, props.dialogOpen ? { margin: 20 } : {})}>
-      <StatusBar barStyle='light-content'/>
       <ScrollableTabView
           renderTabBar={() => props.dialogOpen ? <View style={{ height: 0 }}/> : <TabBar/>}
           tabBarPosition='bottom'
