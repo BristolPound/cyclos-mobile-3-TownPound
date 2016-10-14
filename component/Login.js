@@ -6,17 +6,10 @@ import DefaultText from './DefaultText'
 import Platform from 'Platform'
 import colors from '../util/colors'
 import merge from '../util/merge'
-
 import * as actions from '../store/reducer/login'
+import PLATFORMS from '../stringConstants/platforms'
 
 const style = {
-  containerIOS: {
-    position: 'absolute',
-    bottom: 216
-  },
-  containerAndroid: {
-    bottom: 0
-  },
   loginButton: {
     flex: 1,
     height: 68,
@@ -48,7 +41,7 @@ class Login extends React.Component {
     this.state = { keyboardHeight: 0 }
     // On iOS the keyboard is overlaid on top of the content,
     // while on android everything is moved up to make space
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === PLATFORMS.IOS) {
       this.keyboardShowListener = Keyboard.addListener(
         'keyboardDidShow',
         (e) => this.setState({ keyboardHeight: e.endCoordinates.height })
@@ -60,8 +53,8 @@ class Login extends React.Component {
     }
   }
 
-  ComponentWillUnmount() {
-    if (Platform.OS === 'ios') {
+  componentWillUnmount() {
+    if (Platform.OS === PLATFORMS.IOS) {
       this.keyboardShowListener.remove()
       this.keyboardHideListener.remove()
     }
