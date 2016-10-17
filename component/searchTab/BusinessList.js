@@ -3,6 +3,7 @@ import { ListView, Animated, Easing, View } from 'react-native'
 import BusinessListItem from './BusinessListItem'
 import { bindActionCreators } from 'redux'
 import merge from '../../util/merge'
+import style from '../style'
 import { connect } from 'react-redux'
 import ExpandBusinessListButton from './ExpandBusinessListButton'
 import * as actions from '../../store/reducer/business'
@@ -104,6 +105,7 @@ class BusinessList extends React.Component {
         <ListView
             ref='listView'
             pageSize={10}
+            style={style.shadow}
             showsVerticalScrollIndicator={false}
             scrollEnabled={this.props.expandOnScroll || (!this.props.expandOnScroll && this.props.business.businessListExpanded)}
             onScroll={this.onScroll.bind(this)}
