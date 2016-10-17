@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TextInput, TouchableHighlight, Text } from 'react-native'
+import { View, TextInput, } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import BackgroundMap from './BackgroundMap'
@@ -30,11 +30,6 @@ class SearchTab extends React.Component {
               style={{ flex: 7}}
               onFocus={() => this.props.enableSearchMode(true)}
               onBlur={() => this.props.enableSearchMode(false)}/>
-            <TouchableHighlight
-                style={{ flex: 1 }}
-                onPress={this.closeButtonPressed.bind(this)}>
-              <Text>X</Text>
-            </TouchableHighlight>
         </View>
         <BusinessList
             compactHeight={computeListHeight(this.props.business.dataSource)}

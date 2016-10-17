@@ -43,19 +43,11 @@ const ProfileScreen = (props) =>
 const renderCloseExpandIcons = (props) =>
   <View style={styles.rowLayout}>
     <TouchableHighlight
-        onPress={props.onPressClose}
-        underlayColor={color.white}>
-        <Image
-          style={styles.header.closeIcon}
-          source={require('./Close.png')}
-        />
-      </TouchableHighlight>
-    <TouchableHighlight
-      onPress={props.onPressExpand}
+      onPress={props.onPressClose}
       underlayColor={color.white}>
       <Image
-        style={styles.header.expandIcon}
-        source={require('./Expand.png')}
+        style={styles.header.closeIcon}
+        source={require('./Close.png')}
       />
     </TouchableHighlight>
   </View>
