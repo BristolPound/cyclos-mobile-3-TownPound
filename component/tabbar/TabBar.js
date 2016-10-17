@@ -5,6 +5,8 @@ import DefaultText from '../DefaultText'
 import Price from '../Price'
 import { connect } from 'react-redux'
 import color from '../../util/colors'
+import merge from '../../util/merge'
+import commonStyle from '../style'
 import { openLoginForm } from '../../store/reducer/login'
 import LOGIN_STATUSES from '../../stringConstants/loginStatus'
 
@@ -17,13 +19,6 @@ const MAGIC_NUMBER = 6
 const style = {
   tabBar: {
     height: TAB_BAR_HEIGHT,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    shadowOffset: {
-      width: 0,
-      height: -2
-    },
     flexDirection: 'row',
     alignItems: 'stretch'
   },
@@ -89,7 +84,7 @@ const TABS = [
 ]
 
 const TabBar = (props) =>
-  <View style={style.tabBar}>
+  <View style={merge(style.tabBar, commonStyle.shadow)}>
     {TABS.map((tab, index) =>
       <View style={style.centerChildren} key={index}>
         <TouchableHighlight
