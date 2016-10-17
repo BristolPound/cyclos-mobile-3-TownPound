@@ -4,19 +4,8 @@ import BusinessListItem from './BusinessListItem'
 import { bindActionCreators } from 'redux'
 import merge from '../../util/merge'
 import { connect } from 'react-redux'
-import DefaultText from '../DefaultText'
+import ExpandBusinessListButton from './ExpandBusinessListButton'
 import * as actions from '../../store/reducer/business'
-
-const renderSectionHeader = (props) =>
-    (sectionData, sectionId) => {
-      if (props.business.searchMode) {
-        const headingMessage = sectionData.length
-          ? sectionId
-          : 'No businesses in this area'
-        return <DefaultText>{headingMessage}</DefaultText>
-      }
-      return <View/>
-    }
 
 
 class BusinessList extends React.Component {
@@ -116,11 +105,17 @@ class BusinessList extends React.Component {
             ref='listView'
             pageSize={10}
             showsVerticalScrollIndicator={false}
+            scrollEnabled={this.props.expandOnScroll || (!this.props.expandOnScroll && this.props.business.businessListExpanded)}
             onScroll={this.onScroll.bind(this)}
             scrollEventThrottle={16}
             dataSource={this.props.business.dataSource}
             renderRow={(business) => <BusinessListItem business={business}/>}
-            renderSectionHeader={renderSectionHeader(this.props)}
+            renderSectionHeader={() =>
+              (!this.props.expandOnScroll && this.props.expandable)
+                ? <ExpandBusinessListButton
+                    onPress={() => this.props.expandBusinessList(!this.props.business.businessListExpanded)}/>
+                : <View/>
+            }
             enableEmptySections={true}/>
       </Animated.View>
     )

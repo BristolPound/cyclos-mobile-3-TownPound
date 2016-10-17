@@ -5,7 +5,8 @@ import { bindActionCreators } from 'redux'
 import { StyleSheet } from 'react-native'
 import _ from 'lodash'
 import * as actions from '../../store/reducer/business'
-import { MAP_PAN_DEBOUNCE_DURATION } from './constants'
+
+const MAP_PAN_DEBOUNCE_DURATION = 50
 
 class BackgroundMap extends React.Component {
   constructor() {
