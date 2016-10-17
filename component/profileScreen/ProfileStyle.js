@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native'
 import colors from '../../util/colors'
 
-const museo500 = 'MuseoSans-300'// TODO: change to 'MuseoSans-500'
-const museo100 = 'MuseoSans-300'// TODO: change to 'MuseoSans-100'
+const museo500 = 'MuseoSans-300' // TODO: change to 'MuseoSans-500'
+const museo100 = 'MuseoSans-300' // TODO: change to 'MuseoSans-100'
 
 const headerMargin = 24
 const listMargin = 14
@@ -79,8 +79,19 @@ const styles = {
       marginLeft: headerMargin,
       marginRight: headerMargin,
       marginTop: 18,
-      marginBottom:0
+      marginBottom: 18
     }
+  },
+  minorButton: {
+    text: {
+      fontFamily: museo500,
+      alignSelf: 'center',
+      color: colors.bristolBlue,
+      backgroundColor: colors.transparent,
+      fontSize: 14,
+      marginTop: 10,
+      marginBottom: 10,
+    },
   },
   list: {
     rowContainer: {

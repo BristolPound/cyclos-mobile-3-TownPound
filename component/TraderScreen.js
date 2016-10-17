@@ -5,47 +5,45 @@ import * as actions from '../store/reducer/navigation'
 import styles from './profileScreen/ProfileStyle'
 import ProfileScreen from './profileScreen/ProfileScreen'
 import BusinessDetails from './businessDetails/BusinessDetails'
-import HTMLView from 'react-native-htmlview'
 import {View} from 'react-native'
 import SendMoney from './sendMoney/SendMoney'
 
-const TraderScreen = ({selectedBusiness, dataSource, showTraderScreen}) =>(
-  <View style={{flex: 1}}>
-    <ProfileScreen
-      loaded={selectedBusiness.profilePopulated}
-      image={selectedBusiness.image}
-      category={'shop'}
-      defaultImage={!Boolean(selectedBusiness.image)}
-      name={selectedBusiness.display}
-      username={selectedBusiness.shortDisplay}
-      renderHeaderExtension={renderHeaderExtension(selectedBusiness)}
-      dataSource={dataSource}
-      onPressClose={() => showTraderScreen(false)}
-      onPressExpand={()=> showTraderScreen(false)}
-      />
-    <View style={styles.footer}>
-      <SendMoney
-        payeeDisplay={selectedBusiness.name}
-        payeeShortDisplay={selectedBusiness.shortDisplay}/>
-    </View>
-  </View>
-)
-
-const renderHeaderExtension = (selectedBusiness) => () => (
-  <View style={styles.dropshadow}>
-     <BusinessDetails business={selectedBusiness}/>
-    {selectedBusiness.description ? <View style={styles.separator}/> : null}
-    {selectedBusiness.description
-      ? <View style={styles.businessDetails.description}>
-          <HTMLView value={selectedBusiness.description}/>
+/**
+ Where
+    trader: selectedBusiness
+    dataSource: for trader transactions
+    showTraderScreen: callback for opening or closing this view.
+ */
+const TraderScreen = ({ trader, transactionsDataSource, showTraderScreen }) =>
+    <View style={{flex: 1}}>
+        <ProfileScreen
+            loaded={trader.profilePopulated}
+            image={trader.image}
+            category={'shop'}
+            defaultImage={!Boolean(trader.image)}
+            name={trader.display}
+            username={trader.shortDisplay}
+            renderHeaderExtension={renderHeaderExtension(trader, transactionsDataSource)}
+            dataSource={transactionsDataSource}
+            onPressClose={() => showTraderScreen(false)}
+            onPressExpand={()=> showTraderScreen(false)}
+        />
+        <View style={styles.footer}>
+            <SendMoney
+                payeeDisplay={trader.name}
+                payeeShortDisplay={trader.shortDisplay}/>
         </View>
-      : null }
-  </View>
-)
+    </View>
 
+const renderHeaderExtension = (trader, transactionsDataSource) => () =>
+    <View style={styles.dropshadow}>
+        <BusinessDetails business={trader} isExpanded={transactionsDataSource.getRowCount() === 0}/>
+    </View>
+
+// Redux Setup
 const mapStateToProps = (state) => ({
-  selectedBusiness: state.business.businessList.find(b => b.id === state.business.selectedBusinessId),
-  dataSource: state.business.traderTransactionsDataSource
+    trader: state.business.businessList.find(b => b.id === state.business.selectedBusinessId),
+    transactionsDataSource: state.business.traderTransactionsDataSource, // ListView.DataSource
 })
 
 const mapDispatchToProps = (dispatch) =>
