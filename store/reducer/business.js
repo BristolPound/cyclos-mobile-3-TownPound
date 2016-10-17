@@ -12,6 +12,7 @@ const initialState = {
   visibleBusinesses: [],
   businessListExpanded: false,
   selectedBusinessId: undefined,
+  selectedMarker: undefined,
   dataSource: new ListView.DataSource({
     rowHasChanged: (a, b) => a.shortDisplay !== b.shortDisplay,
     sectionHeaderHasChanged: (a, b) => a !== b
@@ -28,6 +29,11 @@ const initialState = {
     sectionHeaderHasChanged: (a, b) => a !== b
   })
 }
+
+export const selectMarker = (businessId) => ({
+  type: 'business/SELECT_MARKER',
+  businessId
+})
 
 export const expandBusinessList = (expand) => ({
   type: 'business/EXPAND_BUSINESS_LIST',
@@ -207,6 +213,10 @@ const reducer = (state = initialState, action) => {
         traderTransactionsDataSource: state.traderTransactionsDataSource.cloneWithRows([])
       })
       break
+    case 'business/SELECT_MARKER':
+      state = merge(state, {
+        selectedMarker: action.businessId
+      })
   }
   return state
 }
