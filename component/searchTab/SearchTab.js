@@ -1,15 +1,21 @@
 import React from 'react'
-import { View, TextInput, } from 'react-native'
+import { View, TextInput, TouchableHighlight, Text, Platform } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import BackgroundMap from './BackgroundMap'
 import BusinessList from './BusinessList'
 import * as actions from '../../store/reducer/business'
-import { TRADER_LIST_ROW_HEIGHT, DOCKED_LIST_VISIBLE_ROWS } from './constants'
 import styles from './SearchTabStyle'
 
+const DOCKED_LIST_VISIBLE_ROWS = 3
+
+// For Android devices, the scroll-to-expand behaviour is problematic. So instead
+// we fall back to a simpler interaction model.
+const EXPANDABLE_LIST = Platform.OS === 'ios'
+
 const computeListHeight = (dataSource) =>
-  Math.min(DOCKED_LIST_VISIBLE_ROWS, dataSource.getRowCount()) * TRADER_LIST_ROW_HEIGHT
+  Math.min(DOCKED_LIST_VISIBLE_ROWS, dataSource.getRowCount()) * styles.listItem.container.height +
+  (EXPANDABLE_LIST ? 0 : styles.expandHeader.container.height)
 
 class SearchTab extends React.Component {
   constructor() {
@@ -30,10 +36,16 @@ class SearchTab extends React.Component {
               style={{ flex: 7}}
               onFocus={() => this.props.enableSearchMode(true)}
               onBlur={() => this.props.enableSearchMode(false)}/>
+            <TouchableHighlight
+                style={{ flex: 1 }}
+                onPress={this.closeButtonPressed.bind(this)}>
+              <Text>X</Text>
+            </TouchableHighlight>
         </View>
         <BusinessList
             compactHeight={computeListHeight(this.props.business.dataSource)}
-            expandOnScroll={this.props.business.dataSource.getRowCount() > DOCKED_LIST_VISIBLE_ROWS}
+            expandable={this.props.business.dataSource.getRowCount() > DOCKED_LIST_VISIBLE_ROWS}
+            expandOnScroll={EXPANDABLE_LIST}
             style={styles.searchTab.list}/>
       </View>
     )
