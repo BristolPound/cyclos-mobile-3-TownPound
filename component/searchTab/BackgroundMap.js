@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux'
 import { StyleSheet } from 'react-native'
 import _ from 'lodash'
 import * as actions from '../../store/reducer/business'
+import colors from '../../util/colors'
 
 const MAP_PAN_DEBOUNCE_DURATION = 50
 
@@ -20,6 +21,10 @@ class BackgroundMap extends React.Component {
     this.props.updateMapViewport(...args)
   }
 
+  selectMarker(id, location) {
+    this.props.selectMarker(id)
+    this.updateViewport(location)
+  }
   render() {
     // on Android devices, if you update the region to the current location while panning
     // the UI becomes 'jumpy'. For this reason, this 'hack' is used to ensure that
@@ -35,9 +40,13 @@ class BackgroundMap extends React.Component {
         {this.props.businessList
           ? this.props.businessList.filter(b => b.address)
               .map(b =>
-                <MapView.Marker key={b.id}
-                    coordinate={b.address.location}
-                    onPress={() => this.updateViewport(b.address.location)}/>
+                <MapView.Marker
+                  key={b.id}
+                  coordinate={b.address.location}
+                  onPress={() => { this.selectMarker(b.id, b.address.location) }} // THIS IS ONLY WORKING ON ANDROID: https://github.com/airbnb/react-native-maps/issues/286
+                  onSelect={() => { this.selectMarker(b.id, b.address.location) }} // THIS ONLY WORKS ON iOS
+                  pinColor={this.props.selectedMarker === b.id ? colors.bristolBlue : colors.gray}
+                  />
               )
           : undefined}
       </MapView>
