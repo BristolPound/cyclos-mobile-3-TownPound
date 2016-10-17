@@ -11,11 +11,15 @@ const DOCKED_LIST_VISIBLE_ROWS = 3
 
 // For Android devices, the scroll-to-expand behaviour is problematic. So instead
 // we fall back to a simpler interaction model.
-const EXPANDABLE_LIST = Platform.OS === 'ios'
+const EXPAND_VIA_SCROLL = Platform.OS === 'ios'
 
 const computeListHeight = (dataSource) =>
+  // the compact list shows up to 3 rows
   Math.min(DOCKED_LIST_VISIBLE_ROWS, dataSource.getRowCount()) * styles.listItem.container.height +
-  (EXPANDABLE_LIST ? 0 : styles.expandHeader.container.height)
+  // and optionally the exapnd header
+  (!EXPAND_VIA_SCROLL && dataSource.getRowCount() > DOCKED_LIST_VISIBLE_ROWS
+    ? styles.expandHeader.container.height
+    : 0)
 
 class SearchTab extends React.Component {
   constructor() {
@@ -33,7 +37,7 @@ class SearchTab extends React.Component {
         <BusinessList
             compactHeight={computeListHeight(this.props.business.dataSource)}
             expandable={this.props.business.dataSource.getRowCount() > DOCKED_LIST_VISIBLE_ROWS}
-            expandOnScroll={EXPANDABLE_LIST}
+            expandOnScroll={EXPAND_VIA_SCROLL}
             style={styles.searchTab.list}/>
         <View style={styles.searchTab.searchBar}/>
       </View>
