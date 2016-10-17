@@ -6,6 +6,8 @@ import merge from '../../util/merge'
 import { getBusinesses, getBusinessProfile } from '../../api'
 import { sortTransactions, groupTransactionsByDate } from '../../util/transaction'
 
+const DEFAULT_LOCATION =  { latitude: 51.4684055, longitude:  -2.7307918 } // Bristol according to Google maps
+
 const initialState = {
   businessList: [],
   businessListTimestamp: null,
@@ -18,8 +20,7 @@ const initialState = {
     sectionHeaderHasChanged: (a, b) => a !== b
   }),
   mapViewport: {
-    latitude: 51.455,
-    longitude: -2.588,
+    ...DEFAULT_LOCATION,
     latitudeDelta: 0.01,
     longitudeDelta: 0.01
   },
