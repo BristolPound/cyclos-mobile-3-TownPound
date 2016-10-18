@@ -16,7 +16,6 @@ const initialState = {
     rowHasChanged: (a, b) => a.shortDisplay !== b.shortDisplay,
     sectionHeaderHasChanged: (a, b) => a !== b
   }),
-  userLocation: { latitude: 51.455, longitude:  -2.588 },
   mapViewport: {
     latitude: 51.455,
     longitude: -2.588,
@@ -152,18 +151,20 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'business/UPDATE_MAP_VIEWPORT':
-      const newViewport = merge(state.mapViewport, action.viewport)
-      const sorted = _.sortBy(state.businessList, distanceFromPosition(newViewport))
-      const filtered = sorted.filter(isWithinViewport(newViewport))
+      const sorted = _.sortBy(state.businessList, distanceFromPosition(action.viewport))
+      const filtered = sorted.filter(isWithinViewport(action.viewport))
       state = merge(state, {
         dataSource: state.dataSource.cloneWithRows(filtered),
-        mapViewport: newViewport,
+        mapViewport: action.viewport,
         visibleBusinesses: filtered
       })
       break
     case 'business/POSITION_UPDATED':
       state = merge(state, {
-        userLocation: action.position
+        mapViewport: {
+          latitude: action.position.coords.latitude,
+          longitude: action.position.coords.longitude,
+        }
       })
       break
     case 'business/EXPAND_BUSINESS_LIST':

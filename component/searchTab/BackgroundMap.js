@@ -10,18 +10,26 @@ import { MAP_PAN_DEBOUNCE_DURATION } from './constants'
 class BackgroundMap extends React.Component {
   constructor() {
     super()
-    this.panned = false
+
+    this.skipNextLocationUpdate = false
   }
 
   updateViewport(...args) {
-    this.panned = true
+    this.skipNextLocationUpdate = true
     this.props.updateMapViewport(...args)
   }
 
   render() {
+    // on Android devices, if you update the region to the current location while panning
+    // the UI becomes 'jumpy'. For this reason, this 'hack' is used to ensure that
+    // location updates arising from dragging the map are suppressed.
+    const region = this.skipNextLocationUpdate ? undefined : this.props.mapViewport
+    this.skipNextLocationUpdate = false
+
     return (
       <MapView style={{...StyleSheet.absoluteFillObject}}
-          region={this.panned ? undefined : this.props.mapViewport}
+          region={region}
+          showsUserLocation={true}
           onRegionChange={_.debounce(this.updateViewport.bind(this), MAP_PAN_DEBOUNCE_DURATION)}>
         {this.props.businessList
           ? this.props.businessList.filter(b => b.address)
