@@ -1,14 +1,41 @@
 import color from '../../util/colors'
-import { MARGIN_SIZE, SEARCH_BAR_HEIGHT } from './constants'
+
+const SEARCH_BAR_HEIGHT = 50
+const MARGIN_SIZE = 10
+const LIST_BORDER_RADIUS = 8
 
 const styles = {
+  expandHeader: {
+    container: {
+      height: 40,
+      backgroundColor: 'white',
+      borderWidth: 1,
+      borderColor: color.gray5,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: 5
+    },
+    topBorderCurve: {
+      borderTopLeftRadius: LIST_BORDER_RADIUS,
+      borderTopRightRadius: LIST_BORDER_RADIUS,
+      borderBottomRightRadius: 0,
+      borderBottomLeftRadius: 0
+    },
+    noBorderCurve: {
+      borderRadius: 0
+    }
+  },
   listItem: {
     container: {
       flexDirection: 'row',
       paddingLeft: 9,
       paddingTop: 8,
       borderBottomWidth: 1,
+      borderLeftWidth: 1,
+      borderRightWidth: 1,
       borderBottomColor: color.gray5,
+      borderLeftColor: color.gray5,
+      borderRightColor: color.gray5,
       backgroundColor: 'white',
       height: 59
     },
@@ -39,7 +66,8 @@ const styles = {
       top: MARGIN_SIZE + SEARCH_BAR_HEIGHT,
       left: MARGIN_SIZE,
       right: MARGIN_SIZE,
-      bottom: 0
+      bottom: 0,
+      borderRadius: 5
     },
     searchBar: {
       height: SEARCH_BAR_HEIGHT,
