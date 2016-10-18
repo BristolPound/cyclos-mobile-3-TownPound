@@ -6,7 +6,7 @@ import { StyleSheet, Platform } from 'react-native'
 import _ from 'lodash'
 import * as actions from '../../store/reducer/business'
 import colors from '../../util/colors'
-import Platforms from '../../stringConstants/platforms'
+import PLATFORM from '../../stringConstants/platform'
 
 const MAP_PAN_DEBOUNCE_DURATION = 50
 
@@ -28,7 +28,7 @@ class BackgroundMap extends React.Component {
   }
 
   generateCreateMarker(platform){
-    if (Platforms.IOS === platform) {
+    if (PLATFORM.IOS === platform) {
       return function(b){
         return (<MapView.Marker
           key={b.id}

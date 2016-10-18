@@ -157,11 +157,12 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'business/UPDATE_MAP_VIEWPORT':
-      const sorted = _.sortBy(state.businessList, distanceFromPosition(action.viewport))
-      const filtered = sorted.filter(isWithinViewport(action.viewport))
+      const newViewport = merge(state.mapViewport, action.viewport)//action.viewport might only be partial (no deltas)
+      const sorted = _.sortBy(state.businessList, distanceFromPosition(newViewport))
+      const filtered = sorted.filter(isWithinViewport(newViewport))
       state = merge(state, {
         dataSource: state.dataSource.cloneWithRows(filtered),
-        mapViewport: action.viewport,
+        mapViewport: newViewport,
         visibleBusinesses: filtered
       })
       break
