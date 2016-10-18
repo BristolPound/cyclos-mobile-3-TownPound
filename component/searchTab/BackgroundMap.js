@@ -2,18 +2,19 @@ import React from 'react'
 import MapView from 'react-native-maps'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 import _ from 'lodash'
 import * as actions from '../../store/reducer/business'
 import colors from '../../util/colors'
+import Platforms from '../../stringConstants/platforms'
 
 const MAP_PAN_DEBOUNCE_DURATION = 50
 
 class BackgroundMap extends React.Component {
   constructor() {
     super()
-
     this.skipNextLocationUpdate = false
+    this.createMarker = this.generateCreateMarker(Platform.OS)
   }
 
   updateViewport(...args) {
@@ -25,6 +26,29 @@ class BackgroundMap extends React.Component {
     this.props.selectMarker(id)
     this.updateViewport(location)
   }
+
+  generateCreateMarker(platform){
+    if (Platforms.IOS === platform) {
+      return function(b){
+        return (<MapView.Marker
+          key={b.id}
+          coordinate={b.address.location}
+          onSelect={() => { this.selectMarker(b.id, b.address.location) }} // THIS ONLY WORKS ON iOS
+          pinColor={this.props.selectedMarker === b.id ? colors.bristolBlue : colors.gray}
+          />)
+      }
+    }
+
+    return function(b){
+      return (<MapView.Marker
+        key={b.id}
+        coordinate={b.address.location}
+        onPress={() => { this.selectMarker(b.id, b.address.location) }} // THIS IS ONLY WORKING ON ANDROID: https://github.com/airbnb/react-native-maps/issues/286
+        pinColor={this.props.selectedMarker === b.id ? colors.bristolBlue : colors.gray}
+        />)
+    }
+  }
+
   render() {
     // on Android devices, if you update the region to the current location while panning
     // the UI becomes 'jumpy'. For this reason, this 'hack' is used to ensure that
@@ -32,23 +56,20 @@ class BackgroundMap extends React.Component {
     const region = this.skipNextLocationUpdate ? undefined : this.props.mapViewport
     this.skipNextLocationUpdate = false
 
+    let markerArray = undefined
+    if (this.props.businessList) {
+      markerArray = this.props.businessList.filter(b => b.address)
+        .map(b =>
+          this.createMarker(b)
+        )
+    }
+
     return (
       <MapView style={{...StyleSheet.absoluteFillObject}}
           region={region}
           showsUserLocation={true}
           onRegionChange={_.debounce(this.updateViewport.bind(this), MAP_PAN_DEBOUNCE_DURATION)}>
-        {this.props.businessList
-          ? this.props.businessList.filter(b => b.address)
-              .map(b =>
-                <MapView.Marker
-                  key={b.id}
-                  coordinate={b.address.location}
-                  onPress={() => { this.selectMarker(b.id, b.address.location) }} // THIS IS ONLY WORKING ON ANDROID: https://github.com/airbnb/react-native-maps/issues/286
-                  onSelect={() => { this.selectMarker(b.id, b.address.location) }} // THIS ONLY WORKS ON iOS
-                  pinColor={this.props.selectedMarker === b.id ? colors.bristolBlue : colors.gray}
-                  />
-              )
-          : undefined}
+        {markerArray}
       </MapView>
     )
   }
