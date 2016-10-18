@@ -6,12 +6,13 @@ import BackgroundMap from './BackgroundMap'
 import BusinessList from './BusinessList'
 import * as actions from '../../store/reducer/business'
 import styles from './SearchTabStyle'
+import PLATFORM from '../../stringConstants/platform'
 
 const DOCKED_LIST_VISIBLE_ROWS = 3
 
 // For Android devices, the scroll-to-expand behaviour is problematic. So instead
 // we fall back to a simpler interaction model.
-const EXPAND_VIA_SCROLL = Platform.OS === 'ios'
+const EXPAND_VIA_SCROLL = Platform.OS === PLATFORM.IOS
 
 const computeListHeight = (dataSource) =>
   // the compact list shows up to 3 rows
