@@ -2,6 +2,7 @@ import dateFormat from 'dateformat'
 import _ from 'lodash'
 import merge from './merge'
 import { floorMonth, convert, isSameMonth, format } from './date'
+import { ListView } from 'react-native'
 
 export const sortTransactions = transactions =>
   _(transactions)
@@ -58,3 +59,13 @@ export const findTransactionsByDate = (transactions, date) =>
     .filter(tr => tr.date === date)
     .map(tr => tr.id)
   : []
+
+export const buildDataSourceForTransactions = (transactions) => {
+  const sortedTransactions = sortTransactions(transactions)
+  const group = groupTransactionsByDate(sortedTransactions, 'mmmm yyyy', true)
+  const dataSource = new ListView.DataSource({
+    rowHasChanged: (a, b) => a.transactionNumber !== b.transactionNumber,
+    sectionHeaderHasChanged: (a, b) => a !== b
+  })
+  return dataSource.cloneWithRowsAndSections(group.groups, group.groupOrder)
+}
