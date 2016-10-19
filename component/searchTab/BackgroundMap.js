@@ -14,39 +14,11 @@ class BackgroundMap extends React.Component {
   constructor() {
     super()
     this.skipNextLocationUpdate = false
-    this.createMarker = this.generateCreateMarker(Platform.OS)
   }
 
   updateViewport(...args) {
     this.skipNextLocationUpdate = true
     this.props.updateMapViewport(...args)
-  }
-
-  selectMarker(id, location) {
-    this.props.selectMarker(id)
-    this.updateViewport(location)
-  }
-
-  generateCreateMarker(platform){
-    if (PLATFORM.IOS === platform) {
-      return function(b){
-        return (<MapView.Marker
-          key={b.id}
-          coordinate={b.address.location}
-          onSelect={() => { this.selectMarker(b.id, b.address.location) }} // THIS ONLY WORKS ON iOS
-          pinColor={this.props.selectedMarker === b.id ? colors.bristolBlue : colors.gray}
-          />)
-      }
-    }
-
-    return function(b){
-      return (<MapView.Marker
-        key={b.id}
-        coordinate={b.address.location}
-        onPress={() => { this.selectMarker(b.id, b.address.location) }} // THIS IS ONLY WORKING ON ANDROID: https://github.com/airbnb/react-native-maps/issues/286
-        pinColor={this.props.selectedMarker === b.id ? colors.bristolBlue : colors.gray}
-        />)
-    }
   }
 
   render() {
@@ -59,9 +31,20 @@ class BackgroundMap extends React.Component {
     let markerArray = undefined
     if (this.props.businessList) {
       markerArray = this.props.businessList.filter(b => b.address)
-        .map(b =>
-          this.createMarker(b)
-        )
+        .map(b => {
+          const markerProps = {
+            [Platform.OS === PLATFORM.IOS ? 'onSelect' : 'onPress']: () => {//https://github.com/airbnb/react-native-maps/issues/286
+              this.props.selectMarker(b.id)
+              this.updateViewport(b.address.location)
+            }
+          }
+          return <MapView.Marker
+            key={b.id}
+            coordinate={b.address.location}
+            {...markerProps}
+            pinColor={this.props.selectedMarker === b.id ? colors.bristolBlue : colors.gray}
+            />
+        })
     }
 
     return (
