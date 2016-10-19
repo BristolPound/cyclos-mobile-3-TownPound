@@ -1,8 +1,7 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Text, ListView, View, Image, ActivityIndicator, TouchableHighlight, RefreshControl } from 'react-native'
-import ScrollableTabView from 'react-native-scrollable-tab-view'
+import { ListView, View, Image, ActivityIndicator, TouchableHighlight, RefreshControl } from 'react-native'
 
 import TransactionHeader from './TransactionHeader'
 import DefaultText from '../DefaultText'
@@ -12,21 +11,7 @@ import color from '../../util/colors'
 import * as actions from '../../store/reducer/transaction'
 import { openDetailsModal, navigateToTransactionTab } from '../../store/reducer/navigation'
 
-import styles, { navBarStyle } from './TransactionStyle'
-
-const NavBar = props =>
-  <View style={navBarStyle.tabBar}>
-    {props.tabs.map((tab, i) =>
-      <View style={merge(styles.flex, props.activeTab === i ? navBarStyle.underline : {})} key={i}>
-        <TouchableHighlight
-            style={navBarStyle.textContainer}
-            onPress={() => props.goToPage(i)}
-            underlayColor={color.transparent}>
-          <Text style={merge(navBarStyle.text, {color: props.activeTab === i ? color.bristolBlue : color.gray})}>{tab}</Text>
-        </TouchableHighlight>
-      </View>
-    )}
-  </View>
+import styles from './TransactionStyle'
 
 const renderSeparator = (sectionID, rowID) =>
   <View style={styles.separator} key={`sep:${sectionID}:${rowID}`}/>
@@ -61,31 +46,19 @@ const renderLoadingFooter = () =>
     <ActivityIndicator/>
   </View>
 
-const standardListViewProps = props => {
-  return{
-    style: styles.flex,
-    pageSize: 10,
-    renderSeparator: renderSeparator,
-    enableEmptySections: true,
-    renderRow: transaction => renderRow(transaction, props.openDetailsModal),
-    renderFooter: () => props.loadingMoreTransactions ? renderLoadingFooter() : undefined
-  }
-}
-
 const TransactionList = (props) =>
   <View style={styles.flex}>
     <TransactionHeader />
     {props.loadingTransactions
       ? <ActivityIndicator size='large' style={styles.flex}/>
-      : (<ScrollableTabView
-            renderTabBar={() => <NavBar />}
-            initialPage={props.transactionTabIndex}
-            scrollWithoutAnimation={true}
-            locked={true}
-            onChangeTab={({i}) => props.navigateToTransactionTab(i)}>
-          <ListView
+      : <ListView
             tabLabel='Transactions'
-            {...standardListViewProps(props)}
+            style={styles.flex}
+            pageSize={10}
+            renderSeparator={renderSeparator}
+            enableEmptySections={true}
+            renderRow={transaction => renderRow(transaction, props.openDetailsModal)}
+            renderFooter={() => props.loadingMoreTransactions ? renderLoadingFooter() : undefined}
             dataSource={props.transactionsDataSource}
             renderSectionHeader={renderSectionHeader}
             refreshControl={<RefreshControl
@@ -94,17 +67,7 @@ const TransactionList = (props) =>
                 ? props.loadTransactionsAfterLast()
                 : undefined} />
             }/>
-          <ListView
-            tabLabel='Categories'
-            {...standardListViewProps(props)}
-            dataSource={props.traderDataSource}
-            refreshControl={<RefreshControl
-              refreshing={props.refreshing}
-              onRefresh={() => !props.refreshing && props.transactions && props.transactions.length > 0
-                ? props.loadTransactionsAfterLast()
-                : undefined} />
-            }/>
-        </ScrollableTabView>)}
+    }
   </View>
 
 
@@ -116,8 +79,7 @@ const mapDispatchToProps = (dispatch) =>
   }, dispatch)
 
 const mapStateToProps = (state) => ({
-  ...state.transaction,
-  transactionTabIndex: state.navigation.transactionTabIndex
+  ...state.transaction
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(TransactionList)

@@ -1,7 +1,7 @@
 import { ListView } from 'react-native'
 import merge from '../../util/merge'
 import * as date from '../../util/date'
-import { groupTransactionsByDate, groupTransactionsByBusiness, calculateMonthlyTotalSpent, filterTransactions, sortTransactions } from '../../util/transaction'
+import { groupTransactionsByDate, calculateMonthlyTotalSpent, filterTransactions, sortTransactions } from '../../util/transaction'
 import { getTransactions, PAGE_SIZE } from '../../api'
 import { findTransactionsByDate } from '../../util/transaction'
 import moment from 'moment'
@@ -20,9 +20,6 @@ const initialState = {
   transactionsDataSource: new ListView.DataSource({
     rowHasChanged: (a, b) => a.transactionNumber !== b.transactionNumber,
     sectionHeaderHasChanged: (a, b) => a !== b
-  }),
-  traderDataSource: new ListView.DataSource({
-    rowHasChanged: (a, b) => a !== b
   })
 }
 
@@ -110,13 +107,11 @@ export const loadTransactionsAfterLast = () =>
 const refreshTraderTransactions = () => (dispatch, getState) =>
   dispatch(selectAndLoadBusiness(getState().business.selectedBusinessId)) // refresh trader transaction list
 
-const newDataSources = (previousTransactionsDataSource, previousTradersDataSource, sortedTransactions, selectedMonth) => {
+const newDataSources = (previousTransactionsDataSource, sortedTransactions, selectedMonth) => {
   const filteredTransactions = filterTransactions(sortedTransactions, selectedMonth)
   const grouped = groupTransactionsByDate(filteredTransactions)
-  const tradersData = groupTransactionsByBusiness(filteredTransactions)
   return {
-    transactionsDataSource: previousTransactionsDataSource.cloneWithRowsAndSections(grouped.groups, grouped.groupOrder),
-    traderDataSource: previousTradersDataSource.cloneWithRows(tradersData),
+    transactionsDataSource: previousTransactionsDataSource.cloneWithRowsAndSections(grouped.groups, grouped.groupOrder)
   }
 }
 
@@ -126,7 +121,7 @@ const reducer = (state = initialState, action) => {
       const mergedTransactions = [...state.transactions, ...action.transactions]
       const sortedTransactions = sortTransactions(mergedTransactions)
       const monthlyTotalSpent = calculateMonthlyTotalSpent(state.monthlyTotalSpent, action.transactions)
-      state = merge(state, newDataSources(state.transactionsDataSource, state.traderDataSource, sortedTransactions, state.selectedMonth), {
+      state = merge(state, newDataSources(state.transactionsDataSource, sortedTransactions, state.selectedMonth), {
         monthlyTotalSpent: monthlyTotalSpent,
           transactions: sortedTransactions,
           loadingTransactions: false,
@@ -152,7 +147,7 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'transaction/SELECT_MONTH':
-      state = merge(state, newDataSources(state.transactionsDataSource, state.traderDataSource, state.transactions, action.month), {
+      state = merge(state, newDataSources(state.transactionsDataSource, state.transactions, action.month), {
         selectedMonth: action.month,
         loadingTransactions: state.loadingTransactions && state.transactions.length === 0,
       })
@@ -163,8 +158,7 @@ const reducer = (state = initialState, action) => {
         transactions: [],
         noMoreTransactionsToLoad: false,
         monthlyTotalSpent: {},
-        transactionsDataSource: state.transactionsDataSource.cloneWithRowsAndSections({}, []),
-        traderDataSource: state.traderDataSource.cloneWithRows([]),
+        transactionsDataSource: state.transactionsDataSource.cloneWithRowsAndSections({}, [])
       })
       break
   }

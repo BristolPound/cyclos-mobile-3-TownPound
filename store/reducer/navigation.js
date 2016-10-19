@@ -4,8 +4,7 @@ import { selectAndLoadBusiness } from './business'
 import { selectAndLoadPerson } from './person'
 
 const initialState = {
-  tabIndex: 0,
-  transactionTabIndex: 0,
+  tabIndex: 1,
   sendMoneyVisible: false,
   traderScreenVisible: false,
   personScreenVisible: false
@@ -14,11 +13,6 @@ const initialState = {
 export const navigateToTab = (tabIndex) => ({
   type: 'navigation/NAVIGATE_TO_TAB',
   tabIndex
-})
-
-export const navigateToTransactionTab = (transactionTabIndex) => ({
-  type: 'navigation/NAVIGATE_TO_TRANSACTION_TAB',
-  transactionTabIndex
 })
 
 export const showSendMoney = (show) => ({
@@ -67,11 +61,6 @@ const reducer = (state = initialState, action) => {
     case 'navigation/NAVIGATE_TO_TAB':
       state = merge(state, {
         tabIndex: action.tabIndex
-      })
-      break
-    case 'navigation/NAVIGATE_TO_TRANSACTION_TAB':
-      state = merge(state, {
-        transactionTabIndex: action.transactionTabIndex
       })
       break
     case 'navigation/SHOW_SEND_MONEY':

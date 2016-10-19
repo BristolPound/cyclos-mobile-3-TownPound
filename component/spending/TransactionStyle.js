@@ -83,32 +83,6 @@ const styles = {
 }
 
 //TODO: add shadow to iOS
-export const navBarStyle = {
-  tabBar: {
-    height: 42,
-    flexDirection: 'row',
-    alignItems: 'stretch',
-    backgroundColor: color.offWhite,
-    elevation: 5
-  },
-  textContainer: {
-    height: 42,
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  underline: {
-    borderBottomColor: color.bristolBlue,
-    borderBottomWidth: 3
-  },
-  text: {
-    fontFamily: 'MuseoSans-300',
-    fontSize: 18,
-    paddingBottom: 10,
-  }
-}
-
-//TODO: add shadow to iOS
 export const headerStyles = {
   carouselContainer: {
     height: 106,
