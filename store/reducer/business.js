@@ -61,7 +61,7 @@ export const enableSearchMode = (enable) => ({
   enable
 })
 
-const selectBusiness = (businessId) => (dispatch) => 
+const selectBusiness = (businessId) => (dispatch) =>
   dispatch({
     type: 'business/SELECTED_BUSINESS',
     businessId
@@ -189,11 +189,6 @@ const reducer = (state = initialState, action) => {
         visibleBusinesses: [],
         businessListExpanded: false,
         dataSource: state.dataSource.cloneWithRows([]),
-      })
-      break
-    case 'business/RESET_TRADER_TRANSACTIONS':
-      state = merge(state, {
-        traderTransactionsDataSource: state.traderTransactionsDataSource.cloneWithRows([])
       })
       break
     case 'business/SELECT_MARKER':
