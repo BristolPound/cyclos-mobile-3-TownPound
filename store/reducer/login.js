@@ -4,7 +4,7 @@ import ApiError, { UNAUTHORIZED_ACCESS } from '../../apiError'
 
 import { clearTransactions } from './developerOptions'
 import { loadAccountDetails } from './account'
-import { setSelectedMonth } from './transaction'
+import { loadTransactions } from './transaction'
 import LOGIN_STATUSES from '../../stringConstants/loginStatus'
 
 const initialState = {
@@ -58,7 +58,7 @@ export const login = (username, password) =>
           if (sessionToken) {
             dispatch(loggedIn())
             dispatch(loadAccountDetails())
-            dispatch(setSelectedMonth())
+            dispatch(loadTransactions())
           }
         })
         .catch (err => {

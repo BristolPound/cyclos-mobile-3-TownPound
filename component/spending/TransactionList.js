@@ -41,12 +41,7 @@ const renderRow = (transaction, openDetailsModal) =>
     </View>
   </TouchableHighlight>
 
-const renderLoadingFooter = () =>
-  <View style={merge(styles.headerContainer, styles.center)}>
-    <ActivityIndicator/>
-  </View>
-
-const TransactionList = (props) =>
+const TransactionList = (props) => 
   <View style={styles.flex}>
     <TransactionHeader />
     {props.loadingTransactions
@@ -58,7 +53,6 @@ const TransactionList = (props) =>
             renderSeparator={renderSeparator}
             enableEmptySections={true}
             renderRow={transaction => renderRow(transaction, props.openDetailsModal)}
-            renderFooter={() => props.loadingMoreTransactions ? renderLoadingFooter() : undefined}
             dataSource={props.transactionsDataSource}
             renderSectionHeader={renderSectionHeader}
             refreshControl={<RefreshControl
