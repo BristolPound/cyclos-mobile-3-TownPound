@@ -42,6 +42,7 @@ class BackgroundMap extends React.Component {
             key={b.id}
             coordinate={b.address.location}
             {...markerProps}
+            image={require('./grey_dot.png')}
             pinColor={this.props.selectedMarker === b.id ? colors.bristolBlue : colors.gray}
             />
         })
