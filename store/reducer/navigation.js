@@ -49,7 +49,7 @@ export const openTraderModal = businessId =>
 export const openPersonModal = personId =>
   dispatch => {
     dispatch(selectAndLoadPerson(personId))
-    //dispatch(showPersonScreen(true))
+    dispatch(showPersonScreen(true))
   }
 
 export const showTraderScreen = (show) => ({

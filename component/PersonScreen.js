@@ -1,27 +1,39 @@
 import React from 'react'
+import { ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from '../store/reducer/navigation'
 import ProfileScreen from './profileScreen/ProfileScreen'
+import { buildDataSourceForTransactions } from '../util/transaction'
 
-const PersonScreen = ({selectedPerson, dataSource, showPersonScreen}) =>(
-  <ProfileScreen
-    loaded={Boolean(selectedPerson)}
-    image={selectedPerson.image}
-    category={'person'}
-    defaultImage={!Boolean(selectedPerson.image)}
-    name={'@'+(selectedPerson.username)}
-    username={''}
-    renderHeaderExtension={() => null}
-    dataSource={dataSource}
-    onPressClose={() => showPersonScreen(false)}
-    onPressExpand={()=> showPersonScreen(false)}
-    />
+const PersonScreen = ({selectedPerson, dataSource, showPersonScreen}) => (
+  selectedPerson
+    ? <ProfileScreen
+        loaded={true}
+        image={selectedPerson.image}
+        category={'person'}
+        defaultImage={!Boolean(selectedPerson.image)}
+        name={'@'+(selectedPerson.username)}
+        username={''}
+        renderHeaderExtension={() => null}
+        dataSource={dataSource}
+        onPressClose={() => showPersonScreen(false)}
+        onPressExpand={()=> showPersonScreen(false)}/>
+    : <ActivityIndicator size='large'/>
 )
+
+
+// filter the transaction list to contain only those relating to this trader
+const dataSourceForSelectedPerson = (state) => {
+  const transactions = state.transaction.transactions.filter(transaction =>
+      transaction.relatedAccount.kind === 'user' && transaction.relatedAccount.user.id === state.person.selectedPersonId)
+
+  return buildDataSourceForTransactions(transactions)
+}
 
 const mapStateToProps = (state) => ({
   selectedPerson: state.person.personList.find(p => p.id === state.person.selectedPersonId),
-  dataSource: state.person.personTransactionsDataSource
+  dataSource: dataSourceForSelectedPerson(state)
 })
 
 const mapDispatchToProps = (dispatch) =>

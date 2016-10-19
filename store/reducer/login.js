@@ -4,6 +4,7 @@ import ApiError, { UNAUTHORIZED_ACCESS } from '../../apiError'
 
 import { clearTransactions } from './developerOptions'
 import { loadAccountDetails } from './account'
+import { setSelectedMonth } from './transaction'
 import LOGIN_STATUSES from '../../stringConstants/loginStatus'
 
 const initialState = {
@@ -56,9 +57,8 @@ export const login = (username, password) =>
         .then((sessionToken) => {
           if (sessionToken) {
             dispatch(loggedIn())
-            //TODO: Should check if same user logging in and clear transactions on log in only if it is a different user
-            dispatch(clearTransactions(true))
             dispatch(loadAccountDetails())
+            dispatch(setSelectedMonth())
           }
         })
         .catch (err => {
@@ -125,7 +125,7 @@ const reducer = (state = initialState, action) => {
         loginStatus: LOGIN_STATUSES.LOGGED_OUT,
         username: 'testmember',
         password: 'testing123'
-        // TODO: clear the session token?
+        // TODO: clear the session token? clear the transaction data?
       })
       break
     case 'login/OPEN_LOGIN_FORM':
