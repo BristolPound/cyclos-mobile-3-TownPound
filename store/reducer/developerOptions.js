@@ -1,5 +1,5 @@
 
-import { loadBusinessList, resetBusinesses, resetTraderTransactions } from './business'
+import { loadBusinessList, resetBusinesses } from './business'
 import { setSelectedMonth, resetTransactions } from './transaction'
 import { setBaseUrl } from '../../api'
 import { purgeStoredState } from 'redux-persist'
@@ -22,14 +22,12 @@ export const clearBusinesses = () =>
     purgeStoredState({storage: AsyncStorage}, ['business']).then(() => {
       dispatch(resetBusinesses())
       dispatch(loadBusinessList(true))
-      dispatch(resetTraderTransactions())
     })
 
 export const clearTransactions = (reloadTransactions) =>
   (dispatch) =>
     purgeStoredState({storage: AsyncStorage}, ['transaction']).then(() => {
       dispatch(resetTransactions())
-      dispatch(resetTraderTransactions())
       if (reloadTransactions) {
         dispatch(setSelectedMonth())
       }

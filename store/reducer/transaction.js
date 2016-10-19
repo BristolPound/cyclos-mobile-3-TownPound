@@ -5,7 +5,7 @@ import { groupTransactionsByDate, groupTransactionsByBusiness, calculateMonthlyT
 import { getTransactions, PAGE_SIZE } from '../../api'
 import { findTransactionsByDate } from '../../util/transaction'
 import moment from 'moment'
-import { selectAndLoadBusiness, resetTraderTransactions } from './business'
+import { selectAndLoadBusiness } from './business'
 import { resetPersonTransactions } from './person'
 
 const last = (arr) => arr.length > 0 ? arr[arr.length - 1] : undefined
@@ -50,7 +50,6 @@ const updateRefreshing = () => ({
 })
 
 export const resetTransactions = () => (dispatch) => {
-  dispatch(resetTraderTransactions)
   dispatch(resetPersonTransactions)
   dispatch({
     type: 'transaction/RESET_TRANSACTIONS'

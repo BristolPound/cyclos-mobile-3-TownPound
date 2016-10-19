@@ -5,8 +5,9 @@ import * as actions from '../store/reducer/navigation'
 import styles from './profileScreen/ProfileStyle'
 import ProfileScreen from './profileScreen/ProfileScreen'
 import BusinessDetails from './businessDetails/BusinessDetails'
-import {View} from 'react-native'
+import { View } from 'react-native'
 import SendMoney from './sendMoney/SendMoney'
+import { buildDataSourceForTransactions } from '../util/transaction'
 
 /**
  Where
@@ -14,7 +15,7 @@ import SendMoney from './sendMoney/SendMoney'
     dataSource: for trader transactions
     showTraderScreen: callback for opening or closing this view.
  */
-const TraderScreen = ({ trader, transactionsDataSource, showTraderScreen }) =>
+const TraderScreen = ({ trader, transactionsDataSource, showTraderScreen  }) =>
     <View style={{flex: 1}}>
         <ProfileScreen
             loaded={trader.profilePopulated}
@@ -40,11 +41,20 @@ const renderHeaderExtension = (trader, transactionsDataSource) => () =>
         <BusinessDetails business={trader} isExpanded={transactionsDataSource.getRowCount() === 0}/>
     </View>
 
+// filter the transaction list to contain only those relating to this trader
+const dataSourceForSelectedBusiness = (state) => {
+  const transactions = state.transaction.transactions.filter(transaction =>
+      transaction.relatedAccount.kind === 'user' && transaction.relatedAccount.user.id === state.business.selectedBusinessId)
+
+  return buildDataSourceForTransactions(transactions)
+}
+
 // Redux Setup
 const mapStateToProps = (state) => ({
     trader: state.business.businessList.find(b => b.id === state.business.selectedBusinessId),
-    transactionsDataSource: state.business.traderTransactionsDataSource, // ListView.DataSource
+    transactionsDataSource: dataSourceForSelectedBusiness(state)
 })
+
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(actions, dispatch)
