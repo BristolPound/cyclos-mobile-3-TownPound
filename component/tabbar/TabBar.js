@@ -71,15 +71,18 @@ const style = {
 const TABS = [
   {
     active: require('./Search_active.png'),
-    inactive: require('./Search_inactive.png')
+    inactive: require('./Search_inactive.png'),
+    label: 'Search Tab',
   },
   {
     active: require('./Spending_active.png'),
-    inactive: require('./Spending_inactive.png')
+    inactive: require('./Spending_inactive.png'),
+    label: 'Spending Tab',
   },
   {
     active: require('./Me_active.png'),
-    inactive: require('./Me_inactive.png')
+    inactive: require('./Me_inactive.png'),
+    label: 'My Details Tab',
   }
 ]
 
@@ -90,7 +93,8 @@ const TabBar = (props) =>
         <TouchableHighlight
             style={style.iconContainer}
             onPress={() => props.goToPage(index)}
-            underlayColor={color.transparent}>
+            underlayColor={color.transparent}
+            accessibilityLabel={tab.label}>
           <Image source={props.activeTab === index ? tab.active : tab.inactive}/>
         </TouchableHighlight>
         {index !== TABS.length - 1 ? <View style={style.separator}/> : undefined}
@@ -111,7 +115,8 @@ const TabBar = (props) =>
           : <TouchableHighlight
                 style={style.centerChildren}
                 onPress={() => props.openLogin(true)}
-                underlayColor={color.transparent}>
+                underlayColor={color.transparent}
+                accessibilityLabel='Login Tab'>
               <View>
                 <DefaultText style={style.loginText}>Login</DefaultText>
               </View>

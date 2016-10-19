@@ -68,11 +68,12 @@ class Login extends React.Component {
     return (
       <View style={{ bottom: this.state.keyboardHeight }}>
         <TouchableOpacity style={style.loginButton}
+            accessibilityLabel={'Login Button'}
             onPress={() => this.props.login(this.props.username, this.props.password)}>
           <DefaultText style={style.loginButtonText}>Log in</DefaultText>
         </TouchableOpacity>
         <TextInput style={merge(style.input, style.separatorBelow)}
-            accessibilityLabel={'username'}
+            accessibilityLabel={'Input Username'}
             autoFocus={true}
             onChangeText={(text) => this.props.usernameUpdated(text)}
             onSubmitEditing={this.selectPasswordField.bind(this)}
@@ -82,7 +83,7 @@ class Login extends React.Component {
             value={this.props.username} />
         <TextInput style={style.input}
             ref={(ref) => this.passwordInputRef = ref}
-            accessibilityLabel={'password'}
+            accessibilityLabel={'Input Password'}
             onChangeText={(text) => this.props.passwordUpdated(text)}
             onSubmitEditing={() => this.props.login(this.props.username, this.props.password)}
             placeholder={'password'}
