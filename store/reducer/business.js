@@ -46,11 +46,6 @@ export const businessProfileReceived = (businessProfile) => ({
   businessProfile
 })
 
-export const updatePosition = (position) => ({
-  type: 'business/POSITION_UPDATED',
-  position
-})
-
 export const updateMapViewport = (viewport) => ({
   type: 'business/UPDATE_MAP_VIEWPORT',
   viewport
@@ -149,14 +144,6 @@ const reducer = (state = initialState, action) => {
         dataSource: state.dataSource.cloneWithRows(filtered),
         mapViewport: newViewport,
         visibleBusinesses: filtered
-      })
-      break
-    case 'business/POSITION_UPDATED':
-      state = merge(state, {
-        mapViewport: {
-          latitude: action.position.coords.latitude,
-          longitude: action.position.coords.longitude,
-        }
       })
       break
     case 'business/EXPAND_BUSINESS_LIST':
