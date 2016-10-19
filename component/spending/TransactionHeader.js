@@ -15,19 +15,17 @@ import styles, { headerStyles, priceStyles } from './TransactionStyle'
 const last = arr => arr.length > 0 ? arr[arr.length - 1] : undefined
 const calculateStyleIndex = num => _.clamp(Math.abs(num), 0, 2)
 
-const MonthOption = ({month, showMonthlyTotal, monthlyTotals, styleIndex}) =>
+const MonthOption = ({month, monthlyTotals, styleIndex}) =>
   <View style={merge(styles.flex, headerStyles.container)} key={toMonthString(month)}>
     <DefaultText style={headerStyles.monthlyOption[styleIndex]}>
       {toMonthString(month).toUpperCase()}
     </DefaultText>
-    { showMonthlyTotal
-      ? <Price
-          color={priceStyles[styleIndex].color}
-          price={monthlyTotals[format(month)] || 0}
-          size={priceStyles[styleIndex].size}
-          smallSize={priceStyles[styleIndex].smallSize}
-          center={true} />
-      : undefined }
+    <Price
+        color={priceStyles[styleIndex].color}
+        price={monthlyTotals[format(month)] || 0}
+        size={priceStyles[styleIndex].size}
+        smallSize={priceStyles[styleIndex].smallSize}
+        center={true} />
   </View>
 
 const TransactionHeader = (props) => {
@@ -46,12 +44,11 @@ const TransactionHeader = (props) => {
             initialPage={initPage}
             pageWidth={150}
             sneak={130}
-            onPageChange={i => props.setSelectedMonth(allAvailableMonths[i])}>
-          { allAvailableMonths.map((month, i) =>
+            onPageChange={i => props.selectMonth(allAvailableMonths[i])}>
+          { allAvailableMonths.map((month) =>
             <MonthOption
                 key={toMonthString(month)}
                 month={month}
-                showMonthlyTotal={props.noMoreTransactionsToLoad || i !== 0}
                 monthlyTotals={props.monthlyTotalSpent}
                 styleIndex={calculateStyleIndex(monthDiff(props.selectedMonth, month))} />
           ) }

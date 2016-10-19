@@ -14,7 +14,7 @@ export const setBaseUrl = newUrl => {
   BASE_URL = newUrl
 }
 
-export const PAGE_SIZE = 20
+export const PAGE_SIZE = 100
 
 const httpHeaders = () => {
   const headers = new Headers()
@@ -70,7 +70,7 @@ const getPages = (url, params, dispatch, successCriteria, pageNo = 0) => {
   return new Promise(function(resolve, reject) {
     get(url, params, dispatch)
       .then(results => {
-        if (results.length < PAGE_SIZE || successCriteria === undefined || successCriteria(results)){
+        if (results.length < PAGE_SIZE || successCriteria === undefined || successCriteria(results, pageNo)) {
           resolve(results)
         } else {
           getPages(url, params, dispatch, successCriteria, pageNo + 1)

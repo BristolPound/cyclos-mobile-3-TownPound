@@ -1,6 +1,6 @@
 
 import { loadBusinessList, resetBusinesses } from './business'
-import { setSelectedMonth, resetTransactions } from './transaction'
+import { loadTransactions, resetTransactions } from './transaction'
 import { setBaseUrl } from '../../api'
 import { purgeStoredState } from 'redux-persist'
 import { AsyncStorage } from 'react-native'
@@ -29,7 +29,7 @@ export const clearTransactions = (reloadTransactions) =>
     purgeStoredState({storage: AsyncStorage}, ['transaction']).then(() => {
       dispatch(resetTransactions())
       if (reloadTransactions) {
-        dispatch(setSelectedMonth())
+        dispatch(loadTransactions())
       }
     })
 
