@@ -1,6 +1,7 @@
 import { ListView } from 'react-native'
 import merge from '../../util/merge'
 import * as date from '../../util/date'
+import _ from 'lodash'
 import { groupTransactionsByDate, calculateMonthlyTotalSpent, filterTransactions, sortTransactions } from '../../util/transaction'
 import { getTransactions } from '../../api'
 import { findTransactionsByDate } from '../../util/transaction'
@@ -51,10 +52,10 @@ export const loadTransactions = () =>
       })
   }
 
-export const loadTransactionsAfterLast = () =>
+export const loadMoreTransactions = () =>
   (dispatch, getState) => {
     const transactions = getState().transaction.transactions
-    const firstDate = transactions[0].date
+    const firstDate = transactions.length > 0 ? transactions[0].date : new Date()
     const excludeIdList = findTransactionsByDate(transactions, firstDate)
     dispatch(updateRefreshing())
     getTransactions(dispatch,{
@@ -74,9 +75,9 @@ const filterTransactionsByMonth = (dataSource, sortedTransactions, selectedMonth
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'transaction/TRANSACTIONS_RECEIVED':
-      const mergedTransactions = [...state.transactions, ...action.transactions]
+      const mergedTransactions = _.uniqBy([...state.transactions, ...action.transactions], 'transactionNumber')
       const sortedTransactions = sortTransactions(mergedTransactions)
-      const monthlyTotalSpent = calculateMonthlyTotalSpent(state.monthlyTotalSpent, action.transactions)
+      const monthlyTotalSpent = calculateMonthlyTotalSpent(sortedTransactions)
       state = merge(state, {
         monthlyTotalSpent: monthlyTotalSpent,
         transactions: sortedTransactions,

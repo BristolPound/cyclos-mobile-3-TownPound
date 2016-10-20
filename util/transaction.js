@@ -13,19 +13,19 @@ export const sortTransactions = transactions =>
 export const filterTransactions = (transactions, selectedMonth) =>
   transactions.filter(tr => isSameMonth(tr.date, selectedMonth))
 
-export const calculateMonthlyTotalSpent = (monthlyTotals, newTransactions) => {
-  let newMonthlyTotals = merge(monthlyTotals)
-  let filtered = newTransactions.filter(tr => Number(tr.amount) < 0)
-  let grouped = _.groupBy(filtered, tr => format(floorMonth(convert.fromString(tr.date))))
-
-  _.keys(grouped).forEach(k => {
-    if (!(k in newMonthlyTotals)) {
-      newMonthlyTotals[k] = 0
+export const calculateMonthlyTotalSpent = (transactions) => {
+  let monthlyTotals = []
+  transactions.forEach(tr => {
+    const amount = Number(tr.amount)
+    if (amount < 0) {
+      const month = format(floorMonth(convert.fromString(tr.date)))
+      if (!(month in monthlyTotals)) {
+        monthlyTotals[month] = 0
+      }
+      monthlyTotals[month] += Number(tr.amount)
     }
-    newMonthlyTotals[k] += _.sumBy(grouped[k], tr => Number(tr.amount))
   })
-
-  return newMonthlyTotals
+  return monthlyTotals
 }
 
 export const groupTransactionsByDate = (transactions, formatString='mmmm dS, yyyy', toUpper=false) => {
