@@ -101,16 +101,13 @@ export const headerStyles = {
 
 export const priceStyles = [{
   color: color.bristolBlue,
-  size: 32,
-  smallSize: 24
+  size: 32
 }, {
   color: color.bristolBlue2,
-  size: 28,
-  smallSize: 20
+  size: 32
 },{
   color: color.bristolBlue3,
-  size: 20,
-  smallSize: 15
+  size: 32
 }]
 
 export default styles

@@ -41,7 +41,7 @@ const renderRow = (transaction, openDetailsModal) =>
     </View>
   </TouchableHighlight>
 
-const TransactionList = (props) => 
+const TransactionList = (props) =>
   <View style={styles.flex}>
     <TransactionHeader />
     {props.loadingTransactions
@@ -57,9 +57,7 @@ const TransactionList = (props) =>
             renderSectionHeader={renderSectionHeader}
             refreshControl={<RefreshControl
               refreshing={props.refreshing}
-              onRefresh={() => !props.refreshing && props.transactions && props.transactions.length > 0
-                ? props.loadTransactionsAfterLast()
-                : undefined} />
+              onRefresh={() => !props.refreshing ? props.loadMoreTransactions() : undefined} />
             }/>
     }
   </View>
