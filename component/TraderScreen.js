@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from '../store/reducer/navigation'
+import modalState from '../store/reducer/modalState'
 import styles from './profileScreen/ProfileStyle'
 import ProfileScreen from './profileScreen/ProfileScreen'
 import BusinessDetails from './businessDetails/BusinessDetails'
@@ -13,9 +14,9 @@ import { buildDataSourceForTransactions } from '../util/transaction'
  Where
     trader: selectedBusiness
     dataSource: for trader transactions
-    showTraderScreen: callback for opening or closing this view.
+    showModal: callback for opening or closing this view.
  */
-const TraderScreen = ({ trader, transactionsDataSource, showTraderScreen  }) =>
+const TraderScreen = ({ trader, transactionsDataSource, showModal }) =>
     <View style={{flex: 1}}>
         <ProfileScreen
             loaded={trader.profilePopulated}
@@ -26,8 +27,8 @@ const TraderScreen = ({ trader, transactionsDataSource, showTraderScreen  }) =>
             username={trader.shortDisplay}
             renderHeaderExtension={renderHeaderExtension(trader, transactionsDataSource)}
             dataSource={transactionsDataSource}
-            onPressClose={() => showTraderScreen(false)}
-            onPressExpand={()=> showTraderScreen(false)}
+            onPressClose={() => showModal(modalState.none)}
+            onPressExpand={()=> showModal(modalState.none)}
         />
         <View style={styles.footer}>
             <SendMoney

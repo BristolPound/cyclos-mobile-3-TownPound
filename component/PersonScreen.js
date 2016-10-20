@@ -3,10 +3,11 @@ import { ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from '../store/reducer/navigation'
+import modalState from '../store/reducer/modalState'
 import ProfileScreen from './profileScreen/ProfileScreen'
 import { buildDataSourceForTransactions } from '../util/transaction'
 
-const PersonScreen = ({selectedPerson, dataSource, showPersonScreen}) => (
+const PersonScreen = ({selectedPerson, dataSource, showModal}) => (
   selectedPerson
     ? <ProfileScreen
         loaded={true}
@@ -17,8 +18,8 @@ const PersonScreen = ({selectedPerson, dataSource, showPersonScreen}) => (
         username={''}
         renderHeaderExtension={() => null}
         dataSource={dataSource}
-        onPressClose={() => showPersonScreen(false)}
-        onPressExpand={()=> showPersonScreen(false)}/>
+        onPressClose={() => showModal(modalState.none)}
+        onPressExpand={()=> showModal(modalState.none)}/>
     : <ActivityIndicator size='large'/>
 )
 

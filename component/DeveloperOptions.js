@@ -7,7 +7,8 @@ import * as actions from '../store/reducer/developerOptions'
 import { logout } from '../store/reducer/login'
 import { AccountOption } from './Account'
 import LOGIN_STATUSES from '../stringConstants/loginStatus'
-import { showDeveloperOptions } from '../store/reducer/navigation'
+import { showModal } from '../store/reducer/navigation'
+import modalState from '../store/reducer/modalState'
 
 const DeveloperOptions = props => {
   let ds = new ListView.DataSource({
@@ -32,7 +33,7 @@ const DeveloperOptions = props => {
         accessibilityLabel: 'Clear Spending Option',
       }, {
         text: 'Close Developer Options',
-        onPress: () => props.showDeveloperOptions(false),
+        onPress: () => props.showModal(modalState.none),
         accessibilityLabel: 'Close Developer Modal Option',
       }
     ]
@@ -62,7 +63,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
     ...actions,
     logout,
-    showDeveloperOptions
+    showModal
   }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeveloperOptions)

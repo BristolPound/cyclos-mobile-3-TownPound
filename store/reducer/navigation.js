@@ -2,23 +2,16 @@ import _ from 'lodash'
 import merge from '../../util/merge'
 import { selectAndLoadBusiness } from './business'
 import { selectAndLoadPerson } from './person'
+import modalState from './modalState'
 
 const initialState = {
   tabIndex: 0,
-  sendMoneyVisible: false,
-  traderScreenVisible: false,
-  personScreenVisible: false,
-  developerOptionsVisible: false
+  modalState: modalState.none
 }
 
 export const navigateToTab = (tabIndex) => ({
   type: 'navigation/NAVIGATE_TO_TAB',
   tabIndex
-})
-
-export const showSendMoney = (show) => ({
-  type: 'navigation/SHOW_SEND_MONEY',
-  show
 })
 
 export const enableSearchMode = (enabled) => ({
@@ -28,6 +21,9 @@ export const enableSearchMode = (enabled) => ({
 
 export const openDetailsModal = id =>
   (dispatch, getState) => {
+    // it is not possible to determine whether an id related to a trader (i.e. a BP user)
+    // or a contact from the transaction. As a result we have to look up the id in the business
+    // list in order to determine the type
     if (_.some(getState().business.businessList, b => b.id === id)) {
       dispatch(openTraderModal(id))
     } else {
@@ -38,28 +34,18 @@ export const openDetailsModal = id =>
 export const openTraderModal = businessId =>
   (dispatch) => {
     dispatch(selectAndLoadBusiness(businessId))
-    dispatch(showTraderScreen(true))
+    dispatch(showModal(modalState.traderScreen))
   }
 
 export const openPersonModal = personId =>
   dispatch => {
     dispatch(selectAndLoadPerson(personId))
-    dispatch(showPersonScreen(true))
+    dispatch(showModal(modalState.personScreen))
   }
 
-export const showTraderScreen = (show) => ({
-  type: 'navigation/SHOW_TRADER_SCREEN',
-  show
-})
-
-export const showPersonScreen = (show) => ({
-  type: 'navigation/SHOW_PERSON_SCREEN',
-  show
-})
-
-export const showDeveloperOptions = (show) => ({
-  type: 'navigation/SHOW_DEV_OPTIONS',
-  show
+export const showModal = (modalState) => ({
+  type: 'navigation/SHOW_MODAL',
+  modalState
 })
 
 const reducer = (state = initialState, action) => {
@@ -69,24 +55,9 @@ const reducer = (state = initialState, action) => {
         tabIndex: action.tabIndex
       })
       break
-    case 'navigation/SHOW_DEV_OPTIONS':
+    case 'navigation/SHOW_MODAL':
       state = merge(state, {
-        developerOptionsVisible: action.show
-      })
-      break
-    case 'navigation/SHOW_SEND_MONEY':
-      state = merge(state, {
-        sendMoneyVisible: action.show
-      })
-      break
-    case 'navigation/SHOW_TRADER_SCREEN':
-      state = merge(state, {
-        traderScreenVisible: action.show
-      })
-      break
-    case 'navigation/SHOW_PERSON_SCREEN':
-      state = merge(state, {
-        personScreenVisible: action.show
+        modalState: action.modalState
       })
       break
   }
