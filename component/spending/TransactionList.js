@@ -1,8 +1,8 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { ListView, View, Image, ActivityIndicator, TouchableHighlight, RefreshControl } from 'react-native'
-
+import { ListView, View, ActivityIndicator, TouchableHighlight, RefreshControl } from 'react-native'
+import ProfileImage from '../profileImage/ProfileImage'
 import TransactionHeader from './TransactionHeader'
 import DefaultText from '../DefaultText'
 import Price from '../Price'
@@ -10,6 +10,7 @@ import merge from '../../util/merge'
 import color from '../../util/colors'
 import * as actions from '../../store/reducer/transaction'
 import { openDetailsModal, navigateToTransactionTab } from '../../store/reducer/navigation'
+import moment from 'moment'
 
 import styles from './TransactionStyle'
 
@@ -18,8 +19,15 @@ const renderSeparator = (sectionID, rowID) =>
 
 const renderSectionHeader = (sectionData, sectionID) =>
   <View style={styles.headerContainer} key={sectionID}>
-    <DefaultText style={styles.sectionHeader}>{sectionID}</DefaultText>
+    <DefaultText style={styles.sectionHeader}>
+      {moment(sectionData.date).format('D MMMM YYYY').toUpperCase()}
+    </DefaultText>
   </View>
+
+const getTransactionImage = (transaction) =>
+  transaction.relatedAccount.user && transaction.relatedAccount.user.image
+    ? transaction.relatedAccount.user.image.url
+    : undefined
 
 const renderRow = (transaction, openDetailsModal) =>
   <TouchableHighlight
@@ -27,16 +35,15 @@ const renderRow = (transaction, openDetailsModal) =>
       underlayColor={color.transparent}
       key={transaction.transactionNumber}>
     <View style={styles.rowContainer}>
-      { transaction.relatedAccount.user && transaction.relatedAccount.user.image
-        ? <Image
-            style={merge(styles.image, styles.imageVisible)}
-            source={{uri: transaction.relatedAccount.user.image.url}}/>
-        : <View style={styles.image} /> }
+      <ProfileImage
+        img={getTransactionImage(transaction)}
+        style={styles.image}
+        category='shop'/>
       <View style={styles.textContainer}>
         <DefaultText style={merge(styles.flex, styles.text)}>
           { transaction.relatedAccount.user ? transaction.relatedAccount.user.display : 'System' }
         </DefaultText>
-        <Price price={transaction.amount} style={styles.noflex} size={22} smallSize={16} />
+        <Price price={transaction.amount} style={styles.noflex} size={22}/>
       </View>
     </View>
   </TouchableHighlight>
