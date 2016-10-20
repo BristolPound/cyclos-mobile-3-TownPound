@@ -7,6 +7,7 @@ import * as actions from '../store/reducer/developerOptions'
 import { logout } from '../store/reducer/login'
 import { AccountOption } from './Account'
 import LOGIN_STATUSES from '../stringConstants/loginStatus'
+import { showDeveloperOptions } from '../store/reducer/navigation'
 
 const DeveloperOptions = props => {
   let ds = new ListView.DataSource({
@@ -29,6 +30,10 @@ const DeveloperOptions = props => {
         onPress: () => props.clearTransactions(true),
         disabled: props.reloadingTransactions,
         accessibilityLabel: 'Clear Spending Option',
+      }, {
+        text: 'Close Developer Options',
+        onPress: () => props.showDeveloperOptions(false),
+        accessibilityLabel: 'Close Developer Modal Option',
       }
     ]
   }, ['Developer Options'])
@@ -56,7 +61,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     ...actions,
-    logout
+    logout,
+    showDeveloperOptions
   }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeveloperOptions)
