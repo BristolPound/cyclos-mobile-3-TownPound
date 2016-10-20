@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
 import * as actions from '../store/reducer/navigation'
+import modalState from '../store/reducer/modalState'
 import { closeLoginForm } from '../store/reducer/login'
 import TabBar from './tabbar/TabBar'
 import SearchTab from './searchTab/SearchTab'
@@ -34,6 +35,17 @@ const style = {
   }
 }
 
+const componentForModalState = (state) => {
+  switch (state) {
+    case modalState.traderScreen:
+      return <TraderScreen/>
+    case modalState.personScreen:
+      return <PersonScreen/>
+    case modalState.developerOptions:
+      return <DeveloperOptions/>
+  }
+}
+
 const Tabs = (props) => {
   const content =
     <View style={merge(style.flex, props.dialogOpen ? { margin: 20 } : {})}>
@@ -53,40 +65,22 @@ const Tabs = (props) => {
           ? <TransactionList tabLabel='Spending'/>
           : <LoginToView tabLabel='Log in'
               image={emptyStateImage.spending}
-              lineOne='Log in to view'
+              lineOne='Login to view'
               lineTwo='your spending history'/> }
         { props.loggedIn
           ? <Account tabLabel='Account' />
           : <LoginToView tabLabel='Log in'
               image={emptyStateImage.account}
-              lineOne='Log in to view'
+              lineOne='Login to view'
               lineTwo='your account details'/> }
       </ScrollableTabView>
       <NetworkConnection/>
       <Modal
         animationType={'slide'}
         transparent={false}
-        onRequestClose={() => props.showTraderScreen(false)}
-        visible={props.navigation.traderScreenVisible
-          && !props.navigation.sendMoneyVisible
-          && !props.navigation.personScreenVisible}>
-        <TraderScreen/>
-      </Modal>
-      <Modal
-        animationType={'slide'}
-        transparent={false}
-        onRequestClose={() => props.showTraderScreen(false)}
-        visible={props.navigation.developerOptionsVisible}>
-        <DeveloperOptions/>
-      </Modal>
-      <Modal
-        animationType={'slide'}
-        transparent={false}
-        onRequestClose={() => props.showPersonScreen(false)}
-        visible={props.navigation.personScreenVisible
-          && !props.navigation.sendMoneyVisible
-          && !props.navigation.traderScreenVisible}>
-        <PersonScreen/>
+        onRequestClose={() => props.showModal(modalState.none)}
+        visible={props.modalState !== modalState.none}>
+        {componentForModalState(props.modalState)}
       </Modal>
     </View>
 
@@ -111,6 +105,7 @@ const mapDispatchToProps = (dispatch) =>
 
 const mapStateToProps = (state) => ({
   navigation: state.navigation,
+  modalState: state.navigation.modalState,
   loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
   status: state.status,
   dialogOpen: state.login.loginFormOpen,
