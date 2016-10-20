@@ -8,6 +8,7 @@ import color from '../../util/colors'
 import merge from '../../util/merge'
 import commonStyle from '../style'
 import { openLoginForm } from '../../store/reducer/login'
+import { showDeveloperOptions } from '../../store/reducer/navigation'
 import LOGIN_STATUSES from '../../stringConstants/loginStatus'
 
 const TAB_BAR_HEIGHT = 45
@@ -93,6 +94,7 @@ const TabBar = (props) =>
         <TouchableHighlight
             style={style.iconContainer}
             onPress={() => props.goToPage(index)}
+            onLongPress={() => props.showDeveloperOptions(true)}
             underlayColor={color.transparent}
             accessibilityLabel={tab.label}>
           <Image source={props.activeTab === index ? tab.active : tab.inactive}/>
@@ -114,7 +116,7 @@ const TabBar = (props) =>
             </View>
           : <TouchableHighlight
                 style={style.centerChildren}
-                onPress={() => props.openLogin(true)}
+                onPress={() => props.openLoginForm(true)}
                 underlayColor={color.transparent}
                 accessibilityLabel='Login Tab'>
               <View>
@@ -133,6 +135,9 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({openLogin: openLoginForm}, dispatch)
+  bindActionCreators({
+    openLoginForm,
+    showDeveloperOptions
+  }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TabBar)

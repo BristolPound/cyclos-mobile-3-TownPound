@@ -11,7 +11,7 @@ import SearchTab from './searchTab/SearchTab'
 import NetworkConnection from './NetworkConnection'
 import TransactionList from './spending/TransactionList'
 import Account from './Account'
-import LoginToView from './LoginToView'
+import LoginToView, { emptyStateImage } from './loggedOutState/LoginToView'
 import Login from './Login'
 import TraderScreen from './TraderScreen'
 import PersonScreen from './PersonScreen'
@@ -51,10 +51,16 @@ const Tabs = (props) => {
         <SearchTab tabLabel='Search'/>
         { props.loggedIn
           ? <TransactionList tabLabel='Spending'/>
-          : <LoginToView tabLabel='Log in'/> }
+          : <LoginToView tabLabel='Log in'
+              image={emptyStateImage.spending}
+              lineOne='Log in to view'
+              lineTwo='your spending history'/> }
         { props.loggedIn
           ? <Account tabLabel='Account' />
-          : <DeveloperOptions tabLabel='Developer Options'/> }
+          : <LoginToView tabLabel='Log in'
+              image={emptyStateImage.account}
+              lineOne='Log in to view'
+              lineTwo='your account details'/> }
       </ScrollableTabView>
       <NetworkConnection/>
       <Modal
@@ -65,6 +71,13 @@ const Tabs = (props) => {
           && !props.navigation.sendMoneyVisible
           && !props.navigation.personScreenVisible}>
         <TraderScreen/>
+      </Modal>
+      <Modal
+        animationType={'slide'}
+        transparent={false}
+        onRequestClose={() => props.showTraderScreen(false)}
+        visible={props.navigation.developerOptionsVisible}>
+        <DeveloperOptions/>
       </Modal>
       <Modal
         animationType={'slide'}
