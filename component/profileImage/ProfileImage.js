@@ -17,7 +17,7 @@ const ProfileImage = ({img, category, style, alternativeStyle}) => {
       break
   }
 
-  return <Image style={alternativeStyle} source={imgSource}/>
+  return <Image style={alternativeStyle ? alternativeStyle : style} source={imgSource}/>
 }
 
 export default ProfileImage
