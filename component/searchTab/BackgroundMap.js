@@ -2,13 +2,18 @@ import React from 'react'
 import MapView from 'react-native-maps'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { StyleSheet, Platform } from 'react-native'
+import { StyleSheet } from 'react-native'
 import _ from 'lodash'
 import * as actions from '../../store/reducer/business'
-import colors from '../../util/colors'
-import PLATFORM from '../../stringConstants/platform'
+import Platforms from '../../util/Platforms'
 
 const MAP_PAN_DEBOUNCE_DURATION = 50
+
+const UNSELECTED_TRADER_IMG = require('./grey_dot.png')
+const SELECTED_TRADER_IMG = require('./selected_trader.png')
+
+//https://github.com/airbnb/react-native-maps/issues/286
+const onPressPropertyName = Platforms.isIOS() ? 'onSelect' : 'onPress'
 
 class BackgroundMap extends React.Component {
   constructor() {
@@ -21,6 +26,29 @@ class BackgroundMap extends React.Component {
     this.props.updateMapViewport(...args)
   }
 
+  isSelected(business) {
+    return this.props.selectedMarker === business.id
+  }
+
+  // TODO: On Android tapping on the icon once centers the map, then a second tap toggles the appearance.
+  // A tap should not centre the map.
+  renderMarker(b) {
+      const markerProps = {
+        [onPressPropertyName]: () => {//https://github.com/airbnb/react-native-maps/issues/286
+          this.props.selectMarker(b.id)
+          this.updateViewport(b.address.location)
+        }
+      }
+
+      // custom image file
+      return <MapView.Marker
+          key={b.id}
+          coordinate={b.address.location}
+          {...markerProps}
+          image={this.isSelected(b) ? SELECTED_TRADER_IMG : UNSELECTED_TRADER_IMG}
+      />
+  }
+
   render() {
     // on Android devices, if you update the region to the current location while panning
     // the UI becomes 'jumpy'. For this reason, this 'hack' is used to ensure that
@@ -31,21 +59,7 @@ class BackgroundMap extends React.Component {
     let markerArray = undefined
     if (this.props.businessList) {
       markerArray = this.props.businessList.filter(b => b.address)
-        .map(b => {
-          const markerProps = {
-            [Platform.OS === PLATFORM.IOS ? 'onSelect' : 'onPress']: () => {//https://github.com/airbnb/react-native-maps/issues/286
-              this.props.selectMarker(b.id)
-              this.updateViewport(b.address.location)
-            }
-          }
-          return <MapView.Marker
-            key={b.id}
-            coordinate={b.address.location}
-            {...markerProps}
-            image={require('./grey_dot.png')}
-            pinColor={this.props.selectedMarker === b.id ? colors.bristolBlue : colors.gray}
-            />
-        })
+        .map(this.renderMarker.bind(this))
     }
 
     return (
@@ -59,9 +73,8 @@ class BackgroundMap extends React.Component {
   }
 }
 
-
 const mapStateToProps = (state) => ({
-  ...state.business
+  ...state.business,
 })
 
 const mapDispatchToProps = (dispatch) =>
