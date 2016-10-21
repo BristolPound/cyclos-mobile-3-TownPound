@@ -17,15 +17,18 @@ const DeveloperOptions = props => {
   ds = ds.cloneWithRowsAndSections({
     'Developer Options': [{
         text: 'Using: ' + (props.usingProdServer ? 'Prod' : 'Dev') + ' server',
-        onPress: onPressChangeServer(props)
+        onPress: onPressChangeServer(props),
+        accessibilityLabel: 'Using Server Option',
       }, {
         text: 'Clear Business State',
         onPress: () => props.clearBusinesses(),
         disabled: props.reloadingBusinesses,
+        accessibilityLabel: 'Clear Businesses Option',
       }, {
         text: 'Clear Spending State',
         onPress: () => props.clearTransactions(true),
         disabled: props.reloadingTransactions,
+        accessibilityLabel: 'Clear Spending Option',
       }
     ]
   }, ['Developer Options'])
@@ -33,6 +36,7 @@ const DeveloperOptions = props => {
   return <ListView
     dataSource={ds}
     renderRow={(accountOption, i) => <AccountOption {...accountOption} index={i}/> }
+    accessibilityLabel='Developer Options'
     />
 }
 
