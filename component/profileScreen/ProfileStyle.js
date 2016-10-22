@@ -53,11 +53,6 @@ const styles = {
       borderRadius: 5,
       borderWidth: 2
     },
-    businessNoLogo: {
-      height: 84,
-      width: 84,
-      alignSelf: 'center'
-    },
     title: {
       fontFamily: museo500,
       alignSelf: 'center',
