@@ -32,7 +32,6 @@ const ProfileScreen = (props) =>
         <ProfileImage
           img={props.image}
           style={styles.header.businessLogo}
-          alternativeStyle={styles.header.businessNoLogo}
           category={props.category}/>
         <DefaultText style={styles.header.title}>{props.name}</DefaultText>
         <DefaultText style={styles.header.subtitle}>{props.username}</DefaultText>
