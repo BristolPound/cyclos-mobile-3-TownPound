@@ -6,7 +6,7 @@ import DefaultText from '../DefaultText'
 const styles = {
   container: {
     flex: 1,
-    flexDirection:'column',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 50,

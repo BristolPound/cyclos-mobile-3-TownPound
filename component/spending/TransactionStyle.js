@@ -72,6 +72,19 @@ const styles = {
   center: {
     justifyContent: 'center'
   },
+  noTransactions: {
+    container: {
+      flex: 1,
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 50,
+      backgroundColor: color.offWhite
+    },
+    text: {
+      color: color.gray3
+    }
+  }
 }
 
 //TODO: add shadow to iOS
