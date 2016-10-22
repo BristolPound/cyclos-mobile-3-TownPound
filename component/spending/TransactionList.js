@@ -48,27 +48,36 @@ const renderRow = (transaction, openDetailsModal) =>
     </View>
   </TouchableHighlight>
 
-const TransactionList = (props) =>
-  <View style={styles.flex}>
-    <TransactionHeader />
-    {props.loadingTransactions
-      ? <ActivityIndicator size='large' style={styles.flex}/>
-      : <ListView
-            tabLabel='Transactions'
-            style={styles.flex}
-            pageSize={10}
-            renderSeparator={renderSeparator}
-            enableEmptySections={true}
-            renderRow={transaction => renderRow(transaction, props.openDetailsModal)}
-            dataSource={props.transactionsDataSource}
-            renderSectionHeader={renderSectionHeader}
-            refreshControl={<RefreshControl
-              refreshing={props.refreshing}
-              onRefresh={() => !props.refreshing ? props.loadMoreTransactions() : undefined} />
-            }/>
-    }
-  </View>
+const TransactionList = (props) => {
+  let bodyComponent
+  if (props.loadingTransactions) {
+    bodyComponent = <ActivityIndicator size='large' style={styles.flex}/>
+  } else if (props.transactions.length > 0) {
+    bodyComponent = <ListView
+        tabLabel='Transactions'
+        style={styles.flex}
+        pageSize={10}
+        renderSeparator={renderSeparator}
+        enableEmptySections={true}
+        renderRow={transaction => renderRow(transaction, props.openDetailsModal)}
+        dataSource={props.transactionsDataSource}
+        renderSectionHeader={renderSectionHeader}
+        refreshControl={<RefreshControl
+          refreshing={props.refreshing}
+          onRefresh={() => !props.refreshing ? props.loadMoreTransactions() : undefined} />
+        }/>
+  } else {
+    bodyComponent = <View style={styles.noTransactions.container}>
+      <DefaultText style={styles.noTransactions.text}>You have made no transactions</DefaultText>
+      <DefaultText style={styles.noTransactions.text}>this month</DefaultText>
+    </View>
+  }
 
+  return <View style={styles.flex}>
+      <TransactionHeader />
+      {bodyComponent}
+    </View>
+}
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators({
