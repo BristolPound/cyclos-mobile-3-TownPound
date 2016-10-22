@@ -26,7 +26,7 @@ const renderSectionHeader = (sectionData, sectionID) =>
 
 const getTransactionImage = (transaction) =>
   transaction.relatedAccount.user && transaction.relatedAccount.user.image
-    ? transaction.relatedAccount.user.image.url
+    ? transaction.relatedAccount.user.image
     : undefined
 
 const renderRow = (transaction, openDetailsModal) =>
