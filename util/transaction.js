@@ -1,31 +1,37 @@
 import dateFormat from 'dateformat'
 import _ from 'lodash'
-import merge from './merge'
-import { floorMonth, convert, isSameMonth, format } from './date'
+import { isSameMonth, monthRange } from './date'
 import { ListView } from 'react-native'
 
 export const sortTransactions = transactions =>
   _(transactions)
-    .sortBy([tr => convert.fromString(tr.date), tr => tr.relatedAccount.user ? tr.relatedAccount.user.display : undefined])
+    .sortBy([tr => new Date(tr.date)])
     .reverse()
     .value()
 
 export const filterTransactions = (transactions, selectedMonth) =>
   transactions.filter(tr => isSameMonth(tr.date, selectedMonth))
 
-export const calculateMonthlyTotalSpent = (transactions) => {
-  let monthlyTotals = []
-  transactions.forEach(tr => {
-    const amount = Number(tr.amount)
-    if (amount < 0) {
-      const month = format(floorMonth(convert.fromString(tr.date)))
-      if (!(month in monthlyTotals)) {
-        monthlyTotals[month] = 0
-      }
-      monthlyTotals[month] += Number(tr.amount)
-    }
+export const calculateMonthlyTotalSpent = (sortedTransactions) => {
+
+  const lastTransactionDate = sortedTransactions.length > 0
+    ? new Date(_.last(sortedTransactions).date)
+    : new Date()
+
+  const allMonths = monthRange(lastTransactionDate, new Date())
+  const totals = allMonths.map(month => ({
+    month,
+    total: 0
+  }))
+
+  sortedTransactions.forEach(transaction => {
+    const transactionDate = new Date(transaction.date)
+    // TODO: this could be optimised
+    const total = totals.find(total => isSameMonth(total.month, transactionDate))
+    total.total += Number(transaction.amount)
   })
-  return monthlyTotals
+
+  return totals
 }
 
 export const groupTransactionsByDate = (transactions, formatString='mmmm dS, yyyy', toUpper=false) => {

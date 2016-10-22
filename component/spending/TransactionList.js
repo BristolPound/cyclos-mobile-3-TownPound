@@ -20,7 +20,7 @@ const renderSeparator = (sectionID, rowID) =>
 const renderSectionHeader = (sectionData, sectionID) =>
   <View style={styles.headerContainer} key={sectionID}>
     <DefaultText style={styles.sectionHeader}>
-      {moment(sectionData.date).format('D MMMM YYYY').toUpperCase()}
+      {moment(sectionData[0].date).format('D MMMM YYYY').toUpperCase()}
     </DefaultText>
   </View>
 
