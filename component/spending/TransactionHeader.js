@@ -8,22 +8,23 @@ import Price from '../Price'
 import * as actions from '../../store/reducer/transaction'
 import merge from '../../util/merge'
 import { isSameMonth, format } from '../../util/date'
-import styles, { headerStyles, priceStyles } from './TransactionStyle'
+import styles from './TransactionStyle'
 
 export const toMonthString = month =>
   isSameMonth(month, new Date()) ? 'Spent This Month' : format(month, 'MMMM')
 
-const MonthOption = ({monthTotal, styleIndex}) =>
-  <View style={merge(styles.flex, headerStyles.container)}
+const monthOpacity = (distanceFromCentre) => 1 - distanceFromCentre / 3
+
+const MonthOption = ({monthTotal, distanceFromCentre}) =>
+  <View style={merge({opacity: monthOpacity(distanceFromCentre)}, styles.headerStyle.container)}
       key={toMonthString(monthTotal.month)}>
-    <DefaultText style={headerStyles.monthlyOption[styleIndex]}>
+    <DefaultText style={styles.headerStyle.monthlyOption}>
       {toMonthString(monthTotal.month).toUpperCase()}
     </DefaultText>
     <Price
-        color={priceStyles[styleIndex].color}
+        color={styles.headerStyle.priceStyle.color}
         price={monthTotal.total}
-        size={priceStyles[styleIndex].size}
-        smallSize={priceStyles[styleIndex].smallSize}
+        size={styles.headerStyle.priceStyle.size}
         center={true} />
   </View>
 
@@ -38,7 +39,7 @@ class TransactionHeader extends React.Component {
       this.refs.carousel.goToPage(this.props.selectedMonthIndex)
       this.suppressPageChange = false
     }
-    return  <View style={headerStyles.carouselContainer}>
+    return  <View style={styles.headerStyle.carouselContainer}>
       <Carousel
           pageWidth={150}
           sneak={130}
@@ -49,7 +50,7 @@ class TransactionHeader extends React.Component {
           <MonthOption
               key={toMonthString(monthTotal.month)}
               monthTotal={monthTotal}
-              styleIndex={Math.min(Math.abs(this.props.selectedMonthIndex - index), 2)} />
+              distanceFromCentre={Math.min(Math.abs(this.props.selectedMonthIndex - index), 2)} />
         ) }
       </Carousel>
     </View>
