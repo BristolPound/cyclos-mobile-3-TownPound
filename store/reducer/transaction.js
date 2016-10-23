@@ -5,6 +5,8 @@ import { groupTransactionsByDate, calculateMonthlyTotalSpent, filterTransactions
 import { getTransactions } from '../../api'
 import { findTransactionsByDate } from '../../util/transaction'
 
+const lastIndex = (arr) => arr.length - 1
+
 const initialState = {
   refreshing: false,
   selectedMonthIndex: 0,
@@ -71,18 +73,34 @@ const filterTransactionsByMonth = (dataSource, sortedTransactions, selectedMonth
   return dataSource.cloneWithRowsAndSections(grouped.groups, grouped.groupOrder)
 }
 
+// filter transactions based on the current transaction state
+const filterTransactionsByMonthIndex = (state, monthIndex) =>
+  state.monthlyTotalSpent.length > 0
+    ? filterTransactionsByMonth(state.transactionsDataSource,
+        state.transactions, state.monthlyTotalSpent[monthIndex].month)
+    : state.transactionsDataSource.cloneWithRowsAndSections({}, [])
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case 'navigation/NAVIGATE_TO_TAB':
+      if (action.tabIndex === 1) {
+        state = merge(state, {
+          selectedMonthIndex: lastIndex(state.monthlyTotalSpent),
+          transactionsDataSource: filterTransactionsByMonthIndex(state, lastIndex(state.monthlyTotalSpent))
+        })
+      }
+      break
     case 'transaction/TRANSACTIONS_RECEIVED':
       const mergedTransactions = _.uniqBy([...state.transactions, ...action.transactions], 'transactionNumber')
       const sortedTransactions = sortTransactions(mergedTransactions)
       const monthlyTotalSpent = calculateMonthlyTotalSpent(sortedTransactions)
-      const selectedMonthIndex = monthlyTotalSpent.length - 1
+      const selectedMonthIndex = lastIndex(monthlyTotalSpent)
       state = merge(state, {
         monthlyTotalSpent,
         selectedMonthIndex,
         transactions: sortedTransactions,
-        transactionsDataSource: filterTransactionsByMonth(state.transactionsDataSource, sortedTransactions, monthlyTotalSpent[selectedMonthIndex].month)
+        transactionsDataSource: filterTransactionsByMonth(state.transactionsDataSource,
+                                    sortedTransactions, monthlyTotalSpent[selectedMonthIndex].month)
       })
       break
     case 'transaction/LOADING_TRANSACTIONS':
@@ -92,10 +110,10 @@ const reducer = (state = initialState, action) => {
       break
     case 'transaction/SELECT_MONTH':
       //BUG: the carousel control allows you to 'select' non existent pages
-      const index = Math.min(action.monthIndex, state.monthlyTotalSpent.length - 1)
+      const index = Math.min(action.monthIndex, lastIndex(state.monthlyTotalSpent))
       state = merge(state, {
         selectedMonthIndex: index,
-        transactionsDataSource: filterTransactionsByMonth(state.transactionsDataSource, state.transactions, state.monthlyTotalSpent[index].month)
+        transactionsDataSource: filterTransactionsByMonthIndex(state, index)
       })
       break
     case 'transaction/RESET_TRANSACTIONS':
