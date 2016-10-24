@@ -1,6 +1,7 @@
 
 import merge from '../../util/merge'
-import { getAccountBalance, getAccountDetails } from '../../api'
+import { getAccountBalance } from '../../api/accounts'
+import { getAccountDetails } from '../../api/users'
 
 const initialState = {
   loadingBalance: true,

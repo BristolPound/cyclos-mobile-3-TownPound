@@ -1,7 +1,7 @@
 
 import { loadBusinessList, resetBusinesses } from './business'
 import { loadTransactions, resetTransactions } from './transaction'
-import { setBaseUrl } from '../../api'
+import { setBaseUrl } from '../../api/api'
 import { purgeStoredState } from 'redux-persist'
 import { AsyncStorage } from 'react-native'
 import merge from '../../util/merge'

@@ -2,7 +2,7 @@ import { ListView } from 'react-native'
 import merge from '../../util/merge'
 import _ from 'lodash'
 import { groupTransactionsByDate, calculateMonthlyTotalSpent, filterTransactions, sortTransactions } from '../../util/transaction'
-import { getTransactions } from '../../api'
+import { getTransactions } from '../../api/accounts'
 import { findTransactionsByDate } from '../../util/transaction'
 
 const lastIndex = (arr) => arr.length - 1
