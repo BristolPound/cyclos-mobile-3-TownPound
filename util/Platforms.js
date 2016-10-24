@@ -1,4 +1,4 @@
-import Platform from 'react-native'
+import { Platform } from 'react-native'
 
 const PLATFORM_IOS = 'ios'
 const PLATFORM_ANDROID = 'android'

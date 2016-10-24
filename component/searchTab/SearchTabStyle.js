@@ -71,7 +71,8 @@ const styles = {
     },
     searchBar: {
       height: SEARCH_BAR_HEIGHT,
-      margin: MARGIN_SIZE,
+      marginLeft: MARGIN_SIZE,
+      marginRight: MARGIN_SIZE,
       backgroundColor: 'white',
       flexDirection: 'row'
     }

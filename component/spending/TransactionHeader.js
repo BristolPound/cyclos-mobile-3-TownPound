@@ -6,9 +6,11 @@ import Carousel from 'react-native-carousel-control'
 import DefaultText from '../DefaultText'
 import Price from '../Price'
 import * as actions from '../../store/reducer/transaction'
-import merge from '../../util/merge'
 import { isSameMonth, format } from '../../util/date'
 import styles from './TransactionStyle'
+import marginOffset from '../../util/marginOffset'
+
+const HEADER_MARGIN_TOP_IOS = 38
 
 export const toMonthString = month =>
   isSameMonth(month, new Date()) ? 'Spent This Month' : format(month, 'MMMM')
@@ -16,7 +18,11 @@ export const toMonthString = month =>
 const monthOpacity = (distanceFromCentre) => 1 - distanceFromCentre / 3
 
 const MonthOption = ({monthTotal, distanceFromCentre}) =>
-  <View style={merge({opacity: monthOpacity(distanceFromCentre)}, styles.headerStyle.container)}
+  <View style={{
+        opacity: monthOpacity(distanceFromCentre),
+        flex: 1,
+        marginTop: marginOffset(HEADER_MARGIN_TOP_IOS)
+      }}
       key={toMonthString(monthTotal.month)}>
     <DefaultText style={styles.headerStyle.monthlyOption}>
       {toMonthString(monthTotal.month).toUpperCase()}
