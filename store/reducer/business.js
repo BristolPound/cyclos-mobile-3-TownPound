@@ -74,7 +74,9 @@ export const selectAndLoadBusiness = (businessId) =>
     if (!business.profilePopulated) {
       getBusinessProfile(businessId, dispatch)
         .then(businessProfile => dispatch(businessProfileReceived(businessProfile)))
-        .catch(console.error)
+        // if this request fails, the modal trader screen will continue to show a spinner
+        // but will be closeable
+        .catch(console.warn)
     }
   }
 

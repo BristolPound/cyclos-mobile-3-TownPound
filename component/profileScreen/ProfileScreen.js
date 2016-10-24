@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Image, TouchableHighlight, ListView, ActivityIndicator, Dimensions } from 'react-native'
+import { View, Image, TouchableHighlight, ListView, Dimensions } from 'react-native'
 import DefaultText from '../DefaultText'
 import Price from '../Price'
 import merge from '../../util/merge'
@@ -11,33 +11,30 @@ import styles from './ProfileStyle'
 const buttonHeight= 60
 
 const ProfileScreen = (props) =>
-  props.loaded
-   ? <ListView
+  <ListView
       style= {{flex: 0, maxHeight: Dimensions.get('window').height - buttonHeight}}
       renderHeader={renderHeader(props)}
       dataSource={props.dataSource}
       renderRow={props.renderRow || renderRow}
       renderSeparator={renderSeparator}
-      renderSectionHeader={renderSectionHeader}
-      />
-  : <ActivityIndicator size='large'/>
+      renderSectionHeader={renderSectionHeader}/>
 
-  const renderHeader = props => () =>
-    <View style={styles.flex}>
-      <View style={styles.dropshadow}>
-        <Image source={require('./gorilla.png')} style={styles.header.backgroundImage} />
-          { props.isTabItem
-            ? <View style={styles.header.topSpace} />
-            : renderCloseExpandIcons(props)}
-        <ProfileImage
-          img={props.image}
-          style={styles.header.businessLogo}
-          category={props.category}/>
-        <DefaultText style={styles.header.title}>{props.name}</DefaultText>
-        <DefaultText style={styles.header.subtitle}>{props.username}</DefaultText>
-      </View>
-      {props.renderHeaderExtension()}
+const renderHeader = props => () =>
+  <View style={styles.flex}>
+    <View style={styles.dropshadow}>
+      <Image source={require('./gorilla.png')} style={styles.header.backgroundImage} />
+        { props.isTabItem
+          ? <View style={styles.header.topSpace} />
+          : renderCloseExpandIcons(props)}
+      <ProfileImage
+        img={props.image}
+        style={styles.header.businessLogo}
+        category={props.category}/>
+      <DefaultText style={styles.header.title}>{props.name}</DefaultText>
+      <DefaultText style={styles.header.subtitle}>{props.username}</DefaultText>
     </View>
+    {props.renderHeaderExtension()}
+  </View>
 
 const renderCloseExpandIcons = (props) =>
   <View style={styles.rowLayout}>
