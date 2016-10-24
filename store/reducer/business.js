@@ -5,7 +5,7 @@ import moment from 'moment'
 import merge from '../../util/merge'
 import { getBusinesses, getBusinessProfile } from '../../api'
 
-const DEFAULT_LOCATION =  { latitude: 51.4684055, longitude:  -2.7307918 } // Bristol according to Google maps
+const DEFAULT_LOCATION =  { latitude: 51.454513, longitude:  -2.58791 }
 
 const initialState = {
   businessList: [],
@@ -20,8 +20,8 @@ const initialState = {
   }),
   mapViewport: {
     ...DEFAULT_LOCATION,
-    latitudeDelta: 0.01,
-    longitudeDelta: 0.01
+    latitudeDelta: 0.006,
+    longitudeDelta: 0.006
   },
   searchMode: false
 }
