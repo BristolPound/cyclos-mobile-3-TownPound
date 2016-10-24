@@ -6,7 +6,7 @@ import modalState from '../store/reducer/modalState'
 import styles from './profileScreen/ProfileStyle'
 import ProfileScreen from './profileScreen/ProfileScreen'
 import BusinessDetails from './businessDetails/BusinessDetails'
-import { View } from 'react-native'
+import { View, ActivityIndicator } from 'react-native'
 import SendMoney from './sendMoney/SendMoney'
 import { buildDataSourceForTransactions } from '../util/transaction'
 
@@ -38,9 +38,12 @@ const TraderScreen = ({ trader, transactionsDataSource, showModal }) =>
     </View>
 
 const renderHeaderExtension = (trader, transactionsDataSource) => () =>
-    <View style={styles.dropshadow}>
-        <BusinessDetails business={trader} isExpanded={transactionsDataSource.getRowCount() === 0}/>
-    </View>
+  <View style={styles.dropshadow}>
+    <BusinessDetails business={trader} isExpanded={transactionsDataSource.getRowCount() === 0}/>
+    { trader.profilePopulated
+      ? undefined
+      : <ActivityIndicator style={styles.loadingSpinner} size='large'/> }
+  </View>
 
 // filter the transaction list to contain only those relating to this trader
 const dataSourceForSelectedBusiness = (state) => {

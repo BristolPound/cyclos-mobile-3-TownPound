@@ -45,11 +45,10 @@ const dispatchSuccessfulConnection = dispatch => response => {
 }
 
 const maybeDispatchFailure = dispatch => err => {
-  if (err.message === 'Network request failed') {
-    dispatch(connectivityChanged(false))
-  } else if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
+  if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
     dispatch(loggedOut())
   }
+  dispatch(connectivityChanged(false))
   throw err
 }
 
