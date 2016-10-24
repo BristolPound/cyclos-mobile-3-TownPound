@@ -1,5 +1,4 @@
 import color from '../../util/colors'
-import merge from '../../util/merge'
 
 const museo700 = 'MuseoSans-700'
 const museo500 = 'MuseoSans-300'
@@ -88,10 +87,6 @@ const styles = {
       justifyContent: 'center',
       alignItems: 'center',
       color: color.gray
-    },
-    container: {
-      top: 38,
-      flex: 1
     },
     priceStyle: {
       color: color.bristolBlue,
