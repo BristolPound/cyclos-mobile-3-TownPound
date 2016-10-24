@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import merge from '../../util/merge'
-import { addContact } from '../../api'
+import { addContact } from '../../api/contacts'
 
 const initialState = {
   personList: [],

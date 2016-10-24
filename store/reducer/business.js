@@ -3,7 +3,7 @@ import haversine from 'haversine'
 import _ from 'lodash'
 import moment from 'moment'
 import merge from '../../util/merge'
-import { getBusinesses, getBusinessProfile } from '../../api'
+import { getBusinesses, getBusinessProfile } from '../../api/users'
 
 const DEFAULT_LOCATION =  { latitude: 51.4684055, longitude:  -2.7307918 } // Bristol according to Google maps
 
