@@ -14,11 +14,6 @@ export const navigateToTab = (tabIndex) => ({
   tabIndex
 })
 
-export const enableSearchMode = (enabled) => ({
-  type: 'navigation/SEARCH_DIRECTORY',
-  enabled
-})
-
 export const openDetailsModal = id =>
   (dispatch, getState) => {
     // it is not possible to determine whether an id related to a trader (i.e. a BP user)
