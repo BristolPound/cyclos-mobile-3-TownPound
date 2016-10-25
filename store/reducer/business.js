@@ -14,7 +14,6 @@ const initialState = {
   visibleBusinesses: [],
   businessListExpanded: false,
   selectedBusinessId: undefined,
-  selectedMarker: undefined,
   dataSource: new ListView.DataSource({
     rowHasChanged: (a, b) => a.shortDisplay !== b.shortDisplay,
     sectionHeaderHasChanged: (a, b) => a !== b
@@ -66,6 +65,12 @@ const selectBusiness = (businessId) => (dispatch) =>
 export const resetBusinesses = () => ({
   type: 'business/RESET_BUSINESSES',
 })
+
+export const updateUserLocation = (coords, dispatch) => {
+  if (haversine(DEFAULT_LOCATION, coords) < 75) {//furthest business is around 70km from Bristol centre
+    dispatch(updateMapViewport(coords))
+  }
+}
 
 export const selectAndLoadBusiness = (businessId) =>
   (dispatch, getState) => {
@@ -188,8 +193,9 @@ const reducer = (state = initialState, action) => {
       break
     case 'business/SELECT_MARKER':
       state = merge(state, {
-        selectedMarker: action.businessId
+        selectedBusinessId: action.businessId
       })
+      break
   }
   return state
 }
