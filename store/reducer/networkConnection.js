@@ -2,12 +2,14 @@ import merge from '../../util/merge'
 
 const initialState = {
   status: true,
-  failedActions: []
+  // a queue of network-related actions that failed. WHen network connection recovers
+  // resumes, these can be re-tried
+  failedActionsQueue: []
 }
 
 export const connectivityChanged = (status) => (dispatch, getState) => {
   if (status) {
-    getState().networkConnection.failedActions.forEach(dispatch)
+    getState().networkConnection.failedActionsQueue.forEach(dispatch)
   }
   dispatch ({
     type: 'networkConnection/CONNECTION_CHANGED',
@@ -25,13 +27,13 @@ const reducer = (state = initialState, action) => {
     case 'networkConnection/CONNECTION_CHANGED':
       state = merge(state, {
         status: action.status,
-        failedActions: []
+        failedActionsQueue: []
       })
       break
     case 'networkConnection/ACTION_FAILED':
-      if (!state.failedActions.find(a => a.type === action.failedAction.type)) {
+      if (!state.failedActionsQueue.find(a => a.type === action.failedActionsQueue.type)) {
         state = merge(state, {
-          failedActions: [...state.failedActions, action.failedAction]
+          failedActionsQueue: [...state.failedActions, action.failedAction]
         })
       }
       break

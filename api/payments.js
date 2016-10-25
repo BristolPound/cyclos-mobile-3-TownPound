@@ -1,6 +1,6 @@
 import { get, post } from './api'
 
-export const putTransaction = (payment, dispatch) =>
+export const makePayment = (payment, dispatch) =>
   get('self/payments/data-for-perform', {
       to: payment.subject,
       fields: 'paymentTypes.id'

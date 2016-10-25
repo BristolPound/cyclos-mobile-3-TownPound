@@ -1,4 +1,4 @@
-import { putTransaction } from '../../api/payments'
+import { makePayment } from '../../api/payments'
 import merge from '../../util/merge'
 import { loadTransactionsAfterLast } from './transaction'
 import ApiError, {UNEXPECTED_ERROR} from '../../api/apiError'
@@ -38,7 +38,7 @@ const transactionComplete = (success, message) => ({
 export const sendTransaction = () =>
   (dispatch, getState) => {
     dispatch(setLoading())
-    putTransaction({
+    makePayment({
         subject: getState().sendMoney.payee,
         description: 'Test description',
         amount: getState().sendMoney.amount

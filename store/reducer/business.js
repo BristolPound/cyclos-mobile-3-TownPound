@@ -66,17 +66,26 @@ export const geolocationChanged = (coords, dispatch) => {
   }
 }
 
+export const loadBusinessProfile = (businessId) =>
+  (dispatch) =>
+    getBusinessProfile(businessId, dispatch)
+      .then(businessProfile => dispatch(businessProfileReceived(businessProfile)))
+      // if this request fails, the modal trader screen will continue to show a spinner
+      // but will be closeable
+      .catch(err => {
+        dispatch(addFailedAction(loadBusinessProfile(businessId)))
+        console.warn(err)
+      })
+
 export const selectAndLoadBusiness = (businessId) =>
   (dispatch, getState) => {
     dispatch(selectBusiness(businessId))
+
+    // check to see whether we actually need to load the profile
     const businessList = getState().business.businessList
     const business = businessList.find(b => b.id === businessId)
     if (!business.profilePopulated) {
-      getBusinessProfile(businessId, dispatch)
-        .then(businessProfile => dispatch(businessProfileReceived(businessProfile)))
-        // if this request fails, the modal trader screen will continue to show a spinner
-        // but will be closeable
-        .catch(console.warn)
+      dispatch(loadBusinessProfile(businessId))
     }
   }
 
