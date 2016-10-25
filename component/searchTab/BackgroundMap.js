@@ -27,7 +27,7 @@ class BackgroundMap extends React.Component {
   }
 
   isSelected(business) {
-    return this.props.selectedMarker === business.id
+    return this.props.selectedBusinessId === business.id
   }
 
   // TODO: On Android tapping on the icon once centers the map, then a second tap toggles the appearance.

@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 import { NetInfo } from 'react-native'
 
 import transaction from './reducer/transaction'
-import business, { loadBusinessList, updateMapViewport } from './reducer/business'
+import business, { loadBusinessList, updateUserLocation } from './reducer/business'
 import person from './reducer/person'
 import navigation from './reducer/navigation'
 import login from './reducer/login'
@@ -26,18 +26,15 @@ export const reducer = combineReducers({
 //TODO: Handle GPS errors
 
 export const initialise = (store) => {
-    NetInfo.isConnected.addEventListener(
-      'change',
-      (status) => store.dispatch(connectivityChanged(status))
-    )
+  NetInfo.isConnected.addEventListener(
+    'change',
+    (status) => store.dispatch(connectivityChanged(status))
+  )
 
   store.dispatch(loadBusinessList())
+  
   navigator.geolocation.getCurrentPosition(
-    ({coords}) => store.dispatch(updateMapViewport(coords)),
-    () => {}
-  )
-  navigator.geolocation.watchPosition(
-    ({coords}) => store.dispatch(updateMapViewport(coords)),
+    ({coords}) => updateUserLocation(coords, store.dispatch),
     () => {}
   )
 }
