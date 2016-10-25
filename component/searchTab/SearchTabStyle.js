@@ -1,8 +1,10 @@
 import color from '../../util/colors'
+import marginOffset from '../../util/marginOffset'
 
 const SEARCH_BAR_HEIGHT = 50
 const MARGIN_SIZE = 10
 const LIST_BORDER_RADIUS = 8
+const SEARCH_BAR_MARGIN_TOP_IOS = 35
 
 const styles = {
   expandHeader: {
@@ -73,6 +75,7 @@ const styles = {
       height: SEARCH_BAR_HEIGHT,
       marginLeft: MARGIN_SIZE,
       marginRight: MARGIN_SIZE,
+      marginTop: marginOffset(SEARCH_BAR_MARGIN_TOP_IOS),
       backgroundColor: 'white',
       flexDirection: 'row'
     }

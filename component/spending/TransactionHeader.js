@@ -8,9 +8,6 @@ import Price from '../Price'
 import * as actions from '../../store/reducer/transaction'
 import { isSameMonth, format } from '../../util/date'
 import styles from './TransactionStyle'
-import marginOffset from '../../util/marginOffset'
-
-const HEADER_MARGIN_TOP_IOS = 38
 
 export const toMonthString = month =>
   isSameMonth(month, new Date()) ? 'Spent This Month' : format(month, 'MMMM')
@@ -20,17 +17,16 @@ const monthOpacity = (distanceFromCentre) => 1 - distanceFromCentre / 3
 const MonthOption = ({monthTotal, distanceFromCentre}) =>
   <View style={{
         opacity: monthOpacity(distanceFromCentre),
-        flex: 1,
-        marginTop: marginOffset(HEADER_MARGIN_TOP_IOS)
+        flex: 1
       }}
       key={toMonthString(monthTotal.month)}>
-    <DefaultText style={styles.headerStyle.monthlyOption}>
+    <DefaultText style={styles.header.monthlyOption}>
       {toMonthString(monthTotal.month).toUpperCase()}
     </DefaultText>
     <Price
-        color={styles.headerStyle.priceStyle.color}
+        color={styles.header.priceStyle.color}
         price={monthTotal.total}
-        size={styles.headerStyle.priceStyle.size}
+        size={styles.header.priceStyle.size}
         center={true} />
   </View>
 
@@ -45,7 +41,7 @@ class TransactionHeader extends React.Component {
       this.refs.carousel.goToPage(this.props.selectedMonthIndex)
       this.suppressPageChange = false
     }
-    return  <View style={styles.headerStyle.carouselContainer}>
+    return  <View style={styles.header.carouselContainer}>
       <Carousel
           pageWidth={150}
           sneak={130}

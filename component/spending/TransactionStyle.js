@@ -1,4 +1,7 @@
 import color from '../../util/colors'
+import marginOffset from '../../util/marginOffset'
+
+const CAROUSEL_MARGIN_TOP_IOS = 38
 
 const museo700 = 'MuseoSans-700'
 const museo500 = 'MuseoSans-300'
@@ -32,7 +35,7 @@ const styles = {
     fontSize: 18,
     marginRight: 10
   },
-  headerContainer: {
+  sectionHeaderContainer: {
     borderBottomColor: color.gray5,
     borderBottomWidth: 1,
     borderTopColor: color.gray5,
@@ -74,11 +77,12 @@ const styles = {
       color: color.gray3
     }
   },
-  headerStyle: {
+  header: {
     carouselContainer: {
       height: 106,
       backgroundColor: color.white,
-      elevation: 5
+      elevation: 5,
+      marginTop: marginOffset(CAROUSEL_MARGIN_TOP_IOS)
     },
     monthlyOption: {
       fontFamily: museo500,
@@ -94,6 +98,5 @@ const styles = {
     }
   }
 }
-
 
 export default styles
