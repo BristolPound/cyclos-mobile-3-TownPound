@@ -1,68 +1,64 @@
 import color from '../../util/colors'
+import merge from '../../util/merge'
 import marginOffset from '../../util/marginOffset'
-
-const CAROUSEL_MARGIN_TOP_IOS = 38
+import commonStyle from '../style'
 
 const museo700 = 'MuseoSans-700'
 const museo500 = 'MuseoSans-300'
 const museo300 = 'MuseoSans-300'
 
+const HEADER_HEIGHT = marginOffset(90)
+const IMAGE_SIZE = 42
+const IMAGE_MARGIN = 14
+
 const styles = {
-  image: {
-    width: 42,
-    height: 42,
-    marginLeft: 14,
-    marginRight: 14,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: color.offWhite,
-    backgroundColor: color.transparent
+  transactionList: {
+    marginTop: HEADER_HEIGHT
   },
-  rowContainer: {
-    flexDirection: 'row',
-    height: 50,
-    paddingRight: 20,
-    alignItems: 'center'
-  },
-  textContainer: {
-    flexDirection: 'row',
-    flex: 1,
-    alignItems: 'flex-end'
-  },
-  text: {
-    fontFamily: museo300,
-    color: color.offBlack,
-    fontSize: 18,
-    marginRight: 10
-  },
-  sectionHeaderContainer: {
-    borderBottomColor: color.gray5,
-    borderBottomWidth: 1,
-    borderTopColor: color.gray5,
-    borderTopWidth: 1,
-    height: 34,
-    backgroundColor: color.offWhite,
-    flexDirection: 'row',
-    alignItems: 'center',
+  container: {
     flex: 1
   },
-  sectionHeader: {
-    fontFamily: museo700,
-    fontSize: 14,
-    color: color.gray2,
-    marginLeft: 14
-  },
   separator: {
-    marginLeft: 61,
+    marginLeft: IMAGE_SIZE + IMAGE_MARGIN * 2,
     marginRight: 0,
     borderBottomColor: color.gray5,
     borderBottomWidth: 1
   },
-  noflex: {
-    flex: 0
+  loadingIndicator: {
+    flex: 1
   },
-  center: {
-    justifyContent: 'center'
+  row: {
+    container: {
+      flexDirection: 'row',
+      height: 50,
+      paddingRight: 20,
+      alignItems: 'center'
+    },
+    textContainer: {
+      flexDirection: 'row',
+      flex: 1,
+      alignItems: 'flex-end'
+    },
+    image: {
+      width: IMAGE_SIZE,
+      height: IMAGE_SIZE,
+      marginLeft: IMAGE_MARGIN,
+      marginRight: IMAGE_MARGIN,
+      borderRadius: 5,
+      borderWidth: 1,
+      borderColor: color.offWhite,
+      backgroundColor: color.transparent
+    },
+    text: {
+      fontFamily: museo300,
+      color: color.offBlack,
+      fontSize: 18,
+      marginRight: 10,
+      flex: 1
+    },
+    price: {
+      flex: 0
+    },
   },
   noTransactions: {
     container: {
@@ -77,12 +73,31 @@ const styles = {
       color: color.gray3
     }
   },
+  sectionHeader: {
+    container: {
+      borderBottomColor: color.gray5,
+      borderBottomWidth: 1,
+      borderTopColor: color.gray5,
+      borderTopWidth: 1,
+      height: 34,
+      backgroundColor: color.offWhite,
+      flexDirection: 'row',
+      alignItems: 'center',
+      flex: 1
+    },
+    text: {
+      fontFamily: museo700,
+      fontSize: 14,
+      color: color.gray2,
+      marginLeft: 14
+    },
+  },
   header: {
     carouselContainer: {
-      height: 106,
-      backgroundColor: color.white,
-      elevation: 5,
-      marginTop: marginOffset(CAROUSEL_MARGIN_TOP_IOS)
+      position: 'absolute',
+      top: 0,
+      height: HEADER_HEIGHT,
+      paddingTop: 30
     },
     monthlyOption: {
       fontFamily: museo500,
@@ -98,5 +113,7 @@ const styles = {
     }
   }
 }
+
+styles.header.carouselContainer = merge(styles.header.carouselContainer, commonStyle.shadow)
 
 export default styles
