@@ -18,8 +18,8 @@ const renderSeparator = (sectionID, rowID) =>
   <View style={styles.separator} key={`sep:${sectionID}:${rowID}`}/>
 
 const renderSectionHeader = (sectionData, sectionID) =>
-  <View style={styles.headerContainer} key={sectionID}>
-    <DefaultText style={styles.sectionHeader}>
+  <View style={styles.sectionHeader.container} key={sectionID}>
+    <DefaultText style={styles.sectionHeader.text}>
       {moment(sectionData[0].date).format('D MMMM YYYY').toUpperCase()}
     </DefaultText>
   </View>
@@ -34,16 +34,16 @@ const renderRow = (transaction, openDetailsModal) =>
       onPress={() => transaction.relatedAccount.user && openDetailsModal(transaction.relatedAccount.user.id)}
       underlayColor={color.transparent}
       key={transaction.transactionNumber}>
-    <View style={styles.rowContainer}>
+    <View style={styles.row.container}>
       <ProfileImage
         img={getTransactionImage(transaction)}
-        style={styles.image}
+        style={styles.row.image}
         category='shop'/>
-      <View style={styles.textContainer}>
-        <DefaultText style={merge(styles.flex, styles.text)}>
+      <View style={styles.row.textContainer}>
+        <DefaultText style={styles.row.text}>
           { transaction.relatedAccount.user ? transaction.relatedAccount.user.display : 'System' }
         </DefaultText>
-        <Price price={transaction.amount} style={styles.noflex} size={22}/>
+        <Price price={transaction.amount} style={styles.row.price} size={18}/>
       </View>
     </View>
   </TouchableHighlight>
@@ -51,11 +51,11 @@ const renderRow = (transaction, openDetailsModal) =>
 const TransactionList = (props) => {
   let bodyComponent
   if (props.loadingTransactions) {
-    bodyComponent = <ActivityIndicator size='large' style={styles.flex}/>
+    bodyComponent = <ActivityIndicator size='large' style={styles.loadingIndicator}/>
   } else if (props.transactions.length > 0) {
     bodyComponent = <ListView
         tabLabel='Transactions'
-        style={styles.flex}
+        style={styles.transactionList}
         pageSize={10}
         renderSeparator={renderSeparator}
         enableEmptySections={true}
@@ -73,9 +73,9 @@ const TransactionList = (props) => {
     </View>
   }
 
-  return <View style={styles.flex}>
-      <TransactionHeader />
+  return <View style={styles.container}>
       {bodyComponent}
+      <TransactionHeader />
     </View>
 }
 
