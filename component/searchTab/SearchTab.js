@@ -27,10 +27,6 @@ class SearchTab extends React.Component {
     super()
     this.searchBarRef = undefined
   }
-  closeButtonPressed() {
-    this.searchBarRef.blur()
-    this.props.enableSearchMode(false)
-  }
   render() {
     return (
       <View style={{flex: 1}}>

@@ -11,7 +11,6 @@ const DEFAULT_LOCATION =  { latitude: 51.454513, longitude:  -2.58791 }
 const initialState = {
   businessList: [],
   businessListTimestamp: null,
-  visibleBusinesses: [],
   businessListExpanded: false,
   selectedBusinessId: undefined,
   dataSource: new ListView.DataSource({
@@ -49,11 +48,6 @@ export const businessProfileReceived = (businessProfile) => ({
 export const updateMapViewport = (viewport) => ({
   type: 'business/UPDATE_MAP_VIEWPORT',
   viewport
-})
-
-export const enableSearchMode = (enable) => ({
-  type: 'business/SEARCH_MODE_ENABLED',
-  enable
 })
 
 const selectBusiness = (businessId) => (dispatch) =>
@@ -117,8 +111,7 @@ const reducer = (state = initialState, action) => {
       state = merge(state, {
         dataSource: state.dataSource.cloneWithRows(filteredBusiness),
         businessList: action.businessList,
-        businessListTimestamp: new Date(),
-        visibleBusinesses: action.businessList
+        businessListTimestamp: new Date()
       })
       break
     case 'business/BUSINESS_PROFILE_RECEIVED':
@@ -156,25 +149,11 @@ const reducer = (state = initialState, action) => {
       state = merge(state, {
         dataSource: state.dataSource.cloneWithRows(filtered),
         mapViewport: newViewport,
-        visibleBusinesses: filtered
       })
       break
     case 'business/EXPAND_BUSINESS_LIST':
       state = merge(state, {
         businessListExpanded: action.expand
-      })
-      break
-    case 'business/SEARCH_MODE_ENABLED':
-      state = merge(state, {
-        searchMode: action.enable,
-        dataSource: action.enable
-          ? state.dataSource.cloneWithRowsAndSections({
-                closest: state.visibleBusinesses,
-              },
-              [ 'closest' ]
-            )
-            : state.dataSource.cloneWithRows(state.visibleBusinesses),
-        businessListExpanded: action.enable
       })
       break
     case 'business/SELECTED_BUSINESS':
@@ -186,7 +165,6 @@ const reducer = (state = initialState, action) => {
       state = merge(state, {
         businessList: [],
         businessListTimestamp: null,
-        visibleBusinesses: [],
         businessListExpanded: false,
         dataSource: state.dataSource.cloneWithRows([]),
       })
