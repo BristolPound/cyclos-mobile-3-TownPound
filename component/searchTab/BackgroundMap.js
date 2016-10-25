@@ -2,18 +2,14 @@ import React from 'react'
 import MapView from 'react-native-maps'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import _ from 'lodash'
 import * as actions from '../../store/reducer/business'
-import Platforms from '../../util/Platforms'
 
 const MAP_PAN_DEBOUNCE_DURATION = 50
 
 const UNSELECTED_TRADER_IMG = require('./grey_dot.png')
 const SELECTED_TRADER_IMG = require('./selected_trader.png')
-
-//https://github.com/airbnb/react-native-maps/issues/286
-const onPressPropertyName = Platforms.isIOS() ? 'onSelect' : 'onPress'
 
 class BackgroundMap extends React.Component {
   constructor() {
@@ -30,22 +26,35 @@ class BackgroundMap extends React.Component {
     return this.props.selectedMarker === business.id
   }
 
-  // TODO: On Android tapping on the icon once centers the map, then a second tap toggles the appearance.
-  // A tap should not centre the map.
-  renderMarker(b) {
-      const markerProps = {
-        [onPressPropertyName]: () => {//https://github.com/airbnb/react-native-maps/issues/286
-          this.props.selectMarker(b.id)
-          this.updateViewport(b.address.location)
+  renderMarker(business) {
+    // we have to separate out the behaviour by platform for:
+    // * 'onSomething' property name - //https://github.com/airbnb/react-native-maps/issues/286
+    // * behaviour - https://github.com/airbnb/react-native-maps#custom-callouts
+    //     android moves viewspace when the marker is selected, ios shouldn't.
+    // * Image placing:
+    //     https://github.com/airbnb/react-native-maps/blob/master/docs/marker.md
+    //       ios - centerOffset: By default, the center point of an annotation view is placed at the coordinate point of the associated annotation.
+    //       android - anchor: manually center
+
+      const markerProps = Platform.select({
+        android: {
+          onPress: () => {
+            this.props.selectMarker(business.id)
+            this.updateViewport(business.address.location)
+          },
+          anchor: {x: 0.5, y: 0.5},  // center image on location.
+        },
+        ios: {
+          onSelect: () => this.props.selectMarker(business.id)
         }
-      }
+      })
 
       // custom image file
       return <MapView.Marker
-          key={b.id}
-          coordinate={b.address.location}
+          key={business.id}
+          coordinate={business.address.location}
           {...markerProps}
-          image={this.isSelected(b) ? SELECTED_TRADER_IMG : UNSELECTED_TRADER_IMG}
+          image={this.isSelected(business) ? SELECTED_TRADER_IMG : UNSELECTED_TRADER_IMG}
       />
   }
 
