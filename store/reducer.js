@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 import { NetInfo } from 'react-native'
 
 import transaction from './reducer/transaction'
-import business, { loadBusinessList, updateUserLocation } from './reducer/business'
+import business, { loadBusinessList, geolocationChanged } from './reducer/business'
 import person from './reducer/person'
 import navigation from './reducer/navigation'
 import login from './reducer/login'
@@ -32,9 +32,9 @@ export const initialise = (store) => {
   )
 
   store.dispatch(loadBusinessList())
-  
+
   navigator.geolocation.getCurrentPosition(
-    ({coords}) => updateUserLocation(coords, store.dispatch),
+    ({coords}) => geolocationChanged(coords, store.dispatch),
     () => {}
   )
 }

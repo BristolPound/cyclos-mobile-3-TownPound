@@ -66,7 +66,7 @@ export const resetBusinesses = () => ({
   type: 'business/RESET_BUSINESSES',
 })
 
-export const updateUserLocation = (coords, dispatch) => {
+export const geolocationChanged = (coords, dispatch) => {
   if (haversine(DEFAULT_LOCATION, coords) < 75) {//furthest business is around 70km from Bristol centre
     dispatch(updateMapViewport(coords))
   }
