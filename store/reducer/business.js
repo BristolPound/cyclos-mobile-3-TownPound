@@ -3,6 +3,7 @@ import haversine from 'haversine'
 import _ from 'lodash'
 import moment from 'moment'
 import merge from '../../util/merge'
+import { addFailedAction } from './networkConnection'
 import { getBusinesses, getBusinessProfile } from '../../api/users'
 
 const DEFAULT_LOCATION =  { latitude: 51.4684055, longitude:  -2.7307918 } // Bristol according to Google maps
@@ -86,7 +87,12 @@ export const loadBusinessList = (force = false) =>
     if (Date.now() - persistedDate > moment.duration(2, 'days') || force) {
       getBusinesses(dispatch)
         .then(businesses => dispatch(businessListReceived(businesses)))
-        .catch(console.error)
+        // if this request fails, the business list may not be populated. In this case, when
+        // connection status changes to be connected, the list is re-fetched
+        .catch(err => {
+          dispatch(addFailedAction(loadBusinessList(force)))
+          console.warn(err)
+        })
     }
   }
 
