@@ -141,6 +141,9 @@ const styles = {
     backgroundColor: colors.offWhite,
     flex: 1,
     flexDirection: 'column-reverse'
+  },
+  loadingSpinner: {
+    marginBottom: 10
   }
 }
 

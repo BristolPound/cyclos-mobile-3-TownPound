@@ -1,7 +1,7 @@
-import { putTransaction } from '../../api'
+import { putTransaction } from '../../api/payments'
 import merge from '../../util/merge'
 import { loadTransactionsAfterLast } from './transaction'
-import ApiError, {UNEXPECTED_ERROR} from '../../apiError'
+import ApiError, {UNEXPECTED_ERROR} from '../../api/apiError'
 
 const initialState = {
   payee: '',

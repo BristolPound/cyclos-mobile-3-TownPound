@@ -3,7 +3,8 @@ import haversine from 'haversine'
 import _ from 'lodash'
 import moment from 'moment'
 import merge from '../../util/merge'
-import { getBusinesses, getBusinessProfile } from '../../api'
+import { addFailedAction } from './networkConnection'
+import { getBusinesses, getBusinessProfile } from '../../api/users'
 
 const DEFAULT_LOCATION =  { latitude: 51.454513, longitude:  -2.58791 }
 
@@ -74,7 +75,9 @@ export const selectAndLoadBusiness = (businessId) =>
     if (!business.profilePopulated) {
       getBusinessProfile(businessId, dispatch)
         .then(businessProfile => dispatch(businessProfileReceived(businessProfile)))
-        .catch(console.error)
+        // if this request fails, the modal trader screen will continue to show a spinner
+        // but will be closeable
+        .catch(console.warn)
     }
   }
 
@@ -84,7 +87,12 @@ export const loadBusinessList = (force = false) =>
     if (Date.now() - persistedDate > moment.duration(2, 'days') || force) {
       getBusinesses(dispatch)
         .then(businesses => dispatch(businessListReceived(businesses)))
-        .catch(console.error)
+        // if this request fails, the business list may not be populated. In this case, when
+        // connection status changes to be connected, the list is re-fetched
+        .catch(err => {
+          dispatch(addFailedAction(loadBusinessList(force)))
+          console.warn(err)
+        })
     }
   }
 

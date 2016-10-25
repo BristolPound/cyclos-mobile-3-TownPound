@@ -1,6 +1,6 @@
 import merge from '../../util/merge'
-import { authenticate } from '../../api'
-import ApiError, { UNAUTHORIZED_ACCESS } from '../../apiError'
+import { authenticate } from '../../api/api'
+import ApiError, { UNAUTHORIZED_ACCESS } from '../../api/apiError'
 
 import { clearTransactions } from './developerOptions'
 import { loadAccountDetails } from './account'
