@@ -15,7 +15,8 @@ const Price = ({prefix, price, color, size, style, center}) => {
   const isCredit = price > 0
   size = size || 18
   const smallFontSize = size
-  const margin = size * 0.06
+  // TODO: determine a more robust way to calculate the bottom margin
+  const margin = 0 //size * 0.06
   color = color || (isCredit ? colors.orange : colors.offBlack)
   prefix = prefix !== undefined ? prefix : (isCredit ? '+' : '')
   const alignment = center ? 'center': 'flex-end'
