@@ -1,31 +1,30 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import { connect } from 'react-redux'
-
+import DefaultText from './DefaultText'
 import color from '../util/colors'
 
 const style = {
   banner: {
     position: 'absolute',
-    top:0,
-    height: 60,
+    bottom: 0,
+    height: 40,
     left: 0,
     right: 0,
-    backgroundColor: color.lightGray,
-    paddingTop: 30,
-    paddingLeft: 10
+    backgroundColor: color.gray3,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  text: {
+    color: color.white
   }
 }
-const NetworkConnection = (props) => {
-    if (!props.status) {
-      return (
-        <View style={style.banner}>
-          <Text>Network connection issues, some features won't work</Text>
-        </View>
-      )
-    }
-    return null
-  }
+const NetworkConnection = (props) =>
+  !props.status
+    ? <View style={style.banner}>
+        <DefaultText style={style.text}>Unable to connect to internet</DefaultText>
+      </View>
+    : null
 
 const mapStateToProps = (state) => ({...state.networkConnection})
 

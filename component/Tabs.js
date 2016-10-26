@@ -46,6 +46,12 @@ const componentForModalState = (state) => {
   }
 }
 
+const WithNetworkConnection = (props) =>
+  <View style={style.flex}>
+    {props.children}
+    <NetworkConnection/>
+  </View>
+
 const Tabs = (props) => {
   const content =
     <View style={merge(style.flex, props.dialogOpen ? { margin: 20 } : {})}>
@@ -60,21 +66,26 @@ const Tabs = (props) => {
           locked={true}
           onChangeTab={({i}) => props.navigateToTab(i)}
           tabBarUnderlineColor={color.transparent}>
-        <SearchTab tabLabel='Search'/>
-        { props.loggedIn
-          ? <TransactionList tabLabel='Spending'/>
-          : <LoginToView tabLabel='Log in'
-              image={emptyStateImage.spending}
-              lineOne='Login to view'
-              lineTwo='your spending history'/> }
-        { props.loggedIn
-          ? <Account tabLabel='Account' />
-          : <LoginToView tabLabel='Log in'
-              image={emptyStateImage.account}
-              lineOne='Login to view'
-              lineTwo='your account details'/> }
+        <WithNetworkConnection tabLabel='Search'>
+          <SearchTab/>
+        </WithNetworkConnection>
+        <WithNetworkConnection tabLabel='Spending'>
+          { props.loggedIn
+            ? <TransactionList/>
+            : <LoginToView
+                image={emptyStateImage.spending}
+                lineOne='Login to view'
+                lineTwo='your spending history'/> }
+        </WithNetworkConnection>
+        <WithNetworkConnection tabLabel='Account'>
+          { props.loggedIn
+            ? <Account/>
+            : <LoginToView
+                image={emptyStateImage.account}
+                lineOne='Login to view'
+                lineTwo='your account details'/> }
+        </WithNetworkConnection>
       </ScrollableTabView>
-      <NetworkConnection/>
       <Modal
         animationType={'slide'}
         transparent={false}
