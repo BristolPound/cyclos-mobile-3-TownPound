@@ -97,7 +97,7 @@ const styles = {
       position: 'absolute',
       top: 0,
       height: HEADER_HEIGHT,
-      paddingTop: 30
+      paddingTop: marginOffset(30)
     },
     monthlyOption: {
       fontFamily: museo500,
