@@ -17,7 +17,7 @@ const BusinessListItem = props =>
         style={styles.listItem.image}
         category='shop'/>
       <View style={styles.listItem.verticalStack}>
-        <DefaultText style={styles.listItem.title} numberOfLines={1}>
+        <DefaultText style={styles.listItem.title}>
           {props.business.display}
         </DefaultText>
         <DefaultText style={styles.listItem.shortDisplay}>

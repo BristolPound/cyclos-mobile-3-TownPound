@@ -1,9 +1,9 @@
 import color from '../../util/colors'
 import marginOffset from '../../util/marginOffset'
+import style from '../style'
 
-const SEARCH_BAR_HEIGHT = 50
+const SEARCH_BAR_HEIGHT = 48
 const MARGIN_SIZE = 10
-const LIST_BORDER_RADIUS = 8
 const SEARCH_BAR_MARGIN_TOP_IOS = 35
 
 const styles = {
@@ -18,8 +18,8 @@ const styles = {
       borderRadius: 5
     },
     topBorderCurve: {
-      borderTopLeftRadius: LIST_BORDER_RADIUS,
-      borderTopRightRadius: LIST_BORDER_RADIUS,
+      borderTopLeftRadius: 8,
+      borderTopRightRadius: 8,
       borderBottomRightRadius: 0,
       borderBottomLeftRadius: 0
     },
@@ -30,55 +30,56 @@ const styles = {
   listItem: {
     container: {
       flexDirection: 'row',
-      paddingLeft: 9,
+      paddingLeft: 10,
       paddingTop: 8,
+      paddingBottom: 8,
       borderBottomWidth: 1,
-      borderLeftWidth: 1,
-      borderRightWidth: 1,
-      borderBottomColor: color.gray5,
-      borderLeftColor: color.gray5,
-      borderRightColor: color.gray5,
-      backgroundColor: 'white',
-      height: 59
+      borderBottomColor: color.offWhite,
+      backgroundColor: color.white,
+      height: 60
     },
     image: {
-      width: 42,
-      height: 42,
+      width: 44,
+      height: 44,
       borderRadius: 5,
       borderWidth: 1,
       borderColor: color.offWhite
     },
     verticalStack: {
+      flex: 1,
       flexDirection: 'column',
-      paddingLeft: 10
+      paddingLeft: 10,
+      paddingRight: 10
     },
     title: {
       fontSize: 18,
-      marginTop: 3,
-      marginBottom: 1
+      marginTop: 2
     },
     shortDisplay: {
       fontSize: 14,
-      color: color.grey3
+      color: color.gray3,
+      marginBottom: 6
     }
   },
   searchTab: {
     list: {
       position: 'absolute',
-      top: MARGIN_SIZE + SEARCH_BAR_HEIGHT,
+      top: 35 + SEARCH_BAR_HEIGHT,
       left: MARGIN_SIZE,
       right: MARGIN_SIZE,
       bottom: 0,
-      borderRadius: 5
+      borderRadius: 5,
+      ...style.dropshadow
     },
     searchBar: {
       height: SEARCH_BAR_HEIGHT,
       marginLeft: MARGIN_SIZE,
       marginRight: MARGIN_SIZE,
       marginTop: marginOffset(SEARCH_BAR_MARGIN_TOP_IOS),
-      backgroundColor: 'white',
-      flexDirection: 'row'
-    }
+      backgroundColor: color.white,
+      flexDirection: 'row',
+      ...style.dropshadow
+    },
   }
 }
 
