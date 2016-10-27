@@ -12,7 +12,7 @@ import { showModal } from '../../store/reducer/navigation'
 import modalState from '../../store/reducer/modalState'
 import LOGIN_STATUSES from '../../stringConstants/loginStatus'
 
-const TAB_BAR_HEIGHT = 45
+export const TAB_BAR_HEIGHT = 45
 const BASELINE = 9
 // react native doesn't support adjusting text baseline, so we have to use a magic number
 // in order to align the amount with the icons

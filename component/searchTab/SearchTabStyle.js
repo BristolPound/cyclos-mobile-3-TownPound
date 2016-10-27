@@ -1,11 +1,15 @@
 import color from '../../util/colors'
 import marginOffset from '../../util/marginOffset'
 import style from '../style'
+import ScreenSizes from '../../util/ScreenSizes'
 
-export const ROW_HEIGHT = 60
-const SEARCH_BAR_HEIGHT = 48
 const MARGIN_SIZE = 10
 const SEARCH_BAR_MARGIN_TOP_IOS = 35
+
+export const SEARCH_BAR_MARGIN = marginOffset(SEARCH_BAR_MARGIN_TOP_IOS)
+export const ROW_HEIGHT = ScreenSizes.isSmall() ? 50 : 60
+export const SEARCH_BAR_HEIGHT = ScreenSizes.isSmall() ? 44 : 48
+export const MAP_HEIGHT = ScreenSizes.isSmall() ? 220 : 275
 
 const styles = {
   expandHeader: {
@@ -32,16 +36,16 @@ const styles = {
     container: {
       flexDirection: 'row',
       paddingLeft: 10,
-      paddingTop: 8,
-      paddingBottom: 8,
+      paddingTop: ScreenSizes.isSmall() ? 4 : 8,
+      paddingBottom: ScreenSizes.isSmall() ? 4 : 8,
       borderBottomWidth: 1,
       borderBottomColor: color.offWhite,
       backgroundColor: color.white,
       height: ROW_HEIGHT
     },
     image: {
-      width: 44,
-      height: 44,
+      width: ScreenSizes.isSmall() ? 42 : 44,
+      height: ScreenSizes.isSmall() ? 42 : 44,
       borderRadius: 5,
       borderWidth: 1,
       borderColor: color.offWhite
@@ -53,7 +57,7 @@ const styles = {
       paddingRight: 10
     },
     title: {
-      fontSize: 18,
+      fontSize: ScreenSizes.isSmall() ? 16 : 18,
       marginTop: 2
     },
     shortDisplay: {
@@ -76,7 +80,7 @@ const styles = {
       height: SEARCH_BAR_HEIGHT,
       marginLeft: MARGIN_SIZE,
       marginRight: MARGIN_SIZE,
-      marginTop: marginOffset(SEARCH_BAR_MARGIN_TOP_IOS),
+      marginTop: SEARCH_BAR_MARGIN,
       backgroundColor: color.white,
       flexDirection: 'row',
       ...style.dropshadow
