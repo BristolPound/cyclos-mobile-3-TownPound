@@ -2,6 +2,7 @@ import color from '../../util/colors'
 import marginOffset from '../../util/marginOffset'
 import style from '../style'
 
+export const ROW_HEIGHT = 60
 const SEARCH_BAR_HEIGHT = 48
 const MARGIN_SIZE = 10
 const SEARCH_BAR_MARGIN_TOP_IOS = 35
@@ -36,7 +37,7 @@ const styles = {
       borderBottomWidth: 1,
       borderBottomColor: color.offWhite,
       backgroundColor: color.white,
-      height: 60
+      height: ROW_HEIGHT
     },
     image: {
       width: 44,
