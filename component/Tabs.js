@@ -28,10 +28,6 @@ const style = {
   },
   flex: {
     flex: 1
-  },
-  backgroundView: {
-    margin: 20,
-    opacity: 0.5
   }
 }
 
@@ -52,64 +48,55 @@ const WithNetworkConnection = (props) =>
     <NetworkConnection/>
   </View>
 
-const Tabs = (props) => {
-  const content =
-    <View style={merge(style.flex, props.dialogOpen ? { margin: 20 } : {})}>
-      <ScrollableTabView
-          renderTabBar={() => props.dialogOpen ? <View style={{ height: 0 }}/> : <TabBar/>}
-          tabBarPosition='bottom'
-          initialPage={props.navigation.tabIndex}
-          tabBarActiveTextColor={color.bristolBlue}
-          style={style.tabs}
-          tabBarBackgroundColor={color.lightGray}
-          scrollWithoutAnimation={true}
-          locked={true}
-          onChangeTab={({i}) => props.navigateToTab(i)}
-          tabBarUnderlineColor={color.transparent}>
-        <WithNetworkConnection tabLabel='Search'>
-          <SearchTab/>
-        </WithNetworkConnection>
-        <WithNetworkConnection tabLabel='Spending'>
-          { props.loggedIn
-            ? <TransactionList/>
-            : <LoginToView
-                image={emptyStateImage.spending}
-                lineOne='Login to view'
-                lineTwo='your spending history'/> }
-        </WithNetworkConnection>
-        <WithNetworkConnection tabLabel='Account'>
-          { props.loggedIn
-            ? <Account/>
-            : <LoginToView
-                image={emptyStateImage.account}
-                lineOne='Login to view'
-                lineTwo='your account details'/> }
-        </WithNetworkConnection>
-      </ScrollableTabView>
-      <Modal
-        animationType={'slide'}
-        transparent={false}
-        onRequestClose={() => props.showModal(modalState.none)}
-        visible={props.modalState !== modalState.none}>
-        {componentForModalState(props.modalState)}
-      </Modal>
-    </View>
-
-  return (
-    <View style={style.tabs}>
-      {props.dialogOpen
-      ? <View style={style.flex}>
-          <TouchableHighlight
-              style={merge(style.flex, style.backgroundView)}
-              onPress={() => props.closeLoginForm()}
-              underlayColor={color.transparent}>
-            {content}
-          </TouchableHighlight>
-          <Login />
-        </View>
-      : content}
-    </View> )
-}
+const Tabs = (props) =>
+  <View style={style.flex}>
+    <TouchableHighlight
+      style={merge(style.flex, { opacity: props.dialogOpen ? 0.5 : 1 })}
+      onPress={() => props.closeLoginForm()}
+      underlayColor={color.transparent}>
+      <View style={style.flex}>
+        <ScrollableTabView
+            renderTabBar={() => <TabBar/>}
+            tabBarPosition='bottom'
+            initialPage={props.navigation.tabIndex}
+            tabBarActiveTextColor={color.bristolBlue}
+            style={style.tabs}
+            tabBarBackgroundColor={color.lightGray}
+            scrollWithoutAnimation={true}
+            locked={true}
+            onChangeTab={({i}) => props.navigateToTab(i)}
+            tabBarUnderlineColor={color.transparent}>
+          <WithNetworkConnection tabLabel='Search'>
+            <SearchTab/>
+          </WithNetworkConnection>
+          <WithNetworkConnection tabLabel='Spending'>
+            { props.loggedIn
+              ? <TransactionList/>
+              : <LoginToView
+                  image={emptyStateImage.spending}
+                  lineOne='Login to view'
+                  lineTwo='your spending history'/> }
+          </WithNetworkConnection>
+          <WithNetworkConnection tabLabel='Account'>
+            { props.loggedIn
+              ? <Account/>
+              : <LoginToView
+                  image={emptyStateImage.account}
+                  lineOne='Login to view'
+                  lineTwo='your account details'/> }
+          </WithNetworkConnection>
+        </ScrollableTabView>
+        <Modal
+          animationType={'slide'}
+          transparent={false}
+          onRequestClose={() => props.showModal(modalState.none)}
+          visible={props.modalState !== modalState.none}>
+          {componentForModalState(props.modalState)}
+        </Modal>
+      </View>
+    </TouchableHighlight>
+    { props.dialogOpen ? <Login /> : undefined }
+  </View>
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators({ ...actions, closeLoginForm }, dispatch)
