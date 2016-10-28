@@ -1,5 +1,4 @@
 import color from '../../util/colors'
-import merge from '../../util/merge'
 import marginOffset from '../../util/marginOffset'
 import commonStyle from '../style'
 
@@ -97,7 +96,8 @@ const styles = {
       position: 'absolute',
       top: 0,
       height: HEADER_HEIGHT,
-      paddingTop: marginOffset(30)
+      paddingTop: marginOffset(30),
+      ...commonStyle.shadow
     },
     monthlyOption: {
       fontFamily: museo500,
@@ -113,7 +113,5 @@ const styles = {
     }
   }
 }
-
-styles.header.carouselContainer = merge(styles.header.carouselContainer, commonStyle.shadow)
 
 export default styles
