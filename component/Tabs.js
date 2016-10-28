@@ -14,6 +14,7 @@ import TransactionList from './spending/TransactionList'
 import Account from './Account'
 import LoginToView, { emptyStateImage } from './loggedOutState/LoginToView'
 import Login from './Login'
+import LoginStatus from './LoginStatus'
 import TraderScreen from './TraderScreen'
 import PersonScreen from './PersonScreen'
 import DeveloperOptions from './DeveloperOptions'
@@ -28,6 +29,12 @@ const style = {
   },
   flex: {
     flex: 1
+  },
+  login: {
+    opacity: 0.7,
+    transform: [
+      {scale: 0.9}
+    ]
   }
 }
 
@@ -51,7 +58,7 @@ const WithNetworkConnection = (props) =>
 const Tabs = (props) =>
   <View style={style.flex}>
     <TouchableHighlight
-      style={merge(style.flex, { opacity: props.dialogOpen ? 0.5 : 1 })}
+      style={merge(style.flex, props.dialogOpen ? style.login : {})}
       onPress={() => props.closeLoginForm()}
       underlayColor={color.transparent}>
       <View style={style.flex}>
@@ -96,6 +103,7 @@ const Tabs = (props) =>
       </View>
     </TouchableHighlight>
     { props.dialogOpen ? <Login /> : undefined }
+    <LoginStatus/>
   </View>
 
 const mapDispatchToProps = (dispatch) =>

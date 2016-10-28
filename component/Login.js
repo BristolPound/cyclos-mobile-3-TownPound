@@ -7,13 +7,15 @@ import colors from '../util/colors'
 import merge from '../util/merge'
 import * as actions from '../store/reducer/login'
 import PLATFORM from '../util/Platforms'
+import commonStyle from './style'
 
 const style = {
   loginContainer: {
     position: 'absolute',
     bottom: 0,
     left: 0,
-    right: 0
+    right: 0,
+    ... commonStyle.shadow
   },
   loginButton: {
     flex: 1,

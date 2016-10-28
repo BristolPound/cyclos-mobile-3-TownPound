@@ -106,7 +106,6 @@ const reducer = (state = initialState, action) => {
     case 'login/LOGGED_IN':
       state = merge(state, {
         loginStatus: LOGIN_STATUSES.LOGGED_IN,
-        loginFormOpen: false
       })
       break
     case 'login/LOGIN_FAILED':
@@ -117,7 +116,8 @@ const reducer = (state = initialState, action) => {
       break
     case 'login/LOGIN_IN_PROGRESS':
       state = merge(state, {
-        loginStatus: LOGIN_STATUSES.LOGIN_IN_PROGRESS
+        loginStatus: LOGIN_STATUSES.LOGIN_IN_PROGRESS,
+        loginFormOpen: false
       })
       break
     case 'login/LOGGED_OUT':
