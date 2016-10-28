@@ -6,7 +6,7 @@ import merge from '../../util/merge'
 import { connect } from 'react-redux'
 import ExpandBusinessListButton from './ExpandBusinessListButton'
 import * as actions from '../../store/reducer/business'
-
+import color from '../../util/colors'
 
 class BusinessList extends React.Component {
 
@@ -100,7 +100,7 @@ class BusinessList extends React.Component {
     return (
       <Animated.View
           onLayout={this.onLayout.bind(this)}
-          style={merge(this.props.style, {top: this.state.top, backgroundColor: 'rgba(52,52,52,0)'})}>
+          style={merge(this.props.style, {top: this.state.top, backgroundColor: color.transparent})}>
         <ListView
             ref='listView'
             pageSize={10}
