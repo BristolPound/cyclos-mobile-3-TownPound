@@ -38,8 +38,7 @@ class SearchTab extends React.Component {
         <BackgroundMap/>
         <BusinessList
             compactHeight={calculateCollapsedListHeight(rowCount)}
-            expandable={EXPAND_VIA_SCROLL &&
-              (rowCount > MAX_VISIBLE_ROWS)}
+            expandable={rowCount > MAX_VISIBLE_ROWS}
             expandOnScroll={EXPAND_VIA_SCROLL}
             style={styles.searchTab.list}/>
         <View style={styles.searchTab.searchBar}>
