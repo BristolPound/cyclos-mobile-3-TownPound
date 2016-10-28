@@ -59,7 +59,7 @@ const Tabs = (props) =>
   <View style={style.flex}>
     <TouchableHighlight
       style={merge(style.flex, props.dialogOpen ? style.login : {})}
-      onPress={() => props.closeLoginForm()}
+      onPress={() => props.openLoginForm(false)}
       underlayColor={color.transparent}>
       <View style={style.flex}>
         <ScrollableTabView
