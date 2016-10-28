@@ -39,13 +39,12 @@ class BackgroundMap extends React.Component {
       const markerProps = Platform.select({
         android: {
           onPress: () => {
-            this.props.selectMarker(business.id)
-            this.updateViewport(business.address.location)
+            this.props.updateMapViewportAndSelectClosestTrader(business.address.location)
           },
           anchor: {x: 0.5, y: 0.5},  // center image on location.
         },
         ios: {
-          onSelect: () => this.props.selectMarker(business.id)
+          onSelect: () => this.props.selectBusiness(business.id)
         }
       })
 

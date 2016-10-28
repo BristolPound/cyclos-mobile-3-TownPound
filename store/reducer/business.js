@@ -13,10 +13,11 @@ const initialState = {
   businessListTimestamp: null,
   businessListExpanded: false,
   selectedBusinessId: undefined,
-  dataSource: new ListView.DataSource({
+  businessListDataSource: new ListView.DataSource({
     rowHasChanged: (a, b) => a.shortDisplay !== b.shortDisplay,
     sectionHeaderHasChanged: (a, b) => a !== b
   }),
+  businessesToDisplay: [ ],
   mapViewport: {
     ...DEFAULT_LOCATION,
     latitudeDelta: 0.006,
@@ -24,11 +25,6 @@ const initialState = {
   },
   searchMode: false
 }
-
-export const selectMarker = (businessId) => ({
-  type: 'business/SELECT_MARKER',
-  businessId
-})
 
 export const expandBusinessList = (expand) => ({
   type: 'business/EXPAND_BUSINESS_LIST',
@@ -50,7 +46,12 @@ export const updateMapViewport = (viewport) => ({
   viewport
 })
 
-const selectBusiness = (businessId) => (dispatch) =>
+export const updateMapViewportAndSelectClosestTrader = (viewport) => ({
+  type: 'business/UPDATE_MAP_VIEWPORT_AND_SELECT_CLOSEST_TRADER',
+  viewport
+})
+
+export const selectBusiness = (businessId) => (dispatch) =>
   dispatch({
     type: 'business/SELECTED_BUSINESS',
     businessId
@@ -62,7 +63,7 @@ export const resetBusinesses = () => ({
 
 export const geolocationChanged = (coords, dispatch) => {
   if (haversine(DEFAULT_LOCATION, coords) < 75) {//furthest business is around 70km from Bristol centre
-    dispatch(updateMapViewport(coords))
+    dispatch(updateMapViewportAndSelectClosestTrader(coords))
   }
 }
 
@@ -104,25 +105,41 @@ export const loadBusinessList = (force = false) =>
     }
   }
 
-const distanceFromPosition = (position) => (business) =>
-  business.address ? haversine(position, business.address.location) : Number.MAX_VALUE
+// selectedBusinessId is optional
+const getBusinessesToDisplay = (list, viewport, selectedBusinessId) =>
+  _.sortBy(
+    list.filter(shouldBeDisplayed(viewport, selectedBusinessId)),
+    orderBusinessList(viewport, selectedBusinessId)
+  )
 
-const isWithinViewport = (position) => (business) =>
-  business.address &&
-  Math.abs(business.address.location.latitude - position.latitude) < position.latitudeDelta / 2 &&
-  Math.abs(business.address.location.longitude - position.longitude) < position.longitudeDelta / 2
+
+const orderBusinessList = (viewport, selectedBusinessId) => (business) => {
+  if (business.address) {
+    return business.id === selectedBusinessId ? -1 : haversine(viewport, business.address.location)
+  }
+  return Number.MAX_VALUE
+}
+
+const isWithinViewport = (business, viewport) =>
+  business.address
+    && Math.abs(business.address.location.latitude - viewport.latitude) < viewport.latitudeDelta / 2
+    && Math.abs(business.address.location.longitude - viewport.longitude) < viewport.longitudeDelta / 2
+
+const shouldBeDisplayed = (viewport, selectedBusinessId) => (business) =>
+  business.id === selectedBusinessId || isWithinViewport(business, viewport)
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'business/BUSINESS_LIST_RECEIVED':
-      const sortedBusiness = _.sortBy(action.businessList, distanceFromPosition(state.mapViewport))
-      const filteredBusiness = sortedBusiness.filter(isWithinViewport(state.mapViewport))
+      let businessesToDisplay = getBusinessesToDisplay(action.businessList, state.mapViewport, state.selectedBusinessId)
       state = merge(state, {
-        dataSource: state.dataSource.cloneWithRows(filteredBusiness),
+        businessListDataSource: state.businessListDataSource.cloneWithRows(businessesToDisplay),
+        businessesToDisplay,
         businessList: action.businessList,
         businessListTimestamp: new Date()
       })
       break
+
     case 'business/BUSINESS_PROFILE_RECEIVED':
       const index  = _.findIndex(state.businessList, {id: action.businessProfile.id})
 
@@ -151,36 +168,69 @@ const reducer = (state = initialState, action) => {
         businessList: newBusinessList
       })
       break
+
     case 'business/UPDATE_MAP_VIEWPORT':
-      const newViewport = merge(state.mapViewport, action.viewport)//action.viewport might only be partial (no deltas)
-      const sorted = _.sortBy(state.businessList, distanceFromPosition(newViewport))
-      const filtered = sorted.filter(isWithinViewport(newViewport))
+      let newViewport = merge(state.mapViewport, action.viewport) // action.viewport might only be partial (no deltas)
+
+      // businessesToDisplay is defined in the first switch case so we cannot define it here. Blame javascript!
+      businessesToDisplay = getBusinessesToDisplay(state.businessList, newViewport, state.selectedBusinessId)
+
       state = merge(state, {
-        dataSource: state.dataSource.cloneWithRows(filtered),
         mapViewport: newViewport,
+        businessListDataSource: state.businessListDataSource.cloneWithRows(businessesToDisplay),
+        businessesToDisplay
       })
       break
+
+    case 'business/UPDATE_MAP_VIEWPORT_AND_SELECT_CLOSEST_TRADER':
+      // newViewport is defined in UPDATE_MAP_VIEWPORT case
+      newViewport = merge(state.mapViewport, action.viewport) // action.viewport might only be partial (no deltas)
+
+      // Since we wish to update the selected trader, allow the closest to be at the top of the list
+      businessesToDisplay = getBusinessesToDisplay(state.businessList, newViewport)
+
+      let newSelectedId = state.selectedBusinessId
+      // If there is at least one business on the list, make the first business the new selected business
+      if (businessesToDisplay.length) {
+        newSelectedId = businessesToDisplay[0].id
+
+      // If there are no nearby businesses, still display the selected business, if any
+      } else {
+        if (state.selectedBusinessId && state.businessesToDisplay.length) {
+          businessesToDisplay = [ state.businessesToDisplay[0] ]
+        }
+      }
+
+      state = merge(state, {
+        businessListDataSource: state.businessListDataSource.cloneWithRows(businessesToDisplay),
+        businessesToDisplay,
+        mapViewport: newViewport,
+        selectedBusinessId: newSelectedId
+      })
+      break
+
     case 'business/EXPAND_BUSINESS_LIST':
       state = merge(state, {
         businessListExpanded: action.expand
       })
       break
+
     case 'business/SELECTED_BUSINESS':
+      businessesToDisplay = getBusinessesToDisplay(state.businessList, state.mapViewport, action.businessId)
       state = merge(state, {
-        selectedBusinessId: action.businessId
+        selectedBusinessId: action.businessId,
+        businessListDataSource: state.businessListDataSource.cloneWithRows(businessesToDisplay),
+        businessesToDisplay
       })
       break
+
     case 'business/RESET_BUSINESSES':
       state = merge(state, {
         businessList: [],
         businessListTimestamp: null,
         businessListExpanded: false,
-        dataSource: state.dataSource.cloneWithRows([]),
-      })
-      break
-    case 'business/SELECT_MARKER':
-      state = merge(state, {
-        selectedBusinessId: action.businessId
+        businessListDataSource: state.businessListDataSource.cloneWithRows([]),
+        businessesToDisplay: [ ]
       })
       break
   }
