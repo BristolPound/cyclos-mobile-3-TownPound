@@ -100,7 +100,7 @@ class BusinessList extends React.Component {
     return (
       <Animated.View
           onLayout={this.onLayout.bind(this)}
-          style={merge(this.props.style, {top: this.state.top})}>
+          style={merge(this.props.style, {top: this.state.top, backgroundColor: 'rgba(52,52,52,0)'})}>
         <ListView
             ref='listView'
             pageSize={10}
