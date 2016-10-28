@@ -68,20 +68,19 @@ export const login = (username, password) =>
                 dispatch(loggedOut())
                 break
               case 'invalidClient':
-                dispatch(loginFailed('Username and/or password are incorrect. Please try again.'))
+                dispatch(loginFailed('Username or password are incorrect'))
                 break
               case 'login':
                 const errMessage = err.json.passwordStatus==='temporarilyBlocked'
-                  ? 'Your account has been temporarily blocked'
-                  : 'Username and/or password are incorrect. Please try again.'
+                  ? 'Account temporarily blocked'
+                  : 'Username or password are incorrect'
                 dispatch(loginFailed(errMessage))
                 break
               default:
                 dispatch(loginFailed('Login failed: ' + JSON.stringify(err.json)))
             }
           } else {
-            // TODO: What to do with unexpected errors?
-            console.error(err)
+            dispatch(loginFailed('Network connection error'))
           }
         })
     }

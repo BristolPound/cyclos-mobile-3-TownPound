@@ -14,7 +14,6 @@ const style = {
     left: 0,
     right: 0,
     height: TAB_BAR_HEIGHT,
-    backgroundColor: color.bristolBlue,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -30,7 +29,10 @@ const messageForState = (state) => {
   if (state.loginStatus === LOGIN_STATUSES.LOGGED_IN) {
     return 'Logged in ✓'
   }
-  return 'nothing'
+  if (state.loginStatus === LOGIN_STATUSES.LOGIN_FAILED) {
+    return state.failureMessage + ' ×'
+  }
+  return ''
 }
 
 class LoginStatus extends React.Component {
@@ -55,11 +57,19 @@ class LoginStatus extends React.Component {
     if (nextProps.loginStatus === LOGIN_STATUSES.LOGGED_IN) {
       setTimeout(() => this.animateBottomTo(-TAB_BAR_HEIGHT), 2000)
     }
+    if (nextProps.loginStatus === LOGIN_STATUSES.LOGIN_FAILED) {
+      setTimeout(() => this.animateBottomTo(-TAB_BAR_HEIGHT), 4000)
+    }
   }
 
   render() {
     return (
-      <Animated.View style={merge(style.container, {bottom: this.state.bottom})}>
+      <Animated.View style={
+          merge(style.container, {
+            bottom: this.state.bottom,
+            backgroundColor: this.props.loginStatus === LOGIN_STATUSES.LOGIN_FAILED ? color.orange : color.bristolBlue
+          })
+        }>
         <DefaultText style={style.text}>
           {messageForState(this.props)}
         </DefaultText>
