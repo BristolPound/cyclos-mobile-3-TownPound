@@ -9,8 +9,10 @@ import styles from './SearchTabStyle'
 import colors from '../../util/colors'
 
 const BusinessListItem = props =>
-  <TouchableHighlight onPress={() => {props.openTraderModal(props.business.id)}}
-            underlayColor={colors.gray5} key={props.business.id}>
+  <TouchableHighlight style={props.isSelected ? styles.listItem.selected : { }}
+      key={props.business.id}
+      onPress={() => {props.openTraderModal(props.business.id)}}
+      underlayColor={colors.gray5}>
     <View style={styles.listItem.container}>
       <ProfileImage
         img={props.business.image}

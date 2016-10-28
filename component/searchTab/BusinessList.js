@@ -108,8 +108,9 @@ class BusinessList extends React.Component {
             scrollEnabled={this.props.expandOnScroll || (!this.props.expandOnScroll && this.props.business.businessListExpanded)}
             onScroll={this.onScroll.bind(this)}
             scrollEventThrottle={16}
-            dataSource={this.props.business.dataSource}
-            renderRow={(business) => <BusinessListItem business={business}/>}
+            dataSource={this.props.business.businessListDataSource}
+            renderRow={(business) => <BusinessListItem business={business}
+                  isSelected={business.id === this.props.business.selectedBusinessId}/>}
             renderSectionHeader={() =>
               (!this.props.expandOnScroll && this.props.expandable)
                 ? <ExpandBusinessListButton
