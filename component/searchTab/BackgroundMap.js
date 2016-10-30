@@ -73,7 +73,11 @@ class BackgroundMap extends React.Component {
     return (
       <MapView style={{...StyleSheet.absoluteFillObject}}
           region={region}
+          showsPointsOfInterest={false}
           showsUserLocation={true}
+          showsCompass={false}
+          rotateEnabled={false}
+          pitchEnabled={false}
           onRegionChange={_.debounce(this.updateViewport.bind(this), MAP_PAN_DEBOUNCE_DURATION)}>
         {markerArray}
       </MapView>
