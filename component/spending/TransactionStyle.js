@@ -2,10 +2,6 @@ import color from '../../util/colors'
 import marginOffset from '../../util/marginOffset'
 import commonStyle from '../style'
 
-const museo700 = 'MuseoSans-700'
-const museo500 = 'MuseoSans-300'
-const museo300 = 'MuseoSans-300'
-
 const HEADER_HEIGHT = marginOffset(90)
 const IMAGE_SIZE = 42
 const IMAGE_MARGIN = 14
@@ -49,7 +45,7 @@ const styles = {
       backgroundColor: color.transparent
     },
     text: {
-      fontFamily: museo300,
+      fontFamily: commonStyle.font.museo300,
       color: color.offBlack,
       fontSize: 18,
       marginRight: 10,
@@ -85,7 +81,7 @@ const styles = {
       flex: 1
     },
     text: {
-      fontFamily: museo700,
+      fontFamily: commonStyle.font.museo700,
       fontSize: 14,
       color: color.gray2,
       marginLeft: 14
@@ -100,7 +96,7 @@ const styles = {
       ...commonStyle.shadow
     },
     monthlyOption: {
-      fontFamily: museo500,
+      fontFamily: commonStyle.font.museo500,
       fontSize: 15,
       textAlign: 'center',
       justifyContent: 'center',
