@@ -60,7 +60,7 @@ export const login = (username, password) =>
             case 'login':
               const errMessage = err.json.passwordStatus==='temporarilyBlocked'
                 ? 'Account temporarily blocked'
-                : 'Username or password are incorrect'
+                : 'Your details are incorrect'
               dispatch(loginFailed(errMessage))
               break
             default:
