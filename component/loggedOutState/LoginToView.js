@@ -8,15 +8,15 @@ const styles = {
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 50,
-    backgroundColor: color.gray5
+    justifyContent: 'flex-start',
+    backgroundColor: color.offWhite
   },
   text: {
-    color: color.gray3
+    color: color.gray4
   },
   image: {
-    marginBottom: 24
+    marginBottom: 20,
+    marginTop: 200
   }
 }
 
