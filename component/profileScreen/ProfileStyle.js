@@ -1,8 +1,6 @@
 import { StyleSheet } from 'react-native'
 import colors from '../../util/colors'
-
-const museo500 = 'MuseoSans-300' // TODO: change to 'MuseoSans-500'
-const museo100 = 'MuseoSans-300' // TODO: change to 'MuseoSans-100'
+import commonStyle from '../style'
 
 const headerMargin = 24
 const listMargin = 14
@@ -54,7 +52,7 @@ const styles = {
       borderWidth: 2
     },
     title: {
-      fontFamily: museo500,
+      fontFamily: commonStyle.font.museo500,
       alignSelf: 'center',
       marginTop: 8,
       fontSize: 20,
@@ -79,7 +77,7 @@ const styles = {
   },
   minorButton: {
     text: {
-      fontFamily: museo500,
+      fontFamily: commonStyle.font.museo500,
       alignSelf: 'center',
       color: colors.bristolBlue,
       backgroundColor: colors.transparent,
@@ -104,7 +102,7 @@ const styles = {
       color: colors.offBlack
     },
     transactionNumber: {
-      fontFamily: museo100,
+      fontFamily: commonStyle.font.museo100,
       fontSize: 16,
       alignSelf: 'center',
       color: colors.gray

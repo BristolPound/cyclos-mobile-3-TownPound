@@ -18,6 +18,12 @@ const style = {
     shadowRadius: 4,
     backgroundColor: color.white,
     elevation: 5 //TODO: check this
+  },
+  font: {
+    museo700: 'MuseoSans-700',
+    museo500: 'MuseoSans-300',
+    museo300: 'MuseoSans-300',
+    museo100: 'MuseoSans-300'
   }
 }
 

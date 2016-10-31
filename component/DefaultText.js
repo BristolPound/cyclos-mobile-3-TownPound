@@ -2,9 +2,10 @@ import React, {Component} from 'react'
 import { Text } from 'react-native'
 import colors from '../util/colors'
 import merge from '../util/merge'
+import commonStyle from './style'
 
 const style = {
-  fontFamily: 'MuseoSans-300',
+  fontFamily: commonStyle.font.museo300,
   fontSize: 18,
   color: colors.offBlack
 }
