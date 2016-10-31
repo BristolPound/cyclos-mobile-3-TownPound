@@ -7,8 +7,16 @@ import colors from '../util/colors'
 import merge from '../util/merge'
 import * as actions from '../store/reducer/login'
 import PLATFORM from '../util/Platforms'
+import commonStyle from './style'
 
 const style = {
+  loginContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    ... commonStyle.shadow
+  },
   loginButton: {
     flex: 1,
     height: 68,
@@ -65,7 +73,7 @@ class Login extends React.Component {
 
   render() {
     return (
-      <View style={{ bottom: this.state.keyboardHeight }}>
+      <View style={merge(style.loginContainer, { bottom: this.state.keyboardHeight })}>
         <TouchableOpacity style={style.loginButton}
             accessibilityLabel={'Login Button'}
             onPress={() => this.props.login(this.props.username, this.props.password)}>
