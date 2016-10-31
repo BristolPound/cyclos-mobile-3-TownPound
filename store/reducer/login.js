@@ -15,11 +15,6 @@ const initialState = {
   failureMessage: ''
 }
 
-export const usernameUpdated = (username) => ({
-  type: 'login/USERNAME_UPDATED',
-  username
-})
-
 export const loginInProgress = () => ({
   type: 'login/LOGIN_IN_PROGRESS'
 })
@@ -33,80 +28,60 @@ export const loginFailed = (message) => ({
   message
 })
 
-export const passwordUpdated = (password) => ({
-  type: 'login/PASSWORD_UPDATED',
-  password
-})
-
 export const loggedOut = () => ({
   type: 'login/LOGGED_OUT'
 })
 
-export const closeLoginForm = () => ({
-  type: 'login/CLOSE_LOGIN_FORM'
-})
-
-export const openLoginForm = () => ({
-  type: 'login/OPEN_LOGIN_FORM'
+export const openLoginForm = (open = true) => ({
+  type: 'login/OPEN_LOGIN_FORM',
+  open
 })
 
 export const login = (username, password) =>
   (dispatch) => {
-      dispatch(loginInProgress())
-      authenticate(username, password, dispatch)
-        .then((sessionToken) => {
-          if (sessionToken) {
-            dispatch(loggedIn())
-            dispatch(loadAccountDetails())
-            dispatch(loadTransactions())
+    dispatch(loginInProgress())
+    authenticate(username, password, dispatch)
+      .then((sessionToken) => {
+        if (sessionToken) {
+          dispatch(loggedIn())
+          dispatch(loadAccountDetails())
+          dispatch(loadTransactions())
+        }
+      })
+      .catch (err => {
+        if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
+          switch (err.json.code) {
+            case 'loggedOut':
+              dispatch(loggedOut())
+              break
+            case 'invalidClient':
+              dispatch(loginFailed('Username or password are incorrect'))
+              break
+            case 'login':
+              const errMessage = err.json.passwordStatus==='temporarilyBlocked'
+                ? 'Account temporarily blocked'
+                : 'Your details are incorrect'
+              dispatch(loginFailed(errMessage))
+              break
+            default:
+              dispatch(loginFailed('Server error'))
           }
-        })
-        .catch (err => {
-          if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
-            switch (err.json.code) {
-              case 'loggedOut':
-                dispatch(loggedOut())
-                break
-              case 'invalidClient':
-                dispatch(loginFailed('Username and/or password are incorrect. Please try again.'))
-                break
-              case 'login':
-                const errMessage = err.json.passwordStatus==='temporarilyBlocked'
-                  ? 'Your account has been temporarily blocked'
-                  : 'Username and/or password are incorrect. Please try again.'
-                dispatch(loginFailed(errMessage))
-                break
-              default:
-                dispatch(loginFailed('Login failed: ' + JSON.stringify(err.json)))
-            }
-          } else {
-            // TODO: What to do with unexpected errors?
-            console.error(err)
-          }
-        })
-    }
+        } else {
+          dispatch(loginFailed('Network connection error'))
+        }
+      })
+  }
 
 export const logout = () => dispatch => {
-    dispatch(loggedOut())
-    dispatch(clearTransactions())
-  }
+  dispatch(loggedOut())
+  dispatch(clearTransactions())
+}
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'login/USERNAME_UPDATED':
-      state = merge(state, {
-        username: action.username
-      })
-      break
-    case 'login/PASSWORD_UPDATED':
-      state = merge(state, {
-        password: action.password
-      })
-      break
     case 'login/LOGGED_IN':
       state = merge(state, {
         loginStatus: LOGIN_STATUSES.LOGGED_IN,
-        loginFormOpen: false
       })
       break
     case 'login/LOGIN_FAILED':
@@ -117,7 +92,8 @@ const reducer = (state = initialState, action) => {
       break
     case 'login/LOGIN_IN_PROGRESS':
       state = merge(state, {
-        loginStatus: LOGIN_STATUSES.LOGIN_IN_PROGRESS
+        loginStatus: LOGIN_STATUSES.LOGIN_IN_PROGRESS,
+        loginFormOpen: false
       })
       break
     case 'login/LOGGED_OUT':
@@ -130,12 +106,7 @@ const reducer = (state = initialState, action) => {
       break
     case 'login/OPEN_LOGIN_FORM':
       state = merge(state, {
-        loginFormOpen: true
-      })
-      break
-    case 'login/CLOSE_LOGIN_FORM':
-      state = merge(state, {
-        loginFormOpen: false
+        loginFormOpen: action.open
       })
       break
   }

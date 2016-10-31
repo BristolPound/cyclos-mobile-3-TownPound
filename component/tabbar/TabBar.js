@@ -5,7 +5,6 @@ import DefaultText from '../DefaultText'
 import Price from '../Price'
 import { connect } from 'react-redux'
 import color from '../../util/colors'
-import merge from '../../util/merge'
 import commonStyle from '../style'
 import { openLoginForm } from '../../store/reducer/login'
 import { showModal } from '../../store/reducer/navigation'
@@ -22,7 +21,8 @@ const style = {
   tabBar: {
     height: TAB_BAR_HEIGHT,
     flexDirection: 'row',
-    alignItems: 'stretch'
+    alignItems: 'stretch',
+    ...commonStyle.shadow
   },
   separator: {
     height: TAB_BAR_HEIGHT / 2,
@@ -89,7 +89,7 @@ const TABS = [
 ]
 
 const TabBar = (props) =>
-  <View style={merge(style.tabBar, commonStyle.shadow)}>
+  <View style={style.tabBar}>
     {TABS.map((tab, index) =>
       <View style={style.centerChildren} key={index}>
         <TouchableHighlight
