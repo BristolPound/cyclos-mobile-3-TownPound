@@ -1,15 +1,11 @@
 import React from 'react'
-import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { View, TouchableHighlight, ListView } from 'react-native'
 
 import DefaultText from './DefaultText'
-import { logout } from './../store/reducer/login'
 import merge from './../util/merge'
 import color from './../util/colors'
 import ProfileScreen from './profileScreen/ProfileScreen'
-import * as actions from './../store/reducer/developerOptions'
-import { onPressChangeServer } from './DeveloperOptions'
 
 const styles = {
   rowContainer: {
@@ -36,20 +32,8 @@ const Account = props => {
       }, {
         text: 'Log out',
         onPress: props.logout
-      }],
-    'Developer Options': [{
-        text: 'Using: ' + (props.usingProdServer ? 'Prod' : 'Dev') + ' server',
-        onPress: onPressChangeServer(props)
-      }, {
-        text: 'Clear Business State',
-        onPress: () => props.clearBusinesses(),
-        disabled: props.reloadingBusinesses,
-      }, {
-        text: 'Clear Spending State',
-        onPress: () => props.clearTransactions(true),
-        disabled: props.reloadingTransactions,
       }]
-  }, ['Profile Settings', 'Developer Options'])
+  }, ['Profile Settings'])
 
   return (
       <ProfileScreen
@@ -84,6 +68,4 @@ const mapStateToProps = state => {
   return state.account
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators({ logout, ...actions }, dispatch)
-
-export default connect(mapStateToProps, mapDispatchToProps)(Account)
+export default connect(mapStateToProps)(Account)
