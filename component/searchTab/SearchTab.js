@@ -26,30 +26,22 @@ const MAX_VISIBLE_ROWS = Math.floor((MAX_COLLAPSED_LIST_HEIGHT-10)/ROW_HEIGHT)
 
 const calculateCollapsedListHeight = (rowCount) => Math.min(rowCount* ROW_HEIGHT + 10, MAX_COLLAPSED_LIST_HEIGHT)
 
-class SearchTab extends React.Component {
-  constructor() {
-    super()
-    this.searchBarRef = undefined
-  }
-  render() {
-    const rowCount = this.props.business.dataSource ? this.props.business.dataSource.getRowCount() : 0
-    return (
-      <View style={{flex: 1}}>
-        <BackgroundMap/>
-        <BusinessList
-            compactHeight={calculateCollapsedListHeight(rowCount)}
-            expandable={rowCount > MAX_VISIBLE_ROWS}
-            expandOnScroll={EXPAND_VIA_SCROLL}
-            style={styles.searchTab.list}/>
-        <View style={styles.searchTab.searchBar}>
-          <View style={styles.searchTab.dropshadow}/>
-        </View>
-      </View>
-    )
-  }
-}
+const SearchTab = (props) =>
+  <View style={{flex: 1}}>
+    <BackgroundMap/>
+    <BusinessList
+        compactHeight={calculateCollapsedListHeight(props.rowCount)}
+        expandable={props.rowCount > MAX_VISIBLE_ROWS}
+        expandOnScroll={EXPAND_VIA_SCROLL}
+        style={styles.searchTab.list}/>
+    <View style={styles.searchTab.searchBar}>
+      <View style={styles.searchTab.dropshadow}/>
+    </View>
+  </View>
 
-const mapStateToProps = (state) => ({business: state.business})
+const mapStateToProps = (state) => ({
+  rowCount: state.business.businessListDataSource ? state.business.businessListDataSource.getRowCount() : 0
+})
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(actions, dispatch)
