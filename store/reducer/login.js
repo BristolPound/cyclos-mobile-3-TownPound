@@ -28,6 +28,16 @@ export const loginFailed = (message) => ({
   message
 })
 
+export const usernameUpdated = (username) => ({
+  type: 'login/USERNAME_UPDATED',
+  username
+})
+
+export const passwordUpdated = (password) => ({
+  type: 'login/PASSWORD_UPDATED',
+  password
+})
+
 export const loggedOut = () => ({
   type: 'login/LOGGED_OUT'
 })
@@ -79,6 +89,16 @@ export const logout = () => dispatch => {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case 'login/USERNAME_UPDATED':
+      state = merge(state, {
+        username: action.username
+      })
+      break
+    case 'login/PASSWORD_UPDATED':
+      state = merge(state, {
+        password: action.password
+      })
+      break
     case 'login/LOGGED_IN':
       state = merge(state, {
         loginStatus: LOGIN_STATUSES.LOGGED_IN,
