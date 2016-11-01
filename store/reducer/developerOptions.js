@@ -1,44 +1,27 @@
-
-import { loadBusinessList, resetBusinesses } from './business'
-import { loadTransactions, resetTransactions } from './transaction'
 import { setBaseUrl } from '../../api/api'
-import { purgeStoredState } from 'redux-persist'
-import { AsyncStorage } from 'react-native'
 import merge from '../../util/merge'
 
-const PROD_SERVER = 'https://bristol-stage.community-currency.org/cyclos/api/'
-const DEV_SERVER = 'https://bristol.cyclos.org/bristolpoundsandbox03/api/'
-
-const initialState = {
-  prodServer: true
+export const SERVER = {
+  STAGE: 'https://bristol-stage.community-currency.org/cyclos/api/',
+  DEV: 'https://bristol.cyclos.org/bristolpoundsandbox03/api/'
 }
 
-export const switchBaseUrl = () => ({
-  type: 'developerOptions/SWITCH_BASE_URL'
+const initialState = {
+  server: SERVER.STAGE
+}
+
+export const selectServer = (serverId) => ({
+  type: 'developerOptions/SELECT_SERVER',
+  serverId
 })
-
-export const clearBusinesses = () =>
-  (dispatch) =>
-    purgeStoredState({storage: AsyncStorage}, ['business']).then(() => {
-      dispatch(resetBusinesses())
-      dispatch(loadBusinessList(true))
-    })
-
-export const clearTransactions = (reloadTransactions) =>
-  (dispatch) =>
-    purgeStoredState({storage: AsyncStorage}, ['transaction']).then(() => {
-      dispatch(resetTransactions())
-      if (reloadTransactions) {
-        dispatch(loadTransactions())
-      }
-    })
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'developerOptions/SWITCH_BASE_URL':
-      setBaseUrl(state.prodServer ? DEV_SERVER : PROD_SERVER)
+    case 'developerOptions/SELECT_SERVER':
+      const server = SERVER[action.serverId]
+      setBaseUrl(server)
       state = merge(state, {
-        prodServer: !state.prodServer
+        server
       })
       break
   }

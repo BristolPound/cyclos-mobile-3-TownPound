@@ -51,7 +51,7 @@ const Account = props => {
   )
 }
 
-export const AccountOption = ({text, secondaryText, onPress, index, disabled}) =>
+const AccountOption = ({text, secondaryText, onPress, index, disabled}) =>
   <TouchableHighlight
       onPress={() => onPress && !disabled ? onPress() : undefined}
       key={index}
