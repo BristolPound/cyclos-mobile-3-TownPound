@@ -35,13 +35,12 @@ const style = {
     backgroundColor: 'white',
     textAlign: 'center'
   },
-  separatorBelow: {
-    borderBottomWidth: 1,
-    borderBottomColor: colors.gray5
+  separator: {
+    height: 1,
+    backgroundColor: colors.gray5
   }
 }
 
-//TODO: make it focus username field again on second log in
 class Login extends React.Component {
   constructor() {
     super()
@@ -79,21 +78,22 @@ class Login extends React.Component {
             onPress={() => this.props.login(this.props.username, this.props.password)}>
           <DefaultText style={style.loginButtonText}>Log in</DefaultText>
         </TouchableOpacity>
-        <TextInput style={merge(style.input, style.separatorBelow)}
+        <TextInput style={style.input}
             accessibilityLabel={'Input Username'}
             autoFocus={true}
             onChangeText={(text) => this.props.usernameUpdated(text)}
             onSubmitEditing={this.selectPasswordField.bind(this)}
-            placeholder={'username'}
+            placeholder={'Email'}
             placeholderTextColor={colors.gray4}
             selectTextOnFocus={true}
             value={this.props.username} />
+        <View style={style.separator}/>
         <TextInput style={style.input}
             ref={(ref) => this.passwordInputRef = ref}
             accessibilityLabel={'Input Password'}
             onChangeText={(text) => this.props.passwordUpdated(text)}
             onSubmitEditing={() => this.props.login(this.props.username, this.props.password)}
-            placeholder={'password'}
+            placeholder={'Password'}
             placeholderTextColor={colors.gray4}
             secureTextEntry={true}
             selectTextOnFocus={true}
