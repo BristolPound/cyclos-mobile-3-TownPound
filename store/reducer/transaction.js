@@ -10,7 +10,7 @@ const lastIndex = (arr) => arr.length - 1
 const initialState = {
   refreshing: false,
   selectedMonthIndex: 0,
-  loadingTransactions: true,
+  loadingTransactions: false,
   transactions: [],
   monthlyTotalSpent: [],
   transactionsDataSource: new ListView.DataSource({
@@ -29,9 +29,8 @@ const transactionsReceived = transactions => ({
   transactions
 })
 
-export const updateLoadingTransactions = (loading) => ({
+export const updateLoadingTransactions = () => ({
   type: 'transaction/LOADING_TRANSACTIONS',
-  loading
 })
 
 const updateRefreshing = () => ({
@@ -49,7 +48,6 @@ export const loadTransactions = () =>
     getTransactions(dispatch, {}, (result, pageNo) => pageNo > 10)
       .then(transactions => {
         dispatch(transactionsReceived(transactions))
-        dispatch(updateLoadingTransactions(false))
       })
   }
 
@@ -96,6 +94,8 @@ const reducer = (state = initialState, action) => {
       const monthlyTotalSpent = calculateMonthlyTotalSpent(sortedTransactions)
       const selectedMonthIndex = lastIndex(monthlyTotalSpent)
       state = merge(state, {
+        loadingTransactions: false,
+        refreshing: false,
         monthlyTotalSpent,
         selectedMonthIndex,
         transactions: sortedTransactions,
@@ -105,7 +105,12 @@ const reducer = (state = initialState, action) => {
       break
     case 'transaction/LOADING_TRANSACTIONS':
       state = merge(state, {
-        loadingTransactions: action.loading
+        loadingTransactions: true
+      })
+      break
+    case 'transaction/UPDATE_REFRESHING':
+      state = merge(state, {
+        refreshing: true
       })
       break
     case 'transaction/SELECT_MONTH':
@@ -117,12 +122,7 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'transaction/RESET_TRANSACTIONS':
-      state = merge(state, {
-        selectedMonth: 0,
-        transactions: [],
-        monthlyTotalSpent: {},
-        transactionsDataSource: state.transactionsDataSource.cloneWithRowsAndSections({}, [])
-      })
+      state = initialState
       break
   }
   return state
