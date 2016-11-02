@@ -2,9 +2,8 @@ import merge from '../../util/merge'
 import { authenticate } from '../../api/api'
 import ApiError, { UNAUTHORIZED_ACCESS } from '../../api/apiError'
 
-import { clearTransactions } from './developerOptions'
 import { loadAccountDetails } from './account'
-import { loadTransactions } from './transaction'
+import { loadTransactions, resetTransactions } from './transaction'
 import LOGIN_STATUSES from '../../stringConstants/loginStatus'
 
 const initialState = {
@@ -84,7 +83,7 @@ export const login = (username, password) =>
 
 export const logout = () => dispatch => {
   dispatch(loggedOut())
-  dispatch(clearTransactions())
+  dispatch(resetTransactions())
 }
 
 const reducer = (state = initialState, action) => {

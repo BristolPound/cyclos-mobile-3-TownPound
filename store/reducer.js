@@ -10,6 +10,7 @@ import sendMoney from './reducer/sendMoney'
 import account from './reducer/account'
 import networkConnection, {connectivityChanged} from './reducer/networkConnection'
 import developerOptions from './reducer/developerOptions'
+import { setBaseUrl } from '../api/api'
 
 export const reducer = combineReducers({
   transaction,
@@ -37,4 +38,6 @@ export const initialise = (store) => {
     ({coords}) => geolocationChanged(coords, store.dispatch),
     () => {}
   )
+
+  setBaseUrl(store.getState().developerOptions.server)
 }

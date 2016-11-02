@@ -1,14 +1,57 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { ListView } from 'react-native'
-
-import * as actions from '../store/reducer/developerOptions'
-import { logout } from '../store/reducer/login'
-import { AccountOption } from './Account'
-import LOGIN_STATUSES from '../stringConstants/loginStatus'
+import { ListView, View, TouchableHighlight, Image } from 'react-native'
+import color from '../util/colors'
+import merge from '../util/merge'
+import { loadBusinessList, resetBusinesses } from '../store/reducer/business'
+import { loadTransactions, resetTransactions } from '../store/reducer/transaction'
+import DefaultText from './DefaultText'
 import { showModal } from '../store/reducer/navigation'
 import modalState from '../store/reducer/modalState'
+import LOGIN_STATUSES from '../stringConstants/loginStatus'
+import { selectServer, SERVER } from '../store/reducer/developerOptions'
+
+const FONT_SIZE = 14
+const PADDING = 5
+
+const style = {
+  header: {
+    container: {
+      padding: PADDING,
+      backgroundColor: color.gray4
+    },
+    text: {
+      fontSize: FONT_SIZE
+    }
+  },
+  row: {
+    container: {
+      padding: PADDING
+    },
+    text: {
+      fontSize: FONT_SIZE
+    }
+  }
+}
+
+const DeveloperOption = ({text, onPress, disabled, index}) =>
+  <View key={index} style={style.row.container}>
+    <TouchableHighlight
+        onPress={() => !disabled && onPress()}
+        underlayColor={color.transparent}>
+      <View>
+        <DefaultText style={merge(style.row.text, disabled ? {opacity: 0.5} : {})}>
+          {text}
+        </DefaultText>
+      </View>
+    </TouchableHighlight>
+  </View>
+
+const renderSectionHeader = (sectionData, sectionID) =>
+  <View key={sectionID} style={style.header.container}>
+    <DefaultText style={style.row.text}>{sectionID}</DefaultText>
+  </View>
 
 const DeveloperOptions = props => {
   let ds = new ListView.DataSource({
@@ -16,34 +59,58 @@ const DeveloperOptions = props => {
     sectionHeaderHasChanged: (a, b) => a !== b
   })
 
-  ds = ds.cloneWithRowsAndSections({
-    'Developer Options': [{
-        text: 'Using: ' + (props.usingProdServer ? 'Prod' : 'Dev') + ' server',
-        onPress: onPressChangeServer(props),
-        accessibilityLabel: 'Using Server Option',
-      }, {
-        text: 'Clear Business State',
-        onPress: () => props.clearBusinesses(),
-        disabled: props.reloadingBusinesses,
-        accessibilityLabel: 'Clear Businesses Option',
-      }, {
-        text: 'Clear Spending State',
-        onPress: () => props.clearTransactions(true),
-        disabled: props.reloadingTransactions,
-        accessibilityLabel: 'Clear Spending Option',
-      }, {
-        text: 'Close Developer Options',
-        onPress: () => props.showModal(modalState.none),
-        accessibilityLabel: 'Close Developer Modal Option',
+  const rows = {
+    'App State': [
+      { text: `Businesses: ${props.store.businessCount}` },
+      { text: `Business List Timestamp: ${props.store.businessTimestamp}` },
+      { text: `Transactions: ${props.store.transactionCount}` },
+      { text: `Server: ${props.store.server}` },
+    ],
+    'Developer Actions': [{
+        text: 'Clear All Business Data',
+        onPress: () => props.resetBusinesses()
+      },
+      {
+        text: 'Load Business Data',
+        onPress: () => props.loadBusinessList()
+      },
+      {
+        text: 'Clear All Transaction Data',
+        onPress: () => props.resetTransactions(),
+        disabled: props.loadingTransactions
+      },
+      {
+        text: 'Load Transaction Data',
+        onPress: () => props.loadTransactions(),
+        disabled: props.loadingTransactions || !props.loggedIn
+      },
+      {
+        text: 'Switch Server To ' +
+          (props.store.server === SERVER.STAGE ? 'Dev' : 'Stage'),
+        onPress: () => props.selectServer(props.store.server === SERVER.STAGE ? 'DEV' : 'STAGE')
       }
     ]
-  }, ['Developer Options'])
+  }
 
-  return <ListView
-    dataSource={ds}
-    renderRow={(accountOption, i) => <AccountOption {...accountOption} index={i}/> }
-    accessibilityLabel='Developer Options'
-    />
+  ds = ds.cloneWithRowsAndSections(rows, Object.keys(rows))
+
+  return (
+    <View style={{flex: 1}}>
+      <View>
+        <TouchableHighlight
+            onPress={() => props.showModal(modalState.none)}
+            underlayColor={color.white}>
+          <Image source={require('./profileScreen/Close.png')} style={{margin: 20}}/>
+        </TouchableHighlight>
+      </View>
+      <ListView
+        style={{flex: 1}}
+        dataSource={ds}
+        renderRow={(accountOption, i) => <DeveloperOption {...accountOption} index={i}/> }
+        renderSectionHeader={renderSectionHeader}
+        accessibilityLabel='Developer Options'/>
+    </View>
+  )
 }
 
 export const onPressChangeServer = props => () => {
@@ -54,16 +121,23 @@ export const onPressChangeServer = props => () => {
 }
 
 const mapStateToProps = state => ({
-  loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
-  reloadingBusinesses: state.business.refreshing,
-  reloadingTransactions: state.transaction.loadingTransactions,
-  usingProdServer: state.developerOptions.prodServer
+  store: {
+    businessCount: state.business.businessList.length,
+    businessTimestamp: state.business.businessListTimestamp,
+    transactionCount: state.transaction.transactions.length,
+    server: state.developerOptions.server
+  },
+  loadingTransactions: state.transaction.loadingTransactions,
+  loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    ...actions,
-    logout,
-    showModal
+    loadTransactions,
+    resetTransactions,
+    resetBusinesses,
+    loadBusinessList,
+    showModal,
+    selectServer
   }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeveloperOptions)
