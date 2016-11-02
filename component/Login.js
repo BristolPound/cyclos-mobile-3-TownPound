@@ -83,7 +83,7 @@ class Login extends React.Component {
             autoFocus={true}
             onChangeText={(text) => this.props.usernameUpdated(text)}
             onSubmitEditing={this.selectPasswordField.bind(this)}
-            placeholder={'Email'}
+            placeholder={'Username'}
             placeholderTextColor={colors.gray4}
             selectTextOnFocus={true}
             value={this.props.username} />
