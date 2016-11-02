@@ -12,7 +12,9 @@ const styles = {
     backgroundColor: color.offWhite
   },
   text: {
-    color: color.gray4
+    color: color.gray4,
+    marginBottom: 8,
+    fontSize: 20
   },
   image: {
     marginBottom: 20,
