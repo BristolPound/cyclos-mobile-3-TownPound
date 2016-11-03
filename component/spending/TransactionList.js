@@ -43,7 +43,7 @@ const renderRow = (transaction, openDetailsModal) =>
         <DefaultText style={styles.row.text}>
           { transaction.relatedAccount.user ? transaction.relatedAccount.user.display : 'System' }
         </DefaultText>
-        <Price price={transaction.amount} style={styles.row.price} size={18}/>
+        <Price price={transaction.amount} style={styles.row.price} size={22}/>
       </View>
     </View>
   </TouchableHighlight>

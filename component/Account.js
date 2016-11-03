@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { View, Image, StyleSheet, ListView, TouchableHighlight } from 'react-native'
-import DefaultText from './DefaultText'
+import DefaultText, { baselineDeltaForFonts } from './DefaultText'
 import ProfileImage from './profileImage/ProfileImage'
 import colors from './../util/colors'
 import commonStyle, { dimensions } from './style'
@@ -41,7 +41,9 @@ const styles = {
     },
     secondary: {
       flex: 0,
-      fontSize: 16,
+      // the delta required to align this with the label (which has a larger font size)
+      marginBottom: baselineDeltaForFonts(16, 14),
+      fontSize: 14,
       color: colors.gray2,
       fontFamily: commonStyle.font.museo300
     }

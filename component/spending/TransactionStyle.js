@@ -1,6 +1,7 @@
 import color from '../../util/colors'
 import marginOffset from '../../util/marginOffset'
 import commonStyle, { dimensions } from '../style'
+import { baselineDeltaForFonts } from '../DefaultText'
 
 const HEADER_HEIGHT = marginOffset(90)
 const IMAGE_SIZE = 42
@@ -45,6 +46,8 @@ const styles = {
     },
     text: {
       fontFamily: commonStyle.font.museo300,
+      // the offset required to align this text (18px) with the price (22px)
+      marginBottom: baselineDeltaForFonts(22, 18),
       color: color.offBlack,
       fontSize: 18,
       marginRight: 10,
