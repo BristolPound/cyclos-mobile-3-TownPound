@@ -1,28 +1,130 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { View, TouchableHighlight, ListView } from 'react-native'
-
+import { bindActionCreators } from 'redux'
+import { View, Image, StyleSheet, ListView, TouchableHighlight } from 'react-native'
 import DefaultText from './DefaultText'
-import merge from './../util/merge'
-import color from './../util/colors'
-import ProfileScreen from './profileScreen/ProfileScreen'
+import ProfileImage from './profileImage/ProfileImage'
+import colors from './../util/colors'
+import commonStyle, { dimensions } from './style'
+import * as actions from '../store/reducer/login'
 
 const styles = {
-  rowContainer: {
-    flexDirection: 'row',
-    margin: 14,
+  container: {
+    flex: 1
   },
-  rowText: {
-    marginHorizontal: 6
-  }
+  detailsList: {
+    flex: 1,
+    ...commonStyle.shadow,
+    backgroundColor: colors.offWhite
+  },
+  sectionHeader: {
+    container: {
+      ...commonStyle.sectionHeader.container,
+      height: 42
+    },
+    text: commonStyle.sectionHeader.text
+  },
+  row: {
+    container: {
+      height: 40,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingLeft: 14,
+      paddingRight: 14,
+      backgroundColor: colors.white
+    },
+    label: {
+      fontSize: 16,
+      color: colors.offBlack,
+      fontFamily: commonStyle.font.museo500,
+      flex: 1
+    },
+    secondary: {
+      flex: 0,
+      fontSize: 16,
+      color: colors.gray2,
+      fontFamily: commonStyle.font.museo300
+    }
+  },
+  separator: {
+    borderBottomColor: colors.gray5,
+    borderBottomWidth: 1
+  },
+  gradient: {
+    ...StyleSheet.absoluteFillObject
+  },
+  header: {
+    container: {
+      alignItems: 'center'
+    },
+    backgroundImage: {
+      ...StyleSheet.absoluteFillObject
+    },
+    businessLogo: {
+      ...dimensions(84),
+      marginTop: 58,
+      borderColor: colors.bristolBlue,
+      borderRadius: 9,
+      borderWidth: 2
+    },
+    title: {
+      fontFamily: commonStyle.font.museo500,
+      marginTop: 8,
+      fontSize: 20,
+      color: colors.offBlack
+    },
+    subtitle: {
+      marginBottom: 46,
+      fontSize: 18,
+      color: colors.gray
+    },
+  },
 }
 
-const Account = props => {
+const renderSeparator = (sectionID, rowID) =>
+  <View style={styles.separator} key={`sep:${sectionID}:${rowID}`}/>
+
+
+const renderSectionHeader = (sectionData, sectionID) =>
+  <View style={styles.sectionHeader.container} key={sectionID}>
+    <DefaultText style={styles.sectionHeader.text}>
+      {sectionID.toUpperCase()}
+    </DefaultText>
+  </View>
+
+const AccountOption = ({text, secondaryText, onPress, index}) =>
+  <TouchableHighlight
+      onPress={() => onPress ? onPress() : undefined}
+      key={index}
+      underlayColor={onPress ? colors.gray5 : colors.transparent}>
+    <View style={styles.row.container}>
+      <DefaultText style={styles.row.label}>{text}</DefaultText>
+      { secondaryText
+        ? <DefaultText style={styles.row.secondary}>{secondaryText}</DefaultText>
+        : undefined }
+    </View>
+  </TouchableHighlight>
+
+const Header = (props) =>
+  <View style={styles.header.container}>
+    <Image
+      source={require('./profileScreen/gorillaWithBackground.png')}
+      style={styles.header.backgroundImage}
+      resizeMode='contain'/>
+    <ProfileImage
+      img={props.image}
+      style={styles.header.businessLogo}
+      category='person'/>
+    <DefaultText style={styles.header.title}>{props.name}</DefaultText>
+    <DefaultText style={styles.header.subtitle}>{props.username}</DefaultText>
+  </View>
+
+const Account = (props) => {
   let ds = new ListView.DataSource({
     rowHasChanged: (a, b) => a.text !== b.text || a.secondaryText !== b.secondaryText,
     sectionHeaderHasChanged: (a, b) => a !== b
   })
-  ds = ds.cloneWithRowsAndSections({
+  const data = {
     'Profile Settings': [{
         text: 'Email',
         secondaryText: (props.details && props.details.email) || 'Not set'
@@ -33,39 +135,29 @@ const Account = props => {
         text: 'Log out',
         onPress: props.logout
       }]
-  }, ['Profile Settings'])
+  }
+  ds = ds.cloneWithRowsAndSections(data, Object.keys(data))
 
   return (
-      <ProfileScreen
-        isTabItem={true}
-        loaded={!props.loadingDetails}
-        image={props.details.image}
-        category={'person'}
-        defaultImage={!Boolean(props.details.image)}
+    <View style={styles.container}>
+      <Header
         name={props.details.display}
         username={props.details.shortDisplay}
-        renderHeaderExtension={() => null}
+        image={props.details.image}/>
+      <ListView
+        style={styles.detailsList}
         dataSource={ds}
-        renderRow={(accountOption, i) => <AccountOption {...accountOption} index={i}/> }
-        />
+        scrollEnabled={false}
+        renderSeparator={renderSeparator}
+        renderSectionHeader={renderSectionHeader}
+        renderRow={(accountOption, i) => <AccountOption {...accountOption} index={i}/> }/>
+    </View>
   )
 }
 
-const AccountOption = ({text, secondaryText, onPress, index, disabled}) =>
-  <TouchableHighlight
-      onPress={() => onPress && !disabled ? onPress() : undefined}
-      key={index}
-      underlayColor={color.transparent}>
-    <View style={styles.rowContainer}>
-      <DefaultText style={merge(styles.rowText, { flex: 1 }, disabled ? {color: 'orange'}: {})}>{text}</DefaultText>
-      { secondaryText
-        ? <DefaultText style={merge(styles.rowText, { flex: 0 })}>{secondaryText}</DefaultText>
-        : undefined }
-    </View>
-  </TouchableHighlight>
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(actions, dispatch)
 
-const mapStateToProps = state => {
-  return state.account
-}
+const mapStateToProps = state =>  state.account
 
-export default connect(mapStateToProps)(Account)
+export default connect(mapStateToProps, mapDispatchToProps)(Account)

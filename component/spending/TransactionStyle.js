@@ -1,6 +1,6 @@
 import color from '../../util/colors'
 import marginOffset from '../../util/marginOffset'
-import commonStyle from '../style'
+import commonStyle, { dimensions } from '../style'
 
 const HEADER_HEIGHT = marginOffset(90)
 const IMAGE_SIZE = 42
@@ -35,8 +35,7 @@ const styles = {
       alignItems: 'flex-end'
     },
     image: {
-      width: IMAGE_SIZE,
-      height: IMAGE_SIZE,
+      ...dimensions(IMAGE_SIZE),
       marginLeft: IMAGE_MARGIN,
       marginRight: IMAGE_MARGIN,
       borderRadius: 5,
@@ -68,25 +67,7 @@ const styles = {
       color: color.gray3
     }
   },
-  sectionHeader: {
-    container: {
-      borderBottomColor: color.gray5,
-      borderBottomWidth: 1,
-      borderTopColor: color.gray5,
-      borderTopWidth: 1,
-      height: 34,
-      backgroundColor: color.offWhite,
-      flexDirection: 'row',
-      alignItems: 'center',
-      flex: 1
-    },
-    text: {
-      fontFamily: commonStyle.font.museo700,
-      fontSize: 14,
-      color: color.gray2,
-      marginLeft: 14
-    },
-  },
+  sectionHeader: commonStyle.sectionHeader,
   header: {
     carouselContainer: {
       position: 'absolute',

@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 import colors from '../../util/colors'
-import commonStyle from '../style'
+import commonStyle, { dimensions } from '../style'
 
 const headerMargin = 24
 const listMargin = 14
@@ -40,12 +40,10 @@ const styles = {
     expandIcon: {
       marginRight: headerMargin,
       marginTop: 40,
-      height: 16,
-      width: 16
+      ...dimensions(16)
     },
     businessLogo: {
-      height: 84,
-      width: 84,
+      ...dimensions(84),
       alignSelf: 'center',
       borderColor: colors.bristolBlue,
       borderRadius: 5,

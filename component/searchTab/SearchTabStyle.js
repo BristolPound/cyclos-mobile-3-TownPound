@@ -1,6 +1,6 @@
 import color from '../../util/colors'
 import marginOffset from '../../util/marginOffset'
-import style from '../style'
+import style, { dimensions } from '../style'
 import ScreenSizes from '../../util/ScreenSizes'
 
 const MARGIN_SIZE = 10
@@ -44,8 +44,7 @@ const styles = {
       height: ROW_HEIGHT
     },
     image: {
-      width: ScreenSizes.isSmall() ? 42 : 44,
-      height: ScreenSizes.isSmall() ? 42 : 44,
+      ...dimensions(ScreenSizes.isSmall() ? 42 : 44),
       borderRadius: 5,
       borderWidth: 1,
       borderColor: color.offWhite

@@ -7,7 +7,8 @@ import commonStyle from './style'
 const style = {
   fontFamily: commonStyle.font.museo300,
   fontSize: 18,
-  color: colors.offBlack
+  color: colors.offBlack,
+  backgroundColor: colors.transparent
 }
 
 class DefaultText extends Component {
