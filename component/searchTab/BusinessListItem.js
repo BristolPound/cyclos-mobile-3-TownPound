@@ -17,7 +17,7 @@ const BusinessListItem = props =>
       <ProfileImage
         img={props.business.image}
         style={styles.listItem.image}
-        category='shop'/>
+        category={props.business.category}/>
       <View style={styles.listItem.verticalStack}>
         <DefaultText style={styles.listItem.title}>
           {props.business.display}
