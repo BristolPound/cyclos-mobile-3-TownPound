@@ -2,7 +2,7 @@ import React from 'react'
 import { TouchableHighlight } from 'react-native'
 import merge from '../../util/merge'
 import { connect } from 'react-redux'
-import styles from './SearchTabStyle'
+import styles from './BusinessListStyle'
 import DefaultText from '../DefaultText'
 import colors from '../../util/colors'
 
