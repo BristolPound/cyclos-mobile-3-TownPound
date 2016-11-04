@@ -5,7 +5,8 @@ import { bindActionCreators } from 'redux'
 import BackgroundMap from './BackgroundMap'
 import BusinessList from './BusinessList'
 import * as actions from '../../store/reducer/business'
-import styles, {ROW_HEIGHT, SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN, MAP_HEIGHT} from './SearchTabStyle'
+import styles, {SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN, MAP_HEIGHT} from './SearchTabStyle'
+import businessListStyle, {ROW_HEIGHT} from './BusinessListStyle'
 import {TAB_BAR_HEIGHT} from '../tabbar/TabBar'
 import PLATFORM from '../../util/Platforms'
 
@@ -15,7 +16,8 @@ const EXPAND_VIA_SCROLL = PLATFORM.isIOS()
 
 // sum of borders, margins, other component heights etc.
 // and optionally the expand header
-const OTHER_COMPONENT_HEIGHTS_SUM = SEARCH_BAR_HEIGHT + SEARCH_BAR_MARGIN + MAP_HEIGHT + TAB_BAR_HEIGHT  + (!EXPAND_VIA_SCROLL * styles.expandHeader.container.height)
+const OTHER_COMPONENT_HEIGHTS_SUM = SEARCH_BAR_HEIGHT + SEARCH_BAR_MARGIN + MAP_HEIGHT + TAB_BAR_HEIGHT  +
+    (!EXPAND_VIA_SCROLL * businessListStyle.expandHeader.container.height)
 
 const MAX_COLLAPSED_LIST_HEIGHT =
   Dimensions.get('window').height - OTHER_COMPONENT_HEIGHTS_SUM
