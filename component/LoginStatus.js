@@ -4,6 +4,7 @@ import { TAB_BAR_HEIGHT } from './tabbar/TabBar'
 import DefaultText from './DefaultText'
 import color from '../util/colors'
 import merge from '../util/merge'
+import commonStyle from './style'
 import { connect } from 'react-redux'
 import LOGIN_STATUSES from '../stringConstants/loginStatus'
 
@@ -15,7 +16,8 @@ const style = {
     right: 0,
     height: TAB_BAR_HEIGHT,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    ...commonStyle.shadow
   },
   text: {
     color: color.white

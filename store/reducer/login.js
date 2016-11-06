@@ -1,17 +1,22 @@
 import merge from '../../util/merge'
 import { authenticate } from '../../api/api'
 import ApiError, { UNAUTHORIZED_ACCESS } from '../../api/apiError'
-
 import { loadAccountDetails } from './account'
 import { loadTransactions, resetTransactions } from './transaction'
 import LOGIN_STATUSES from '../../stringConstants/loginStatus'
 
+export const LOGGED_OUT = 'login/LOGGED_OUT'
+export const LOGGED_IN = 'login/LOGGED_IN'
+
 const initialState = {
   loginStatus: LOGIN_STATUSES.LOGGED_OUT,
   loginFormOpen: false,
-  username: 'testmember',
-  password: 'testing123',
-  failureMessage: ''
+  failureMessage: '',
+  // username / password state backs the login form
+  username: '',
+  password: '',
+  // logged in username state stores the username on succesfull login
+  loggedInUsername: ''
 }
 
 export const loginInProgress = () => ({
@@ -19,7 +24,7 @@ export const loginInProgress = () => ({
 })
 
 export const loggedIn = () => ({
-  type: 'login/LOGGED_IN'
+  type: LOGGED_IN
 })
 
 export const loginFailed = (message) => ({
@@ -38,7 +43,7 @@ export const passwordUpdated = (password) => ({
 })
 
 export const loggedOut = () => ({
-  type: 'login/LOGGED_OUT'
+  type: LOGGED_OUT
 })
 
 export const openLoginForm = (open = true) => ({
@@ -98,8 +103,9 @@ const reducer = (state = initialState, action) => {
         password: action.password
       })
       break
-    case 'login/LOGGED_IN':
+    case LOGGED_IN:
       state = merge(state, {
+        loggedInUsername: state.username,
         loginStatus: LOGIN_STATUSES.LOGGED_IN,
       })
       break
@@ -115,13 +121,9 @@ const reducer = (state = initialState, action) => {
         loginFormOpen: false
       })
       break
-    case 'login/LOGGED_OUT':
-      state = merge(state, {
-        loginStatus: LOGIN_STATUSES.LOGGED_OUT,
-        username: 'testmember',
-        password: 'testing123'
-        // TODO: clear the session token? clear the transaction data?
-      })
+    case LOGGED_OUT:
+      state = initialState
+      // TODO: clear the session token? clear the transaction data?
       break
     case 'login/OPEN_LOGIN_FORM':
       state = merge(state, {
