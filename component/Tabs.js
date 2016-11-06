@@ -1,9 +1,8 @@
 import React from 'react'
-import { View, TouchableHighlight, Modal, StyleSheet } from 'react-native'
+import { View, Modal } from 'react-native'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-
 import * as actions from '../store/reducer/navigation'
 import modalState from '../store/reducer/modalState'
 import { openLoginForm } from '../store/reducer/login'
@@ -14,6 +13,7 @@ import TransactionList from './spending/TransactionList'
 import Account from './Account'
 import LoginToView, { emptyStateImage } from './loggedOutState/LoginToView'
 import Login from './Login'
+import LoginOverlay from './LoginOverlay'
 import LoginStatus from './LoginStatus'
 import TraderScreen from './TraderScreen'
 import PersonScreen from './PersonScreen'
@@ -38,15 +38,6 @@ const style = {
     transform: [
       {scale: 0.9}
     ]
-  },
-  loginOverlay: {
-    visible: {
-      ...StyleSheet.absoluteFillObject,
-    },
-    hidden: {
-      position: 'absolute',
-      height: 0
-    }
   }
 }
 
@@ -110,13 +101,8 @@ const Tabs = (props) =>
       visible={props.modalState !== modalState.none}>
       {componentForModalState(props.modalState)}
     </Modal>
-    <TouchableHighlight
-      style={props.dialogOpen ? style.loginOverlay.visible : style.loginOverlay.hidden}
-      onPress={() => props.openLoginForm(false)}
-      underlayColor={color.transparent}>
-      <View/>
-    </TouchableHighlight>
-    { props.dialogOpen ? <Login /> : undefined }
+    <LoginOverlay/>
+    <Login/>
     <LoginStatus/>
   </View>
 

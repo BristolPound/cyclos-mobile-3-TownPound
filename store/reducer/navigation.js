@@ -3,15 +3,26 @@ import merge from '../../util/merge'
 import { selectAndLoadBusiness } from './business'
 import { selectAndLoadPerson } from './person'
 import modalState from './modalState'
+import { LOGGED_OUT, LOGGED_IN } from './login'
 
 const initialState = {
   tabIndex: 0,
-  modalState: modalState.none
+  modalState: modalState.none,
+  returningLogin: false,
+  stateInitialised: false
 }
 
 export const navigateToTab = (tabIndex) => ({
   type: 'navigation/NAVIGATE_TO_TAB',
   tabIndex
+})
+
+export const returningLogin = () => ({
+  type: 'navigation/RETURNING_LOGIN'
+})
+
+export const stateInitialised = () => ({
+  type: 'navigation/STATE_INITIALIZED'
 })
 
 export const openDetailsModal = id =>
@@ -53,6 +64,22 @@ const reducer = (state = initialState, action) => {
     case 'navigation/SHOW_MODAL':
       state = merge(state, {
         modalState: action.modalState
+      })
+      break
+    case LOGGED_OUT:
+    case LOGGED_IN:
+      state = merge(state, {
+        returningLogin: false
+      })
+      break
+    case 'navigation/RETURNING_LOGIN':
+      state = merge(state, {
+        returningLogin: true
+      })
+      break
+    case 'navigation/STATE_INITIALIZED':
+      state = merge(state, {
+        stateInitialised: true
       })
       break
   }
