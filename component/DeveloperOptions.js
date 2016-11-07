@@ -12,7 +12,8 @@ import modalState from '../store/reducer/modalState'
 import LOGIN_STATUSES from '../stringConstants/loginStatus'
 import { selectServer, SERVER } from '../store/reducer/developerOptions'
 
-const FONT_SIZE = 14
+const INFO_FONT_SIZE = 14
+const ACTION_FONT_SIZE = 18
 const PADDING = 5
 
 const style = {
@@ -22,26 +23,51 @@ const style = {
       backgroundColor: color.gray4
     },
     text: {
-      fontSize: FONT_SIZE
+      fontSize: INFO_FONT_SIZE
     }
   },
   row: {
     container: {
       padding: PADDING
     },
-    text: {
-      fontSize: FONT_SIZE
-    }
+    label: {
+      fontSize: INFO_FONT_SIZE
+    },
+    value: {
+      fontSize: INFO_FONT_SIZE
+    },
+    action: {
+      fontSize: ACTION_FONT_SIZE
+    },
   }
 }
 
-const DeveloperOption = ({text, onPress, disabled, index}) =>
+// Render label / value pair.
+const DeveloperInfo = ({label, value, index, accessibilityLabel}) =>
+  <View key={index} style={style.row.container}>
+    <View style={{flexDirection: 'row'}}>
+      <DefaultText style={style.row.label}>
+        {label}
+      </DefaultText>
+      <DefaultText style={style.row.value} accessibilityLabel={accessibilityLabel}>
+        {value}
+      </DefaultText>
+    </View>
+  </View>
+
+// Render clickable button
+const DeveloperAction = ({text, onPress, disabled, index, accessibilityLabel}) =>
   <View key={index} style={style.row.container}>
     <TouchableHighlight
-        onPress={() => !disabled && onPress()}
-        underlayColor={color.transparent}>
+      onPress={() => !disabled && onPress()}
+      activeOpacity={0.6}
+      underlayColor={color.transparent}
+    >
       <View>
-        <DefaultText style={merge(style.row.text, disabled ? {opacity: 0.5} : {})}>
+        <DefaultText
+          style={merge(style.row.action, disabled ? {opacity: 0.4} : {})}
+          accessibilityLabel={accessibilityLabel}
+        >
           {text}
         </DefaultText>
       </View>
@@ -54,61 +80,82 @@ const renderSectionHeader = (sectionData, sectionID) =>
   </View>
 
 const DeveloperOptions = props => {
-  let ds = new ListView.DataSource({
+  let infoSource = new ListView.DataSource({
     rowHasChanged: (a, b) => a.text !== b.text || a.disabled !== b.disabled,
     sectionHeaderHasChanged: (a, b) => a !== b
   })
 
-  const rows = {
+  let actionsSource = new ListView.DataSource({
+    rowHasChanged: (a, b) => a.text !== b.text || a.disabled !== b.disabled,
+    sectionHeaderHasChanged: (a, b) => a !== b
+  })
+
+  const infoRows = {
     'App State': [
-      { text: `Businesses: ${props.store.businessCount}` },
-      { text: `Business List Timestamp: ${props.store.businessTimestamp}` },
-      { text: `Transactions: ${props.store.transactionCount}` },
-      { text: `Server: ${props.store.server}` },
+      { label: 'Businesses: ', value: props.store.businessCount, accessibilityLabel: 'Business Count',},
+      { label: 'Business List Timestamp: ', value: `${props.store.businessTimestamp}`, accessibilityLabel: 'Business Timestamp',},
+      { label: 'Transactions: ', value: props.store.transactionCount, accessibilityLabel: 'Transaction Count',},
+      { label: 'Server: ', value: props.store.server, accessibilityLabel: 'Server',},
     ],
+  }
+  const actionRows = {
     'Developer Actions': [{
         text: 'Clear All Business Data',
-        onPress: () => props.resetBusinesses()
+        onPress: () => props.resetBusinesses(),
+        accessibilityLabel: 'Clear Businesses',
       },
       {
         text: 'Load Business Data',
-        onPress: () => props.loadBusinessList()
+        onPress: () => props.loadBusinessList(),
+        accessibilityLabel: 'Load Businesses',
       },
       {
         text: 'Clear All Transaction Data',
         onPress: () => props.resetTransactions(),
-        disabled: props.loadingTransactions
+        disabled: props.loadingTransactions,
+        accessibilityLabel: 'Clear Transactions',
       },
       {
         text: 'Load Transaction Data',
         onPress: () => props.loadTransactions(),
-        disabled: props.loadingTransactions || !props.loggedIn
+        disabled: props.loadingTransactions || !props.loggedIn,
+        accessibilityLabel: 'Load Transactions',
       },
       {
         text: 'Switch Server To ' +
           (props.store.server === SERVER.STAGE ? 'Dev' : 'Stage'),
-        onPress: () => props.selectServer(props.store.server === SERVER.STAGE ? 'DEV' : 'STAGE')
+        onPress: () => props.selectServer(props.store.server === SERVER.STAGE ? 'DEV' : 'STAGE'),
+        accessibilityLabel: 'Switch Server',
       }
     ]
   }
 
-  ds = ds.cloneWithRowsAndSections(rows, Object.keys(rows))
+  infoSource = infoSource.cloneWithRowsAndSections(infoRows, Object.keys(infoRows))
+  actionsSource = actionsSource.cloneWithRowsAndSections(actionRows, Object.keys(actionRows))
 
   return (
     <View style={{flex: 1}}>
       <View>
         <TouchableHighlight
-            onPress={() => props.showModal(modalState.none)}
-            underlayColor={color.white}>
+          onPress={() => props.showModal(modalState.none)}
+          underlayColor={color.white}
+          accessiblityLabel='Close Developer Options'
+        >
           <Image source={require('./profileScreen/Close.png')} style={{margin: 20}}/>
         </TouchableHighlight>
       </View>
       <ListView
         style={{flex: 1}}
-        dataSource={ds}
-        renderRow={(accountOption, i) => <DeveloperOption {...accountOption} index={i}/> }
+        dataSource={infoSource}
+        renderRow={(accountOption, i) => <DeveloperInfo {...accountOption} index={i}/> }
         renderSectionHeader={renderSectionHeader}
-        accessibilityLabel='Developer Options'/>
+        accessibilityLabel='Developer Info'/>
+      <ListView
+        style={{flex: 1}}
+        dataSource={actionsSource}
+        renderRow={(accountOption, i) => <DeveloperAction {...accountOption} index={i}/> }
+        renderSectionHeader={renderSectionHeader}
+        accessibilityLabel='Developer Actions'/>
     </View>
   )
 }
