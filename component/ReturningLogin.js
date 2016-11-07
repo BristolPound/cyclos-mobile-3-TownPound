@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TouchableHighlight } from 'react-native'
+import { View, TouchableHighlight, Image, StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
 import DefaultText from './DefaultText'
 import colors from '../util/colors'
@@ -12,70 +12,83 @@ import LoginStatus from './LoginStatus'
 
 const style = {
   container: {
-    backgroundColor: colors.bristolBlue,
     flex: 1,
     alignItems: 'center',
-    padding: 30
+    paddingLeft: 30,
+    paddingRight: 30,
+    paddingBottom: 24
   },
   bottomContainer : {
     alignItems: 'center',
     alignSelf: 'stretch'
   },
+  background: {
+    ...StyleSheet.absoluteFillObject
+  },
   welcome: {
     container: {
       flex: 1,
-      justifyContent: 'center'
+      justifyContent: 'flex-start',
+      alignItems: 'center'
     },
     welcomeText: {
       color: colors.white,
       fontSize: 20,
-      marginBottom: 10
+      marginTop: 264,
+      marginBottom: 10,
+      fontSize: 26,
+      fontFamily: commonStyle.museo300
     },
     usernameText: {
       color: colors.white,
-      fontSize: 26,
+      fontSize: 30,
       fontFamily: commonStyle.museo700
     }
   },
   infoText: {
     color: colors.white,
-    fontSize: 14
+    fontSize: 16,
+    fontFamily: commonStyle.museo700
   },
   loginButton: {
     container: {
       backgroundColor: colors.white,
-      borderRadius: 8,
+      borderRadius: 10,
       alignSelf: 'stretch',
-      height: 40,
+      height: 48,
       alignItems: 'center',
       justifyContent: 'center',
       marginBottom: 10
     },
     text: {
-      color: colors.bristolBlue
+      color: colors.bristolBlue2,
+      fontSize: 22,
+      fontFamily: commonStyle.museo500
     }
   },
   skipButton: {
     container: {
       backgroundColor: colors.transparent,
-      borderRadius: 8,
-      borderWidth: 2,
+      borderRadius: 10,
+      borderWidth: 1.5,
       borderColor: colors.white,
       alignSelf: 'stretch',
-      height: 40,
+      height: 48,
       alignItems: 'center',
       justifyContent: 'center',
-      marginBottom: 10
+      marginBottom: 18
     },
     text: {
       color: colors.white,
-      fontSize: 14
+      fontSize: 18,
+      fontFamily: commonStyle.museo500
     }
   }
 }
 
 const ReturningLogin = (props) =>
   <View style={style.container}>
+    <Image style={style.background} source={require('./background.jpg')}/>
     <View style={style.welcome.container}>
       <DefaultText style={style.welcome.welcomeText}>Welcome back</DefaultText>
       <DefaultText style={style.welcome.usernameText}>{props.loggedInUsername}</DefaultText>
