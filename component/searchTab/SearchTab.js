@@ -4,48 +4,52 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import BackgroundMap from './BackgroundMap'
 import BusinessList from './BusinessList'
-import * as actions from '../../store/reducer/business'
-import styles, {SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN, MAP_HEIGHT} from './SearchTabStyle'
-import businessListStyle, {ROW_HEIGHT} from './BusinessListStyle'
+import ScrollingExpandPanel from './ScrollingExpandPanel'
+import styles, {SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN_TOP_IOS, SEARCH_BAR_MARGIN, MAP_HEIGHT} from './SearchTabStyle'
+import {ROW_HEIGHT} from './BusinessListStyle'
 import {TAB_BAR_HEIGHT} from '../tabbar/TabBar'
-import PLATFORM from '../../util/Platforms'
+import { openTraderModal } from '../../store/reducer/navigation'
+import { expandBusinessList } from '../../store/reducer/business'
 
-// For Android devices, the scroll-to-expand behaviour is problematic. So instead
-// we fall back to a simpler interaction model.
-const EXPAND_VIA_SCROLL = PLATFORM.isIOS()
+// The following height calculations refer to the list
+const BUSINESS_LIST_TOP_OFFSET = SEARCH_BAR_HEIGHT + SEARCH_BAR_MARGIN
 
-// sum of borders, margins, other component heights etc.
-// and optionally the expand header
-const OTHER_COMPONENT_HEIGHTS_SUM = SEARCH_BAR_HEIGHT + SEARCH_BAR_MARGIN + MAP_HEIGHT + TAB_BAR_HEIGHT  +
-    (!EXPAND_VIA_SCROLL * businessListStyle.expandHeader.container.height)
+const maxExpandedHeight = Dimensions.get('window').height - SEARCH_BAR_MARGIN_TOP_IOS - SEARCH_BAR_HEIGHT - TAB_BAR_HEIGHT
 
-const MAX_COLLAPSED_LIST_HEIGHT =
-  Dimensions.get('window').height - OTHER_COMPONENT_HEIGHTS_SUM
+const maxCollapsedHeight = maxExpandedHeight - MAP_HEIGHT
 
-// This is the maximum number of rows that would be visible when the list is collapsed
-// 10 is the transparent space for the selected trader
-const MAX_VISIBLE_ROWS = Math.floor((MAX_COLLAPSED_LIST_HEIGHT-10)/ROW_HEIGHT)
+const calculateExpandedHeight = (rowCount) => Math.min(rowCount * ROW_HEIGHT + 10, maxExpandedHeight)
+const calculateCollapsedHeight = (rowCount) => Math.min(rowCount * ROW_HEIGHT + 10, maxCollapsedHeight)
 
-const calculateCollapsedListHeight = (rowCount) => Math.min(rowCount* ROW_HEIGHT + 10, MAX_COLLAPSED_LIST_HEIGHT)
-
-const SearchTab = (props) =>
-  <View style={{flex: 1}}>
-    <BackgroundMap/>
-    <BusinessList
-        compactHeight={calculateCollapsedListHeight(props.rowCount)}
-        expandable={props.rowCount > MAX_VISIBLE_ROWS}
-        expandOnScroll={EXPAND_VIA_SCROLL}
-        style={styles.searchTab.list}/>
-    <View style={styles.searchTab.searchBar}>
-      <View style={styles.searchTab.dropshadow}/>
+const SearchTab = (props) => {
+  const collapsedHeight = calculateCollapsedHeight(props.businessesToDisplay.length)
+  const expandedHeight = calculateExpandedHeight(props.businessesToDisplay.length)
+  return (
+    <View style={{flex: 1}}>
+      <BackgroundMap/>
+      <View style={styles.searchTab.searchBar}>
+        <View style={styles.searchTab.dropshadow}/>
+      </View>
+      <ScrollingExpandPanel
+          style={styles.searchTab.list}
+          topOffsetWhenExpanded={BUSINESS_LIST_TOP_OFFSET + maxExpandedHeight - expandedHeight}
+          topOffsetWhenCollapsed={BUSINESS_LIST_TOP_OFFSET + maxExpandedHeight - collapsedHeight}
+          expandedHeight={expandedHeight}
+          rowHeight={ROW_HEIGHT}
+          onPressItem={(index) => props.businessesToDisplay[index] && props.openTraderModal(props.businessesToDisplay[index].id)}
+          childrenHeight={props.businessesToDisplay.length * ROW_HEIGHT}>
+        <BusinessList businessesToDisplay={props.businessesToDisplay}/>
+      </ScrollingExpandPanel>
     </View>
-  </View>
+  )
+}
 
 const mapStateToProps = (state) => ({
-  rowCount: state.business.businessListDataSource ? state.business.businessListDataSource.getRowCount() : 0
+  businessesToDisplay: state.business.businessesToDisplay,
+  businessListExpanded: state.business.businessListExpanded
 })
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(actions, dispatch)
+  bindActionCreators({ openTraderModal, expandBusinessList }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchTab)

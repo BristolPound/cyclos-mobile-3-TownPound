@@ -1,4 +1,3 @@
-import { ListView } from 'react-native'
 import haversine from 'haversine'
 import _ from 'lodash'
 import moment from 'moment'
@@ -6,30 +5,24 @@ import merge from '../../util/merge'
 import { addFailedAction } from './networkConnection'
 import { getBusinesses, getBusinessProfile } from '../../api/users'
 
-const DEFAULT_LOCATION =  { latitude: 51.454513, longitude:  -2.58791 }
+const BRISTOL_CITY_CENTRE = { latitude: 51.454513, longitude:  -2.58791 }
+
+const MAX_DELTA_FOR_LIST = 0.03
+
+const BUSINESS_LIST_MAX_LENGTH = 50
 
 const initialState = {
   businessList: [],
   businessListTimestamp: null,
-  businessListExpanded: false,
   selectedBusinessId: undefined,
-  businessListDataSource: new ListView.DataSource({
-    rowHasChanged: (a, b) => a.shortDisplay !== b.shortDisplay,
-    sectionHeaderHasChanged: (a, b) => a !== b
-  }),
   businessesToDisplay: [ ],
   mapViewport: {
-    ...DEFAULT_LOCATION,
+    ...BRISTOL_CITY_CENTRE,
     latitudeDelta: 0.006,
     longitudeDelta: 0.006
   },
   searchMode: false
 }
-
-export const expandBusinessList = (expand) => ({
-  type: 'business/EXPAND_BUSINESS_LIST',
-  expand
-})
 
 export const businessListReceived = (businessList) => ({
   type: 'business/BUSINESS_LIST_RECEIVED',
@@ -62,7 +55,7 @@ export const resetBusinesses = () => ({
 })
 
 export const geolocationChanged = (coords, dispatch) => {
-  if (haversine(DEFAULT_LOCATION, coords) < 75) {//furthest business is around 70km from Bristol centre
+  if (haversine(BRISTOL_CITY_CENTRE, coords) < 75) {//furthest business is around 70km from Bristol centre
     dispatch(updateMapViewportAndSelectClosestTrader(coords))
   }
 }
@@ -106,11 +99,15 @@ export const loadBusinessList = (force = false) =>
   }
 
 // selectedBusinessId is optional
-const getBusinessesToDisplay = (list, viewport, selectedBusinessId) =>
-  _.sortBy(
+const getBusinessesToDisplay = (list, viewport, selectedBusinessId) => {
+  const businessesToDisplay = _.sortBy(
     list.filter(shouldBeDisplayed(viewport, selectedBusinessId)),
     orderBusinessList(viewport, selectedBusinessId)
   )
+  businessesToDisplay.length = Math.min(businessesToDisplay.length, BUSINESS_LIST_MAX_LENGTH)
+  return businessesToDisplay
+}
+
 
 
 const orderBusinessList = (viewport, selectedBusinessId) => (business) => {
@@ -120,20 +117,26 @@ const orderBusinessList = (viewport, selectedBusinessId) => (business) => {
   return Number.MAX_VALUE
 }
 
-const isWithinViewport = (business, viewport) =>
-  business.address
-    && Math.abs(business.address.location.latitude - viewport.latitude) < viewport.latitudeDelta / 2
-    && Math.abs(business.address.location.longitude - viewport.longitude) < viewport.longitudeDelta / 2
+const boundedDelta = (delta) => Math.min(MAX_DELTA_FOR_LIST, delta) //maximum distance to search for businesses
+const boundedViewport = (viewport) => merge(viewport, {
+  latitudeDelta: boundedDelta(viewport.latitudeDelta),
+  longitudeDelta: boundedDelta(viewport.longitudeDelta)
+})
+
+
+const isLocationWithinViewport = (location, viewport) =>
+  Math.abs(location.latitude - viewport.latitude) < viewport.latitudeDelta / 2
+    && Math.abs(location.longitude - viewport.longitude) < viewport.longitudeDelta / 2
 
 const shouldBeDisplayed = (viewport, selectedBusinessId) => (business) =>
-  business.id === selectedBusinessId || isWithinViewport(business, viewport)
+  business.id === selectedBusinessId ||
+    (business.address && isLocationWithinViewport(business.address.location, boundedViewport(viewport)))
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'business/BUSINESS_LIST_RECEIVED':
       let businessesToDisplay = getBusinessesToDisplay(action.businessList, state.mapViewport, state.selectedBusinessId)
       state = merge(state, {
-        businessListDataSource: state.businessListDataSource.cloneWithRows(businessesToDisplay),
         businessesToDisplay,
         businessList: action.businessList,
         businessListTimestamp: new Date()
@@ -174,10 +177,8 @@ const reducer = (state = initialState, action) => {
 
       // businessesToDisplay is defined in the first switch case so we cannot define it here. Blame javascript!
       businessesToDisplay = getBusinessesToDisplay(state.businessList, newViewport, state.selectedBusinessId)
-
       state = merge(state, {
         mapViewport: newViewport,
-        businessListDataSource: state.businessListDataSource.cloneWithRows(businessesToDisplay),
         businessesToDisplay
       })
       break
@@ -202,16 +203,9 @@ const reducer = (state = initialState, action) => {
       }
 
       state = merge(state, {
-        businessListDataSource: state.businessListDataSource.cloneWithRows(businessesToDisplay),
         businessesToDisplay,
         mapViewport: newViewport,
         selectedBusinessId: newSelectedId
-      })
-      break
-
-    case 'business/EXPAND_BUSINESS_LIST':
-      state = merge(state, {
-        businessListExpanded: action.expand
       })
       break
 
@@ -219,7 +213,6 @@ const reducer = (state = initialState, action) => {
       businessesToDisplay = getBusinessesToDisplay(state.businessList, state.mapViewport, action.businessId)
       state = merge(state, {
         selectedBusinessId: action.businessId,
-        businessListDataSource: state.businessListDataSource.cloneWithRows(businessesToDisplay),
         businessesToDisplay
       })
       break
@@ -228,9 +221,7 @@ const reducer = (state = initialState, action) => {
       state = merge(state, {
         businessList: [],
         businessListTimestamp: null,
-        businessListExpanded: false,
-        businessListDataSource: state.businessListDataSource.cloneWithRows([]),
-        businessesToDisplay: [ ]
+        businessesToDisplay: [ ],
       })
       break
   }
