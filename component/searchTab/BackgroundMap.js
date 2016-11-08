@@ -6,7 +6,7 @@ import { Platform, StyleSheet } from 'react-native'
 import _ from 'lodash'
 import * as actions from '../../store/reducer/business'
 
-const MAP_PAN_DEBOUNCE_DURATION = 50
+const MAP_PAN_DEBOUNCE_DURATION = 150
 
 const UNSELECTED_TRADER_IMG = require('./grey_dot.png')
 const SELECTED_TRADER_IMG = require('./selected_trader.png')
@@ -14,11 +14,11 @@ const SELECTED_TRADER_IMG = require('./selected_trader.png')
 class BackgroundMap extends React.Component {
   constructor() {
     super()
-    this.skipNextLocationUpdate = false
+    this.ignoreLocationUpdates = false
   }
 
   updateViewport(...args) {
-    this.skipNextLocationUpdate = true
+    this.ignoreLocationUpdates = true
     this.props.updateMapViewport(...args)
   }
 
@@ -58,11 +58,8 @@ class BackgroundMap extends React.Component {
   }
 
   render() {
-    // on Android devices, if you update the region to the current location while panning
-    // the UI becomes 'jumpy'. For this reason, this 'hack' is used to ensure that
-    // location updates arising from dragging the map are suppressed.
-    const region = this.skipNextLocationUpdate ? undefined : this.props.mapViewport
-    this.skipNextLocationUpdate = false
+    // Prevent the map from 'jumping back' to the last processed location
+    const region = this.ignoreLocationUpdates ? undefined : this.props.mapViewport
 
     let markerArray = undefined
     if (this.props.businessList) {

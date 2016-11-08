@@ -1,10 +1,10 @@
 import color from '../../util/colors'
 import marginOffset from '../../util/marginOffset'
-import style from '../style'
+import commonStyle from '../style'
 import ScreenSizes from '../../util/ScreenSizes'
 
 const MARGIN_SIZE = 10
-const SEARCH_BAR_MARGIN_TOP_IOS = 35
+export const SEARCH_BAR_MARGIN_TOP_IOS = 35
 
 export const SEARCH_BAR_MARGIN = marginOffset(SEARCH_BAR_MARGIN_TOP_IOS)
 export const SEARCH_BAR_HEIGHT = ScreenSizes.isSmall() ? 44 : 48
@@ -13,13 +13,11 @@ export const MAP_HEIGHT = ScreenSizes.isSmall() ? 220 : 275
 const styles = {
   searchTab: {
     list: {
-      position: 'absolute',
-      top: 35 + SEARCH_BAR_HEIGHT,
       left: MARGIN_SIZE,
       right: MARGIN_SIZE,
-      bottom: 0,
       borderRadius: 5,
-      ...style.dropshadow
+      position: 'absolute',
+      ...commonStyle.dropshadow
     },
     searchBar: {
       height: SEARCH_BAR_HEIGHT,
@@ -28,7 +26,7 @@ const styles = {
       marginTop: SEARCH_BAR_MARGIN,
       backgroundColor: color.white,
       flexDirection: 'row',
-      ...style.dropshadow
+      ...commonStyle.dropshadow
     },
   }
 }

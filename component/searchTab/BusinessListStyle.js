@@ -34,6 +34,7 @@ const styles = {
       borderBottomLeftRadius: 2,
       borderBottomRightRadius: 2,
       borderBottomWidth: 0,
+      marginBottom: 10,
     },
     container: {
       flexDirection: 'row',
@@ -77,9 +78,6 @@ const styles = {
       fontSize: 14,
       color: color.gray3,
       marginBottom: 6
-    },
-    selected: {
-      marginBottom: 10
     }
   },
 }
