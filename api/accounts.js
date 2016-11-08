@@ -10,20 +10,22 @@ export const getAccountBalance = (dispatch) =>
   dispatch)
 
 export const getTransactions = (dispatch, additionalParams, successCriteria) =>
-  getPages(PAGE_SIZE,
-    'self/accounts/member/history',
-    merge({
-      fields: [
-        'id',
-        'transactionNumber',
-        'date',
-        'description',
-        'amount',
-        'type',
-        'relatedAccount'
-      ],
-      pageSize: PAGE_SIZE
-    },
-    additionalParams ? additionalParams : {}),
+  getPages({
+    pageSize: PAGE_SIZE,
+    url: 'self/accounts/member/history',
+    params: merge({
+        fields: [
+          'id',
+          'transactionNumber',
+          'date',
+          'description',
+          'amount',
+          'type',
+          'relatedAccount'
+        ],
+        pageSize: PAGE_SIZE
+      },
+      additionalParams ? additionalParams : {}),
     dispatch,
-    successCriteria)
+    successCriteria
+  })
