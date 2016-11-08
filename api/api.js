@@ -77,15 +77,18 @@ export const get = (url, params, dispatch) => {
 // successCriteria - should be a function with takes the result of the get request
 //                   and returns a boolean as to whether the request is complete. It
 //                   will be called on each individual get request.
-export const getPages = (pageSize, url, params, dispatch, successCriteria, pageNo = 0) => {
+export const getPages = (config) => {
+
+  let {pageSize, url, params, dispatch, successCriteria, pageNo = 0} = config
   params = merge(params, { page: pageNo })
+
   return new Promise(function(resolve, reject) {
     get(url, params, dispatch)
       .then(results => {
         if (results.length < pageSize || successCriteria === undefined || successCriteria(results, pageNo)) {
           resolve(results)
         } else {
-          getPages(url, params, dispatch, successCriteria, pageNo + 1)
+          getPages(merge(config, {pageNo: pageNo + 1}))
             .then(nextResults => resolve(results.concat(nextResults)))
             .catch(reject)
         }
