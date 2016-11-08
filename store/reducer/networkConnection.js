@@ -31,9 +31,9 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'networkConnection/ACTION_FAILED':
-      if (!state.failedActionsQueue.find(a => a.type === action.failedActionsQueue.type)) {
+      if (!state.failedActionsQueue.find(a => a.type === action.type)) {
         state = merge(state, {
-          failedActionsQueue: [...state.failedActions, action.failedAction]
+          failedActionsQueue: [...state.failedActionsQueue, action.failedAction]
         })
       }
       break
