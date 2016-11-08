@@ -95,6 +95,8 @@ export const loadBusinessList = (force = false) =>
           dispatch(addFailedAction(loadBusinessList(force)))
           console.warn(err)
         })
+    } else {
+      dispatch(businessListReceived(getState().business.businessList))
     }
   }
 
