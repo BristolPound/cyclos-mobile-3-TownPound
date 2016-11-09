@@ -5,6 +5,7 @@ import {View, Text, TouchableOpacity, Linking } from 'react-native'
 
 import styles from '../profileScreen/ProfileStyle' // Really ought to be a differently named file.
 import ViewFields from './ViewFields'
+import addresses from '../../util/addresses'
 
 // If expanded, display all items and the description.
 // If not expanded, then display only the first two (non-description) items, as well as a link to display any more.
@@ -79,7 +80,7 @@ function getFields(business) {
     fields.push({
       key: 'addressField',
       icon: require('./Address.png'),
-      text: addressToString(business.address)
+      text: addresses.toString(business.address)
     })
   }
   if (business.businessemail) {
@@ -90,12 +91,6 @@ function getFields(business) {
     })
   }
   return fields
-}
-
-function addressToString(address) {
-  return [address.addressLine1, address.addressLine2, address.zip]
-    .filter(a => a)
-    .join(', ')
 }
 
 // In theory the explicit onLinkPress is unnecessary, but the default onLinkPress handling fails with
