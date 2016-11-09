@@ -2,12 +2,12 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { View, TouchableOpacity, TextInput, Keyboard } from 'react-native'
-import DefaultText from './DefaultText'
-import colors from '../util/colors'
-import merge from '../util/merge'
-import * as actions from '../store/reducer/login'
-import PLATFORM from '../util/Platforms'
-import commonStyle from './style'
+import DefaultText from '../DefaultText'
+import colors from '../../util/colors'
+import merge from '../../util/merge'
+import * as actions from '../../store/reducer/login'
+import PLATFORM from '../../util/Platforms'
+import commonStyle from '../style'
 
 const style = {
   loginContainer: {
@@ -71,22 +71,25 @@ class Login extends React.Component {
   }
 
   render() {
-    return (
+    const loginView = (
       <View style={merge(style.loginContainer, { bottom: this.state.keyboardHeight })}>
         <TouchableOpacity style={style.loginButton}
             accessibilityLabel={'Login Button'}
             onPress={() => this.props.login(this.props.username, this.props.password)}>
           <DefaultText style={style.loginButtonText}>Log in</DefaultText>
         </TouchableOpacity>
-        <TextInput style={style.input}
-            accessibilityLabel={'Input Username'}
-            autoFocus={true}
-            onChangeText={(text) => this.props.usernameUpdated(text)}
-            onSubmitEditing={this.selectPasswordField.bind(this)}
-            placeholder={'Username'}
-            placeholderTextColor={colors.gray4}
-            selectTextOnFocus={true}
-            value={this.props.username} />
+        { this.props.hideUsernameInput
+          ? undefined
+          : <TextInput style={style.input}
+              accessibilityLabel={'Input Username'}
+              autoFocus={true}
+              onChangeText={(text) => this.props.usernameUpdated(text)}
+              onSubmitEditing={this.selectPasswordField.bind(this)}
+              placeholder={'Username'}
+              placeholderTextColor={colors.gray4}
+              selectTextOnFocus={true}
+              value={this.props.username} />
+        }
         <View style={style.separator}/>
         <TextInput style={style.input}
             ref={(ref) => this.passwordInputRef = ref}
@@ -98,7 +101,9 @@ class Login extends React.Component {
             secureTextEntry={true}
             selectTextOnFocus={true}
             value={this.props.password} />
-      </View> )
+      </View>
+    )
+    return this.props.loginFormOpen ? loginView : <View/>
   }
 }
 
