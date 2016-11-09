@@ -1,12 +1,12 @@
 import React from 'react'
 import { Animated } from 'react-native'
-import { TAB_BAR_HEIGHT } from './tabbar/TabBar'
-import DefaultText from './DefaultText'
-import color from '../util/colors'
-import merge from '../util/merge'
-import commonStyle from './style'
+import { TAB_BAR_HEIGHT } from '../tabbar/TabBar'
+import DefaultText from '../DefaultText'
+import color from '../../util/colors'
+import merge from '../../util/merge'
+import commonStyle from '../style'
 import { connect } from 'react-redux'
-import LOGIN_STATUSES from '../stringConstants/loginStatus'
+import LOGIN_STATUSES from '../../stringConstants/loginStatus'
 
 const style = {
   container: {

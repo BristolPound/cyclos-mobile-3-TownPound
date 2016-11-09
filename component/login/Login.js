@@ -2,12 +2,12 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { View, TouchableOpacity, TextInput, Keyboard } from 'react-native'
-import DefaultText from './DefaultText'
-import colors from '../util/colors'
-import merge from '../util/merge'
-import * as actions from '../store/reducer/login'
-import PLATFORM from '../util/Platforms'
-import commonStyle from './style'
+import DefaultText from '../DefaultText'
+import colors from '../../util/colors'
+import merge from '../../util/merge'
+import * as actions from '../../store/reducer/login'
+import PLATFORM from '../../util/Platforms'
+import commonStyle from '../style'
 
 const style = {
   loginContainer: {
