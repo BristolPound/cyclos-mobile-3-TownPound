@@ -4,6 +4,7 @@ import ApiError, { UNAUTHORIZED_ACCESS } from '../../api/apiError'
 import { loadAccountDetails } from './account'
 import { loadTransactions, resetTransactions } from './transaction'
 import LOGIN_STATUSES from '../../stringConstants/loginStatus'
+import { deleteSessionToken } from '../../api/api' 
 
 export const LOGGED_OUT = 'login/LOGGED_OUT'
 export const LOGGED_IN = 'login/LOGGED_IN'
@@ -123,7 +124,7 @@ const reducer = (state = initialState, action) => {
       break
     case LOGGED_OUT:
       state = initialState
-      // TODO: clear the session token? clear the transaction data?
+      deleteSessionToken()
       break
     case 'login/OPEN_LOGIN_FORM':
       state = merge(state, {
