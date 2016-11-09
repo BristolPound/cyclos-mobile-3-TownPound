@@ -6,8 +6,7 @@ import devTools from 'remote-redux-devtools'
 import { persistStore, autoRehydrate, createTransform } from 'redux-persist'
 import { AsyncStorage } from 'react-native'
 import _ from 'lodash'
-
-import Tabs from './component/Tabs'
+import Root from './component/Root'
 import { reducer, initialise } from './store/reducer'
 
 class App extends React.Component {
@@ -27,7 +26,7 @@ class App extends React.Component {
     this.store = createStore(reducer, compose(...enhancers))
 
     persistStore(this.store, {
-      whitelist: ['business', 'transaction', 'developerOptions'],
+      whitelist: ['business', 'transaction', 'developerOptions', 'login'],
       storage: AsyncStorage,
       transforms: [
         createTransform(
@@ -39,6 +38,15 @@ class App extends React.Component {
           (state) => _.pick(state, ['transactions', 'monthlyTotalSpent']),
           (state) => state,
           {whitelist: ['transaction']}
+        ),
+        createTransform(
+          (state) => _.pick(state, ['loggedInUsername']),
+          (state) => ({
+            // this 'auto fills' the username field 
+            username: state.loggedInUsername,
+            loggedInUsername: state.loggedInUsername
+          }),
+          {whitelist: ['login']}
         )
       ]
     }, () => {
@@ -54,7 +62,7 @@ class App extends React.Component {
   render() {
     return (
       <Provider store={this.store}>
-        <Tabs />
+        <Root />
       </Provider>
     )
   }
