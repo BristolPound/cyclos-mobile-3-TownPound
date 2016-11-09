@@ -14,16 +14,18 @@ import styles from './ViewFieldsStyle'
 const ViewFields = ({fields}) =>
     <View style={styles.container}>
         {fields.map((field) => (
+            // 'key' is magic so isn't passed down into the method.
+            // Hence define a duplicate accessibilityLabel.
             field.text ?
-                <Field key={field.key} icon={field.icon} text={field.text} />
+                <Field key={field.key} icon={field.icon} text={field.text} accessibilityLabel={field.key}/>
                 : null
         ))}
     </View>
 
-const Field = ({icon, text}) =>
+const Field = ({icon, text, accessibilityLabel}) =>
     <View style={styles.field}>
         <Image style={styles.image} source={icon}/>
-        <View style={styles.item}>
+        <View style={styles.item} accessibilityLabel={accessibilityLabel}>
             <DefaultText style={styles.text}>{text}</DefaultText>
         </View>
     </View>

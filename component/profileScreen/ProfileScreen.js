@@ -1,12 +1,11 @@
 import React from 'react'
 import { View, Image, TouchableHighlight, ListView, Dimensions } from 'react-native'
 import DefaultText from '../DefaultText'
-import Price from '../Price'
 import merge from '../../util/merge'
 import ProfileImage from '../profileImage/ProfileImage'
-import {format} from '../../util/date'
 import color from '../../util/colors'
 import styles from './ProfileStyle'
+import TransactionItem from './TransactionItem'
 
 const buttonHeight= 60
 
@@ -15,7 +14,7 @@ const ProfileScreen = (props) =>
       style= {{flex: 0, maxHeight: Dimensions.get('window').height - buttonHeight}}
       renderHeader={renderHeader(props)}
       dataSource={props.dataSource}
-      renderRow={props.renderRow || renderRow}
+      renderRow={props.renderRow || TransactionItem}
       renderSeparator={renderSeparator}
       renderSectionHeader={renderSectionHeader}/>
 
@@ -46,19 +45,6 @@ const renderCloseExpandIcons = (props) =>
         source={require('./Close.png')}
       />
     </TouchableHighlight>
-  </View>
-
-const renderRow = (transaction) =>
-  <View style={styles.list.rowContainer} key={transaction.transactionNumber}>
-    <View style={styles.rowLayout}>
-      <DefaultText style={styles.list.date}>{format(transaction.date, 'DD MMMM')}</DefaultText>
-      <DefaultText style={styles.list.transactionNumber}>{transaction.transactionNumber}</DefaultText>
-      <Price
-        style={styles.list.price}
-        size={20}
-        smallFontSize={16}
-        price={transaction.amount}/>
-    </View>
   </View>
 
 const renderSeparator = (sectionID, rowID) =>

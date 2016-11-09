@@ -1,110 +1,125 @@
 import React from 'react'
 
 import HTMLView from 'react-native-htmlview'
-import {View, Text, TouchableOpacity} from 'react-native'
+import {View, Text, TouchableOpacity, Linking } from 'react-native'
 
 import styles from '../profileScreen/ProfileStyle' // Really ought to be a differently named file.
 import ViewFields from './ViewFields'
+import addresses from '../../util/addresses'
 
 // If expanded, display all items and the description.
 // If not expanded, then display only the first two (non-description) items, as well as a link to display any more.
 class BusinessDetails extends React.Component {
 
-    constructor(props) {
-        super(props)
-        this.state = { isExpanded: props.isExpanded }
-        this.detailsFields = this.getFields(props.business)
-        this.summaryFields = this.detailsFields.splice(0,2)
-        this.description = props.business.description
+  constructor(props) {
+    super(props)
+    this.state = {isExpanded: props.isExpanded}
+  }
+
+  render() {
+    const fields = getFields(this.props.business)
+    const expanded = this.renderExpandedDetails(fields, this.props.business.description)
+
+    if (fields.length > 2) {
+      fields.length = 2
     }
 
-    render () {
-        return <View>
-            <ViewFields fields={this.summaryFields}/>
-            {this.renderDetails()}
-            {this.renderDescription()}
-            {this.renderExpander()}
+    return <View>
+      {renderFields(fields)}
+      { expanded }
+    </View>
+  }
+
+
+  // if there's a description render it either as html or a view details button.
+  // Ironically the details to be displayed is the description, not the business details (address etc.)
+  // that are always displayed.
+  renderExpandedDetails(fields, description) {
+    let expanded = null
+    if (this.state.isExpanded) {
+      const expandedFields = (fields.length > 2) ?
+        fields.slice(2) : []
+      expanded =
+        <View>
+          {renderFields(expandedFields)}
+          {renderDescription(description)}
         </View>
+    } else if (fields.length > 2 || description) {
+      // there are details that could be expanded.
+      expanded = renderExpander(() => this.expandDetails())
     }
+    // else no details to expand.
+    return expanded
+  }
 
-    // if there's a description render it either as html or a view details button.
-    // Ironically the details to be displayed is the description, not the business details (address etc.)
-    // that are always displayed.
-    renderDetails() {
-        return (this.state.isExpanded && this.detailsFields.length > 0) ?
-            <View>
-                <View style={styles.separator}/>
-                <ViewFields fields={this.detailsFields}/>
-            </View>
-            : null
-    }
+  expandDetails() {
+    this.setState({isExpanded: true})
+  }
+}
 
-    renderDescription() {
-        return (this.state.isExpanded && this.description) ?
-            <View>
-                <View style={styles.separator}/>
-                <View style={styles.businessDetails.description}>
-                    <HTMLView value={this.description}/>
-                </View>
-            </View>
-            : null
-    }
+function getFields(business) {
+  const fields = []
 
-    renderExpander() {
-        return (!this.state.isExpanded && (this.detailsFields.length > 0 || this.description)) ?
-            <View>
-                <View style={styles.separator}/>
-                <TouchableOpacity onPress={() => this.setState({isExpanded: true})}>
-                    <View><Text style={styles.minorButton.text}>View Details</Text></View>
-                </TouchableOpacity>
-            </View>
-            : null
-    }
+  // opening hours and phone are the priorities
+  // TODO: The businessopeningtimes field isn't in the dev database so hasn't been tested.
+  if (business.openingTimes) {
+    fields.push({
+      key: 'openingField',
+      icon: require('./Opening times.png'),
+      text: business.businessopeningtimes
+    })
+  }
+  if (business.businessphone) {
+    fields.push({
+      key: 'phoneField',
+      icon: require('./Phone.png'),
+      text: business.businessphone
+    })
+  }
+  if (business.address) {
+    fields.push({
+      key: 'addressField',
+      icon: require('./Address.png'),
+      text: addresses.toString(business.address)
+    })
+  }
+  if (business.businessemail) {
+    fields.push({
+      key: 'emailField',
+      icon: require('./Email.png'),
+      text: business.businessemail
+    })
+  }
+  return fields
+}
 
-    addressToString(address) {
-        const addressLines = []
-        if (address) {
-            if (address.addressLine1) { addressLines.push(address.addressLine1) }
-            if (address.addressLine2) { addressLines.push(address.addressLine2) }
-            if (address.zip) { addressLines.push(address.zip) }
-        }
-        return addressLines.join(', ')
-    }
+// In theory the explicit onLinkPress is unnecessary, but the default onLinkPress handling fails with
+// 'this._validateURL is not a function'
+function renderDescription(description) {
+  return (description) ?
+    <View>
+      <View style={styles.separator}/>
+      <View style={styles.businessDetails.description} accessibilityLabel='Business Description'>
+        <HTMLView value={description} onLinkPress={(url) => Linking.openURL(url)}/>
+      </View>
+    </View>
+    : null
+}
 
-    getFields(business) {
-        const fields = []
+function renderFields(fields) {
+  return (fields.length > 0) ? <ViewFields fields={fields}/> : null
+}
 
-        // opening hours and phone are the priorities
-        if (business.openingTimes) {
-            fields.push({
-                key: 'openingField',
-                icon: require('./Opening times.png'),
-                text: business.businessopeningtimes // TODO: FIND THIS!
-            })
-        }
-        if (business.businessphone) {
-            fields.push({
-                key: 'phoneField',
-                icon: require('./Phone.png'),
-                text: business.businessphone
-            })
-        }
-        if (business.address) {
-            fields.push({
-                key: 'addressField',
-                icon: require('./Address.png'),
-                text: this.addressToString(business.address)
-            })
-        }
-        if (business.businessemail) {
-            fields.push({
-                key: 'emailField',
-                icon: require('./Email.png'),
-                text: business.businessemail
-            })
-        }
-        return fields
-    }
+function renderExpander(expandDetailsFn) {
+  return <View>
+    <View style={styles.separator}/>
+    <TouchableOpacity
+      onPress={expandDetailsFn}
+      accessiblityLabel='View Full Details'
+    >
+      <View><Text style={styles.minorButton.text}>View Details</Text></View>
+    </TouchableOpacity>
+  </View>
 }
 
 export default BusinessDetails
