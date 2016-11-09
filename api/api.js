@@ -8,6 +8,10 @@ import {loggedOut} from '../store/reducer/login'
 const BASE_URL = 'https://bristol-stage.community-currency.org/cyclos/api/'
 let globalSessionToken = ''
 
+export const deleteSessionToken = () => {
+  globalSessionToken = ''
+}
+
 export const setBaseUrl = newUrl => {
   BASE_URL = newUrl
 }
