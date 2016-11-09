@@ -2,8 +2,8 @@ import React from 'react'
 import { View, TouchableHighlight, StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { openLoginForm } from '../store/reducer/login'
-import color from '../util/colors'
+import { openLoginForm } from '../../store/reducer/login'
+import color from '../../util/colors'
 
 const style =  {
   visible: {

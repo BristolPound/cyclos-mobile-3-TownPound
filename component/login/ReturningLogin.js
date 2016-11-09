@@ -1,12 +1,13 @@
 import React from 'react'
 import { View, TouchableHighlight, StyleSheet, Animated,  Easing } from 'react-native'
 import { connect } from 'react-redux'
-import DefaultText from './DefaultText'
-import colors from '../util/colors'
-import merge from '../util/merge'
-import commonStyle from './style.js'
+import DefaultText from '../DefaultText'
+import colors from '../../util/colors'
+import marginOffset from '../../util/marginOffset'
+import merge from '../../util/merge'
+import commonStyle from './../style.js'
 import { bindActionCreators } from 'redux'
-import * as actions from '../store/reducer/login'
+import * as actions from '../../store/reducer/login'
 import Login from './Login'
 import LoginOverlay from './LoginOverlay'
 import LoginStatus from './LoginStatus'
@@ -35,7 +36,7 @@ const style = {
     welcomeText: {
       color: colors.white,
       fontSize: 20,
-      marginTop: 264,
+      marginTop: marginOffset(254),
       marginBottom: 10,
       fontSize: 26,
       fontFamily: commonStyle.museo300
@@ -128,7 +129,7 @@ class ReturningLogin  extends React.Component {
               {translateX: this.state.backgroundOffset}
             ]
           })}
-          source={require('./background.jpg')}/>
+          source={require('../background.jpg')}/>
         <View style={style.welcome.container}>
           <DefaultText style={style.welcome.welcomeText}>Welcome back</DefaultText>
           <DefaultText style={style.welcome.usernameText}>{this.props.loggedInUsername}</DefaultText>
