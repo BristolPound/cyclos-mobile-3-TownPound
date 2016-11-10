@@ -1,13 +1,13 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { View, TouchableOpacity, TextInput, Keyboard } from 'react-native'
+import { View, TouchableOpacity, TextInput } from 'react-native'
 import DefaultText from '../DefaultText'
 import colors from '../../util/colors'
 import merge from '../../util/merge'
 import * as actions from '../../store/reducer/login'
-import PLATFORM from '../../util/Platforms'
 import commonStyle from '../style'
+import KeyboardComponent from '../common/KeyboardComponent'
 
 const style = {
   loginContainer: {
@@ -41,29 +41,9 @@ const style = {
   }
 }
 
-class Login extends React.Component {
+class Login extends KeyboardComponent {
   constructor() {
     super()
-    this.state = { keyboardHeight: 0 }
-    // On iOS the keyboard is overlaid on top of the content,
-    // while on android everything is moved up to make space
-    if (PLATFORM.isIOS()) {
-      this.keyboardShowListener = Keyboard.addListener(
-        'keyboardDidShow',
-        (e) => this.setState({ keyboardHeight: e.endCoordinates.height })
-      )
-      this.keyboardHideListener = Keyboard.addListener(
-        'keyboardDidHide',
-        () => this.setState({ keyboardHeight: 0 })
-      )
-    }
-  }
-
-  componentWillUnmount() {
-    if (PLATFORM.isIOS()) {
-      this.keyboardShowListener.remove()
-      this.keyboardHideListener.remove()
-    }
   }
 
   selectPasswordField() {
