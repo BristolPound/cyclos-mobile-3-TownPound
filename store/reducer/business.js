@@ -7,8 +7,6 @@ import { getBusinesses, getBusinessProfile } from '../../api/users'
 
 const BRISTOL_CITY_CENTRE = { latitude: 51.454513, longitude:  -2.58791 }
 
-const MAX_DELTA_FOR_LIST = 0.03
-
 const BUSINESS_LIST_MAX_LENGTH = 50
 
 const initialState = {
@@ -119,20 +117,13 @@ const orderBusinessList = (viewport, selectedBusinessId) => (business) => {
   return Number.MAX_VALUE
 }
 
-const boundedDelta = (delta) => Math.min(MAX_DELTA_FOR_LIST, delta) //maximum distance to search for businesses
-const boundedViewport = (viewport) => merge(viewport, {
-  latitudeDelta: boundedDelta(viewport.latitudeDelta),
-  longitudeDelta: boundedDelta(viewport.longitudeDelta)
-})
-
-
 const isLocationWithinViewport = (location, viewport) =>
   Math.abs(location.latitude - viewport.latitude) < viewport.latitudeDelta / 2
     && Math.abs(location.longitude - viewport.longitude) < viewport.longitudeDelta / 2
 
 const shouldBeDisplayed = (viewport, selectedBusinessId) => (business) =>
   business.id === selectedBusinessId ||
-    (business.address && isLocationWithinViewport(business.address.location, boundedViewport(viewport)))
+    (business.address && isLocationWithinViewport(business.address.location, viewport))
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
