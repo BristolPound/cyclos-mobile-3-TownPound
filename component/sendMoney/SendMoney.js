@@ -8,12 +8,20 @@ import * as actions from '../../store/reducer/sendMoney'
 import merge from '../../util/merge'
 import { LOGIN_STATUSES } from '../../store/reducer/login'
 
+// In time this can be expanded to store the functions for each state.
+const Page = {
+  Ready: 0,
+  EnterAmount: 1,
+  MakingPayment: 2,
+  PaymentComplete: 3,
+}
+
 class SendMoney extends React.Component {
 
   constructor() {
     super()
     this.state = {
-      inputPage: 0,
+      inputPage: Page.Ready,
     }
   }
 
@@ -33,13 +41,14 @@ class SendMoney extends React.Component {
     }
 
     switch (this.state.inputPage){
-      case 0:
+      case Page.Ready: // Initial state, ready to begin
         inputProps = merge(inputProps, {
           buttonText: 'Send Money',
           onButtonPress: () => { this.props.updatePayee(this.props.payeeShortDisplay); this.nextPage() },
+          description: 'Ready',
         })
         break
-      case 1:
+      case Page.EnterAmount: // provide amount
         inputProps = merge(inputProps, {
           buttonText: 'Pay ' + this.props.payeeDisplay,
           onButtonPress: () => { this.props.sendTransaction(); this.nextPage() },
@@ -51,18 +60,21 @@ class SendMoney extends React.Component {
           },
           invalidInput: isNaN(Number(this.props.amount)) || Number(this.props.amount) > this.props.balance || Number(this.props.amount) <= 0,
           textBelowInput: 'Current Balance: ' + this.props.balance,
+          description: 'Enter Amount',
         })
         break
-      case 2:
+      case Page.MakingPayment: // in progress
         inputProps = merge(inputProps, {
           buttonText: 'Making Payment',
           loading: true,
+          description: 'Making Payment',
         })
         break
-      case 3:
+      case Page.PaymentComplete: // payment completed
         inputProps = merge(inputProps, {
           buttonText: 'Payment: ' + (this.props.success ? 'Successful' : ('Failed.' + this.props.message)),
           onButtonPress: () => { this.props.resetForm(); this.nextPage() },
+          description: 'Payment Complete',
         })
         break
     }
