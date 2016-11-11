@@ -94,6 +94,7 @@ class Login extends React.Component {
         <TextInput style={style.input}
             ref={(ref) => this.passwordInputRef = ref}
             accessibilityLabel={'Input Password'}
+            autoFocus={this.props.hideUsernameInput}
             onChangeText={(text) => this.props.passwordUpdated(text)}
             onSubmitEditing={() => this.props.login(this.props.username, this.props.password)}
             placeholder={'Password'}
