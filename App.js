@@ -42,9 +42,10 @@ class App extends React.Component {
         createTransform(
           (state) => _.pick(state, ['loggedInUsername']),
           (state) => ({
-            // this 'auto fills' the username field 
+            // this 'auto fills' the username field
             username: state.loggedInUsername,
-            loggedInUsername: state.loggedInUsername
+            loggedInUsername: state.loggedInUsername,
+            password: __DEV__ && state.loggedInUsername === 'testmember' ? 'testing123' : ''
           }),
           {whitelist: ['login']}
         )
