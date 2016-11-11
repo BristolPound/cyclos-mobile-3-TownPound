@@ -6,7 +6,7 @@ import color from '../../util/colors'
 import merge from '../../util/merge'
 import commonStyle from '../style'
 import { connect } from 'react-redux'
-import LOGIN_STATUSES from '../../stringConstants/loginStatus'
+import { LOGIN_STATUSES } from '../../store/reducer/login'
 
 const style = {
   container: {
