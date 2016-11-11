@@ -13,7 +13,7 @@ export const dimensions = (value) => ({
 const style = {
   shadow: {
     elevation: 5,
-    shadowColor: '#000',
+    shadowColor: 'black',
     shadowOpacity: 0.2,
     shadowRadius: 3,
     shadowOffset: {
@@ -22,12 +22,11 @@ const style = {
     }
   },
   dropshadow: {
-    shadowColor: color.gray2,
+    shadowColor: 'black',
     shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.26,
-    shadowRadius: 4,
-    backgroundColor: color.white,
-    elevation: 5 //TODO: check this
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 7
   },
   font: {
     museo700,

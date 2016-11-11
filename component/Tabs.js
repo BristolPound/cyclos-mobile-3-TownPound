@@ -58,7 +58,6 @@ const WithNetworkConnection = (props) =>
     <NetworkConnection/>
   </View>
 
-
 const Tabs = (props) =>
   <View style={style.flex}>
     <ScrollableTabView
