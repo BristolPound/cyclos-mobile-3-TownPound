@@ -1,12 +1,14 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { View, Image, StyleSheet, ListView, TouchableHighlight } from 'react-native'
+import { View, Image, StyleSheet, ListView, TouchableHighlight, Dimensions } from 'react-native'
 import DefaultText, { baselineDeltaForFonts } from './DefaultText'
 import ProfileImage from './profileImage/ProfileImage'
 import colors from './../util/colors'
 import commonStyle, { dimensions } from './style'
 import * as actions from '../store/reducer/login'
+import marginOffset from '../util/marginOffset'
+import ScreenSizes from '../util/ScreenSizes'
 
 const styles = {
   container: {
@@ -20,13 +22,13 @@ const styles = {
   sectionHeader: {
     container: {
       ...commonStyle.sectionHeader.container,
-      height: 42
+      height: 34
     },
     text: commonStyle.sectionHeader.text
   },
   row: {
     container: {
-      height: 40,
+      height: ScreenSizes.isSmall() ? 40 : 42,
       flexDirection: 'row',
       alignItems: 'center',
       paddingLeft: 14,
@@ -57,10 +59,13 @@ const styles = {
   },
   header: {
     container: {
-      alignItems: 'center'
+      alignItems: 'center',
+      height: marginOffset(236)
     },
     backgroundImage: {
-      ...StyleSheet.absoluteFillObject
+      height: marginOffset(236),
+      width: Dimensions.get('window').width,
+      position: 'absolute'
     },
     businessLogo: {
       ...dimensions(84),
@@ -112,7 +117,7 @@ const Header = (props) =>
     <Image
       source={require('./profileScreen/gorillaWithBackground.png')}
       style={styles.header.backgroundImage}
-      resizeMode='contain'/>
+      resizeMode='cover'/>
     <ProfileImage
       img={props.image}
       style={styles.header.businessLogo}

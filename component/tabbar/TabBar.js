@@ -22,7 +22,12 @@ const style = {
     height: TAB_BAR_HEIGHT,
     flexDirection: 'row',
     alignItems: 'stretch',
-    ...commonStyle.shadow
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'white',
+    ...commonStyle.dropshadow
   },
   separator: {
     height: TAB_BAR_HEIGHT / 2,
