@@ -52,7 +52,11 @@ const maybeDispatchFailure = dispatch => err => {
   if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
     dispatch(loggedOut())
   } else {
-    dispatch(connectivityChanged(false))
+    // TODO: It would be best to have some sort of error-handling system for unexpected errors.
+    // Previously an action was dispatched to say there is no internet, but usually that was not the cause.
+    // LoginStatus could be refactored to become a general status message handler.
+    // Then we could pipe the unknown errors through to the user, or just display 'unknown error'
+    console.warn(err)
   }
   throw err
 }
