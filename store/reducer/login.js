@@ -3,11 +3,17 @@ import { authenticate } from '../../api/api'
 import ApiError, { UNAUTHORIZED_ACCESS } from '../../api/apiError'
 import { loadAccountDetails } from './account'
 import { loadTransactions, resetTransactions } from './transaction'
-import LOGIN_STATUSES from '../../stringConstants/loginStatus'
-import { deleteSessionToken } from '../../api/api' 
+import { deleteSessionToken } from '../../api/api'
 
 export const LOGGED_OUT = 'login/LOGGED_OUT'
 export const LOGGED_IN = 'login/LOGGED_IN'
+
+export const LOGIN_STATUSES = {
+  LOGGED_IN: 'LOGGED_IN',
+  LOGGED_OUT: 'LOGGED_OUT',
+  LOGIN_FAILED: 'LOGIN_FAILED',
+  LOGIN_IN_PROGRESS: 'LOGIN_IN_PROGRESS'
+}
 
 const initialState = {
   loginStatus: LOGIN_STATUSES.LOGGED_OUT,
