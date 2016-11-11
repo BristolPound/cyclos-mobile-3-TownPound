@@ -28,7 +28,8 @@ export const calculateMonthlyTotalSpent = (sortedTransactions) => {
     const transactionDate = new Date(transaction.date)
     // TODO: this could be optimised
     const total = totals.find(total => isSameMonth(total.month, transactionDate))
-    total.total += Number(transaction.amount)
+    // Only interested in money spent, not received - hence Math.min
+    total.total += Math.min(Number(transaction.amount), 0)
   })
 
   return totals
