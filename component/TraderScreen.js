@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import * as actions from '../store/reducer/navigation'
 import modalState from '../store/reducer/modalState'
 import styles from './profileScreen/ProfileStyle'
+import commonStyle from './style'
 import ProfileScreen from './profileScreen/ProfileScreen'
 import BusinessDetails from './businessDetails/BusinessDetails'
 import { View, ActivityIndicator } from 'react-native'
@@ -38,7 +39,7 @@ const TraderScreen = ({ trader, transactionsDataSource, showModal }) =>
     </View>
 
 const renderHeaderExtension = (trader, transactionsDataSource) => () =>
-  <View style={styles.dropshadow}>
+  <View style={commonStyle.dropshadow}>
     <BusinessDetails business={trader} isExpanded={transactionsDataSource.getRowCount() === 0}/>
     { trader.profilePopulated
       ? undefined
