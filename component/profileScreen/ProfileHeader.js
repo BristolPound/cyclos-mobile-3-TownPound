@@ -9,9 +9,9 @@ import styles from './ProfileStyle'
 const ProfileHeader = (props) =>
   <View style={styles.flex}>
     <Image source={require('./gorilla.png')} style={styles.header.backgroundImage} />
-    { props.isTabItem
+    { props.isTabItem // TODO: No reference in the code to this.
       ? <View style={styles.header.topSpace} />
-      : renderCloseExpandIcons(props)}
+      : renderCloseIcon(props)}
     <ProfileImage
       img={props.image}
       style={styles.header.businessLogo}
@@ -20,7 +20,7 @@ const ProfileHeader = (props) =>
     <DefaultText style={styles.header.subtitle}>{props.username}</DefaultText>
   </View>
 
-const renderCloseExpandIcons = (props) =>
+const renderCloseIcon = (props) =>
   <View style={styles.rowLayout}>
     <TouchableHighlight
       onPress={props.onPressClose}
