@@ -9,7 +9,7 @@ import { loadTransactions, resetTransactions } from '../store/reducer/transactio
 import DefaultText from './DefaultText'
 import { showModal } from '../store/reducer/navigation'
 import modalState from '../store/reducer/modalState'
-import LOGIN_STATUSES from '../stringConstants/loginStatus'
+import { LOGIN_STATUSES } from '../store/reducer/login'
 import { selectServer, SERVER } from '../store/reducer/developerOptions'
 
 const INFO_FONT_SIZE = 14

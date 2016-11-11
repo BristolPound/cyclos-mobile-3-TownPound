@@ -6,7 +6,7 @@ import { View } from 'react-native'
 import InputComponent from './InputComponent'
 import * as actions from '../../store/reducer/sendMoney'
 import merge from '../../util/merge'
-import LOGIN_STATUSES from '../../stringConstants/loginStatus'
+import { LOGIN_STATUSES } from '../../store/reducer/login'
 
 class SendMoney extends React.Component {
 

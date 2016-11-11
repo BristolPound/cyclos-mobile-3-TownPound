@@ -20,7 +20,7 @@ import PersonScreen from './PersonScreen'
 import DeveloperOptions from './DeveloperOptions'
 import color from '../util/colors'
 import merge from '../util/merge'
-import LOGIN_STATUSES from '../stringConstants/loginStatus'
+import { LOGIN_STATUSES } from '../store/reducer/login'
 
 const style = {
   tabs: {
