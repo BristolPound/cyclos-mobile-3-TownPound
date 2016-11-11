@@ -20,7 +20,7 @@ const ProfileScreen = (props) =>
 
 const renderHeader = props => () =>
   <View style={styles.flex}>
-    <View style={styles.dropshadow}>
+    <View style={styles.flex}>
       <Image source={require('./gorilla.png')} style={styles.header.backgroundImage} />
         { props.isTabItem
           ? <View style={styles.header.topSpace} />

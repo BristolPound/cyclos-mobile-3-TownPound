@@ -27,9 +27,7 @@ const SearchTab = (props) => {
   return (
     <View style={{flex: 1}}>
       <BackgroundMap/>
-      <View style={styles.searchTab.searchBar}>
-        <View style={styles.searchTab.dropshadow}/>
-      </View>
+      <View style={styles.searchTab.searchBar}/>
       <ScrollingExpandPanel
           style={styles.searchTab.list}
           topOffsetWhenExpanded={BUSINESS_LIST_TOP_OFFSET + maxExpandedHeight - expandedHeight}

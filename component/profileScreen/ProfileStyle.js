@@ -14,13 +14,6 @@ const styles = {
     borderTopColor: colors.gray5,
     borderTopWidth: StyleSheet.hairlineWidth
   },
-  dropshadow: {
-    shadowColor: colors.gray,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 10,
-    shadowRadius: 2,
-    elevation: 5 //TODO: check this
-  },
   header: {
     backgroundImage: {
       flex: 1,

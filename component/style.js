@@ -12,21 +12,24 @@ export const dimensions = (value) => ({
 
 const style = {
   shadow: {
-    elevation: 5,
     shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
     shadowOffset: {
       width: 0,
       height: 0
-    }
+    },
+    elevation: 30,
   },
   dropshadow: {
     shadowColor: 'black',
-    shadowOffset: {width: 0, height: 1},
     shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 7
+    shadowRadius: 4,
+    shadowOffset: {
+      width: 0,
+      height: 1
+    },
+    elevation: 30
   },
   font: {
     museo700,
