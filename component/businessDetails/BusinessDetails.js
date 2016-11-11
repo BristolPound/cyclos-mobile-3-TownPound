@@ -60,8 +60,17 @@ class BusinessDetails extends React.Component {
 function getFields(business) {
   const fields = []
 
-  // opening hours and phone are the priorities
+  // Order of display should be:
+  //    access point*, special offer*, address, opening times*, phone number, email address
+  // Note: access point and special offer aren't supported yet.
   // TODO: The businessopeningtimes field isn't in the dev database so hasn't been tested.
+  if (business.address) {
+    fields.push({
+      key: 'addressField',
+      icon: require('./Address.png'),
+      text: addresses.toString(business.address)
+    })
+  }
   if (business.openingTimes) {
     fields.push({
       key: 'openingField',
@@ -74,13 +83,6 @@ function getFields(business) {
       key: 'phoneField',
       icon: require('./Phone.png'),
       text: business.businessphone
-    })
-  }
-  if (business.address) {
-    fields.push({
-      key: 'addressField',
-      icon: require('./Address.png'),
-      text: addresses.toString(business.address)
     })
   }
   if (business.businessemail) {
