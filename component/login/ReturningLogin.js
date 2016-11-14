@@ -10,7 +10,7 @@ import { bindActionCreators } from 'redux'
 import * as actions from '../../store/reducer/login'
 import Login from './Login'
 import LoginOverlay from './LoginOverlay'
-import LoginStatus from './LoginStatus'
+import StatusMessage from '../StatusMessage'
 
 const style = {
   container: {
@@ -155,7 +155,7 @@ class ReturningLogin  extends React.Component {
         }
         <LoginOverlay/>
         <Login hideUsernameInput={true}/>
-        <LoginStatus/>
+        <StatusMessage/>
       </View>
     )
   }

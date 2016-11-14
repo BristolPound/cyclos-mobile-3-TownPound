@@ -4,6 +4,8 @@ import ApiError, { UNAUTHORIZED_ACCESS } from '../../api/apiError'
 import { loadAccountDetails } from './account'
 import { loadTransactions, resetTransactions } from './transaction'
 import { deleteSessionToken } from '../../api/api'
+import { updateStatus } from './statusMessage'
+import color from '../../util/colors'
 
 export const LOGGED_OUT = 'login/LOGGED_OUT'
 export const LOGGED_IN = 'login/LOGGED_IN'
@@ -11,14 +13,12 @@ export const LOGGED_IN = 'login/LOGGED_IN'
 export const LOGIN_STATUSES = {
   LOGGED_IN: 'LOGGED_IN',
   LOGGED_OUT: 'LOGGED_OUT',
-  LOGIN_FAILED: 'LOGIN_FAILED',
   LOGIN_IN_PROGRESS: 'LOGIN_IN_PROGRESS'
 }
 
 const initialState = {
   loginStatus: LOGIN_STATUSES.LOGGED_OUT,
   loginFormOpen: false,
-  failureMessage: '',
   // username / password state backs the login form
   username: '',
   password: '',
@@ -32,11 +32,6 @@ export const loginInProgress = () => ({
 
 export const loggedIn = () => ({
   type: LOGGED_IN
-})
-
-export const loginFailed = (message) => ({
-  type: 'login/LOGIN_FAILED',
-  message
 })
 
 export const usernameUpdated = (username) => ({
@@ -76,19 +71,19 @@ export const login = (username, password) =>
               dispatch(loggedOut())
               break
             case 'invalidClient':
-              dispatch(loginFailed('Username or password are incorrect'))
+              dispatch(updateStatus('Username or password are incorrect', color.orange))
               break
             case 'login':
               const errMessage = err.json.passwordStatus==='temporarilyBlocked'
                 ? 'Account temporarily blocked'
                 : 'Your details are incorrect'
-              dispatch(loginFailed(errMessage))
+              dispatch(updateStatus(errMessage, color.orange))
               break
             default:
-              dispatch(loginFailed('Server error'))
+              dispatch(updateStatus('Server error', color.orange))
           }
         } else {
-          dispatch(loginFailed('Network connection error'))
+          dispatch(updateStatus('Unknown error - check your details', color.orange))
         }
       })
   }
@@ -119,7 +114,6 @@ const reducer = (state = initialState, action) => {
     case 'login/LOGIN_FAILED':
       state = merge(state, {
         loginStatus: LOGIN_STATUSES.LOGIN_FAILED,
-        failureMessage: action.message
       })
       break
     case 'login/LOGIN_IN_PROGRESS':

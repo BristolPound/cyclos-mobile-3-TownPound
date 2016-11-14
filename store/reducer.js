@@ -10,6 +10,7 @@ import sendMoney from './reducer/sendMoney'
 import account from './reducer/account'
 import networkConnection, {connectivityChanged} from './reducer/networkConnection'
 import developerOptions from './reducer/developerOptions'
+import statusMessage from './reducer/statusMessage'
 import { setBaseUrl } from '../api/api'
 
 export const reducer = combineReducers({
@@ -22,6 +23,7 @@ export const reducer = combineReducers({
   account,
   networkConnection,
   developerOptions,
+  statusMessage
 })
 
 //TODO: Handle GPS errors
