@@ -18,7 +18,7 @@ const style = {
     shadowOffset: {
       width: 0,
       height: 0
-    },
+  },
     elevation: 30,
   },
   dropshadow: {
@@ -28,7 +28,7 @@ const style = {
     shadowOffset: {
       width: 0,
       height: 1
-    },
+  },
     elevation: 30
   },
   font: {

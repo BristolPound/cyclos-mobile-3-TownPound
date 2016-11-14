@@ -3,45 +3,30 @@ import ScreenSizes from '../../util/ScreenSizes'
 import {dimensions} from '../style'
 
 export const ROW_HEIGHT = ScreenSizes.isSmall() ? 50 : 60
+export const BUSINESS_LIST_SELECTED_GAP = 10
 
 const styles = {
-  // The business list can be selected or otherwise.
-  expandHeader: {
-    container: {
-      height: 40,
-      backgroundColor: 'white',
-      borderWidth: 1,
-      borderColor: color.gray5,
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: 5
-    },
-    topBorderCurve: {
-      borderTopLeftRadius: 2,
-      borderTopRightRadius: 2,
-      borderBottomRightRadius: 0,
-      borderBottomLeftRadius: 0
-    },
-    noBorderCurve: {
-      borderRadius: 0
-    }
-  },
   listItem: {
     // to be merged with container.
     // If the container is unselected, then it's adjacent, so needs a separator.
     // If the container is selected then we need to round it to match whatever is above it.
     containerSelected: {
-      borderBottomLeftRadius: 2,
-      borderBottomRightRadius: 2,
-      borderBottomWidth: 0,
-      marginBottom: 10,
+      borderRadius: 2,
+      borderTopWidth: 0,
+    },
+    containerTopOfList: {
+      borderTopLeftRadius: 2,
+      borderTopRightRadius: 2,
+      borderTopWidth: 0,
     },
     container: {
       flexDirection: 'row',
-      borderBottomWidth: 1,
-      borderBottomColor: color.offWhite,
-      backgroundColor: color.white,
+      borderTopWidth: 1,
+      borderTopColor: color.offWhite,
       height: ROW_HEIGHT,
+    },
+    containerHighlighted: {
+      backgroundColor: color.offWhite
     },
     // The container contains a color coded margin, an image and a title.
     status: {
@@ -49,6 +34,11 @@ const styles = {
     },
     statusSelected: {
       backgroundColor: color.bristolBlue,
+      borderBottomLeftRadius: 2,
+      borderTopLeftRadius: 2
+    },
+    statusTopOfList: {
+      borderTopLeftRadius: 2
     },
     contents: {
       flex: 1,

@@ -15,19 +15,6 @@ const INERTIA = 1/2
 // FRICTION determines how long the momentum will continue
 const FRICTION = 0.003
 
-// distance moved before a tap becomes a drag
-const MAX_TAP_DRAG = 1
-
-// for visual feedback on pressable stuff
-const highlightStyle = {
-  position: 'absolute',
-  backgroundColor: 'lightsteelblue',
-  opacity: 0.3,
-  flex: 1,
-  left: 0,
-  right: 0
-}
-
 class ScrollingExpandPanel extends React.Component {
   constructor(props) {
     super()
@@ -52,9 +39,6 @@ class ScrollingExpandPanel extends React.Component {
       // The value of currentInnerTopOffset is simply -1 times the 'scroll distance' of the
       // inner `View` relative to the outer `View` of this component.
       currentInnerTopOffset: new Animated.Value(0),
-
-      // Highlights are for visual feedback when tapping an item
-      showHighlight: false
     })
   }
 
@@ -82,6 +66,9 @@ class ScrollingExpandPanel extends React.Component {
 
     //whether or not an 'event' is taking place
     this.responderGranted = false
+
+    //whether or not the gesture has moved
+    this.hasMoved = false
   }
 
   calculateMaxScrollDistance(props) {
@@ -116,11 +103,12 @@ class ScrollingExpandPanel extends React.Component {
 
     this.expandedAtTouchStart = this.isExpanded()
 
+    this.props.onPressStart(this.startTouchY - this.innerTopOffsetAtTouchStart - this.outerTopOffsetAtTouchStart)
+
     // if there is an ongoing animation, stop it
     this.setState({
       currentOuterTopOffset: new Animated.Value(this.state.currentOuterTopOffset._value),
       currentInnerTopOffset: new Animated.Value(this.state.currentInnerTopOffset._value),
-      showHighlight: !!this.props.onPressItem
     })
 
     this.responderGranted = true
@@ -162,8 +150,11 @@ class ScrollingExpandPanel extends React.Component {
 
   // main update method
   updateComponentOnMove(event) {
-
     const currentTouchY = event.nativeEvent.pageY
+
+    if (currentTouchY !== this.startTouchY) {
+      this.hasMoved = true
+    }
 
     // speed of finger
     const touchVelocity = (currentTouchY - this.lastTouchY) / (Date.now() - this.timeAtLastPosition)
@@ -188,7 +179,6 @@ class ScrollingExpandPanel extends React.Component {
     this.setState({
       currentOuterTopOffset: new Animated.Value(currentOuterTopOffset),
       currentInnerTopOffset: new Animated.Value(currentInnerTopOffset),
-      showHighlight: this.state.showHighlight && this.gestureResemblesPress(currentTouchY)
     })
   }
 
@@ -196,21 +186,13 @@ class ScrollingExpandPanel extends React.Component {
     // first check that responderGrant has already been called - if something in the
     // list has touch responders on it then this may not have occurred.
     if (this.responderGranted) {
-
       // A kind of 'throttle'
       if (Date.now() - this.timeAtLastPosition >= 16) {
         this.updateComponentOnMove(event)
       }
-
     } else {
-
       this.responderGrant(event)
-
     }
-  }
-
-  gestureResemblesPress(endTouchY) {
-    return Math.abs(endTouchY - this.startTouchY) < MAX_TAP_DRAG
   }
 
   getDecelerationTime() {
@@ -262,57 +244,31 @@ class ScrollingExpandPanel extends React.Component {
     )
   }
 
-  getTargetItem() {
-    if (this.props.rowHeight) {
-      const pressLocation = this.startTouchY - this.innerTopOffsetAtTouchStart - this.outerTopOffsetAtTouchStart
-      return Math.floor(pressLocation / this.props.rowHeight)
-    }
-  }
-
   responderRelease() {
-    // Was this a press rather than a drag ?
-    if (this.state.showHighlight) {
+    this.props.onPressRelease(this.hasMoved)
 
-      this.props.onPressItem(this.getTargetItem())
+    if (Date.now() - this.timeAtLastPosition > 150) {
+      this.velocity = 0
+    }
 
-      if (this.expandedAtTouchStart) {
+    // If scrolling, apply momentum to scroll
+    if (this.state.currentInnerTopOffset._value) {
+      this.handleScrollMomentumRelease()
+
+    } else { // slide back to expanded or collapsed position
+      const endPosition = this.state.currentOuterTopOffset._value + this.getMomentumTravel()
+      if (this.isExpandedAfterMove(endPosition)) {
         this.expandWithAnimation()
       } else {
         this.collapseWithAnimation()
       }
-
-     // Do we wish to apply momentum? Depends whether the touch stopped moving
-   } else if (this.velocity && Date.now() - this.timeAtLastPosition < 150) {
-
-      // If scrolling, apply momentum to scroll
-      if (this.state.currentInnerTopOffset._value) {
-        this.handleScrollMomentumRelease()
-
-      } else { // slide back to expanded or collapsed position
-        const endPosition = this.state.currentOuterTopOffset._value + this.getMomentumTravel()
-        if (this.isExpandedAfterMove(endPosition)) {
-          this.expandWithAnimation()
-        } else {
-          this.collapseWithAnimation()
-        }
-      }
     }
-
-    this.setState({showHighlight: false})
 
     // cleanup
     this.resetVariablesToStationary()
   }
 
   render() {
-    const showHighlightIfAppropriate = () =>
-      this.state.showHighlight
-      ? <View style={{...highlightStyle,
-              top: this.getTargetItem() * this.props.rowHeight,
-              height: this.props.rowHeight || this.props.childrenHeight
-            }}/>
-      : undefined
-
     return (
       <Animated.View style={{
             top: this.state.currentOuterTopOffset,
@@ -326,7 +282,6 @@ class ScrollingExpandPanel extends React.Component {
           onResponderRelease={this.responderRelease.bind(this)}>
         <Animated.View style={{ top: this.state.currentInnerTopOffset }}>
           {this.props.children}
-          {showHighlightIfAppropriate()}
         </Animated.View>
       </Animated.View>
     )

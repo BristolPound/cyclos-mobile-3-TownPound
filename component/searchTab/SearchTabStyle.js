@@ -12,12 +12,10 @@ export const MAP_HEIGHT = ScreenSizes.isSmall() ? 220 : 275
 
 const styles = {
   searchTab: {
-    list: {
+    expandPanel: {
       left: MARGIN_SIZE,
       right: MARGIN_SIZE,
-      borderRadius: 5,
       position: 'absolute',
-      ...commonStyle.dropshadow
     },
     searchBar: {
       height: SEARCH_BAR_HEIGHT,

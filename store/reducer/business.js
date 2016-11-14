@@ -13,7 +13,7 @@ const initialState = {
   businessList: [],
   businessListTimestamp: null,
   selectedBusinessId: undefined,
-  businessesToDisplay: [ ],
+  closestBusinesses: [ ],
   mapViewport: {
     ...BRISTOL_CITY_CENTRE,
     latitudeDelta: 0.006,
@@ -98,21 +98,20 @@ export const loadBusinessList = (force = false) =>
     }
   }
 
-// selectedBusinessId is optional
-const getBusinessesToDisplay = (list, viewport, selectedBusinessId) => {
-  const businessesToDisplay = _.sortBy(
-    list.filter(shouldBeDisplayed(viewport, selectedBusinessId)),
-    orderBusinessList(viewport, selectedBusinessId)
+const getClosestBusinesses = (list, viewport) => {
+  const closestBusinesses = _.sortBy(
+    list.filter(shouldBeDisplayed(viewport)),
+    orderBusinessList(viewport)
   )
-  businessesToDisplay.length = Math.min(businessesToDisplay.length, BUSINESS_LIST_MAX_LENGTH)
-  return businessesToDisplay
+  closestBusinesses.length = Math.min(closestBusinesses.length, BUSINESS_LIST_MAX_LENGTH)
+  return closestBusinesses
 }
 
 
 
-const orderBusinessList = (viewport, selectedBusinessId) => (business) => {
+const orderBusinessList = (viewport) => (business) => {
   if (business.address) {
-    return business.id === selectedBusinessId ? -1 : haversine(viewport, business.address.location)
+    return haversine(viewport, business.address.location)
   }
   return Number.MAX_VALUE
 }
@@ -121,16 +120,15 @@ const isLocationWithinViewport = (location, viewport) =>
   Math.abs(location.latitude - viewport.latitude) < viewport.latitudeDelta / 2
     && Math.abs(location.longitude - viewport.longitude) < viewport.longitudeDelta / 2
 
-const shouldBeDisplayed = (viewport, selectedBusinessId) => (business) =>
-  business.id === selectedBusinessId ||
-    (business.address && isLocationWithinViewport(business.address.location, viewport))
+const shouldBeDisplayed = (viewport) => (business) =>
+  business.address && isLocationWithinViewport(business.address.location, viewport)
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'business/BUSINESS_LIST_RECEIVED':
-      let businessesToDisplay = getBusinessesToDisplay(action.businessList, state.mapViewport, state.selectedBusinessId)
+      let closestBusinesses = getClosestBusinesses(action.businessList, state.mapViewport)
       state = merge(state, {
-        businessesToDisplay,
+        closestBusinesses,
         businessList: action.businessList,
         businessListTimestamp: new Date()
       })
@@ -168,45 +166,37 @@ const reducer = (state = initialState, action) => {
     case 'business/UPDATE_MAP_VIEWPORT':
       let newViewport = merge(state.mapViewport, action.viewport) // action.viewport might only be partial (no deltas)
 
-      // businessesToDisplay is defined in the first switch case so we cannot define it here. Blame javascript!
-      businessesToDisplay = getBusinessesToDisplay(state.businessList, newViewport, state.selectedBusinessId)
+      // closestBusinesses is declared in the first switch case so we cannot define it here. Blame javascript!
+      closestBusinesses = getClosestBusinesses(state.businessList, newViewport)
       state = merge(state, {
         mapViewport: newViewport,
-        businessesToDisplay
+        closestBusinesses
       })
       break
 
     case 'business/UPDATE_MAP_VIEWPORT_AND_SELECT_CLOSEST_TRADER':
-      // newViewport is defined in UPDATE_MAP_VIEWPORT case
+      // newViewport is declared in UPDATE_MAP_VIEWPORT case
       newViewport = merge(state.mapViewport, action.viewport) // action.viewport might only be partial (no deltas)
 
       // Since we wish to update the selected trader, allow the closest to be at the top of the list
-      businessesToDisplay = getBusinessesToDisplay(state.businessList, newViewport)
+      closestBusinesses = getClosestBusinesses(state.businessList, newViewport)
 
       let newSelectedId = state.selectedBusinessId
       // If there is at least one business on the list, make the first business the new selected business
-      if (businessesToDisplay.length) {
-        newSelectedId = businessesToDisplay[0].id
-
-      // If there are no nearby businesses, still display the selected business, if any
-      } else {
-        if (state.selectedBusinessId && state.businessesToDisplay.length) {
-          businessesToDisplay = [ state.businessesToDisplay[0] ]
-        }
+      if (closestBusinesses.length) {
+        newSelectedId = closestBusinesses[0].id
       }
 
       state = merge(state, {
-        businessesToDisplay,
+        closestBusinesses,
         mapViewport: newViewport,
         selectedBusinessId: newSelectedId
       })
       break
 
     case 'business/SELECTED_BUSINESS':
-      businessesToDisplay = getBusinessesToDisplay(state.businessList, state.mapViewport, action.businessId)
       state = merge(state, {
         selectedBusinessId: action.businessId,
-        businessesToDisplay
       })
       break
 
@@ -214,7 +204,7 @@ const reducer = (state = initialState, action) => {
       state = merge(state, {
         businessList: [],
         businessListTimestamp: null,
-        businessesToDisplay: [ ],
+        closestBusinesses: [ ],
       })
       break
   }
