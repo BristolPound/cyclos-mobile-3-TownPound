@@ -26,7 +26,7 @@ const TraderScreen = ({ trader, transactionsDataSource, showModal }) =>
         dataSource={transactionsDataSource} />
       <View style={styles.footer}>
         <SendMoney
-          payeeDisplay={trader.name}
+          payeeDisplay={trader.display}
           payeeShortDisplay={trader.shortDisplay}/>
       </View>
     </View>
