@@ -74,7 +74,7 @@ export const get = (url, params, dispatch) => {
     .then(decodeResponse)
     .then((data) => {
       // detect general HTTP status errors, throwing them as APIError instances
-      throwErrorOnUnexpectedResponse(data.response, data.json)
+      throwErrorOnUnexpectedResponse(data)
       return data.json
     })
     // handle generic failures
@@ -110,7 +110,7 @@ export const post = (url, params, dispatch, expectedResponse = 201) =>
     .then(dispatchSuccessfulConnection(dispatch))
     .then(decodeResponse)
     .then((data) => {
-      throwErrorOnUnexpectedResponse(data.response, data.json, expectedResponse)
+      throwErrorOnUnexpectedResponse(data, expectedResponse)
       return data.response
     })
     .catch(maybeDispatchFailure(dispatch))
@@ -125,7 +125,7 @@ export const authenticate = (username, password, dispatch) =>
   .then(dispatchSuccessfulConnection(dispatch))
   .then(decodeResponse)
   .then((data) => {
-    throwErrorOnUnexpectedResponse(data.response, data.json)
+    throwErrorOnUnexpectedResponse(data)
     globalSessionToken = data.json.sessionToken
     return data.json.sessionToken
   })
