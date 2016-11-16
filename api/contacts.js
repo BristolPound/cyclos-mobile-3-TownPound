@@ -4,5 +4,5 @@ import { get, post } from './api'
 // 1. add contact
 // 2. get updated contact list
 export const addContact = (person, dispatch) =>
-  post('self/contacts/' + person, {}, dispatch, 200)
-    .then(() => get('self/contacts', {}, dispatch))
+  post('self/contacts/' + person, { requiresAuthorisation: true }, dispatch, 200)
+	.then(() => get('self/contacts', { requiresAuthorisation: true }, dispatch))
