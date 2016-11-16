@@ -5,7 +5,8 @@ const PAGE_SIZE = 100
 
 export const getAccountBalance = (dispatch) =>
   get('self/accounts', {
-    fields: ['status.balance']
+    fields: ['status.balance'],
+    requiresAuthorisation: true
   },
   dispatch)
 
@@ -23,7 +24,8 @@ export const getTransactions = (dispatch, additionalParams, successCriteria) =>
           'type',
           'relatedAccount'
         ],
-        pageSize: PAGE_SIZE
+        pageSize: PAGE_SIZE,
+        requiresAuthorisation: true
       },
       additionalParams ? additionalParams : {}),
     dispatch,

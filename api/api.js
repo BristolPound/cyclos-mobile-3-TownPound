@@ -16,9 +16,9 @@ export const setBaseUrl = newUrl => {
   BASE_URL = newUrl
 }
 
-const httpHeaders = () => {
+const httpHeaders = (requiresAuthorisation) => {
   const headers = new Headers()
-  if (globalSessionToken) {
+  if (globalSessionToken && requiresAuthorisation) {
     headers.append('Session-Token', globalSessionToken)
   }
   headers.append('Accept', 'application/json')
@@ -62,14 +62,13 @@ const processResponse = (dispatch, expectedResponse = 200) => (response) => {
     .then((data) => throwErrorOnUnexpectedResponse(data, expectedResponse))
 }
 
-
 export const get = (url, params, dispatch) => {
   const apiMethod = BASE_URL + url + (params ? '?' + querystring(params) : '')
   if (__DEV__) {
     console.log(apiMethod)
   }
 
-  return fetch(apiMethod, {headers: httpHeaders()})
+  return fetch(apiMethod, {headers: httpHeaders(params.requiresAuthorisation)})
     // if the API request was successful, dispatch a message that indicates we have good API connectivity
     .then(processResponse(dispatch))
     .catch(maybeDispatchFailure(dispatch))
@@ -100,7 +99,8 @@ export const getPages = (config) => {
 }
 
 export const post = (url, params, dispatch, expectedResponse = 201) =>
-  fetch(BASE_URL + url, merge({headers: httpHeaders()}, {method: 'POST', body: JSON.stringify(params)}))
+  fetch(BASE_URL + url, merge({ headers: httpHeaders(params.requiresAuthorisation) }, 
+		{ method: 'POST', body: JSON.stringify(params) }))
     .then(processResponse(dispatch, expectedResponse))
     .catch(maybeDispatchFailure(dispatch))
 
