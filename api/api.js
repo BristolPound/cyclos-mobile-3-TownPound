@@ -1,6 +1,6 @@
 import {encode} from 'base-64'
 import merge from '../util/merge'
-import ApiError, { UNAUTHORIZED_ACCESS, throwOnError } from './apiError'
+import ApiError, { UNAUTHORIZED_ACCESS, throwErrorOnUnexpectedResponse } from './apiError'
 
 import {connectivityChanged} from '../store/reducer/networkConnection'
 import {loggedOut} from '../store/reducer/login'
@@ -74,7 +74,7 @@ export const get = (url, params, dispatch) => {
     .then(decodeResponse)
     .then((data) => {
       // detect general HTTP status errors, throwing them as APIError instances
-      throwOnError(data.response, data.json)
+      throwErrorOnUnexpectedResponse(data.response, data.json)
       return data.json
     })
     // handle generic failures
@@ -110,7 +110,7 @@ export const post = (url, params, dispatch, expectedResponse = 201) =>
     .then(dispatchSuccessfulConnection(dispatch))
     .then(decodeResponse)
     .then((data) => {
-      throwOnError(data.response, data.json, expectedResponse)
+      throwErrorOnUnexpectedResponse(data.response, data.json, expectedResponse)
       return data.response
     })
     .catch(maybeDispatchFailure(dispatch))
@@ -125,7 +125,7 @@ export const authenticate = (username, password, dispatch) =>
   .then(dispatchSuccessfulConnection(dispatch))
   .then(decodeResponse)
   .then((data) => {
-    throwOnError(data.response, data.json)
+    throwErrorOnUnexpectedResponse(data.response, data.json)
     globalSessionToken = data.json.sessionToken
     return data.json.sessionToken
   })
