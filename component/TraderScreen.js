@@ -20,16 +20,14 @@ import { buildDataSourceForTransactions } from '../util/transaction'
     showModal: callback for opening or closing this view.
  */
 const TraderScreen = ({ trader, transactionsDataSource, showModal, loadingProfile }) =>
-    <View style={{flex: 1}}>
-      <TransactionList
-        renderHeader={asRenderHeader(trader, transactionsDataSource, showModal, loadingProfile)}
-        dataSource={transactionsDataSource} />
-      <View style={styles.footer}>
-        <SendMoney
-          payeeDisplay={trader.name}
-          payeeShortDisplay={trader.shortDisplay}/>
-      </View>
-    </View>
+  <View style={{flex: 1}}>
+    <TransactionList
+      renderHeader={asRenderHeader(trader, transactionsDataSource, showModal, loadingProfile)}
+      dataSource={transactionsDataSource} />
+    <SendMoney
+      payeeDisplay={trader.name}
+      payeeShortDisplay={trader.shortDisplay}/>
+  </View>
 
 // Currently we pass in returned renderHeader as we delegate to a listView.
 // One alternative would be to encapsulate this and use `props.children` instead.
@@ -60,7 +58,7 @@ const dataSourceForSelectedBusiness = (state) => {
 
 // Redux Setup
 const mapStateToProps = (state) => ({
-    trader: state.business.businessList.find(b => b.id === state.business.selectedBusinessId),
+    trader: state.business.businessList.find(b => b.id === state.business.selectedBusinessId) || {},
     transactionsDataSource: dataSourceForSelectedBusiness(state),
     loadingProfile: state.business.loadingProfile
 })

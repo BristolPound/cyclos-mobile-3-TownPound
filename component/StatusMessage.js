@@ -7,6 +7,7 @@ import merge from '../util/merge'
 import commonStyle from './style'
 import { connect } from 'react-redux'
 import { updateStatus } from '../store/reducer/statusMessage'
+import modalState from '../store/reducer/modalState'
 
 const style = {
   container: {
@@ -40,7 +41,7 @@ class StatusMessage extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.message !== '') {
+    if (nextProps.message !== '' && !nextProps.modalOpen) {
       this.animateBottomTo(0)
       setTimeout(() => this.animateBottomTo(-TAB_BAR_HEIGHT, () => nextProps.updateStatus('')), 2000)
     }
@@ -62,7 +63,10 @@ class StatusMessage extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => ({...state.statusMessage})
+const mapStateToProps = (state) => ({
+  ...state.statusMessage,
+  modalOpen: state.navigation.modalState !== modalState.none,
+})
 
 const mapDispatchToProps = (dispatch) => ({
   updateStatus: (status) => dispatch(updateStatus(status))
