@@ -6,9 +6,11 @@ import {connectivityChanged} from '../store/reducer/networkConnection'
 const BASE_URL = 'https://bristol-stage.community-currency.org/cyclos/api/'
 let globalSessionToken = ''
 
-export const deleteSessionToken = () => {
-  globalSessionToken = ''
+export const setSessionToken = (newToken) => {
+  globalSessionToken = newToken
 }
+
+export const deleteSessionToken = () => globalSessionToken = ''
 
 export const setBaseUrl = newUrl => {
   BASE_URL = newUrl
@@ -83,7 +85,7 @@ export const getPages = (config) => {
 }
 
 export const post = (url, params, dispatch, expectedResponse = 201) =>
-  fetch(BASE_URL + url, merge({ headers: httpHeaders(params.requiresAuthorisation) }, 
+  fetch(BASE_URL + url, merge({ headers: httpHeaders(params.requiresAuthorisation) },
 		{ method: 'POST', body: JSON.stringify(params) }))
     .then(processResponse(dispatch, expectedResponse))
 

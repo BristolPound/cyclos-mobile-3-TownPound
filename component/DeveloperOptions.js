@@ -11,6 +11,7 @@ import { showModal } from '../store/reducer/navigation'
 import modalState from '../store/reducer/modalState'
 import { LOGIN_STATUSES } from '../store/reducer/login'
 import { selectServer, SERVER } from '../store/reducer/developerOptions'
+import { setSessionToken } from '../api/api'
 
 const INFO_FONT_SIZE = 14
 const ACTION_FONT_SIZE = 18
@@ -126,6 +127,11 @@ const DeveloperOptions = props => {
           (props.store.server === SERVER.STAGE ? 'Dev' : 'Stage'),
         onPress: () => props.selectServer(props.store.server === SERVER.STAGE ? 'DEV' : 'STAGE'),
         accessibilityLabel: 'Switch Server',
+      },
+      {
+        text: 'Corrupt session token',
+        onPress: () => setSessionToken('not a valid session token'),
+        accessibilityLabel: 'Corrupt session token'
       }
     ]
   }

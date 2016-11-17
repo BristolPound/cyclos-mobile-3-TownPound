@@ -4,10 +4,10 @@ import _ from 'lodash'
 import { groupTransactionsByDate, calculateMonthlyTotalSpent, filterTransactions, sortTransactions } from '../../util/transaction'
 import { getTransactions } from '../../api/accounts'
 import { findTransactionsByDate } from '../../util/transaction'
-import { UNAUTHORIZED_ACCESS } from '../../api/apiError'
-import color from '../../util/colors'
-import { openLoginForm } from './login'
 import { updateStatus } from './statusMessage'
+import { loggedOut, openLoginForm } from './login'
+import { UNAUTHORIZED_ACCESS } from '../../api/api'
+import color from '../../util/colors'
 
 const lastIndex = (arr) => arr.length - 1
 
@@ -49,6 +49,17 @@ const failedToLoadTransactions = () => ({
   type: 'transaction/FAILED_TO_LOAD'
 })
 
+const handleError = (dispatch) => (err) => {
+  if (err.type === UNAUTHORIZED_ACCESS) {
+    dispatch(loggedOut())
+    dispatch(updateStatus('Your session has expired'))
+    dispatch(openLoginForm(true))
+  } else {
+    dispatch(updateStatus('Unknown error', color.orange))
+    dispatch(failedToLoadTransactions())
+  }
+}
+
 export const loadTransactions = () =>
   (dispatch) => {
     dispatch(updateLoadingTransactions())
@@ -57,15 +68,8 @@ export const loadTransactions = () =>
       .then(transactions => {
         dispatch(transactionsReceived(transactions))
       })
-      .catch((err) => {
-        dispatch(failedToLoadTransactions())
-        if (err.type === UNAUTHORIZED_ACCESS) {
-          dispatch(openLoginForm(true))
-        } else {
-          dispatch(updateStatus('Unknown error', color.orange))
-        }
-      })
-  }
+      .catch(handleError(dispatch))
+    }
 
 export const loadMoreTransactions = () =>
   (dispatch, getState) => {
@@ -76,9 +80,11 @@ export const loadMoreTransactions = () =>
     getTransactions(dispatch,{
       datePeriod: firstDate.toJSON() + ',',
       excludedIds: excludeIdList
-    }).then(transactions => {
+    })
+    .then(transactions => {
       dispatch(transactionsReceived(transactions))
     })
+    .catch(handleError(dispatch))
   }
 
 const filterTransactionsByMonth = (dataSource, sortedTransactions, selectedMonth) => {
