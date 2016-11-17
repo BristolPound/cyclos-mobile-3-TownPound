@@ -6,6 +6,7 @@ import color from '../util/colors'
 import merge from '../util/merge'
 import commonStyle from './style'
 import { connect } from 'react-redux'
+import { updateStatus } from '../store/reducer/statusMessage'
 
 const style = {
   container: {
@@ -31,17 +32,17 @@ class StatusMessage extends React.Component {
     }
   }
 
-  animateBottomTo(value) {
+  animateBottomTo(value, callback) {
     Animated.timing(this.state.bottom, {
       toValue: value,
       duration: 300
-    }).start()
+    }).start(callback)
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.message !== '') {
       this.animateBottomTo(0)
-      setTimeout(() => this.animateBottomTo(-TAB_BAR_HEIGHT), 2000)
+      setTimeout(() => this.animateBottomTo(-TAB_BAR_HEIGHT, () => nextProps.updateStatus('')), 2000)
     }
   }
 
@@ -63,4 +64,8 @@ class StatusMessage extends React.Component {
 
 const mapStateToProps = (state) => ({...state.statusMessage})
 
-export default connect(mapStateToProps)(StatusMessage)
+const mapDispatchToProps = (dispatch) => ({
+  updateStatus: (status) => dispatch(updateStatus(status))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(StatusMessage)

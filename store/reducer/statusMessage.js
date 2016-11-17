@@ -6,7 +6,7 @@ const initialState = {
 }
 
 export const ERROR_SEVERITY = {
-  MILD: color.birstolBlue,
+  MILD: color.bristolBlue,
   SEVERE: color.orange
 }
 
