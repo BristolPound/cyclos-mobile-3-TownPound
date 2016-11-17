@@ -6,6 +6,7 @@ import { loadTransactions, resetTransactions } from './transaction'
 import { deleteSessionToken } from '../../api/api'
 import { updateStatus } from './statusMessage'
 import color from '../../util/colors'
+import { ERROR_SEVERITY } from './statusMessage'
 
 export const LOGGED_OUT = 'login/LOGGED_OUT'
 export const LOGGED_IN = 'login/LOGGED_IN'
@@ -71,19 +72,19 @@ export const login = (username, password) =>
               dispatch(loggedOut())
               break
             case 'invalidClient':
-              dispatch(updateStatus('Username or password are incorrect', color.orange))
+              dispatch(updateStatus('Username or password are incorrect', ERROR_SEVERITY.MILD))
               break
             case 'login':
               const errMessage = err.json.passwordStatus==='temporarilyBlocked'
                 ? 'Account temporarily blocked'
                 : 'Your details are incorrect'
-              dispatch(updateStatus(errMessage, color.orange))
+              dispatch(updateStatus(errMessage, ERROR_SEVERITY.SEVERE))
               break
             default:
-              dispatch(updateStatus('Server error', color.orange))
+              dispatch(updateStatus('Server error', ERROR_SEVERITY.SEVERE))
           }
         } else {
-          dispatch(updateStatus('Unknown error - check your details', color.orange))
+          dispatch(updateStatus('Unknown error - check your details', ERROR_SEVERITY.SEVERE))
         }
       })
   }

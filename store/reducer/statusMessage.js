@@ -5,10 +5,15 @@ const initialState = {
   backgroundColor: undefined
 }
 
-export const updateStatus = (message, backgroundColor) => ({
+export const ERROR_SEVERITY = {
+  MILD: color.birstolBlue,
+  SEVERE: color.orange
+}
+
+export const updateStatus = (message, severity) => ({
   type: 'statusMessage/UPDATE_STATUS',
   message,
-  backgroundColor
+  severity
 })
 
 const reducer = (state = initialState, action) => {
@@ -16,7 +21,7 @@ const reducer = (state = initialState, action) => {
     case 'statusMessage/UPDATE_STATUS':
       state = {
         message: action.message,
-        backgroundColor: action.backgroundColor || color.bristolBlue
+        backgroundColor: action.severity
       }
       break
 
@@ -40,8 +45,6 @@ const reducer = (state = initialState, action) => {
         backgroundColor: color.bristolBlue
       }
       break
-
-
   }
   return state
 }
