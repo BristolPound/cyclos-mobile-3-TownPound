@@ -5,8 +5,7 @@ import merge from '../../util/merge'
 import { addFailedAction } from './networkConnection'
 import { getBusinesses, getBusinessProfile } from '../../api/users'
 import { UNEXPECTED_DATA } from '../../api/apiError'
-import { updateStatus } from './statusMessage'
-import color from '../../util/colors'
+import { ERROR_SEVERITY, unknownError, updateStatus } from './statusMessage'
 
 const BRISTOL_CITY_CENTRE = { latitude: 51.454513, longitude:  -2.58791 }
 
@@ -80,10 +79,10 @@ export const loadBusinessProfile = (businessId) =>
       .catch(err => {
         dispatch(addFailedAction(loadBusinessProfile(businessId)))
         if (err.type === UNEXPECTED_DATA) {
-          dispatch(updateStatus('Business no longer exists', color.orange))
+          dispatch(updateStatus('Business no longer exists', ERROR_SEVERITY.SEVERE))
           dispatch(loadBusinessList(true))
         } else {
-          dispatch(updateStatus('Unknown error', color.orange))
+          dispatch(unknownError(err))
         }
         dispatch(businessFailedToLoad())
       })
@@ -109,9 +108,9 @@ export const loadBusinessList = (force = false) =>
         .then(businesses => dispatch(businessListReceived(businesses)))
         // if this request fails, the business list may not be populated. In this case, when
         // connection status changes to be connected, the list is re-fetched
-        .catch(() => {
+        .catch((err) => {
           dispatch(addFailedAction(loadBusinessList(force)))
-          dispatch(updateStatus('Unknown error', color.orange))
+          dispatch(unknownError(err))
         })
     } else {
       dispatch(businessListReceived(getState().business.businessList))

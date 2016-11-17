@@ -4,9 +4,7 @@ import ApiError, { UNAUTHORIZED_ACCESS } from '../../api/apiError'
 import { loadAccountDetails } from './account'
 import { loadTransactions, resetTransactions } from './transaction'
 import { deleteSessionToken } from '../../api/api'
-import { updateStatus } from './statusMessage'
-import color from '../../util/colors'
-import { ERROR_SEVERITY } from './statusMessage'
+import { updateStatus, ERROR_SEVERITY, unknownError } from './statusMessage'
 
 export const LOGGED_OUT = 'login/LOGGED_OUT'
 export const LOGGED_IN = 'login/LOGGED_IN'
@@ -66,11 +64,11 @@ export const login = (username, password) =>
       .catch (err => {
         if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
           if (err.json.passwordStatus === 'temporarilyBlocked') {
-            dispatch(updateStatus('Account temporarily blocked', color.orange))
+            dispatch(updateStatus('Account temporarily blocked', ERROR_SEVERITY.SEVERE))
           } else if (err.json.code === 'login') {
             dispatch(updateStatus('Your details are incorrect'))
           } else {
-          dispatch(updateStatus('Unknown error - check your details', ERROR_SEVERITY.SEVERE))
+          dispatch(unknownError(err))
           }
         }
       })

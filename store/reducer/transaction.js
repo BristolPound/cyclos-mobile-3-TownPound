@@ -4,10 +4,9 @@ import _ from 'lodash'
 import { groupTransactionsByDate, calculateMonthlyTotalSpent, filterTransactions, sortTransactions } from '../../util/transaction'
 import { getTransactions } from '../../api/accounts'
 import { findTransactionsByDate } from '../../util/transaction'
-import { updateStatus } from './statusMessage'
+import { updateStatus, unknownError } from './statusMessage'
 import { loggedOut, openLoginForm } from './login'
 import { UNAUTHORIZED_ACCESS } from '../../api/apiError'
-import color from '../../util/colors'
 
 const lastIndex = (arr) => arr.length - 1
 
@@ -55,7 +54,7 @@ const handleError = (dispatch) => (err) => {
     dispatch(updateStatus('Your session has expired'))
     dispatch(openLoginForm(true))
   } else {
-    dispatch(updateStatus('Unknown error', color.orange))
+    dispatch(unknownError(err))
     dispatch(failedToLoadTransactions())
   }
 }
