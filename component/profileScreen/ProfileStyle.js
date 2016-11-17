@@ -15,12 +15,6 @@ const styles = {
     borderTopWidth: StyleSheet.hairlineWidth
   },
   header: {
-    backgroundImage: {
-      flex: 1,
-      position: 'absolute',
-      resizeMode: 'cover',
-      height: 244
-    },
     topSpace: {
       height: 58
     },

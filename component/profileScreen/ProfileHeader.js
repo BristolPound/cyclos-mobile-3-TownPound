@@ -4,14 +4,15 @@ import DefaultText from '../DefaultText'
 import ProfileImage from '../profileImage/ProfileImage'
 import color from '../../util/colors'
 import styles from './ProfileStyle'
+import commonStyle from '../style'
 
 // TODO: There is a strong overlap here with the `Header` component in Account.js
 const ProfileHeader = (props) =>
   <View style={styles.flex}>
-    <Image source={require('./gorilla.png')} style={styles.header.backgroundImage} />
-    { props.isTabItem // TODO: No reference in the code to this.
-      ? <View style={styles.header.topSpace} />
-      : renderCloseIcon(props)}
+    <Image source={require('./gorilla.png')}
+      style={commonStyle.header.backgroundImage}
+      resizeMode={'cover'} />
+      {renderCloseIcon(props)}
     <ProfileImage
       img={props.image}
       style={styles.header.businessLogo}
