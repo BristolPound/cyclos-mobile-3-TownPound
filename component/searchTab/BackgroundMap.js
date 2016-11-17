@@ -8,7 +8,7 @@ import * as actions from '../../store/reducer/business'
 
 const MAP_PAN_DEBOUNCE_DURATION = 150
 
-const UNSELECTED_TRADER_IMG = require('./grey_dot.png')
+const UNSELECTED_TRADER_IMG = require('./Marker.png')
 const SELECTED_TRADER_IMG = require('./selected_trader.png')
 
 class BackgroundMap extends React.Component {
