@@ -5,7 +5,7 @@ export const makePayment = (payment, dispatch) =>
       to: payment.subject,
       fields: 'paymentTypes.id'
   }, dispatch)
-  .then(json => post('self/payments', {
+  .then((results) => post('self/payments', {
       ...payment,
-      type: json.paymentTypes[0].id
+      type: results.paymentTypes[0].id
     }, dispatch))

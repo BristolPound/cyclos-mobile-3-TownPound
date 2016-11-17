@@ -22,20 +22,19 @@ export const getBusinesses = (dispatch) =>
     addressResult: 'primary',
     orderBy: 'alphabeticallyAsc'
   }, dispatch)
-  .then(businesses => {
+  .then(results => {
     // TODO: TEMPORARY FIX
     // remove when we are using one api and calls gives same values when logged in/out.
       // The prod api gives incorrect shortdisplay (format: DISPLAY (SHORTDISPLAY))
       // Also when logged in on either dev or prod the api uses username & name rather than shortDisplay and display
-    if (businesses) {
-      businesses = businesses.map(bu => merge(bu, {
+    if (results) {
+      return results.map(bu => merge(bu, {
         display: bu.display || bu.name,
         shortDisplay: parseShortDisplay(bu.shortDisplay || bu.username),
         category: 'shop', // hardcoded pending database set up of categories.
       }))
     }
-
-    return (businesses || [])
+    return []
   })
 
 export const getBusinessProfile = (businessId, dispatch) =>
