@@ -16,7 +16,7 @@ function APIError (type, data) {
 
 APIError.prototype.__proto__ = Error.prototype
 
-export const throwErrorOnUnexpectedResponse = (data, expectedResponse = 200) => {
+export const throwErrorOnUnexpectedResponse = (data, expectedResponse) => {
   if (data.response.status !== expectedResponse) {
     if (data.response.status === 401) {
       throw new APIError(UNAUTHORIZED_ACCESS, data)
@@ -32,6 +32,7 @@ export const throwErrorOnUnexpectedResponse = (data, expectedResponse = 200) => 
       throw new APIError(UNEXPECTED_HTTP_RESPONSE, data)
     }
   }
+  return data.json
 }
 
 export default APIError

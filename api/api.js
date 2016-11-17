@@ -43,11 +43,6 @@ const decodeResponse =
 const querystring = params =>
   Object.keys(params).map(key => key + '=' + params[key]).join('&')
 
-const dispatchSuccessfulConnection = dispatch => response => {
-  dispatch(connectivityChanged(true))
-  return response
-}
-
 const maybeDispatchFailure = dispatch => err => {
   if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
     dispatch(loggedOut())
@@ -61,6 +56,13 @@ const maybeDispatchFailure = dispatch => err => {
   throw err
 }
 
+const processResponse = (dispatch, expectedResponse = 200) => (response) => {
+  dispatch(connectivityChanged(true))
+  return decodeResponse(response)
+    .then((data) => throwErrorOnUnexpectedResponse(data, expectedResponse))
+}
+
+
 export const get = (url, params, dispatch) => {
   const apiMethod = BASE_URL + url + (params ? '?' + querystring(params) : '')
   if (__DEV__) {
@@ -69,15 +71,7 @@ export const get = (url, params, dispatch) => {
 
   return fetch(apiMethod, {headers: httpHeaders()})
     // if the API request was successful, dispatch a message that indicates we have good API connectivity
-    .then(dispatchSuccessfulConnection(dispatch))
-    // decode JSON and HTTP status
-    .then(decodeResponse)
-    .then((data) => {
-      // detect general HTTP status errors, throwing them as APIError instances
-      throwErrorOnUnexpectedResponse(data)
-      return data.json
-    })
-    // handle generic failures
+    .then(processResponse(dispatch))
     .catch(maybeDispatchFailure(dispatch))
 }
 
@@ -107,26 +101,17 @@ export const getPages = (config) => {
 
 export const post = (url, params, dispatch, expectedResponse = 201) =>
   fetch(BASE_URL + url, merge({headers: httpHeaders()}, {method: 'POST', body: JSON.stringify(params)}))
-    .then(dispatchSuccessfulConnection(dispatch))
-    .then(decodeResponse)
-    .then((data) => {
-      throwErrorOnUnexpectedResponse(data, expectedResponse)
-      return data.response
-    })
+    .then(processResponse(dispatch, expectedResponse))
     .catch(maybeDispatchFailure(dispatch))
 
-// this API method is a special case as it is the only one which does not
-// use the global session key.
 export const authenticate = (username, password, dispatch) =>
   fetch(BASE_URL + 'auth/session', {
     headers: basicAuthHeaders(username, password),
     method: 'POST'
   })
-  .then(dispatchSuccessfulConnection(dispatch))
-  .then(decodeResponse)
-  .then((data) => {
-    throwErrorOnUnexpectedResponse(data)
-    globalSessionToken = data.json.sessionToken
-    return data.json.sessionToken
+  .then(processResponse(dispatch))
+  .then((results) => {
+    globalSessionToken = results.sessionToken
+    return results.sessionToken
   })
   .catch(maybeDispatchFailure(dispatch))
