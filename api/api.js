@@ -1,7 +1,6 @@
 import {encode} from 'base-64'
 import merge from '../util/merge'
 import { throwErrorOnUnexpectedResponse } from './apiError'
-import {connectivityChanged} from '../store/reducer/networkConnection'
 
 const BASE_URL = 'https://bristol-stage.community-currency.org/cyclos/api/'
 let globalSessionToken = ''
@@ -43,11 +42,10 @@ const decodeResponse =
 const querystring = params =>
   Object.keys(params).map(key => key + '=' + params[key]).join('&')
 
-const processResponse = (dispatch, expectedResponse = 200) => (response) => {
-  dispatch(connectivityChanged(true))
-  return decodeResponse(response)
+const processResponse = (dispatch, expectedResponse = 200) => (response) =>
+  decodeResponse(response)
     .then((data) => throwErrorOnUnexpectedResponse(data, expectedResponse))
-}
+
 
 export const get = (url, params, dispatch) => {
   const apiMethod = BASE_URL + url + (params ? '?' + querystring(params) : '')

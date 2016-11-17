@@ -11,14 +11,7 @@ const ProfileScreen = (props) =>
 
 const renderHeader = props => () =>
   <View style={styles.flex}>
-    <ProfileHeader
-      name={props.name}
-      username={props.username}
-      image={props.image}
-      category={props.category}
-      onPressClose={props.onPressClose}
-      isTabItem={props.isTabItem}
-    />
+    <ProfileHeader {...props}/>
     {props.renderHeaderExtension()}
   </View>
 
