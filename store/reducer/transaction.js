@@ -6,7 +6,7 @@ import { getTransactions } from '../../api/accounts'
 import { findTransactionsByDate } from '../../util/transaction'
 import { updateStatus } from './statusMessage'
 import { loggedOut, openLoginForm } from './login'
-import { UNAUTHORIZED_ACCESS } from '../../api/api'
+import { UNAUTHORIZED_ACCESS } from '../../api/apiError'
 import color from '../../util/colors'
 
 const lastIndex = (arr) => arr.length - 1
