@@ -4,8 +4,7 @@ import { getAccountBalance } from '../../api/accounts'
 import { getAccountDetails } from '../../api/users'
 import { UNAUTHORIZED_ACCESS } from '../../api/apiError'
 import { openLoginForm } from './login'
-import { updateStatus } from './statusMessage'
-import color from '../../util/colors'
+import { unknownError } from './statusMessage'
 
 const initialState = {
   loadingBalance: true,
@@ -28,7 +27,7 @@ const handleAPIError = (dispatch) => (err) => {
   if (err.type === UNAUTHORIZED_ACCESS) {
     dispatch(openLoginForm(true))
   } else {
-    dispatch(updateStatus('Unknown error', color.orange))
+    dispatch(unknownError(err))
   }
 }
 

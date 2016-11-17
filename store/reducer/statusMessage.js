@@ -10,7 +10,14 @@ export const ERROR_SEVERITY = {
   SEVERE: color.orange
 }
 
-export const updateStatus = (message, severity) => ({
+export const unknownError = (err) => (dispatch) => {
+  if (__DEV__) {
+    console.error(err)
+  }
+  dispatch(updateStatus('Unknown error', ERROR_SEVERITY.SEVERE))
+}
+
+export const updateStatus = (message, severity = ERROR_SEVERITY.MILD) => ({
   type: 'statusMessage/UPDATE_STATUS',
   message,
   severity
