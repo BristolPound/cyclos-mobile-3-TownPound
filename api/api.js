@@ -1,9 +1,7 @@
 import {encode} from 'base-64'
 import merge from '../util/merge'
-import ApiError, { UNAUTHORIZED_ACCESS, throwErrorOnUnexpectedResponse } from './apiError'
-
+import { throwErrorOnUnexpectedResponse } from './apiError'
 import {connectivityChanged} from '../store/reducer/networkConnection'
-import {loggedOut} from '../store/reducer/login'
 
 const BASE_URL = 'https://bristol-stage.community-currency.org/cyclos/api/'
 let globalSessionToken = ''
@@ -43,19 +41,6 @@ const decodeResponse =
 const querystring = params =>
   Object.keys(params).map(key => key + '=' + params[key]).join('&')
 
-const maybeDispatchFailure = dispatch => err => {
-  if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
-    dispatch(loggedOut())
-  } else {
-    // TODO: It would be best to have some sort of error-handling system for unexpected errors.
-    // Previously an action was dispatched to say there is no internet, but usually that was not the cause.
-    // LoginStatus could be refactored to become a general status message handler.
-    // Then we could pipe the unknown errors through to the user, or just display 'unknown error'
-    console.warn(err)
-  }
-  throw err
-}
-
 const processResponse = (dispatch, expectedResponse = 200) => (response) => {
   dispatch(connectivityChanged(true))
   return decodeResponse(response)
@@ -71,7 +56,6 @@ export const get = (url, params, dispatch) => {
   return fetch(apiMethod, {headers: httpHeaders(params.requiresAuthorisation)})
     // if the API request was successful, dispatch a message that indicates we have good API connectivity
     .then(processResponse(dispatch))
-    .catch(maybeDispatchFailure(dispatch))
 }
 
 // Will continually load pages of a get request until successCriteria is met.
@@ -102,7 +86,6 @@ export const post = (url, params, dispatch, expectedResponse = 201) =>
   fetch(BASE_URL + url, merge({ headers: httpHeaders(params.requiresAuthorisation) }, 
 		{ method: 'POST', body: JSON.stringify(params) }))
     .then(processResponse(dispatch, expectedResponse))
-    .catch(maybeDispatchFailure(dispatch))
 
 export const authenticate = (username, password, dispatch) =>
   fetch(BASE_URL + 'auth/session', {
@@ -114,4 +97,3 @@ export const authenticate = (username, password, dispatch) =>
     globalSessionToken = results.sessionToken
     return results.sessionToken
   })
-  .catch(maybeDispatchFailure(dispatch))

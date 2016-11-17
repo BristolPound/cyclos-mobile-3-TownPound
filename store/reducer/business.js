@@ -4,6 +4,9 @@ import moment from 'moment'
 import merge from '../../util/merge'
 import { addFailedAction } from './networkConnection'
 import { getBusinesses, getBusinessProfile } from '../../api/users'
+import { UNEXPECTED_DATA } from '../../api/apiError'
+import { updateStatus } from './statusMessage'
+import color from '../../util/colors'
 
 const BRISTOL_CITY_CENTRE = { latitude: 51.454513, longitude:  -2.58791 }
 
@@ -19,7 +22,8 @@ const initialState = {
     latitudeDelta: 0.006,
     longitudeDelta: 0.006
   },
-  searchMode: false
+  searchMode: false,
+  loadingProfile: false
 }
 
 export const businessListReceived = (businessList) => ({
@@ -58,16 +62,32 @@ export const geolocationChanged = (coords, dispatch) => {
   }
 }
 
+const businessFailedToLoad = () => ({
+  type: 'business/FAILED_TO_LOAD'
+})
+
+const loadingBusinessProfile = () => ({
+  type: 'business/LOADING_PROFILE'
+})
+
 export const loadBusinessProfile = (businessId) =>
-  (dispatch) =>
+  (dispatch) => {
+    dispatch(loadingBusinessProfile())
     getBusinessProfile(businessId, dispatch)
       .then(businessProfile => dispatch(businessProfileReceived(businessProfile)))
       // if this request fails, the modal trader screen will continue to show a spinner
       // but will be closeable
       .catch(err => {
         dispatch(addFailedAction(loadBusinessProfile(businessId)))
-        console.warn(err)
+        if (err.type === UNEXPECTED_DATA) {
+          dispatch(updateStatus('Business no longer exists', color.orange))
+          dispatch(loadBusinessList(true))
+        } else {
+          dispatch(updateStatus('Unknown error', color.orange))
+        }
+        dispatch(businessFailedToLoad())
       })
+  }
 
 export const selectAndLoadBusiness = (businessId) =>
   (dispatch, getState) => {
@@ -89,9 +109,9 @@ export const loadBusinessList = (force = false) =>
         .then(businesses => dispatch(businessListReceived(businesses)))
         // if this request fails, the business list may not be populated. In this case, when
         // connection status changes to be connected, the list is re-fetched
-        .catch(err => {
+        .catch(() => {
           dispatch(addFailedAction(loadBusinessList(force)))
-          console.warn(err)
+          dispatch(updateStatus('Unknown error', color.orange))
         })
     } else {
       dispatch(businessListReceived(getState().business.businessList))
@@ -159,7 +179,8 @@ const reducer = (state = initialState, action) => {
         ..._.slice(state.businessList, index + 1)
       ]
       state = merge(state, {
-        businessList: newBusinessList
+        businessList: newBusinessList,
+        loadingProfile: false
       })
       break
 
@@ -205,6 +226,18 @@ const reducer = (state = initialState, action) => {
         businessList: [],
         businessListTimestamp: null,
         closestBusinesses: [ ],
+      })
+      break
+
+    case 'business/FAILED_TO_LOAD':
+      state = merge(state, {
+        loadingProfile: false
+      })
+      break
+
+    case 'business/LOADING_PROFILE':
+      state = merge(state, {
+        loadingProfile: true
       })
       break
   }

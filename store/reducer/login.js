@@ -58,33 +58,20 @@ export const login = (username, password) =>
   (dispatch) => {
     dispatch(loginInProgress())
     authenticate(username, password, dispatch)
-      .then((sessionToken) => {
-        if (sessionToken) {
-          dispatch(loggedIn())
-          dispatch(loadAccountDetails())
-          dispatch(loadTransactions())
-        }
+      .then(() => {
+        dispatch(loggedIn())
+        dispatch(loadAccountDetails())
+        dispatch(loadTransactions())
       })
       .catch (err => {
         if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
-          switch (err.json.code) {
-            case 'loggedOut':
-              dispatch(loggedOut())
-              break
-            case 'invalidClient':
-              dispatch(updateStatus('Username or password are incorrect', ERROR_SEVERITY.MILD))
-              break
-            case 'login':
-              const errMessage = err.json.passwordStatus==='temporarilyBlocked'
-                ? 'Account temporarily blocked'
-                : 'Your details are incorrect'
-              dispatch(updateStatus(errMessage, ERROR_SEVERITY.SEVERE))
-              break
-            default:
-              dispatch(updateStatus('Server error', ERROR_SEVERITY.SEVERE))
-          }
-        } else {
+          if (err.json.passwordStatus === 'temporarilyBlocked') {
+            dispatch(updateStatus('Account temporarily blocked', color.orange))
+          } else if (err.json.code === 'login') {
+            dispatch(updateStatus('Your details are incorrect'))
+          } else {
           dispatch(updateStatus('Unknown error - check your details', ERROR_SEVERITY.SEVERE))
+          }
         }
       })
   }

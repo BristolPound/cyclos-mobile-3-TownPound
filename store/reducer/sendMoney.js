@@ -1,7 +1,7 @@
 import { makePayment } from '../../api/payments'
 import merge from '../../util/merge'
 import { loadTransactionsAfterLast } from './transaction'
-import ApiError, {UNEXPECTED_ERROR} from '../../api/apiError'
+import { UNEXPECTED_ERROR } from '../../api/apiError'
 
 const initialState = {
   payee: '',
@@ -52,7 +52,7 @@ export const sendTransaction = () =>
         }
       })
       .catch(err => {
-        if (err instanceof ApiError && err.type === UNEXPECTED_ERROR && err.json) {
+        if (err.type === UNEXPECTED_ERROR && err.json) {
           switch (err.json.code) {
             case 'dailyAmountExceeded':
               dispatch(transactionComplete(false, 'Daily amount has been exceeded.'))
@@ -63,7 +63,6 @@ export const sendTransaction = () =>
           }
         } else {
           dispatch(transactionComplete(false, 'Error on sending transaction.'))
-          console.err(err)
         }
       })
   }
