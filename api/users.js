@@ -44,6 +44,7 @@ export const getBusinessProfile = (businessId, dispatch) =>
 
 export const getAccountDetails = (dispatch) =>
   get('users/self', {
-    fields: ['display', 'shortDisplay', 'image.url', 'email', 'phones']
+    fields: ['display', 'shortDisplay', 'image.url', 'email', 'phones'],
+    requiresAuthorisation: true
   },
   dispatch)
