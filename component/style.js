@@ -1,4 +1,6 @@
 import color from '../util/colors'
+import { Dimensions } from 'react-native'
+import marginOffset from '../util/marginOffset'
 
 const museo700 = 'MuseoSans-700'
 const museo500 = 'MuseoSans-300'
@@ -56,6 +58,13 @@ const style = {
       marginLeft: 14
     },
   },
+  header: {
+    backgroundImage: {
+      height: marginOffset(236),
+      width: Dimensions.get('window').width,
+      position: 'absolute'
+    },
+  }
 }
 
 export default style

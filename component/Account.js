@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { View, Image, StyleSheet, ListView, TouchableHighlight, Dimensions } from 'react-native'
+import { View, Image, StyleSheet, ListView, TouchableHighlight } from 'react-native'
 import DefaultText, { baselineDeltaForFonts } from './DefaultText'
 import ProfileImage from './profileImage/ProfileImage'
 import colors from './../util/colors'
@@ -62,11 +62,6 @@ const styles = {
       alignItems: 'center',
       height: marginOffset(236)
     },
-    backgroundImage: {
-      height: marginOffset(236),
-      width: Dimensions.get('window').width,
-      position: 'absolute'
-    },
     businessLogo: {
       ...dimensions(84),
       marginTop: 58,
@@ -116,7 +111,7 @@ const Header = (props) =>
   <View style={styles.header.container}>
     <Image
       source={require('./profileScreen/gorillaWithBackground.png')}
-      style={styles.header.backgroundImage}
+      style={commonStyle.header.backgroundImage}
       resizeMode='cover'/>
     <ProfileImage
       img={props.image}
