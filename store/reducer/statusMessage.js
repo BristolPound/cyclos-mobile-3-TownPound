@@ -11,21 +11,22 @@ export const ERROR_SEVERITY = {
 }
 
 export const unknownError = (err) => (dispatch) => {
-  if (__DEV__) {
-    console.error(err)
-  }
-  dispatch(updateStatus('Unknown error', ERROR_SEVERITY.SEVERE))
+  dispatch(updateStatus('Unknown error', ERROR_SEVERITY.SEVERE, err))
 }
 
-export const updateStatus = (message, severity = ERROR_SEVERITY.MILD) => ({
+export const updateStatus = (message, severity = ERROR_SEVERITY.MILD, err) => ({
   type: 'statusMessage/UPDATE_STATUS',
   message,
-  severity
+  severity,
+  err
 })
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'statusMessage/UPDATE_STATUS':
+      if (action.err) {
+        console.error(action.err)
+      }
       state = {
         message: action.message,
         backgroundColor: action.severity
