@@ -4,6 +4,10 @@ import _ from 'lodash'
 import { groupTransactionsByDate, calculateMonthlyTotalSpent, filterTransactions, sortTransactions } from '../../util/transaction'
 import { getTransactions } from '../../api/accounts'
 import { findTransactionsByDate } from '../../util/transaction'
+import { UNAUTHORIZED_ACCESS } from '../../api/apiError'
+import color from '../../util/colors'
+import { openLoginForm } from './login'
+import { updateStatus } from './statusMessage'
 
 const lastIndex = (arr) => arr.length - 1
 
@@ -41,13 +45,25 @@ export const resetTransactions = () => ({
   type: 'transaction/RESET_TRANSACTIONS'
 })
 
+const failedToLoadTransactions = () => ({
+  type: 'transaction/FAILED_TO_LOAD'
+})
+
 export const loadTransactions = () =>
   (dispatch) => {
-    dispatch(updateLoadingTransactions(true))
+    dispatch(updateLoadingTransactions())
     // fetch up to 10 pages of transactions
     getTransactions(dispatch, {}, (result, pageNo) => pageNo > 10)
       .then(transactions => {
         dispatch(transactionsReceived(transactions))
+      })
+      .catch((err) => {
+        dispatch(failedToLoadTransactions())
+        if (err.type === UNAUTHORIZED_ACCESS) {
+          dispatch(openLoginForm(true))
+        } else {
+          dispatch(updateStatus('Unknown error', color.orange))
+        }
       })
   }
 
@@ -123,6 +139,12 @@ const reducer = (state = initialState, action) => {
       break
     case 'transaction/RESET_TRANSACTIONS':
       state = initialState
+      break
+    case 'transaction/FAILED_TO_LOAD':
+      state = merge(state, {
+        loadingTransactions: false,
+        refreshing: false
+      })
       break
   }
   return state

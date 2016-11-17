@@ -2,6 +2,10 @@
 import merge from '../../util/merge'
 import { getAccountBalance } from '../../api/accounts'
 import { getAccountDetails } from '../../api/users'
+import { UNAUTHORIZED_ACCESS } from '../../api/apiError'
+import { openLoginForm } from './login'
+import { updateStatus } from './statusMessage'
+import color from '../../util/colors'
 
 const initialState = {
   loadingBalance: true,
@@ -20,14 +24,22 @@ const accountDetailsReceived = details => ({
   details
 })
 
+const handleAPIError = (dispatch) => (err) => {
+  if (err.type === UNAUTHORIZED_ACCESS) {
+    dispatch(openLoginForm(true))
+  } else {
+    dispatch(updateStatus('Unknown error', color.orange))
+  }
+}
+
 export const loadAccountDetails = () =>
   (dispatch) => {
     getAccountBalance(dispatch)
       .then(account => dispatch(accountBalanceReceived(account)))
-      .catch(console.error)
+      .catch(handleAPIError(dispatch))
     getAccountDetails(dispatch)
       .then(details => dispatch(accountDetailsReceived(details)))
-      .catch(console.error)
+      .catch(handleAPIError(dispatch))
   }
 
 const reducer = (state = initialState, action) => {

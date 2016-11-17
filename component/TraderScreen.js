@@ -19,10 +19,10 @@ import { buildDataSourceForTransactions } from '../util/transaction'
     dataSource: for trader transactions
     showModal: callback for opening or closing this view.
  */
-const TraderScreen = ({ trader, transactionsDataSource, showModal }) =>
+const TraderScreen = ({ trader, transactionsDataSource, showModal, loadingProfile }) =>
     <View style={{flex: 1}}>
       <TransactionList
-        renderHeader={asRenderHeader(trader, transactionsDataSource, showModal)}
+        renderHeader={asRenderHeader(trader, transactionsDataSource, showModal, loadingProfile)}
         dataSource={transactionsDataSource} />
       <View style={styles.footer}>
         <SendMoney
@@ -33,7 +33,7 @@ const TraderScreen = ({ trader, transactionsDataSource, showModal }) =>
 
 // Currently we pass in returned renderHeader as we delegate to a listView.
 // One alternative would be to encapsulate this and use `props.children` instead.
-const asRenderHeader = (trader, transactionsDataSource, showModal) => () =>
+const asRenderHeader = (trader, transactionsDataSource, showModal, loadingProfile) => () =>
   <View style={styles.flex}>
     <ProfileHeader
       name={trader.display}
@@ -44,9 +44,9 @@ const asRenderHeader = (trader, transactionsDataSource, showModal) => () =>
     />
     <View style={commonStyle.dropshadow}>
       <BusinessDetails business={trader} isExpanded={transactionsDataSource.getRowCount() === 0}/>
-      { trader.profilePopulated
-        ? undefined
-        : <ActivityIndicator style={styles.loadingSpinner} size='large'/> }
+      { loadingProfile
+        ? <ActivityIndicator style={styles.loadingSpinner} size='large'/>
+        : undefined }
     </View>
   </View>
 
@@ -61,7 +61,8 @@ const dataSourceForSelectedBusiness = (state) => {
 // Redux Setup
 const mapStateToProps = (state) => ({
     trader: state.business.businessList.find(b => b.id === state.business.selectedBusinessId),
-    transactionsDataSource: dataSourceForSelectedBusiness(state)
+    transactionsDataSource: dataSourceForSelectedBusiness(state),
+    loadingProfile: state.business.loadingProfile
 })
 
 const mapDispatchToProps = (dispatch) =>

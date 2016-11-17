@@ -1,6 +1,8 @@
 import _ from 'lodash'
 import merge from '../../util/merge'
 import { addContact } from '../../api/contacts'
+import { updateStatus } from './statusMessage'
+import color from '../../util/colors'
 
 const initialState = {
   personList: [],
@@ -16,6 +18,7 @@ export const selectAndLoadPerson = (personId) => (dispatch, getState) => {
         dispatch(updatePersonList(newContactsList))
         dispatch(selectPerson(personId))
       })
+      .catch(() => dispatch(updateStatus('Unknown error', color.orange)))
   } else {
     dispatch(selectPerson(personId))
   }
