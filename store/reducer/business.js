@@ -22,7 +22,8 @@ const initialState = {
     longitudeDelta: 0.006
   },
   searchMode: false,
-  loadingProfile: false
+  loadingProfile: false,
+  traderScreenBusinessId: undefined
 }
 
 export const businessListReceived = (businessList) => ({
@@ -69,6 +70,11 @@ const loadingBusinessProfile = () => ({
   type: 'business/LOADING_PROFILE'
 })
 
+const selectBusinessForModal = (id) => ({
+  type: 'business/SET_TRADER_SCREEN_ID',
+  id
+})
+
 export const loadBusinessProfile = (businessId) =>
   (dispatch) => {
     dispatch(loadingBusinessProfile())
@@ -90,7 +96,7 @@ export const loadBusinessProfile = (businessId) =>
 
 export const selectAndLoadBusiness = (businessId) =>
   (dispatch, getState) => {
-    dispatch(selectBusiness(businessId))
+    dispatch(selectBusinessForModal(businessId))
 
     // check to see whether we actually need to load the profile
     const businessList = getState().business.businessList
@@ -225,6 +231,7 @@ const reducer = (state = initialState, action) => {
         businessList: [],
         businessListTimestamp: null,
         closestBusinesses: [ ],
+        traderScreenBusinessId: undefined
       })
       break
 
@@ -239,6 +246,11 @@ const reducer = (state = initialState, action) => {
         loadingProfile: true
       })
       break
+
+    case 'business/SET_TRADER_SCREEN_ID':
+      state = merge(state, {
+        traderScreenBusinessId: action.id,
+      })
   }
   return state
 }

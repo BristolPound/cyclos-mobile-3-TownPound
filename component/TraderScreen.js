@@ -20,14 +20,14 @@ import { buildDataSourceForTransactions } from '../util/transaction'
     showModal: callback for opening or closing this view.
  */
 const TraderScreen = ({ trader, transactionsDataSource, showModal, loadingProfile }) =>
-  <View style={{flex: 1}}>
-    <TransactionList
-      renderHeader={asRenderHeader(trader, transactionsDataSource, showModal, loadingProfile)}
-      dataSource={transactionsDataSource} />
-    <SendMoney
-      payeeDisplay={trader.name}
-      payeeShortDisplay={trader.shortDisplay}/>
-  </View>
+    <View style={{flex: 1}}>
+      <TransactionList
+        renderHeader={asRenderHeader(trader, transactionsDataSource, showModal, loadingProfile)}
+        dataSource={transactionsDataSource} />
+        <SendMoney
+          payeeDisplay={trader.name}
+          payeeShortDisplay={trader.shortDisplay}/>
+      </View>
 
 // Currently we pass in returned renderHeader as we delegate to a listView.
 // One alternative would be to encapsulate this and use `props.children` instead.
@@ -51,14 +51,14 @@ const asRenderHeader = (trader, transactionsDataSource, showModal, loadingProfil
 // filter the transaction list to contain only those relating to this trader
 const dataSourceForSelectedBusiness = (state) => {
   const transactions = state.transaction.transactions.filter(transaction =>
-      transaction.relatedAccount.kind === 'user' && transaction.relatedAccount.user.id === state.business.selectedBusinessId)
+      transaction.relatedAccount.kind === 'user' && transaction.relatedAccount.user.id === state.business.traderScreenBusinessId)
 
   return buildDataSourceForTransactions(transactions)
 }
 
 // Redux Setup
 const mapStateToProps = (state) => ({
-    trader: state.business.businessList.find(b => b.id === state.business.selectedBusinessId) || {},
+    trader: state.business.businessList.find(b => b.id === state.business.traderScreenBusinessId) || {},
     transactionsDataSource: dataSourceForSelectedBusiness(state),
     loadingProfile: state.business.loadingProfile
 })
