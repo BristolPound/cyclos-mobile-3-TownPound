@@ -3,9 +3,34 @@ import React from 'react'
 import HTMLView from 'react-native-htmlview'
 import {View, Text, TouchableOpacity, Linking } from 'react-native'
 
-import styles from '../profileScreen/ProfileStyle' // Really ought to be a differently named file.
+import commonStyle, { headerMargin } from '../style'
 import ViewFields from './ViewFields'
 import addresses from '../../util/addresses'
+import colors from '../../util/colors'
+
+const styles = {
+  description: {
+    marginLeft: headerMargin,
+    marginRight: headerMargin,
+    marginTop: 18,
+    marginBottom: 18
+  },
+  minorButtonText: {
+    fontFamily: commonStyle.font.museo500,
+    alignSelf: 'center',
+    color: colors.bristolBlue,
+    backgroundColor: colors.transparent,
+    fontSize: 14,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  separator: {
+    borderBottomColor: colors.gray5,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.gray5,
+    borderTopWidth: StyleSheet.hairlineWidth
+  },
+}
 
 // If expanded, display all items and the description.
 // If not expanded, then display only the first two (non-description) items, as well as a link to display any more.
@@ -100,8 +125,8 @@ function getFields(business) {
 function renderDescription(description) {
   return (description) ?
     <View>
-      <View style={styles.separator}/>
-      <View style={styles.businessDetails.description} accessibilityLabel='Business Description'>
+      <View style={commonStyle.separator}/>
+      <View style={styles.description} accessibilityLabel='Business Description'>
         <HTMLView value={description} onLinkPress={(url) => Linking.openURL(url)}/>
       </View>
     </View>
@@ -114,12 +139,12 @@ function renderFields(fields) {
 
 function renderExpander(expandDetailsFn) {
   return <View>
-    <View style={styles.separator}/>
+    <View style={commonStyle.separator}/>
     <TouchableOpacity
       onPress={expandDetailsFn}
       accessiblityLabel='View Full Details'
     >
-      <View><Text style={styles.minorButton.text}>View Details</Text></View>
+      <View><Text style={styles.minorButtonText}>View Details</Text></View>
     </TouchableOpacity>
   </View>
 }
