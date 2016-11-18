@@ -12,9 +12,14 @@ const styles = {
     topSpace: {
       height: 58
     },
-    closeIcon: {
+    closeButton: {
       marginLeft: headerMargin,
       marginTop: 40,
+      height: 38,
+      width: 38
+    },
+    closeIcon: {
+      margin: 10,
       height: 18,
       width: 18
     },
