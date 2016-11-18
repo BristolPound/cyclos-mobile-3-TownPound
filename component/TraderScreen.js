@@ -25,7 +25,7 @@ const TraderScreen = ({ trader, transactionsDataSource, showModal, loadingProfil
         renderHeader={asRenderHeader(trader, transactionsDataSource, showModal, loadingProfile)}
         dataSource={transactionsDataSource} />
         <SendMoney
-          payeeDisplay={trader.name}
+          payeeDisplay={trader.display}
           payeeShortDisplay={trader.shortDisplay}/>
       </View>
 

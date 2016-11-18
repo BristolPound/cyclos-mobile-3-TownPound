@@ -64,9 +64,9 @@ class InputComponent extends React.Component {
   }
 
   render() {
-    let { onButtonPress, buttonText, loading, input, invalidInput, textBelowInput } = this.props
+    let { onButtonPress, buttonText, loading, input, invalidInput, textBelowInput, description } = this.props
 
-    return <View style={styles.container}>
+    return <View style={styles.container} accessibilityLabel={description}>
       <TouchableHighlight
           onPress={() => !invalidInput && onButtonPress ? onButtonPress() : undefined }>
         <View style={merge(styles.buttonContainer, invalidInput ? {backgroundColor: color.gray} : {})}>
