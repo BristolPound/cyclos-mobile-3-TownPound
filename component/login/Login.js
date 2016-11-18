@@ -7,7 +7,7 @@ import colors from '../../util/colors'
 import merge from '../../util/merge'
 import * as actions from '../../store/reducer/login'
 import commonStyle from '../style'
-import KeyboardComponent from '../common/KeyboardComponent'
+import KeyboardComponent from '../KeyboardComponent'
 
 const style = {
   loginContainer: {
