@@ -47,14 +47,14 @@ const renderRow = (transaction, openDetailsModal) =>
     </View>
   </TouchableHighlight>
 
-const TransactionList = (props) => {
+const SpendingTab = (props) => {
   let bodyComponent
   if (props.loadingTransactions) {
     bodyComponent = <ActivityIndicator size='large' style={styles.loadingIndicator}/>
   } else if (props.transactions.length > 0) {
     bodyComponent = <ListView
         tabLabel='Transactions'
-        style={styles.transactionList}
+        style={styles.spendingTab}
         pageSize={10}
         renderSeparator={renderSeparator}
         enableEmptySections={true}
@@ -89,4 +89,4 @@ const mapStateToProps = (state) => ({
   ...state.transaction
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(TransactionList)
+export default connect(mapStateToProps, mapDispatchToProps)(SpendingTab)
