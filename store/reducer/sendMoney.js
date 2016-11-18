@@ -1,6 +1,6 @@
 import { makePayment } from '../../api/payments'
 import merge from '../../util/merge'
-import { loadTransactionsAfterLast } from './transaction'
+import { loadMoreTransactions } from './transaction'
 import { UNEXPECTED_ERROR } from '../../api/apiError'
 
 const initialState = {
@@ -43,16 +43,12 @@ export const sendTransaction = () =>
         description: 'Test description',
         amount: getState().sendMoney.amount
       }, dispatch)
-      .then(response => {
-        if (response.status === 201) {
-          dispatch(loadTransactionsAfterLast())
-          dispatch(transactionComplete(true))
-        } else {
-          dispatch(transactionComplete(false, 'Transaction did not complete.'))
-        }
+      .then(() => {
+        dispatch(loadMoreTransactions())
+        dispatch(transactionComplete(true))
       })
       .catch(err => {
-        if (err.type === UNEXPECTED_ERROR && err.json) {
+        if (err.type === UNEXPECTED_ERROR) {
           switch (err.json.code) {
             case 'dailyAmountExceeded':
               dispatch(transactionComplete(false, 'Daily amount has been exceeded.'))

@@ -72,7 +72,7 @@ class SendMoney extends React.Component {
         break
       case Page.PaymentComplete: // payment completed
         inputProps = merge(inputProps, {
-          buttonText: 'Payment: ' + (this.props.success ? 'Successful' : ('Failed.' + this.props.message)),
+          buttonText: this.props.message,
           onButtonPress: () => { this.props.resetForm(); this.nextPage() },
           description: 'Payment Complete',
         })
