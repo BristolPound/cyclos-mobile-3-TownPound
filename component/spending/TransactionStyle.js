@@ -8,7 +8,7 @@ const IMAGE_SIZE = 42
 const IMAGE_MARGIN = 14
 
 const styles = {
-  transactionList: {
+  spendingTab: {
     marginTop: HEADER_HEIGHT
   },
   container: {

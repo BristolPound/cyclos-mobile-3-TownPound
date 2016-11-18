@@ -9,7 +9,7 @@ import { openLoginForm } from '../store/reducer/login'
 import TabBar from './tabbar/TabBar'
 import SearchTab from './searchTab/SearchTab'
 import NetworkConnection from './NetworkConnection'
-import TransactionList from './spending/TransactionList'
+import SpendingTab from './spending/SpendingTab'
 import Account from './Account'
 import LoginToView, { emptyStateImage } from './loggedOutState/LoginToView'
 import Login from './login/Login'
@@ -78,7 +78,7 @@ const Tabs = (props) =>
       </WithNetworkConnection>
       <WithNetworkConnection tabLabel='Spending'>
         { props.loggedIn
-          ? <TransactionList/>
+          ? <SpendingTab/>
           : <LoginToView
               image={emptyStateImage.spending}
               lineOne='Login to view'
