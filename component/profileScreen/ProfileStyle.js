@@ -15,8 +15,6 @@ const styles = {
     closeButton: {
       marginLeft: headerMargin,
       marginTop: 40,
-      height: 38,
-      width: 38
     },
     closeIcon: {
       margin: 10,
