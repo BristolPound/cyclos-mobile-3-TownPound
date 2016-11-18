@@ -1,28 +1,36 @@
 import React from 'react'
-import { ActivityIndicator } from 'react-native'
+import { ActivityIndicator, View } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from '../store/reducer/navigation'
 import modalState from '../store/reducer/modalState'
-import ProfileScreen from './profileScreen/ProfileScreen'
+import ProfileHeader from './profileScreen/ProfileHeader'
+import TransactionList from './profileScreen/TransactionList'
 import { buildDataSourceForTransactions } from '../util/transaction'
+
+const renderHeader = props => () =>
+  <View style={{flex: 1}}>
+    <ProfileHeader {...props}/>
+    {props.renderHeaderExtension()}
+  </View>
 
 const PersonScreen = ({selectedPerson, dataSource, showModal}) => (
   selectedPerson
-    ? <ProfileScreen
-        loaded={true}
-        image={selectedPerson.image}
-        category={'person'}
-        defaultImage={!Boolean(selectedPerson.image)}
-        name={'@'+(selectedPerson.username)}
-        username={''}
-        renderHeaderExtension={() => null}
-        dataSource={dataSource}
-        onPressClose={() => showModal(modalState.none)}
-        onPressExpand={()=> showModal(modalState.none)}/>
+    ? <TransactionList
+        renderHeader={renderHeader({
+          loaded: true,
+          image: selectedPerson.image,
+          category: 'person',
+          name: '@' + selectedPerson.username,
+          username: '',
+          renderHeaderExtension: () => null,
+          dataSource,
+          onPressClose: () => showModal(modalState.none),
+          onPressExpand: () => showModal(modalState.none),
+        })}
+        dataSource={dataSource}/>
     : <ActivityIndicator size='large'/>
 )
-
 
 // filter the transaction list to contain only those relating to this trader
 const dataSourceForSelectedPerson = (state) => {
