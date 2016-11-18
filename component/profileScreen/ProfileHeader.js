@@ -23,7 +23,7 @@ const ProfileHeader = (props) =>
 
 const renderCloseIcon = (props) =>
   <View style={styles.rowLayout}>
-    <TouchableHighlight
+    <TouchableHighlight style={styles.header.closeButton}
       onPress={props.onPressClose}
       underlayColor={color.white}>
       <Image
