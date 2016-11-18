@@ -8,12 +8,6 @@ const listMargin = 14
 const styles = {
   flex: {flex: 1},
   rowLayout: {flexDirection: 'row', justifyContent: 'space-between', flex: 1},
-  separator: {
-    borderBottomColor: colors.gray5,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.gray5,
-    borderTopWidth: StyleSheet.hairlineWidth
-  },
   header: {
     topSpace: {
       height: 58
@@ -50,25 +44,6 @@ const styles = {
       fontSize: 18,
       color: colors.gray,
       backgroundColor: colors.transparent
-    },
-  },
-  businessDetails: {
-    description: {
-      marginLeft: headerMargin,
-      marginRight: headerMargin,
-      marginTop: 18,
-      marginBottom: 18
-    }
-  },
-  minorButton: {
-    text: {
-      fontFamily: commonStyle.font.museo500,
-      alignSelf: 'center',
-      color: colors.bristolBlue,
-      backgroundColor: colors.transparent,
-      fontSize: 14,
-      marginTop: 10,
-      marginBottom: 10,
     },
   },
   list: {
@@ -125,9 +100,6 @@ const styles = {
     flex: 1,
     flexDirection: 'column-reverse'
   },
-  loadingSpinner: {
-    marginBottom: 10
-  }
 }
 
 export default styles

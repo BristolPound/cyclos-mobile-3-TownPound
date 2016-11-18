@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux'
 import { View, ActivityIndicator } from 'react-native'
 import * as actions from '../store/reducer/navigation'
 import modalState from '../store/reducer/modalState'
-import styles from './profileScreen/ProfileStyle'
 import commonStyle from './style'
 import TransactionList from './profileScreen/TransactionList'
 import ProfileHeader from './profileScreen/ProfileHeader'
@@ -32,7 +31,7 @@ const TraderScreen = ({ trader, transactionsDataSource, showModal, loadingProfil
 // Currently we pass in returned renderHeader as we delegate to a listView.
 // One alternative would be to encapsulate this and use `props.children` instead.
 const asRenderHeader = (trader, transactionsDataSource, showModal, loadingProfile) => () =>
-  <View style={styles.flex}>
+  <View style={{flex: 1}}>
     <ProfileHeader
       name={trader.display}
       username={trader.shortDisplay}
@@ -43,7 +42,7 @@ const asRenderHeader = (trader, transactionsDataSource, showModal, loadingProfil
     <View style={commonStyle.dropshadow}>
       <BusinessDetails business={trader} isExpanded={transactionsDataSource.getRowCount() === 0}/>
       { loadingProfile
-        ? <ActivityIndicator style={styles.loadingSpinner} size='large'/>
+        ? <ActivityIndicator style={{marginBottom: 10}} size='large'/>
         : undefined }
     </View>
   </View>
