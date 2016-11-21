@@ -7,7 +7,7 @@ import DefaultText from '../DefaultText'
 import Price from '../Price'
 import * as actions from '../../store/reducer/transaction'
 import { isSameMonth, format } from '../../util/date'
-import styles from './TransactionStyle'
+import styles from './spendingStyle'
 
 export const toMonthString = month =>
   isSameMonth(month, new Date()) ? 'Spent This Month' : format(month, 'MMMM')
@@ -30,7 +30,7 @@ const MonthOption = ({monthTotal, distanceFromCentre}) =>
         center={true} />
   </View>
 
-class TransactionHeader extends React.Component {
+class SpendingHeader extends React.Component {
   render() {
     if (this.refs.carousel) {
       // HACK: The carousel control doesn't have a property for the current page, instead it uses
@@ -64,4 +64,4 @@ const mapDispatchToProps = (dispatch) => bindActionCreators(actions, dispatch)
 
 const mapStateToProps = (state) => ({...state.transaction})
 
-export default connect(mapStateToProps, mapDispatchToProps)(TransactionHeader)
+export default connect(mapStateToProps, mapDispatchToProps)(SpendingHeader)
