@@ -1,9 +1,6 @@
 import colors from '../../util/colors'
 
 const styles = {
-  container: {
-    marginBottom: 18
-  },
   field: {
     flexDirection: 'row',
     paddingTop: 1,
