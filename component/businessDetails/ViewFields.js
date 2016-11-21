@@ -12,7 +12,7 @@ import styles from './ViewFieldsStyle'
  */
 
 const ViewFields = ({fields}) =>
-    <View style={styles.container}>
+    <View>
         {fields.map((field) => (
             // 'key' is magic so isn't passed down into the method.
             // Hence define a duplicate accessibilityLabel.

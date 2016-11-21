@@ -2,7 +2,6 @@ import _ from 'lodash'
 import merge from '../../util/merge'
 import { selectAndLoadBusiness } from './business'
 import { selectAndLoadPerson } from './person'
-import modalState from './modalState'
 import { LOGGED_OUT, LOGGED_IN } from './login'
 
 const initialState = {
@@ -24,6 +23,13 @@ export const returningLogin = () => ({
 export const stateInitialised = () => ({
   type: 'navigation/STATE_INITIALIZED'
 })
+
+export const modalState = {
+  none: 'none',
+  traderScreen: 'traderScreen',
+  personScreen: 'personScreen',
+  developerOptions: 'developerOptions',
+}
 
 export const openDetailsModal = id =>
   (dispatch, getState) => {

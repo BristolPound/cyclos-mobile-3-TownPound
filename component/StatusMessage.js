@@ -7,7 +7,7 @@ import merge from '../util/merge'
 import commonStyle from './style'
 import { connect } from 'react-redux'
 import { updateStatus } from '../store/reducer/statusMessage'
-import modalState from '../store/reducer/modalState'
+import { modalState } from '../store/reducer/navigation'
 
 const style = {
   container: {
