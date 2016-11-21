@@ -1,6 +1,5 @@
 import React from 'react'
 import { Image } from 'react-native'
-import _ from 'lodash'
 
 const ProfileImage = ({img, category, style}) => {
   if (img) {
@@ -18,10 +17,7 @@ const ProfileImage = ({img, category, style}) => {
       break
   }
 
-  // remove any borders from the style
-  const borderlessStyle = _.pickBy(style, (_, key) => !key.startsWith('border'))
-
-  return <Image style={borderlessStyle} source={imgSource}/>
+  return <Image style={style} source={imgSource}/>
 }
 
 export default ProfileImage
