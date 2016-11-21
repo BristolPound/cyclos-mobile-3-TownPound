@@ -1,7 +1,7 @@
 import React from 'react'
 
 import HTMLView from 'react-native-htmlview'
-import {View, Text, TouchableOpacity, Linking } from 'react-native'
+import { View, Text, TouchableOpacity, Linking, StyleSheet } from 'react-native'
 
 import commonStyle, { headerMargin } from '../style'
 import ViewFields from './ViewFields'

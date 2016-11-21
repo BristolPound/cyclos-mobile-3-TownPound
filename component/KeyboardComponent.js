@@ -1,6 +1,6 @@
 import React from 'react'
 import { Keyboard } from 'react-native'
-import PLATFORM from '../../util/Platforms'
+import PLATFORM from '../util/Platforms'
 
 /**
  * Offer common keyboard resizing rules to smooth out the difference between Android and iOS.

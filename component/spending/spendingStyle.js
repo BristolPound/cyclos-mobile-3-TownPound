@@ -2,14 +2,16 @@ import color from '../../util/colors'
 import marginOffset from '../../util/marginOffset'
 import commonStyle, { dimensions } from '../style'
 import { baselineDeltaForFonts } from '../DefaultText'
+import { TAB_BAR_HEIGHT } from '../tabbar/TabBar'
 
 const HEADER_HEIGHT = marginOffset(90)
 const IMAGE_SIZE = 42
 const IMAGE_MARGIN = 14
 
 const styles = {
-  spendingTab: {
-    marginTop: HEADER_HEIGHT
+  list: {
+    marginTop: HEADER_HEIGHT,
+    marginBottom: TAB_BAR_HEIGHT
   },
   container: {
     flex: 1

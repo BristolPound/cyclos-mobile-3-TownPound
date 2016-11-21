@@ -2,16 +2,15 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { ListView, View, ActivityIndicator, TouchableHighlight, RefreshControl } from 'react-native'
+import moment from 'moment'
 import ProfileImage from '../profileImage/ProfileImage'
-import TransactionHeader from './TransactionHeader'
+import SpendingHeader from './SpendingHeader'
 import DefaultText from '../DefaultText'
 import Price from '../Price'
 import color from '../../util/colors'
 import * as actions from '../../store/reducer/transaction'
 import { openDetailsModal, navigateToTransactionTab } from '../../store/reducer/navigation'
-import moment from 'moment'
-
-import styles from './TransactionStyle'
+import styles from './spendingStyle'
 
 const renderSeparator = (sectionID, rowID) =>
   <View style={styles.separator} key={`sep:${sectionID}:${rowID}`}/>
@@ -54,7 +53,7 @@ const SpendingTab = (props) => {
   } else if (props.transactions.length > 0) {
     bodyComponent = <ListView
         tabLabel='Transactions'
-        style={styles.spendingTab}
+        style={styles.list}
         pageSize={10}
         renderSeparator={renderSeparator}
         enableEmptySections={true}
@@ -73,8 +72,8 @@ const SpendingTab = (props) => {
   }
 
   return <View style={styles.container}>
+      <SpendingHeader />
       {bodyComponent}
-      <TransactionHeader />
     </View>
 }
 
