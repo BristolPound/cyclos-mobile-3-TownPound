@@ -1,6 +1,6 @@
 import React from 'react'
 import {View, Image} from 'react-native'
-import DefaultText from '../DefaultText'
+import {MultilineText} from '../DefaultText'
 import styles from './ViewFieldsStyle'
 
 /* Expects an array of elements matching
@@ -26,7 +26,7 @@ const Field = ({icon, text, accessibilityLabel}) =>
     <View style={styles.field}>
         <Image style={styles.image} source={icon}/>
         <View style={styles.item} accessibilityLabel={accessibilityLabel}>
-            <DefaultText style={styles.text}>{text}</DefaultText>
+            <MultilineText style={styles.text}>{text}</MultilineText>
         </View>
     </View>
 

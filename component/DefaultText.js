@@ -45,4 +45,21 @@ class DefaultText extends Component {
   }
 }
 
+export class MultilineText extends Component {
+  setNativeProps(nativeProps) {
+    this._root.setNativeProps(nativeProps)
+  }
+
+  render() {
+    const newStyle = merge(style, this.props.style)
+    return (
+      <Text
+          ref={component => this._root = component}
+          {...merge(this.props, {style: newStyle})}>
+        {this.props.children}
+      </Text>
+    )
+  }
+}
+
 export default DefaultText
