@@ -22,7 +22,6 @@ const style = {
     height: TAB_BAR_HEIGHT,
     flexDirection: 'row',
     alignItems: 'stretch',
-    position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
