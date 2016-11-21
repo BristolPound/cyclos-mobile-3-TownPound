@@ -46,35 +46,48 @@ const renderRow = (transaction, openDetailsModal) =>
     </View>
   </TouchableHighlight>
 
-const SpendingTab = (props) => {
-  let bodyComponent
-  if (props.loadingTransactions) {
-    bodyComponent = <ActivityIndicator size='large' style={styles.loadingIndicator}/>
-  } else if (props.transactions.length > 0) {
-    bodyComponent = <ListView
-        tabLabel='Transactions'
-        style={styles.list}
-        pageSize={10}
-        renderSeparator={renderSeparator}
-        enableEmptySections={true}
-        renderRow={transaction => renderRow(transaction, props.openDetailsModal)}
-        dataSource={props.transactionsDataSource}
-        renderSectionHeader={renderSectionHeader}
-        refreshControl={<RefreshControl
-          refreshing={props.refreshing}
-          onRefresh={() => !props.refreshing ? props.loadMoreTransactions() : undefined} />
-        }/>
-  } else {
-    bodyComponent = <View style={styles.noTransactions.container}>
-      <DefaultText style={styles.noTransactions.text}>You have made no transactions</DefaultText>
-      <DefaultText style={styles.noTransactions.text}>this month</DefaultText>
-    </View>
-  }
 
-  return <View style={styles.container}>
-      <SpendingHeader />
-      {bodyComponent}
-    </View>
+class SpendingTab extends React.Component {
+  componentWillReceiveProps() {
+    if (this.listViewRef) {
+      // Yes, ListView really wants us to call this twice
+      this.listViewRef.scrollTo({ y: 0 })
+      this.listViewRef.scrollTo({ y: 0 })
+    }
+  }
+  render() {
+    let bodyComponent
+    if (this.props.loadingTransactions) {
+      bodyComponent = <ActivityIndicator size='large' style={styles.loadingIndicator}/>
+    } else if (this.props.transactions.length > 0) {
+      bodyComponent = <ListView
+          ref={(lv) => this.listViewRef = lv}
+          tabLabel='Transactions'
+          style={styles.list}
+          pageSize={10}
+          renderSeparator={renderSeparator}
+          enableEmptySections={true}
+          renderRow={transaction => renderRow(transaction, this.props.openDetailsModal)}
+          dataSource={this.props.transactionsDataSource}
+          renderSectionHeader={renderSectionHeader}
+          refreshControl={<RefreshControl
+            refreshing={this.props.refreshing}
+            onRefresh={() => !this.props.refreshing ? this.props.loadMoreTransactions() : undefined} />
+          }/>
+    } else {
+      bodyComponent = <View style={styles.noTransactions.container}>
+        <DefaultText style={styles.noTransactions.text}>You have made no transactions</DefaultText>
+        <DefaultText style={styles.noTransactions.text}>this month</DefaultText>
+      </View>
+    }
+
+    return (
+      <View style={styles.container}>
+        <SpendingHeader />
+        {bodyComponent}
+      </View>
+    )
+  }
 }
 
 const mapDispatchToProps = (dispatch) =>
