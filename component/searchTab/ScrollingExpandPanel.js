@@ -1,5 +1,5 @@
 import React from 'react'
-import { Animated, Easing, View } from 'react-native'
+import { Animated, Easing } from 'react-native'
 import _ from 'lodash'
 
 // How far to drag it before it switches between expanded/collapsed states
