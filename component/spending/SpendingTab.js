@@ -59,7 +59,7 @@ class SpendingTab extends React.Component {
     let bodyComponent
     if (this.props.loadingTransactions) {
       bodyComponent = <ActivityIndicator size='large' style={styles.loadingIndicator}/>
-    } else if (this.props.transactions.length > 0) {
+    } else if (this.props.transactionsDataSource.getRowCount()) {
       bodyComponent = <ListView
           ref={(lv) => this.listViewRef = lv}
           tabLabel='Transactions'
