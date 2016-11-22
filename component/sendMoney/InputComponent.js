@@ -5,15 +5,11 @@ import color from '../../util/colors'
 import merge from '../../util/merge'
 
 const { width } = Dimensions.get('window')
-const sectionHeight = 40
+export const sectionHeight = 40
 
 const styles = {
   container: {
-    flex: 0,
-    position: 'absolute',
-    width: width,
     backgroundColor: 'white',
-    bottom: 0
   },
   buttonContainer: {
     height: sectionHeight,
