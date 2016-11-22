@@ -46,7 +46,8 @@ export const openDetailsModal = id =>
     if (_.some(getState().business.businessList, b => b.id === id)) {
       dispatch(openTraderModal(id))
     } else {
-      dispatch(openPersonModal(id))
+      // Person screen not implemented. Do nothing
+      // dispatch(openPersonModal(id))
     }
   }
 
