@@ -2,6 +2,8 @@ import React from 'react'
 import Tabs from './Tabs'
 import { View } from 'react-native'
 import ReturningLogin from './login/ReturningLogin'
+import Onboarding from './login/Onboarding'
+import { mainComponent } from '../store/reducer/navigation'
 import { connect } from 'react-redux'
 
 const Root = (props) => {
@@ -13,10 +15,14 @@ const Root = (props) => {
       <View style={{flex: 1}}/>
     )
   }
-  if (props.returningLogin) {
-    return <ReturningLogin/>
+  if (props.mainComponent === mainComponent.returningLogin) {
+    return <ReturningLogin />
+  } else if (props.mainComponent === mainComponent.onboarding) {
+    return <Onboarding />
+  } else if (props.mainComponent === mainComponent.tabs){
+    return <Tabs />
   } else {
-    return <Tabs/>
+    throw new Error('Invalid navigation state')
   }
 }
 

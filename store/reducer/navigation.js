@@ -11,10 +11,16 @@ export const modalState = {
   developerOptions: 'developerOptions',
 }
 
+export const mainComponent = {
+  onboarding: 'onboarding',
+  returningLogin: 'returningLogin',
+  tabs: 'tabs',
+}
+
 const initialState = {
   tabIndex: 0,
   modalState: modalState.none,
-  returningLogin: false,
+  mainComponent: mainComponent.onboarding,
   stateInitialised: false
 }
 
@@ -23,8 +29,9 @@ export const navigateToTab = (tabIndex) => ({
   tabIndex
 })
 
-export const returningLogin = () => ({
-  type: 'navigation/RETURNING_LOGIN'
+export const selectMainComponent = (componentName) => ({
+  type: 'navigation/SELECT_MAIN_COMPONENT',
+  componentName
 })
 
 export const stateInitialised = () => ({
@@ -75,12 +82,12 @@ const reducer = (state = initialState, action) => {
     case LOGGED_OUT:
     case LOGGED_IN:
       state = merge(state, {
-        returningLogin: false
+        mainComponent: mainComponent.tabs
       })
       break
-    case 'navigation/RETURNING_LOGIN':
+    case 'navigation/SELECT_MAIN_COMPONENT':
       state = merge(state, {
-        returningLogin: true
+        mainComponent: action.componentName
       })
       break
     case 'navigation/STATE_INITIALIZED':
