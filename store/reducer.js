@@ -4,7 +4,7 @@ import { NetInfo } from 'react-native'
 import transaction from './reducer/transaction'
 import business, { loadBusinessList, geolocationChanged } from './reducer/business'
 import person from './reducer/person'
-import navigation, { returningLogin, stateInitialised } from './reducer/navigation'
+import navigation, { selectMainComponent, mainComponent, stateInitialised } from './reducer/navigation'
 import login from './reducer/login'
 import sendMoney from './reducer/sendMoney'
 import account from './reducer/account'
@@ -45,6 +45,6 @@ export const initialise = (store) => {
 
   store.dispatch(stateInitialised())
   if (store.getState().login.loggedInUsername) {
-    store.dispatch(returningLogin())
+    store.dispatch(selectMainComponent(mainComponent.returningLogin))
   }
 }
