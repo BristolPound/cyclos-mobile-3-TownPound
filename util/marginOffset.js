@@ -1,7 +1,7 @@
 import PLATFORM from './Platforms'
+import {StatusBar} from 'react-native'
 
 const marginOffset = (val) =>
-// TODO: Status bar height is different on different devices - https://www.npmjs.com/package/react-native-extra-dimensions-android
-  PLATFORM.isAndroid() ? val - 25 : val
+  PLATFORM.isAndroid() ? val - StatusBar.currentHeight : val
 
 export default marginOffset
