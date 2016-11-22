@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { Text } from 'react-native'
+import { Text, Linking, TouchableHighlight } from 'react-native'
 import colors from '../util/colors'
 import merge from '../util/merge'
 import commonStyle from './style'
@@ -61,5 +61,16 @@ export class MultilineText extends Component {
     )
   }
 }
+
+export const HyperlinkText = ({text, link, style}) =>
+  <TouchableHighlight underlayColor='transparent'
+    onPress={() => Linking.openURL(link)}>
+    <DefaultText style={{
+      textDecorationLine: 'underline',
+      ...style,
+    }}>
+      {text}
+    </DefaultText>
+  </TouchableHighlight>
 
 export default DefaultText
