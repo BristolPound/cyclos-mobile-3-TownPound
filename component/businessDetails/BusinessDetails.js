@@ -1,19 +1,18 @@
 import React from 'react'
 
 import HTMLView from 'react-native-htmlview'
-import { View, Text, TouchableOpacity, Linking, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, Linking, StyleSheet, Image } from 'react-native'
 
-import commonStyle, { headerMargin } from '../style'
-import ViewFields from './ViewFields'
+import { MultilineText } from '../DefaultText'
+import commonStyle from '../style'
 import addresses from '../../util/addresses'
 import colors from '../../util/colors'
 
 const styles = {
   description: {
-    marginLeft: headerMargin,
-    marginRight: headerMargin,
+    marginLeft: 24,
+    marginRight: 24,
     marginTop: 18,
-    marginBottom: 18
   },
   minorButtonText: {
     fontFamily: commonStyle.font.museo500,
@@ -21,14 +20,38 @@ const styles = {
     color: colors.bristolBlue,
     backgroundColor: colors.transparent,
     fontSize: 14,
-    marginTop: 10,
-    marginBottom: 10,
+    marginTop: 18,
+    marginBottom: 18,
   },
   separator: {
     borderBottomColor: colors.gray5,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderTopColor: colors.gray5,
     borderTopWidth: StyleSheet.hairlineWidth
+  },
+  field: {
+    flexDirection: 'row',
+    paddingTop: 1,
+    backgroundColor: colors.white,
+    marginTop: 18,
+    marginLeft: 24,
+    marginRight: 24
+  },
+  image: {
+    height: 20,
+    width: 18,
+    marginTop: 1,
+    marginRight:16
+  },
+  item: {
+    flexDirection:'column',
+    flex: 1
+  },
+  text: {
+    flex:1,
+    fontSize: 16,
+    color: colors.gray1,
+    flexWrap: 'wrap'
   },
 }
 
@@ -124,8 +147,8 @@ function getFields(business) {
 // 'this._validateURL is not a function'
 function renderDescription(description) {
   return (description) ?
-    <View>
-      <View style={commonStyle.separator}/>
+    <View style={{paddingTop: 12}}>
+      <View style={styles.separator}/>
       <View style={styles.description} accessibilityLabel='Business Description'>
         <HTMLView value={description} onLinkPress={(url) => Linking.openURL(url)}/>
       </View>
@@ -138,15 +161,34 @@ function renderFields(fields) {
 }
 
 function renderExpander(expandDetailsFn) {
-  return <View>
-    <View style={commonStyle.separator}/>
+  return <View style={{paddingTop: 12}}>
+    <View style={styles.separator}/>
     <TouchableOpacity
       onPress={expandDetailsFn}
       accessiblityLabel='View Full Details'
     >
-      <View><Text style={styles.minorButtonText}>View Details</Text></View>
+      <View><Text style={styles.minorButtonText}>VIEW DETAILS</Text></View>
     </TouchableOpacity>
   </View>
 }
+
+const ViewFields = ({fields}) =>
+    <View>
+        {fields.map((field) => (
+            // 'key' is magic so isn't passed down into the method.
+            // Hence define a duplicate accessibilityLabel.
+            field.text ?
+                <Field key={field.key} icon={field.icon} text={field.text} accessibilityLabel={field.key}/>
+                : null
+        ))}
+    </View>
+
+const Field = ({icon, text, accessibilityLabel}) =>
+    <View style={styles.field}>
+        <Image style={styles.image} source={icon}/>
+        <View style={styles.item} accessibilityLabel={accessibilityLabel}>
+            <MultilineText style={styles.text}>{text}</MultilineText>
+        </View>
+    </View>
 
 export default BusinessDetails

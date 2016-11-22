@@ -1,25 +1,29 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Dimensions } from 'react-native'
 import colors from '../../util/colors'
 import commonStyle, { dimensions } from '../style'
+import marginOffset from '../../util/marginOffset'
 
 const headerMargin = 24
 const listMargin = 14
 
 const styles = {
-  flex: {flex: 1},
-  rowLayout: {flexDirection: 'row', justifyContent: 'space-between', flex: 1},
   header: {
-    topSpace: {
-      height: 58
+    container: {
+      marginTop: marginOffset(0),
     },
     closeButton: {
+      position: 'absolute',
       marginLeft: headerMargin,
       marginTop: 40,
+      zIndex: 100,
     },
     closeIcon: {
       margin: 10,
       height: 18,
       width: 18
+    },
+    center: {
+      alignItems: 'center',
     },
     expandIcon: {
       marginRight: headerMargin,
@@ -28,25 +32,26 @@ const styles = {
     },
     businessLogo: {
       ...dimensions(84),
-      alignSelf: 'center',
+      marginTop: 58,
       borderColor: colors.bristolBlue,
-      borderRadius: 5,
+      borderRadius: 9,
       borderWidth: 2
     },
     title: {
       fontFamily: commonStyle.font.museo500,
-      alignSelf: 'center',
       marginTop: 8,
       fontSize: 20,
-      color: colors.offBlack,
-      backgroundColor: colors.transparent
+      color: colors.offBlack
     },
     subtitle: {
-      alignSelf: 'center',
       marginBottom: 46,
       fontSize: 18,
-      color: colors.gray,
-      backgroundColor: colors.transparent
+      color: colors.gray
+    },
+    backgroundImage: {
+      height: 242,
+      width: Dimensions.get('window').width,
+      position: 'absolute'
     },
   },
   list: {
@@ -74,21 +79,6 @@ const styles = {
       flex: 1,
       width: 90,
       alignSelf: 'center'
-    },
-    sectionBorder: {
-      borderColor: colors.gray5,
-      borderWidth: StyleSheet.hairlineWidth,
-    },
-    sectionHeader: {
-      backgroundColor: colors.offWhite,
-      flexDirection: 'row'
-    },
-    sectionHeaderText: {
-      color: colors.gray3,
-      fontSize: 14,
-      marginLeft: listMargin,
-      marginTop: 10,
-      marginBottom: 10
     },
     separator: {
       marginLeft: listMargin,

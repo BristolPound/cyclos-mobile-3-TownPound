@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux'
 import { View, ActivityIndicator } from 'react-native'
 import * as actions from '../store/reducer/navigation'
 import { modalState } from '../store/reducer/navigation'
-import commonStyle from './style'
 import TransactionList from './profileScreen/TransactionList'
 import ProfileHeader from './profileScreen/ProfileHeader'
 import BusinessDetails from './businessDetails/BusinessDetails'
@@ -12,12 +11,6 @@ import BusinessDetails from './businessDetails/BusinessDetails'
 import SendMoney from './sendMoney/SendMoney'
 import { buildDataSourceForTransactions } from '../util/transaction'
 
-/**
- Where
-    trader: selectedBusiness
-    dataSource: for trader transactions
-    showModal: callback for opening or closing this view.
- */
 const TraderScreen = ({ trader, transactionsDataSource, showModal, loadingProfile }) =>
     <View style={{flex: 1}}>
       <TransactionList
@@ -25,7 +18,7 @@ const TraderScreen = ({ trader, transactionsDataSource, showModal, loadingProfil
         dataSource={transactionsDataSource} />
         <SendMoney
           payeeDisplay={trader.display}
-          payeeShortDisplay={trader.shortDisplay}/>
+        payeeShortDisplay={trader.shortDisplay} />
       </View>
 
 // Currently we pass in returned renderHeader as we delegate to a listView.
@@ -38,14 +31,12 @@ const asRenderHeader = (trader, transactionsDataSource, showModal, loadingProfil
       image={trader.image}
       category={trader.category}
       onPressClose={() => showModal(modalState.none)}
-    />
-    <View style={commonStyle.dropshadow}>
+      isModal={true} />
       <BusinessDetails business={trader} isExpanded={transactionsDataSource.getRowCount() === 0}/>
       { loadingProfile
         ? <ActivityIndicator style={{marginBottom: 10}} size='large'/>
         : undefined }
     </View>
-  </View>
 
 // filter the transaction list to contain only those relating to this trader
 const dataSourceForSelectedBusiness = (state) => {

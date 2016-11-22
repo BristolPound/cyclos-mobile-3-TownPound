@@ -24,7 +24,7 @@ const styles = {
       marginTop: SEARCH_BAR_MARGIN,
       backgroundColor: color.white,
       flexDirection: 'row',
-      ...commonStyle.dropshadow
+      ...commonStyle.shadow
     },
   }
 }
