@@ -4,6 +4,13 @@ import { selectAndLoadBusiness } from './business'
 import { selectAndLoadPerson } from './person'
 import { LOGGED_OUT, LOGGED_IN } from './login'
 
+export const modalState = {
+  none: 'none',
+  traderScreen: 'traderScreen',
+  personScreen: 'personScreen',
+  developerOptions: 'developerOptions',
+}
+
 const initialState = {
   tabIndex: 0,
   modalState: modalState.none,
@@ -23,13 +30,6 @@ export const returningLogin = () => ({
 export const stateInitialised = () => ({
   type: 'navigation/STATE_INITIALIZED'
 })
-
-export const modalState = {
-  none: 'none',
-  traderScreen: 'traderScreen',
-  personScreen: 'personScreen',
-  developerOptions: 'developerOptions',
-}
 
 export const openDetailsModal = id =>
   (dispatch, getState) => {
