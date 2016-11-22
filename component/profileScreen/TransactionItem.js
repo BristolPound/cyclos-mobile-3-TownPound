@@ -9,14 +9,12 @@ import styles from './ProfileStyle'
  */
 const TransactionItem = (transaction) =>
   <View style={styles.list.rowContainer} key={transaction.transactionNumber}>
-    <View style={styles.rowLayout}>
       <DefaultText style={styles.list.date}>{format(transaction.date, 'DD MMMM')}</DefaultText>
       <DefaultText style={styles.list.transactionNumber}>{transaction.transactionNumber}</DefaultText>
       <Price
         style={styles.list.price}
         size={20}
         price={transaction.amount}/>
-    </View>
   </View>
 
 export default TransactionItem

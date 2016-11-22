@@ -26,7 +26,7 @@ const style = {
     left: 0,
     right: 0,
     backgroundColor: 'white',
-    ...commonStyle.dropshadow
+    ...commonStyle.shadow
   },
   separator: {
     height: TAB_BAR_HEIGHT / 2,

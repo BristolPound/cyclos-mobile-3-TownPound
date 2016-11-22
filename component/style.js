@@ -1,6 +1,4 @@
 import color from '../util/colors'
-import { Dimensions } from 'react-native'
-import marginOffset from '../util/marginOffset'
 
 const museo700 = 'MuseoSans-700'
 const museo500 = 'MuseoSans-300'
@@ -20,18 +18,8 @@ const style = {
     shadowOffset: {
       width: 0,
       height: 0
-  },
-    elevation: 30,
-  },
-  dropshadow: {
-    shadowColor: 'black',
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    shadowOffset: {
-      width: 0,
-      height: 1
-  },
-    elevation: 30
+    },
+    elevation: 10,
   },
   font: {
     museo700,
@@ -49,7 +37,6 @@ const style = {
       backgroundColor: color.offWhite,
       flexDirection: 'row',
       alignItems: 'center',
-      flex: 1
     },
     text: {
       fontFamily: museo700,
@@ -58,13 +45,6 @@ const style = {
       marginLeft: 14
     },
   },
-  header: {
-    backgroundImage: {
-      height: marginOffset(236),
-      width: Dimensions.get('window').width,
-      position: 'absolute'
-    },
-  }
 }
 
 export default style

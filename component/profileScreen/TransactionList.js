@@ -1,8 +1,8 @@
 import React from 'react'
 import { View, ListView, Dimensions } from 'react-native'
 import DefaultText from '../DefaultText'
-import merge from '../../util/merge'
 import styles from './ProfileStyle'
+import commonStyle from '../style'
 import TransactionItem from './TransactionItem'
 
 const buttonHeight= 60
@@ -25,8 +25,8 @@ const renderSeparator = (sectionID, rowID) =>
   <View style={styles.list.separator} key={`sep:${sectionID}:${rowID}`}/>
 
 const renderSectionHeader = (sectionData, sectionID) =>
-  <View style={merge(styles.list.sectionHeader, styles.list.sectionBorder)} key={sectionID}>
-    <DefaultText style={styles.list.sectionHeaderText}>
+  <View style={commonStyle.sectionHeader.container} key={sectionID}>
+    <DefaultText style={commonStyle.sectionHeader.text}>
       {sectionID}
     </DefaultText>
   </View>

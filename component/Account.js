@@ -1,14 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { View, Image, StyleSheet, ListView, TouchableHighlight } from 'react-native'
+import { View, StyleSheet, ListView, TouchableHighlight } from 'react-native'
 import DefaultText, { baselineDeltaForFonts } from './DefaultText'
-import ProfileImage from './profileImage/ProfileImage'
 import colors from './../util/colors'
-import commonStyle, { dimensions } from './style'
+import commonStyle from './style'
 import * as actions from '../store/reducer/login'
-import marginOffset from '../util/marginOffset'
 import ScreenSizes from '../util/ScreenSizes'
+import ProfileHeader from './profileScreen/ProfileHeader'
 
 const styles = {
   container: {
@@ -19,13 +18,7 @@ const styles = {
     ...commonStyle.shadow,
     backgroundColor: colors.offWhite
   },
-  sectionHeader: {
-    container: {
-      ...commonStyle.sectionHeader.container,
-      height: 34
-    },
-    text: commonStyle.sectionHeader.text
-  },
+  sectionHeader: commonStyle.sectionHeader,
   row: {
     container: {
       height: ScreenSizes.isSmall() ? 40 : 42,
@@ -57,35 +50,10 @@ const styles = {
   gradient: {
     ...StyleSheet.absoluteFillObject
   },
-  header: {
-    container: {
-      alignItems: 'center',
-      height: marginOffset(236)
-    },
-    businessLogo: {
-      ...dimensions(84),
-      marginTop: 58,
-      borderColor: colors.bristolBlue,
-      borderRadius: 9,
-      borderWidth: 2
-    },
-    title: {
-      fontFamily: commonStyle.font.museo500,
-      marginTop: 8,
-      fontSize: 20,
-      color: colors.offBlack
-    },
-    subtitle: {
-      marginBottom: 46,
-      fontSize: 18,
-      color: colors.gray
-    },
-  },
 }
 
 const renderSeparator = (sectionID, rowID) =>
   <View style={styles.separator} key={`sep:${sectionID}:${rowID}`}/>
-
 
 const renderSectionHeader = (sectionData, sectionID) =>
   <View style={styles.sectionHeader.container} key={sectionID}>
@@ -106,20 +74,6 @@ const AccountOption = ({text, secondaryText, onPress, index}) =>
         : undefined }
     </View>
   </TouchableHighlight>
-
-const Header = (props) =>
-  <View style={styles.header.container}>
-    <Image
-      source={require('./profileScreen/gorillaWithBackground.png')}
-      style={commonStyle.header.backgroundImage}
-      resizeMode='cover'/>
-    <ProfileImage
-      img={props.image}
-      style={styles.header.businessLogo}
-      category='person'/>
-    <DefaultText style={styles.header.title}>{props.name}</DefaultText>
-    <DefaultText style={styles.header.subtitle}>{props.username}</DefaultText>
-  </View>
 
 const Account = (props) => {
   let ds = new ListView.DataSource({
@@ -142,10 +96,11 @@ const Account = (props) => {
 
   return (
     <View style={styles.container}>
-      <Header
+      <ProfileHeader
         name={props.details.display}
         username={props.details.shortDisplay}
-        image={props.details.image}/>
+        image={props.details.image}
+        category='person'/>
       <ListView
         style={styles.detailsList}
         dataSource={ds}
