@@ -32,19 +32,13 @@ const basicAuthHeaders = (username, password) => {
   return headers
 }
 
-// decodes the response via the json() function, which returns a promise, combining
-// the results with the original response object. This allows access to both
-// response data (e.g. status code) and application level data.
-const decodeResponse =
-  response => response.json()
-    .then(json => ({response, json}))
-
 const querystring = params =>
   Object.keys(params).map(key => key + '=' + params[key]).join('&')
 
-const processResponse = (dispatch, expectedResponse = 200) => (response) =>
-  decodeResponse(response)
-    .then((data) => throwErrorOnUnexpectedResponse(data, expectedResponse))
+const processResponse = (dispatch, expectedResponse = 200) => (response) => {
+  throwErrorOnUnexpectedResponse(response, expectedResponse)
+  return response.json()
+}
 
 
 export const get = (url, params, dispatch) => {

@@ -63,13 +63,17 @@ export const login = (username, password) =>
       })
       .catch (err => {
         if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
-          if (err.json.passwordStatus === 'temporarilyBlocked') {
-            dispatch(updateStatus('Account temporarily blocked', ERROR_SEVERITY.SEVERE))
-          } else if (err.json.code === 'login') {
-            dispatch(updateStatus('Your details are incorrect'))
-          } else {
-          dispatch(unknownError(err))
-          }
+          err.response.json()
+            .then(json => {
+              if (json && json.passwordStatus === 'temporarilyBlocked') {
+                dispatch(updateStatus('Account temporarily blocked', ERROR_SEVERITY.SEVERE))
+              } else if (json && json.code === 'login') {
+                dispatch(updateStatus('Your details are incorrect'))
+              } else {
+                dispatch(unknownError(err))
+              }
+            })
+            .catch(() => dispatch(unknownError(err)))
         }
       })
   }

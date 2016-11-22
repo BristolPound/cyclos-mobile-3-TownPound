@@ -49,14 +49,17 @@ export const sendTransaction = () =>
       })
       .catch(err => {
         if (err.type === UNEXPECTED_ERROR) {
-          switch (err.json.code) {
-            case 'dailyAmountExceeded':
-              dispatch(transactionComplete(false, 'Daily amount has been exceeded.'))
-              break
-            case 'insufficientBalance':
-              dispatch(transactionComplete(false, 'Insufficient balance.'))
-              break
-          }
+          err.response.json()
+            .then(json => {
+              if (json && json.code === 'dailyAmountExceeded') {
+                dispatch(transactionComplete(false, 'Daily amount has been exceeded.'))
+              } else if (json && json.code === 'insufficientBalance') {
+                dispatch(transactionComplete(false, 'Insufficient balance.'))
+              } else {
+                dispatch(transactionComplete(false, 'Error on sending transaction.'))
+              }
+            })
+            .catch(() => dispatch(transactionComplete(false, 'Error on sending transaction.')))
         } else {
           dispatch(transactionComplete(false, 'Error on sending transaction.'))
         }
