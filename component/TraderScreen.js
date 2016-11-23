@@ -15,15 +15,15 @@ import { buildDataSourceForTransactions } from '../util/transaction'
 const TraderScreen = ({ trader, transactionsDataSource, showModal, loadingProfile }) =>
     <View style={{flex: 1}}>
       <View style={{flex: 1, maxHeight: marginOffset(Dimensions.get('window').height) - sectionHeight}}>
-        <TransactionList
-          renderHeader={asRenderHeader(trader, transactionsDataSource, showModal, loadingProfile)}
-          dataSource={transactionsDataSource} />
+      <TransactionList
+        renderHeader={asRenderHeader(trader, transactionsDataSource, showModal, loadingProfile)}
+        dataSource={transactionsDataSource} />
       </View>
       <View style={{bottom: 0, position: 'absolute', flex: 1}}>
-        <SendMoney
-          payeeDisplay={trader.display}
-          payeeShortDisplay={trader.shortDisplay} />
-      </View>
+      <SendMoney
+        payeeDisplay={trader.display}
+        payeeShortDisplay={trader.shortDisplay} />
+    </View>
     </View>
 
 // Currently we pass in returned renderHeader as we delegate to a listView.
@@ -41,7 +41,7 @@ const asRenderHeader = (trader, transactionsDataSource, showModal, loadingProfil
       { loadingProfile
         ? <ActivityIndicator style={{marginBottom: 10}} size='large'/>
         : undefined }
-  </View>
+    </View>
 
 // filter the transaction list to contain only those relating to this trader
 const dataSourceForSelectedBusiness = (state) => {

@@ -45,7 +45,7 @@ export const sendTransaction = () =>
       }, dispatch)
       .then(() => {
         dispatch(loadMoreTransactions())
-        dispatch(transactionComplete(true))
+        dispatch(transactionComplete(true, 'Payment complete'))
       })
       .catch(err => {
         if (err.type === UNEXPECTED_ERROR) {

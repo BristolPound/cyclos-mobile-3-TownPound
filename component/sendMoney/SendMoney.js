@@ -26,7 +26,15 @@ class SendMoney extends React.Component {
   }
 
   nextPage() {
-    this.setState({ inputPage: (this.state.inputPage + 1) % 4 })
+    const nextPage = (this.state.inputPage + 1) % 4
+    this.setState({ inputPage: nextPage })
+    if (nextPage === Page.PaymentComplete) {
+      setTimeout(() => {
+        if (this.state.inputPage === Page.PaymentComplete) {
+          this.nextPage()
+        }
+      }, 1800)
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -74,7 +82,7 @@ class SendMoney extends React.Component {
         inputProps = merge(inputProps, {
           buttonText: this.props.message,
           onButtonPress: () => { this.props.resetForm(); this.nextPage() },
-          description: 'Payment Complete',
+          description: 'Payment complete',
         })
         break
     }
