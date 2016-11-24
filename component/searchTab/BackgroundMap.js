@@ -28,7 +28,6 @@ class BackgroundMap extends React.Component {
 
   renderMarker(business) {
     // we have to separate out the behaviour by platform for:
-    // * 'onSomething' property name - //https://github.com/airbnb/react-native-maps/issues/286
     // * behaviour - https://github.com/airbnb/react-native-maps#custom-callouts
     //     android moves viewspace when the marker is selected, ios shouldn't.
     // * Image placing:
@@ -44,7 +43,7 @@ class BackgroundMap extends React.Component {
           anchor: {x: 0.5, y: 0.5},  // center image on location.
         },
         ios: {
-          onSelect: () => this.props.selectBusiness(business.id)
+          onPress: () => this.props.selectBusiness(business.id)
         }
       })
 
