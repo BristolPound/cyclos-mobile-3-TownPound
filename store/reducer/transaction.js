@@ -1,12 +1,13 @@
 import { ListView } from 'react-native'
 import merge from '../../util/merge'
 import _ from 'lodash'
-import { groupTransactionsByDate, calculateMonthlyTotalSpent, filterTransactions, sortTransactions } from '../../util/transaction'
-import { getTransactions } from '../../api/accounts'
-import { findTransactionsByDate } from '../../util/transaction'
+import { groupTransactionsByDate, calculateMonthlyTotalSpent, filterTransactions,
+  sortTransactions, findTransactionsByDate } from '../../util/transaction'
+import { getTransactions, getAccountBalance } from '../../api/accounts'
 import { updateStatus, unknownError } from './statusMessage'
 import { loggedOut, openLoginForm } from './login'
 import { UNAUTHORIZED_ACCESS } from '../../api/apiError'
+import { accountBalanceReceived } from './account'
 
 const lastIndex = (arr) => arr.length - 1
 
@@ -82,6 +83,8 @@ export const loadMoreTransactions = () =>
     })
     .then(transactions => {
       dispatch(transactionsReceived(transactions))
+      getAccountBalance(dispatch)
+        .then(account => dispatch(accountBalanceReceived(account)))
     })
     .catch(handleError(dispatch))
   }
