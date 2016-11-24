@@ -8,9 +8,10 @@ import { modalState } from '../store/reducer/navigation'
 import TransactionList from './profileScreen/TransactionList'
 import ProfileHeader from './profileScreen/ProfileHeader'
 import BusinessDetails from './businessDetails/BusinessDetails'
-import { sectionHeight } from './sendMoney/InputComponent'
-import SendMoney from './sendMoney/SendMoney'
+import SendMoney, { sectionHeight } from './SendMoney'
 import { buildDataSourceForTransactions } from '../util/transaction'
+import Login from './login/Login'
+import LoginOverlay from './login/LoginOverlay'
 
 const TraderScreen = ({ trader, transactionsDataSource, showModal, loadingProfile }) =>
     <View style={{flex: 1}}>
@@ -20,10 +21,12 @@ const TraderScreen = ({ trader, transactionsDataSource, showModal, loadingProfil
         dataSource={transactionsDataSource} />
       </View>
       <View style={{bottom: 0, position: 'absolute', flex: 1}}>
-      <SendMoney
-        payeeDisplay={trader.display}
-        payeeShortDisplay={trader.shortDisplay} />
-    </View>
+        <SendMoney
+          payeeDisplay={trader.display}
+          payeeShortDisplay={trader.shortDisplay} />
+      </View>
+      <LoginOverlay/>
+      <Login/>
     </View>
 
 // Currently we pass in returned renderHeader as we delegate to a listView.
