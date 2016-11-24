@@ -2,14 +2,25 @@ import React from 'react'
 import MapView from 'react-native-maps'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Platform, StyleSheet } from 'react-native'
+import { Platform } from 'react-native'
 import _ from 'lodash'
 import * as actions from '../../store/reducer/business'
+import { maxCollapsedHeight, SEARCH_BAR_MARGIN, SEARCH_BAR_HEIGHT } from './SearchTabStyle'
 
 const MAP_PAN_DEBOUNCE_DURATION = 150
 
 const UNSELECTED_TRADER_IMG = require('./Marker.png')
 const SELECTED_TRADER_IMG = require('./selected_trader.png')
+
+const style = {
+  map: {
+    position: 'absolute',
+    top: -1 * maxCollapsedHeight + SEARCH_BAR_MARGIN + SEARCH_BAR_HEIGHT,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  }
+}
 
 class BackgroundMap extends React.Component {
   constructor() {
@@ -59,7 +70,6 @@ class BackgroundMap extends React.Component {
   render() {
     // Prevent the map from 'jumping back' to the last processed location
     const region = this.ignoreLocationUpdates ? undefined : this.props.mapViewport
-
     let markerArray = undefined
     if (this.props.businessList) {
       markerArray = this.props.businessList.filter(b => b.address)
@@ -67,7 +77,7 @@ class BackgroundMap extends React.Component {
     }
 
     return (
-      <MapView style={{...StyleSheet.absoluteFillObject}}
+      <MapView style={style.map}
           region={region}
           showsPointsOfInterest={false}
           showsUserLocation={true}
