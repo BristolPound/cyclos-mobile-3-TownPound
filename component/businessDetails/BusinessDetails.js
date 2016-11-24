@@ -21,7 +21,6 @@ const styles = {
     backgroundColor: colors.transparent,
     fontSize: 14,
     marginTop: 18,
-    marginBottom: 18,
   },
   separator: {
     borderBottomColor: colors.gray5,
@@ -88,7 +87,7 @@ class BusinessDetails extends React.Component {
       const expandedFields = (fields.length > 2) ?
         fields.slice(2) : []
       expanded =
-        <View>
+        <View style={{marginBottom: 18}}>
           {renderFields(expandedFields)}
           {renderDescription(description)}
         </View>
