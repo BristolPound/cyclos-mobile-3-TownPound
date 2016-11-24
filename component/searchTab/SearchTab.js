@@ -1,26 +1,22 @@
 import React from 'react'
-import { View, Dimensions } from 'react-native'
+import { View } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import BackgroundMap from './BackgroundMap'
 import ComponentList from './ComponentList'
 import BusinessListItem, { SelectedBusiness } from './BusinessListItem'
 import ScrollingExpandPanel from './ScrollingExpandPanel'
-import styles, {SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN_TOP_IOS, SEARCH_BAR_MARGIN, MAP_HEIGHT} from './SearchTabStyle'
-import {ROW_HEIGHT} from './BusinessListStyle'
-import {TAB_BAR_HEIGHT} from '../tabbar/TabBar'
+import styles,
+  { SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN, maxExpandedHeight, maxCollapsedHeight }
+  from './SearchTabStyle'
+import { ROW_HEIGHT } from './BusinessListStyle'
 import { openTraderModal } from '../../store/reducer/navigation'
-import {BUSINESS_LIST_SELECTED_GAP} from './BusinessListStyle'
+import { BUSINESS_LIST_SELECTED_GAP } from './BusinessListStyle'
 
 const BUSINESS_LIST_GAP_PLACEHOLDER = { pressable: false }
 
 const SHORT_LIST_BOTTOM_GAP = 12
 const EXPANDED_LIST_TOP_OFFSET = SEARCH_BAR_HEIGHT + SEARCH_BAR_MARGIN
-
-// Here we use SEARCH_BAR_MARGIN_TOP_IOS because
-// Dimensions.get('window').height includes the status bar, even on android
-const maxExpandedHeight = Dimensions.get('window').height - SEARCH_BAR_MARGIN_TOP_IOS - SEARCH_BAR_HEIGHT - TAB_BAR_HEIGHT
-const maxCollapsedHeight = maxExpandedHeight - MAP_HEIGHT
 
 const calculatePanelHeight = (rowCount, selectedBusiness) => {
   const selectedBusinessModifier = selectedBusiness ? BUSINESS_LIST_SELECTED_GAP + ROW_HEIGHT : 0
