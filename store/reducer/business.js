@@ -132,8 +132,6 @@ const getClosestBusinesses = (list, viewport) => {
   return closestBusinesses
 }
 
-
-
 const orderBusinessList = (viewport) => (business) => {
   if (business.address) {
     return haversine(viewport, business.address.location)
@@ -148,13 +146,32 @@ const isLocationWithinViewport = (location, viewport) =>
 const shouldBeDisplayed = (viewport) => (business) =>
   business.address && isLocationWithinViewport(business.address.location, viewport)
 
+const businessAtLocation = (location) => (business) =>
+  business.address && business.address.location
+    && business.address.location.latitude === location.latitude
+    && business.address.location.longitude === location.longitude
+
+const offsetOverlappingBusinesses = (businesses) => {
+  businesses.forEach((b, index)=> {
+    if (b.address && b.address.location) {
+      const previousBusinesses = businesses.slice(0, index)
+      while (previousBusinesses.find(businessAtLocation(b.address.location))) {
+        b.address.location.longitude -= 0.00004
+        b.address.location.latitude += 0.00002
+      }
+    }
+  })
+  return businesses
+}
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'business/BUSINESS_LIST_RECEIVED':
+      const offsetBusinesses = offsetOverlappingBusinesses(action.businessList)
       let closestBusinesses = getClosestBusinesses(action.businessList, state.mapViewport)
       state = merge(state, {
         closestBusinesses,
-        businessList: action.businessList,
+        businessList: offsetBusinesses,
         businessListTimestamp: new Date()
       })
       break
