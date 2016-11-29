@@ -81,7 +81,7 @@ const Tabs = (props) =>
           ? <SpendingTab/>
           : <LoginToView
               image={emptyStateImage.spending}
-              lineOne='Login to view'
+              lineOne='Log in to view'
               lineTwo='your spending history'/> }
       </WithNetworkConnection>
       <WithNetworkConnection tabLabel='Account'>
@@ -89,7 +89,7 @@ const Tabs = (props) =>
           ? <Account/>
           : <LoginToView
               image={emptyStateImage.account}
-              lineOne='Login to view'
+              lineOne='Log in to view'
               lineTwo='your account details'/> }
       </WithNetworkConnection>
     </ScrollableTabView>

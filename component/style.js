@@ -41,7 +41,7 @@ const style = {
     text: {
       fontFamily: museo700,
       fontSize: 14,
-      color: color.gray2,
+      color: color.gray3,
       marginLeft: 14
     },
   },
