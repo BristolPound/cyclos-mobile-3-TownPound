@@ -57,11 +57,10 @@ const styles = {
   list: {
     rowContainer: {
       flexDirection: 'row',
-      marginTop: 10,
-      marginBottom: 10,
       marginLeft: listMargin,
       marginRight: listMargin,
-      justifyContent: 'center'
+      justifyContent: 'center',
+      height: 50
     },
     date: {
       width: 150,

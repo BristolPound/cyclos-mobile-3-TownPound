@@ -9,7 +9,6 @@ import merge from '../util/merge'
 import { LOGIN_STATUSES } from '../store/reducer/login'
 import DefaultText from './DefaultText'
 import color from '../util/colors'
-import KeyboardComponent from './KeyboardComponent'
 
 const Page = {
   Ready: 0,
@@ -19,7 +18,7 @@ const Page = {
 }
 
 const { width } = Dimensions.get('window')
-export const sectionHeight = 40
+export const sectionHeight = 68
 
 const styles = {
   container: {
@@ -27,7 +26,7 @@ const styles = {
   },
   buttonContainer: {
     height: sectionHeight,
-    backgroundColor: color.bristolBlue2,
+    backgroundColor: color.bristolBlue,
     alignItems: 'center',
     justifyContent: 'center',
     width: width
@@ -46,13 +45,14 @@ const styles = {
 
 const InputComponent = (props) => {
   let { onButtonPress, buttonText, loading, input, invalidInput, accessibilityLabel } = props
+  const buttonStyle = {fontSize: 24}
 
   return <View style={styles.container} accessibilityLabel={accessibilityLabel}>
     <TouchableHighlight
         onPress={() => !invalidInput && onButtonPress ? onButtonPress() : undefined }>
-      <View style={merge(styles.buttonContainer, invalidInput ? {backgroundColor: color.gray} : {})}>
+      <View style={merge(styles.buttonContainer, invalidInput ? {backgroundColor: color.offWhite} : {})}>
         <View style={{flexDirection: 'row'}}>
-          <DefaultText style={{color: 'white'}}>
+          <DefaultText style={input ? buttonStyle : merge(buttonStyle, {color: 'white'})}>
             {buttonText}
           </DefaultText>
 
@@ -107,7 +107,7 @@ class SendMoney extends React.Component {
     switch (this.state.inputPage){
       case Page.Ready: // Initial state, ready to begin
         inputProps = {
-          buttonText: 'Send Money',
+          buttonText: 'Send Payment',
           onButtonPress: () => { this.props.updatePayee(this.props.payeeShortDisplay); this.nextPage() },
           accessibilityLabel: 'Ready',
         }

@@ -1,5 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
+import color from '../../util/colors'
 
 class ComponentList extends React.Component {
   constructor() {
@@ -41,7 +42,7 @@ class ComponentList extends React.Component {
           let containerBackgroundColor
           if (item.pressable) {
             containerBackgroundColor = this.state.highlightedIndex === index
-              ? 'lightsteelblue'
+              ? color.offWhite
               : 'white'
           }
           return (

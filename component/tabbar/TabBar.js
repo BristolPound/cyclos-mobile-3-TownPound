@@ -123,9 +123,9 @@ const TabBar = (props) =>
                 style={style.centerChildren}
                 onPress={() => props.openLoginForm(true)}
                 underlayColor={color.transparent}
-                accessibilityLabel='Login Tab'>
+                accessibilityLabel='Log in Tab'>
               <View>
-                <DefaultText style={style.loginText}>Login</DefaultText>
+                <DefaultText style={style.loginText}>Log in</DefaultText>
               </View>
             </TouchableHighlight>
       }

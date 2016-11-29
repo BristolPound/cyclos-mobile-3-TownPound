@@ -6,9 +6,7 @@ import BackgroundMap from './BackgroundMap'
 import ComponentList from './ComponentList'
 import BusinessListItem, { SelectedBusiness } from './BusinessListItem'
 import ScrollingExpandPanel from './ScrollingExpandPanel'
-import styles,
-  { SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN, maxExpandedHeight, maxCollapsedHeight }
-  from './SearchTabStyle'
+import styles, { SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN, maxExpandedHeight, maxCollapsedHeight } from './SearchTabStyle'
 import { ROW_HEIGHT } from './BusinessListStyle'
 import { openTraderModal } from '../../store/reducer/navigation'
 import { BUSINESS_LIST_SELECTED_GAP } from './BusinessListStyle'
@@ -23,7 +21,7 @@ const calculatePanelHeight = (rowCount, selectedBusiness) => {
   const collapsedHeight = Math.min(
     rowCount * ROW_HEIGHT + selectedBusinessModifier + SHORT_LIST_BOTTOM_GAP,
     maxCollapsedHeight
-  )
+  ) - ((rowCount > 4) ? (ROW_HEIGHT - SHORT_LIST_BOTTOM_GAP) : 0)
   const expandedHeight = Math.max(
     Math.min(rowCount * ROW_HEIGHT + selectedBusinessModifier, maxExpandedHeight),
     collapsedHeight
@@ -46,39 +44,44 @@ class SearchTab extends React.Component {
   }
 
   render() {
-    const { collapsedHeight, expandedHeight } = calculatePanelHeight(
-      this.props.closestBusinesses.length,
-      this.props.selectedBusiness
-    )
+    const { closestBusinesses, openTraderModal, selectedBusiness } = this.props;
+    const { componentList } = this.refs;
+
+    const noOfCloseBusinesses = closestBusinesses.length,
+        childrenHeight = selectedBusiness
+            ? noOfCloseBusinesses * ROW_HEIGHT + BUSINESS_LIST_SELECTED_GAP
+            : noOfCloseBusinesses * ROW_HEIGHT
+
+    const { collapsedHeight, expandedHeight } = calculatePanelHeight(noOfCloseBusinesses, selectedBusiness)
+    const calculatedOffset = height => EXPANDED_LIST_TOP_OFFSET + maxExpandedHeight - height
+    const selectedComponentView = item => {
+        if (item === BUSINESS_LIST_GAP_PLACEHOLDER) {
+            return <View style={{ height: 10 }}/>
+        }
+        if (item.isSelected) {
+            return <SelectedBusiness business={item}/>
+        }
+        return <BusinessListItem business={item} />
+    }
+
     const componentArray = this.createComponentArray()
+
     return (
       <View style={{flex: 1}}>
         <BackgroundMap/>
-      <View style={styles.searchTab.searchBar}/>
         <ScrollingExpandPanel
           style={styles.searchTab.expandPanel}
-          topOffsetWhenExpanded={EXPANDED_LIST_TOP_OFFSET + maxExpandedHeight - expandedHeight}
-          topOffsetWhenCollapsed={EXPANDED_LIST_TOP_OFFSET + maxExpandedHeight - collapsedHeight}
+          topOffsetWhenExpanded={calculatedOffset(expandedHeight)}
+          topOffsetWhenCollapsed={calculatedOffset(collapsedHeight)}
           expandedHeight={expandedHeight}
-          onPressRelease={(hasMoved) => this.refs.componentList.handleRelease(hasMoved)}
-          onPressStart={(location) => this.refs.componentList.highlightItem(location)}
-          childrenHeight={this.props.selectedBusiness
-            ? this.props.closestBusinesses.length * ROW_HEIGHT + BUSINESS_LIST_SELECTED_GAP
-            : this.props.closestBusinesses.length * ROW_HEIGHT}>
-          <ComponentList
-            ref='componentList'
-            items={componentArray}
-            componentForItem={(item) => {
-              if (item === BUSINESS_LIST_GAP_PLACEHOLDER) {
-                return <View style={{ height: 10 }}/>
-              }
-              if (item.isSelected) {
-                return <SelectedBusiness business={item}/>
-              }
-              return <BusinessListItem business={item} />
-            }}
-            onPressItem={(index) => componentArray[index].id &&
-              this.props.openTraderModal(componentArray[index].id)}/>
+          onPressRelease={hasMoved => componentList.handleRelease(hasMoved)}
+          onPressStart={location => componentList.highlightItem(location)}
+          childrenHeight={childrenHeight}>
+            <ComponentList
+              ref='componentList'
+              items={componentArray}
+              componentForItem={selectedComponentView}
+              onPressItem={index => componentArray[index].id && openTraderModal(componentArray[index].id)} />
         </ScrollingExpandPanel>
       </View>
     )
@@ -90,7 +93,6 @@ const mapStateToProps = (state) => ({
   selectedBusiness: state.business.businessList.find(b => b.id === state.business.selectedBusinessId)
 })
 
-const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ openTraderModal }, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({ openTraderModal }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchTab)

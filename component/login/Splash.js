@@ -88,7 +88,7 @@ class Splash  extends React.Component {
     const animateBackgroundTo = toValue =>
       Animated.timing(this.state.backgroundOffset, {
         toValue,
-        duration: 140000,
+        duration: 240000,
         easing: Easing.linear
       })
 

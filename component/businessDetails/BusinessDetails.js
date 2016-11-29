@@ -39,8 +39,7 @@ const styles = {
   image: {
     height: 20,
     width: 18,
-    marginTop: 1,
-    marginRight:16
+    marginRight: 16
   },
   item: {
     flexDirection:'column',
@@ -71,7 +70,7 @@ class BusinessDetails extends React.Component {
       fields.length = 2
     }
 
-    return <View>
+    return <View style={{paddingBottom: 12}}>
       {renderFields(fields)}
       { expanded }
     </View>
@@ -145,11 +144,11 @@ function getFields(business) {
 // In theory the explicit onLinkPress is unnecessary, but the default onLinkPress handling fails with
 // 'this._validateURL is not a function'
 function renderDescription(description) {
-  return (description) ?
+  return description ?
     <View style={{paddingTop: 12}}>
       <View style={styles.separator}/>
       <View style={styles.description} accessibilityLabel='Business Description'>
-        <HTMLView value={description} onLinkPress={(url) => Linking.openURL(url)}/>
+        <HTMLView value={description} onLinkPress={url => Linking.openURL(url)}/>
       </View>
     </View>
     : null
