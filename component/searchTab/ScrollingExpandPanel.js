@@ -21,18 +21,11 @@ class ScrollingExpandPanel extends React.Component {
 
     this.resetVariablesToStationary()
 
-    const startExpanded = typeof(props.initialState) === 'string'
-      && props.initialState.toLowerCase() === 'expanded'
-
-    const initialTopOffset = startExpanded
-      ? props.topOffsetWhenExpanded
-      : props.topOffsetWhenCollapsed
-
     this.state = ({
       // The distance between the top of this component and the top of the parent/screen,
       // as shown to the user at any point in time. Think of this as the 'master position'.
       // By default, start collapsed
-      currentOuterTopOffset: new Animated.Value(initialTopOffset),
+      currentOuterTopOffset: new Animated.Value(props.topOffset[props.startPosition]),
 
       // The distance between the top of the children and the top of this component.
       // Note that the scrolling behaviour means this will always be zero or negative.
@@ -44,25 +37,25 @@ class ScrollingExpandPanel extends React.Component {
 
   resetVariablesToStationary() {
     // initial and current y-coordinates of gesture
-    this.startTouchY = undefined
-    this.lastTouchY = undefined
+    this.startTouchY = -1
+    this.lastTouchY = -1
 
     // `currentInnerTopOffset` at touch start.
     // Equals -1 * (scroll position at touch start)
-    this.innerTopOffsetAtTouchStart = undefined
+    this.innerTopOffsetAtTouchStart = -1
 
     // `currentOuterTopOffset` at touch start
-    this.outerTopOffsetAtTouchStart = undefined
+    this.outerTopOffsetAtTouchStart = -1
 
     // timestamp to see if a drag is actually a tap
-    this.timeAtTouchStart = undefined
+    this.timeAtTouchStart = -1
 
     // used to calculate velocity:
-    this.timeAtLastPosition = undefined
+    this.timeAtLastPosition = -1
     this.velocity = 0 // in dp/ms
 
     // whether or not the list was expanded when the gesture began
-    this.expandedAtTouchStart = undefined
+    this.positionAtTouchStart = -1
 
     //whether or not an 'event' is taking place
     this.responderGranted = false
@@ -86,13 +79,17 @@ class ScrollingExpandPanel extends React.Component {
 
   // apply smooth transition when list size changes
   componentWillReceiveProps(nextProps) {
-    const targetLocation = this.isExpanded() ? nextProps.topOffsetWhenExpanded : nextProps.topOffsetWhenCollapsed
+    const targetLocation = nextProps.topOffset[this.getPosition()]
     this.animateTo(this.state.currentOuterTopOffset, targetLocation, 200)
   }
 
-  isExpanded() {
-    return this.state.currentOuterTopOffset._value <
-          (this.props.topOffsetWhenExpanded + this.props.topOffsetWhenCollapsed) / 2
+  getPosition() {
+    for (let i = 0; i < this.props.topOffset.length - 1; i++) {
+      if (this.state.currentOuterTopOffset._value < (this.props.topOffset[i] + this.props.topOffset[i+1]) / 2) {
+        return i
+      }
+    }
+    return this.props.topOffset.length - 1
   }
 
   responderGrant(event) {
@@ -101,7 +98,7 @@ class ScrollingExpandPanel extends React.Component {
     this.innerTopOffsetAtTouchStart = this.state.currentInnerTopOffset._value
     this.timeAtLastPosition = this.timeAtTouchStart = Date.now()
 
-    this.expandedAtTouchStart = this.isExpanded()
+    this.positionAtTouchStart = this.getPosition()
 
     this.props.onPressStart(this.startTouchY - this.innerTopOffsetAtTouchStart - this.outerTopOffsetAtTouchStart)
 
@@ -124,13 +121,13 @@ class ScrollingExpandPanel extends React.Component {
   getCurrentOuterTopOffset(currentTouchY) {
     return _.clamp(
       this.calculateCombinedOffsets(currentTouchY),
-      this.props.topOffsetWhenExpanded,
-      this.props.topOffsetWhenCollapsed
+      this.props.topOffset[0],
+      this.props.topOffset[this.props.topOffset.length - 1]
     )
   }
 
   getCurrentScroll(currentTouchY) {
-    const unboundedScrollPosition = this.props.topOffsetWhenExpanded - this.calculateCombinedOffsets(currentTouchY)
+    const unboundedScrollPosition = this.props.topOffset[0] - this.calculateCombinedOffsets(currentTouchY)
     return _.clamp(
       unboundedScrollPosition,
       0,
@@ -139,13 +136,17 @@ class ScrollingExpandPanel extends React.Component {
   }
 
   // utility to check whether the list is expanded at 'newPosition'
-  isExpandedAfterMove(newPosition) {
-    if (this.expandedAtTouchStart) {
-      return newPosition < (1 - DRAG_DISTANCE_TO_EXPAND) * this.props.topOffsetWhenExpanded
-                    + DRAG_DISTANCE_TO_EXPAND * this.props.topOffsetWhenCollapsed
+  positionAfterMove(nextYCoord) {
+    const isMovingUpwards = (toPosition) => toPosition < this.positionAtTouchStart
+    const { topOffset } = this.props
+    const fractionBetweenPoints = (ratio, upperIndex) => ratio * topOffset[upperIndex] + (1 - ratio) * topOffset[upperIndex + 1]
+    for (let i = 0; i < this.props.topOffset.length - 1; i++) {
+      if ((isMovingUpwards(i) && nextYCoord < fractionBetweenPoints(DRAG_DISTANCE_TO_EXPAND, i))
+          || (!isMovingUpwards(i) && nextYCoord < fractionBetweenPoints(1 - DRAG_DISTANCE_TO_EXPAND, i))) {
+        return i
+      }
     }
-    return newPosition < DRAG_DISTANCE_TO_EXPAND * this.props.topOffsetWhenExpanded +
-                    (1 - DRAG_DISTANCE_TO_EXPAND) * this.props.topOffsetWhenCollapsed
+    return this.props.topOffset.length - 1
   }
 
   // main update method
@@ -167,8 +168,12 @@ class ScrollingExpandPanel extends React.Component {
     // if it is fully expanded, take this as the new starting state.
     // Important because the expand/collapse cut-off point is different depending on whether
     // one is dragging from an expanded or from a collapsed state
-    if (this.currentOuterTopOffset === this.props.topOffsetWhenExpanded) {
-      this.expandedAtTouchStart = true
+    for (let i = 0; i < this.props.topOffset.length; i++) {
+      const offset = this.props.topOffset[i]
+      if (this.state.currentOuterTopOffset._value <= offset && this.positionAtTouchStart > i
+        || this.state.currentOuterTopOffset._value >= offset && this.positionAtTouchStart < i) {
+          this.positionAtTouchStart = i
+      }
     }
 
     const currentOuterTopOffset = this.getCurrentOuterTopOffset(currentTouchY)
@@ -208,7 +213,8 @@ class ScrollingExpandPanel extends React.Component {
     const finalInnerTopOffset_unbounded = this.state.currentInnerTopOffset._value + this.getMomentumTravel()
     const finalInnerTopOffset_bounded = _.clamp(finalInnerTopOffset_unbounded, -1 * this.calculateMaxScrollDistance(this.props), 0)
     const remainder = finalInnerTopOffset_unbounded - finalInnerTopOffset_bounded
-    if (this.isExpandedAfterMove(this.state.currentOuterTopOffset._value + remainder)) {
+    const newPosition = this.positionAfterMove(this.state.currentOuterTopOffset._value + remainder)
+    if (!newPosition) {
       this.animateTo(
         this.state.currentInnerTopOffset,
         finalInnerTopOffset_bounded,
@@ -223,24 +229,16 @@ class ScrollingExpandPanel extends React.Component {
         0,
         Math.abs(this.state.currentInnerTopOffset._value / this.velocity),
         Easing.linear,
-        this.collapseWithAnimation.bind(this)
+        () => this.animatePositionTo(1)
       )
     }
   }
 
-  expandWithAnimation() {
+  animatePositionTo(index) {
     this.animateTo(
       this.state.currentOuterTopOffset,
-      this.props.topOffsetWhenExpanded,
-      this.state.currentOuterTopOffset._value - this.props.topOffsetWhenExpanded
-    )
-  }
-
-  collapseWithAnimation() {
-    this.animateTo(
-      this.state.currentOuterTopOffset,
-      this.props.topOffsetWhenCollapsed,
-      this.props.topOffsetWhenCollapsed - this.state.currentOuterTopOffset._value
+      this.props.topOffset[index],
+      Math.abs(this.state.currentOuterTopOffset._value - this.props.topOffset[index])
     )
   }
 
@@ -257,11 +255,7 @@ class ScrollingExpandPanel extends React.Component {
 
     } else { // slide back to expanded or collapsed position
       const endPosition = this.state.currentOuterTopOffset._value + this.getMomentumTravel()
-      if (this.isExpandedAfterMove(endPosition)) {
-        this.expandWithAnimation()
-      } else {
-        this.collapseWithAnimation()
-      }
+      this.animatePositionTo(this.positionAfterMove(endPosition))
     }
 
     // cleanup
