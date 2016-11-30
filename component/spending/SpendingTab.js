@@ -48,8 +48,8 @@ const renderRow = (transaction, openDetailsModal) =>
 
 
 class SpendingTab extends React.Component {
-  componentWillReceiveProps() {
-    if (this.listViewRef) {
+  componentWillReceiveProps(nextProps) {
+    if (this.listViewRef && !nextProps.scrolled) {
       // Yes, ListView really wants us to call this twice
       this.listViewRef.scrollTo({ y: 0 })
       this.listViewRef.scrollTo({ y: 0 })
@@ -63,12 +63,12 @@ class SpendingTab extends React.Component {
       bodyComponent = <ListView
           ref={(lv) => this.listViewRef = lv}
           tabLabel='Transactions'
-          style={styles.list}
           pageSize={10}
           renderSeparator={renderSeparator}
           enableEmptySections={true}
           renderRow={transaction => renderRow(transaction, this.props.openDetailsModal)}
           dataSource={this.props.transactionsDataSource}
+          onScroll={() => !this.props.scrolled && this.props.transactionsScrolled()}
           renderSectionHeader={renderSectionHeader}
           refreshControl={<RefreshControl
             refreshing={this.props.refreshing}

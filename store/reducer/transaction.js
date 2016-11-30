@@ -20,7 +20,8 @@ const initialState = {
   transactionsDataSource: new ListView.DataSource({
     rowHasChanged: (a, b) => a.transactionNumber !== b.transactionNumber,
     sectionHeaderHasChanged: (a, b) => a !== b
-  })
+  }),
+  scrolled: false
 }
 
 export const selectMonth = monthIndex => ({
@@ -47,6 +48,14 @@ export const resetTransactions = () => ({
 
 const failedToLoadTransactions = () => ({
   type: 'transaction/FAILED_TO_LOAD'
+})
+
+export const scrollTransactionsToTop = () => ({
+  type: 'transaction/SCROLL_TO_TOP'
+})
+
+export const transactionsScrolled = () => ({
+  type: 'transaction/SCROLLED'
 })
 
 const handleError = (dispatch) => (err) => {
@@ -108,7 +117,8 @@ const reducer = (state = initialState, action) => {
       if (action.tabIndex === 1) {
         state = merge(state, {
           selectedMonthIndex: lastIndex(state.monthlyTotalSpent),
-          transactionsDataSource: filterTransactionsByMonthIndex(state, lastIndex(state.monthlyTotalSpent))
+          transactionsDataSource: filterTransactionsByMonthIndex(state, lastIndex(state.monthlyTotalSpent)),
+          scrolled: false
         })
       }
       break
@@ -123,8 +133,10 @@ const reducer = (state = initialState, action) => {
         monthlyTotalSpent,
         selectedMonthIndex,
         transactions: sortedTransactions,
-        transactionsDataSource: filterTransactionsByMonth(state.transactionsDataSource,
-                                    sortedTransactions, monthlyTotalSpent[selectedMonthIndex].month)
+        transactionsDataSource: filterTransactionsByMonth(
+          state.transactionsDataSource, sortedTransactions, monthlyTotalSpent[selectedMonthIndex].month
+        ),
+        scrolled: false,
       })
       break
     case 'transaction/LOADING_TRANSACTIONS':
@@ -138,11 +150,10 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'transaction/SELECT_MONTH':
-      //BUG: the carousel control allows you to 'select' non existent pages
-      const index = Math.min(action.monthIndex, lastIndex(state.monthlyTotalSpent))
       state = merge(state, {
-        selectedMonthIndex: index,
-        transactionsDataSource: filterTransactionsByMonthIndex(state, index)
+        selectedMonthIndex: action.monthIndex,
+        transactionsDataSource: filterTransactionsByMonthIndex(state, action.monthIndex),
+        scrolled: false
       })
       break
     case 'transaction/RESET_TRANSACTIONS':
@@ -154,6 +165,15 @@ const reducer = (state = initialState, action) => {
         refreshing: false
       })
       break
+    case 'transaction/SCROLLED':
+      state = merge(state, {
+        scrolled: true,
+      })
+      break
+    case 'transaction/SCROLL_TO_TOP':
+      state = merge(state, {
+        scrolled: false
+      })
   }
   return state
 }
