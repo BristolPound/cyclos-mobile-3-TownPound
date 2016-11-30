@@ -1,6 +1,6 @@
 import color from '../../util/colors'
 import marginOffset from '../../util/marginOffset'
-import commonStyle from '../style'
+import commonStyle, { margin } from '../style'
 import ScreenSizes from '../../util/ScreenSizes'
 import { Dimensions } from 'react-native'
 import { TAB_BAR_HEIGHT } from '../tabbar/TabBar'
@@ -9,7 +9,7 @@ const MARGIN_SIZE = 10
 export const SEARCH_BAR_MARGIN_TOP_IOS = 35
 
 export const SEARCH_BAR_MARGIN = marginOffset(SEARCH_BAR_MARGIN_TOP_IOS)
-export const SEARCH_BAR_HEIGHT = ScreenSizes.isSmall() ? 44 : 48
+export const SEARCH_BAR_HEIGHT = 0  // ScreenSizes.isSmall() ? 44 : 48 - For use when search is implemented
 export const MAP_HEIGHT = ScreenSizes.isSmall() ? 220 : 275
 
 // Here we use SEARCH_BAR_MARGIN_TOP_IOS because
@@ -20,15 +20,13 @@ export const maxCollapsedHeight = maxExpandedHeight - MAP_HEIGHT
 const styles = {
   searchTab: {
     expandPanel: {
-      left: MARGIN_SIZE,
-      right: MARGIN_SIZE,
       position: 'absolute',
+      left: MARGIN_SIZE,
+      right: MARGIN_SIZE
     },
     searchBar: {
+      ...margin(SEARCH_BAR_MARGIN, MARGIN_SIZE, 0, MARGIN_SIZE),
       height: SEARCH_BAR_HEIGHT,
-      marginLeft: MARGIN_SIZE,
-      marginRight: MARGIN_SIZE,
-      marginTop: SEARCH_BAR_MARGIN,
       backgroundColor: color.white,
       flexDirection: 'row',
       ...commonStyle.shadow

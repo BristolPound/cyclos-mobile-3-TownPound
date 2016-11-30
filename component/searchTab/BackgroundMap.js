@@ -8,6 +8,7 @@ import * as actions from '../../store/reducer/business'
 import { maxCollapsedHeight, SEARCH_BAR_MARGIN, SEARCH_BAR_HEIGHT } from './SearchTabStyle'
 
 const MAP_PAN_DEBOUNCE_DURATION = 150
+const BOTTOM_OFFSET = -25
 
 const UNSELECTED_TRADER_IMG = require('./Marker.png')
 const SELECTED_TRADER_IMG = require('./selected_trader.png')
@@ -15,10 +16,10 @@ const SELECTED_TRADER_IMG = require('./selected_trader.png')
 const style = {
   map: {
     position: 'absolute',
-    top: -1 * maxCollapsedHeight + SEARCH_BAR_MARGIN + SEARCH_BAR_HEIGHT,
-    bottom: 0,
+    top: -1 * maxCollapsedHeight + SEARCH_BAR_MARGIN + SEARCH_BAR_HEIGHT + BOTTOM_OFFSET,
+    bottom: BOTTOM_OFFSET,
     left: 0,
-    right: 0,
+    right: 0
   }
 }
 

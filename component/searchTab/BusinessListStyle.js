@@ -1,8 +1,9 @@
 import color from '../../util/colors'
 import ScreenSizes from '../../util/ScreenSizes'
-import {dimensions} from '../style'
+import {dimensions, padding} from '../style'
 
 export const ROW_HEIGHT = ScreenSizes.isSmall() ? 50 : 60
+const CONTENT_PADDING = ScreenSizes.isSmall() ? 4 : 8
 export const BUSINESS_LIST_SELECTED_GAP = 10
 
 const styles = {
@@ -41,11 +42,9 @@ const styles = {
       borderTopLeftRadius: 2
     },
     contents: {
+      ...padding(CONTENT_PADDING, 0, CONTENT_PADDING, 5),
       flex: 1,
       flexDirection: 'row',
-      paddingLeft: 5,
-      paddingTop: ScreenSizes.isSmall() ? 4 : 8,
-      paddingBottom: ScreenSizes.isSmall() ? 4 : 8,
     },
     image: {
       paddingRight: 5,
@@ -55,10 +54,9 @@ const styles = {
       borderColor: color.offWhite
     },
     verticalStack: {
+      ...padding(0, 10, 0, 10),
       flex: 1,
-      flexDirection: 'column',
-      paddingLeft: 10,
-      paddingRight: 10
+      flexDirection: 'column'
     },
     title: {
       fontSize: ScreenSizes.isSmall() ? 16 : 18,

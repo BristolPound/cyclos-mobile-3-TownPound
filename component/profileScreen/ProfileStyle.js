@@ -1,6 +1,6 @@
 import { StyleSheet, Dimensions } from 'react-native'
 import colors from '../../util/colors'
-import commonStyle, { dimensions } from '../style'
+import commonStyle, { dimensions, margin } from '../style'
 import marginOffset from '../../util/marginOffset'
 
 const headerMargin = 24
@@ -12,23 +12,21 @@ const styles = {
       marginTop: marginOffset(0),
     },
     closeButton: {
+      ...margin(40, 0, 0, headerMargin),
       position: 'absolute',
-      marginLeft: headerMargin,
-      marginTop: 40,
       zIndex: 100,
     },
     closeIcon: {
-      margin: 10,
-      height: 18,
-      width: 18
+      ...dimensions(18),
+      ...margin(10),
+      marginLeft: 0
     },
     center: {
       alignItems: 'center',
     },
     expandIcon: {
-      marginRight: headerMargin,
-      marginTop: 40,
-      ...dimensions(16)
+      ...dimensions(16),
+      ...margin(40, headerMargin, 0, 0)
     },
     businessLogo: {
       ...dimensions(84),
@@ -56,9 +54,8 @@ const styles = {
   },
   list: {
     rowContainer: {
+      ...margin(0, listMargin, 0, listMargin),
       flexDirection: 'row',
-      marginLeft: listMargin,
-      marginRight: listMargin,
       justifyContent: 'center',
       height: 50
     },

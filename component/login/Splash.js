@@ -5,7 +5,7 @@ import DefaultText from '../DefaultText'
 import marginOffset from '../../util/marginOffset'
 import colors from '../../util/colors'
 import merge from '../../util/merge'
-import commonStyle from './../style.js'
+import commonStyle, { padding, margin } from './../style.js'
 import { bindActionCreators } from 'redux'
 import * as actions from '../../store/reducer/login'
 import Login from './Login'
@@ -14,11 +14,9 @@ import StatusMessage from '../StatusMessage'
 
 const style = {
   container: {
+    ...padding(0, 30, 24, 30),
     flex: 1,
-    alignItems: 'center',
-    paddingLeft: 30,
-    paddingRight: 30,
-    paddingBottom: 24
+    alignItems: 'center'
   },
   bottomContainer : {
     alignItems: 'center',
@@ -31,11 +29,10 @@ const style = {
   },
   welcome: {
     container: {
+      ...margin(marginOffset(254), 0, 10, 0),
       flex: 1,
       justifyContent: 'flex-start',
-      alignItems: 'center',
-      marginTop: marginOffset(254),
-      marginBottom: 10,
+      alignItems: 'center'
     },
   },
   loginButton: {

@@ -1,6 +1,6 @@
 import color from '../../util/colors'
 import marginOffset from '../../util/marginOffset'
-import commonStyle, { dimensions } from '../style'
+import commonStyle, { dimensions, margin } from '../style'
 import { baselineDeltaForFonts } from '../DefaultText'
 
 const HEADER_HEIGHT = marginOffset(90)
@@ -37,8 +37,7 @@ const styles = {
     },
     image: {
       ...dimensions(IMAGE_SIZE),
-      marginLeft: IMAGE_MARGIN,
-      marginRight: IMAGE_MARGIN,
+      ...margin(0, IMAGE_MARGIN, 0, IMAGE_MARGIN),
       borderRadius: 5,
       borderWidth: 1,
       borderColor: color.offWhite,
