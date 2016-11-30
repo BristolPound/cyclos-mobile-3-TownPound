@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TouchableHighlight, StyleSheet, Animated,  Easing } from 'react-native'
+import { View, TouchableHighlight, StyleSheet, Animated,  Easing, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 import DefaultText from '../DefaultText'
 import marginOffset from '../../util/marginOffset'
@@ -25,7 +25,9 @@ const style = {
     alignSelf: 'stretch'
   },
   background: {
-    ...StyleSheet.absoluteFillObject
+    position: 'absolute',
+    height: Dimensions.get('window').height,
+    left: 0,
   },
   welcome: {
     container: {
@@ -113,6 +115,7 @@ class Splash  extends React.Component {
               {translateX: this.state.backgroundOffset}
             ]
           })}
+          resizeMode='stretch'
           source={require('../background.jpg')}/>
         <View style={style.welcome.container}>
           { this.props.renderWelcomeMessage(this.props) }
