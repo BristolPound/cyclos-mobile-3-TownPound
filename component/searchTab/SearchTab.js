@@ -26,7 +26,8 @@ const calculatePanelHeight = (rowCount, selectedBusiness) => {
     Math.min(rowCount * ROW_HEIGHT + selectedBusinessModifier, maxExpandedHeight),
     collapsedHeight
   )
-  return ({ collapsedHeight, expandedHeight })
+  const closedHeight = ROW_HEIGHT * Math.min(rowCount, 1)
+  return ({ collapsedHeight, expandedHeight, closedHeight })
 }
 
 class SearchTab extends React.Component {
@@ -44,15 +45,18 @@ class SearchTab extends React.Component {
   }
 
   render() {
-    const { closestBusinesses, openTraderModal, selectedBusiness } = this.props;
-    const { componentList } = this.refs;
+    const { closestBusinesses, openTraderModal, selectedBusiness } = this.props
+    const { componentList } = this.refs
 
     const noOfCloseBusinesses = closestBusinesses.length,
         childrenHeight = selectedBusiness
             ? noOfCloseBusinesses * ROW_HEIGHT + BUSINESS_LIST_SELECTED_GAP
             : noOfCloseBusinesses * ROW_HEIGHT
 
-    const { collapsedHeight, expandedHeight } = calculatePanelHeight(noOfCloseBusinesses, selectedBusiness)
+    const { collapsedHeight, expandedHeight, closedHeight } = calculatePanelHeight(
+      this.props.closestBusinesses.length,
+      this.props.selectedBusiness
+    )
     const calculatedOffset = height => EXPANDED_LIST_TOP_OFFSET + maxExpandedHeight - height
     const selectedComponentView = item => {
         if (item === BUSINESS_LIST_GAP_PLACEHOLDER) {
@@ -71,17 +75,17 @@ class SearchTab extends React.Component {
         <BackgroundMap/>
         <ScrollingExpandPanel
           style={styles.searchTab.expandPanel}
-          topOffsetWhenExpanded={calculatedOffset(expandedHeight)}
-          topOffsetWhenCollapsed={calculatedOffset(collapsedHeight)}
+          topOffset={[ calculatedOffset(expandedHeight), calculatedOffset(collapsedHeight), calculatedOffset(closedHeight) ]}
           expandedHeight={expandedHeight}
           onPressRelease={hasMoved => componentList.handleRelease(hasMoved)}
           onPressStart={location => componentList.highlightItem(location)}
-          childrenHeight={childrenHeight}>
-            <ComponentList
-              ref='componentList'
-              items={componentArray}
-              componentForItem={selectedComponentView}
-              onPressItem={index => componentArray[index].id && openTraderModal(componentArray[index].id)} />
+          childrenHeight={childrenHeight}
+          startPosition={1}>
+          <ComponentList
+            ref='componentList'
+            items={componentArray}
+            componentForItem={selectedComponentView}
+            onPressItem={index => componentArray[index].id && openTraderModal(componentArray[index].id)} />
         </ScrollingExpandPanel>
       </View>
     )
