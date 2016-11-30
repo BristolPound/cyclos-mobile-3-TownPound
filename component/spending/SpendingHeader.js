@@ -1,13 +1,15 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, Dimensions } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import Carousel from 'react-native-carousel-control'
+import Carousel from './Carousel'
 import DefaultText from '../DefaultText'
 import Price from '../Price'
 import * as actions from '../../store/reducer/transaction'
 import { isSameMonth, format } from '../../util/date'
 import styles from './spendingStyle'
+
+const CAROUSEL_ITEM_WIDTH = 150
 
 export const toMonthString = month =>
   isSameMonth(month, new Date()) ? 'Spent This Month' : format(month, 'MMMM')
@@ -17,7 +19,7 @@ const monthOpacity = (distanceFromCentre) => 1 - distanceFromCentre / 3
 const MonthOption = ({monthTotal, distanceFromCentre}) =>
   <View style={{
         opacity: monthOpacity(distanceFromCentre),
-        flex: 1
+        width: CAROUSEL_ITEM_WIDTH,
       }}
       key={toMonthString(monthTotal.month)}>
     <DefaultText style={styles.header.monthlyOption}>
@@ -32,22 +34,14 @@ const MonthOption = ({monthTotal, distanceFromCentre}) =>
 
 class SpendingHeader extends React.Component {
   render() {
-    if (this.refs.carousel) {
-      // HACK: The carousel control doesn't have a property for the current page, instead it uses
-      // a method. However, this method fires the onPageChange event. This isn't terribly
-      // React-like! We have to suppress the event in order to stop causing a state change while in the
-      // render-phase (redux doesn't like this!)
-      this.suppressPageChange = true
-      this.refs.carousel.goToPage(this.props.selectedMonthIndex)
-      this.suppressPageChange = false
-    }
     return  <View style={styles.header.carouselContainer}>
       <Carousel
-          pageWidth={150}
-          sneak={130}
-          ref='carousel'
-          initialPage={this.props.selectedMonthIndex}
-          onPageChange={i => !this.suppressPageChange && this.props.selectMonth(i)}>
+          itemWidth={CAROUSEL_ITEM_WIDTH}
+          containerWidth={Dimensions.get('window').width}
+          pageIndex={this.props.selectedMonthIndex}
+          onTouchStart={this.props.scrollTransactionsToTop}
+          onPageChange={this.props.selectMonth}
+          onPress={this.props.selectMonth}>
         { this.props.monthlyTotalSpent.map((monthTotal, index) =>
           <MonthOption
               key={toMonthString(monthTotal.month)}

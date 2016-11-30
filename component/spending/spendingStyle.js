@@ -3,14 +3,10 @@ import marginOffset from '../../util/marginOffset'
 import commonStyle, { dimensions, margin } from '../style'
 import { baselineDeltaForFonts } from '../DefaultText'
 
-const HEADER_HEIGHT = marginOffset(90)
 const IMAGE_SIZE = 42
 const IMAGE_MARGIN = 14
 
 const styles = {
-  list: {
-    marginTop: HEADER_HEIGHT,
-  },
   container: {
     flex: 1
   },
@@ -72,9 +68,6 @@ const styles = {
   sectionHeader: commonStyle.sectionHeader,
   header: {
     carouselContainer: {
-      position: 'absolute',
-      top: 0,
-      height: HEADER_HEIGHT,
       paddingTop: marginOffset(30),
       ...commonStyle.shadow
     },

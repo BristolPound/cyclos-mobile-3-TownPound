@@ -1,6 +1,7 @@
 import React from 'react'
 import { Animated, Easing } from 'react-native'
 import _ from 'lodash'
+import animateTo from '../../util/animateTo'
 
 // How far to drag it before it switches between expanded/collapsed states
 const DRAG_DISTANCE_TO_EXPAND = 1/3
@@ -68,26 +69,17 @@ class ScrollingExpandPanel extends React.Component {
     return props.childrenHeight - props.expandedHeight
   }
 
-  // utility for animations. 'easing' and 'callback' are optional
-  animateTo(parameterToAnimate, value, duration, easing, callback) {
-    Animated.timing(parameterToAnimate, {
-      toValue: value,
-      easing: easing || Easing.out(Easing.ease),
-      duration
-    }).start(callback)
-  }
-
   // apply smooth transition when list size changes
   componentWillReceiveProps(nextProps) {
     const targetLocation = nextProps.topOffset[this.getPosition()]
-    this.animateTo(this.state.currentOuterTopOffset, targetLocation, 200)
+    animateTo(this.state.currentOuterTopOffset, targetLocation, 200)
   }
 
   getPosition() {
     for (let i = 0; i < this.props.topOffset.length - 1; i++) {
       if (this.state.currentOuterTopOffset._value < (this.props.topOffset[i] + this.props.topOffset[i+1]) / 2) {
         return i
-      }
+  }
     }
     return this.props.topOffset.length - 1
   }
@@ -144,8 +136,8 @@ class ScrollingExpandPanel extends React.Component {
       if ((isMovingUpwards(i) && nextYCoord < fractionBetweenPoints(DRAG_DISTANCE_TO_EXPAND, i))
           || (!isMovingUpwards(i) && nextYCoord < fractionBetweenPoints(1 - DRAG_DISTANCE_TO_EXPAND, i))) {
         return i
-      }
     }
+  }
     return this.props.topOffset.length - 1
   }
 
@@ -173,7 +165,7 @@ class ScrollingExpandPanel extends React.Component {
       if (this.state.currentOuterTopOffset._value <= offset && this.positionAtTouchStart > i
         || this.state.currentOuterTopOffset._value >= offset && this.positionAtTouchStart < i) {
           this.positionAtTouchStart = i
-      }
+    }
     }
 
     const currentOuterTopOffset = this.getCurrentOuterTopOffset(currentTouchY)
@@ -215,7 +207,7 @@ class ScrollingExpandPanel extends React.Component {
     const remainder = finalInnerTopOffset_unbounded - finalInnerTopOffset_bounded
     const newPosition = this.positionAfterMove(this.state.currentOuterTopOffset._value + remainder)
     if (!newPosition) {
-      this.animateTo(
+      animateTo(
         this.state.currentInnerTopOffset,
         finalInnerTopOffset_bounded,
         (finalInnerTopOffset_bounded - this.state.currentInnerTopOffset._value) / this.velocity
@@ -224,7 +216,7 @@ class ScrollingExpandPanel extends React.Component {
       // TODO: This is still an approximation to the correct easing! Perhaps it would be better
       // to allow currentInnerTopOffset to become positive here, then reset everything once the animation
       // is complete. That way we would not have to use 'piecewise' easing
-      this.animateTo(
+      animateTo(
         this.state.currentInnerTopOffset,
         0,
         Math.abs(this.state.currentInnerTopOffset._value / this.velocity),
@@ -235,7 +227,7 @@ class ScrollingExpandPanel extends React.Component {
   }
 
   animatePositionTo(index) {
-    this.animateTo(
+    animateTo(
       this.state.currentOuterTopOffset,
       this.props.topOffset[index],
       Math.abs(this.state.currentOuterTopOffset._value - this.props.topOffset[index])
@@ -256,7 +248,7 @@ class ScrollingExpandPanel extends React.Component {
     } else { // slide back to expanded or collapsed position
       const endPosition = this.state.currentOuterTopOffset._value + this.getMomentumTravel()
       this.animatePositionTo(this.positionAfterMove(endPosition))
-    }
+      }
 
     // cleanup
     this.resetVariablesToStationary()
