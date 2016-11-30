@@ -21,6 +21,7 @@ const styles = {
     backgroundColor: colors.transparent,
     fontSize: 14,
     marginTop: 18,
+    paddingBottom: 8
   },
   separator: {
     borderBottomColor: colors.gray5,
@@ -160,14 +161,15 @@ function renderFields(fields) {
 
 function renderExpander(expandDetailsFn) {
   return <View style={{paddingTop: 12}}>
-    <View style={styles.separator}/>
-    <TouchableOpacity
-      onPress={expandDetailsFn}
-      accessiblityLabel='View Full Details'
-    >
-      <View><Text style={styles.minorButtonText}>VIEW DETAILS</Text></View>
-    </TouchableOpacity>
-  </View>
+            <View style={styles.separator}/>
+            <TouchableOpacity
+              onPress={expandDetailsFn}
+              accessiblityLabel='View Full Details'>
+              <View>
+                <Text style={styles.minorButtonText}>VIEW DETAILS</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
 }
 
 const ViewFields = ({fields}) =>

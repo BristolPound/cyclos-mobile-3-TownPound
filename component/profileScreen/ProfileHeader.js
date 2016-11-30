@@ -27,7 +27,7 @@ const renderCloseIcon = (props) =>
       underlayColor={color.transparent}>
       <Image
         style={styles.header.closeIcon}
-        source={require('./Close.png')}
+        source={require('./Close_Blue.png')}
       />
     </TouchableHighlight>
 

@@ -6,32 +6,22 @@ import styles from './BusinessListStyle'
 import merge from '../../util/merge'
 
 class BusinessListItem extends React.Component {
-
   shouldComponentUpdate() {
     return false
   }
 
   render() {
-    const statusStyle = merge(styles.listItem.status,
-      this.props.isSelected ? styles.listItem.statusSelected : {}
-    )
+    const { container, contents, status, statusSelected, title, verticalStack } = styles.listItem
+    const { image, category, display, shortDisplay } = this.props.business
+    const statusStyle = merge(status, this.props.isSelected ? statusSelected : {})
     return (
-      <View
-        style={styles.listItem.container}>
-        <View
-          style={statusStyle}/>
-        <View style={styles.listItem.contents}>
-          <ProfileImage
-            img={this.props.business.image}
-            style={styles.listItem.image}
-            category={this.props.business.category}/>
-          <View style={styles.listItem.verticalStack}>
-            <DefaultText style={styles.listItem.title}>
-              {this.props.business.display}
-            </DefaultText>
-            <DefaultText style={styles.listItem.shortDisplay}>
-              {this.props.business.shortDisplay}
-            </DefaultText>
+      <View style={container}>
+        <View style={statusStyle}/>
+        <View style={contents}>
+          <ProfileImage img={image} style={styles.listItem.image} category={category} />
+          <View style={verticalStack}>
+            <DefaultText style={title}>{display}</DefaultText>
+            <DefaultText style={styles.listItem.shortDisplay}>{shortDisplay}</DefaultText>
           </View>
         </View>
       </View>
