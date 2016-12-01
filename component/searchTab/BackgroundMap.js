@@ -6,12 +6,20 @@ import { Platform } from 'react-native'
 import _ from 'lodash'
 import * as actions from '../../store/reducer/business'
 import { maxCollapsedHeight, SEARCH_BAR_MARGIN, SEARCH_BAR_HEIGHT } from './SearchTabStyle'
+import platform from '../../util/Platforms'
 
 const MAP_PAN_DEBOUNCE_DURATION = 150
 const BOTTOM_OFFSET = -25
 
-const UNSELECTED_TRADER_IMG = require('./Marker.png')
-const SELECTED_TRADER_IMG = require('./selected_trader.png')
+const markerImage = {
+  [platform.IOS]: require('./Marker.png'),
+  [platform.ANDROID]: require('./Android_marker.png')
+}
+
+const selectedMarkerImage = {
+  [platform.IOS]: require('./selected_trader.png'),
+  [platform.ANDROID]: require('./Android_selected_marker.png')
+}
 
 const style = {
   map: {
@@ -47,15 +55,19 @@ class BackgroundMap extends React.Component {
     //       ios - centerOffset: By default, the center point of an annotation view is placed at the coordinate point of the associated annotation.
     //       android - anchor: manually center
 
+      const marker = this.isSelected(business) ? selectedMarkerImage : markerImage
+
       const markerProps = Platform.select({
         android: {
           onPress: () => {
             this.props.updateMapViewportAndSelectClosestTrader(business.address.location)
           },
           anchor: {x: 0.5, y: 0.5},  // center image on location.
+          image: marker[platform.ANDROID]
         },
         ios: {
-          onPress: () => this.props.selectBusiness(business.id)
+          onPress: () => this.props.selectBusiness(business.id),
+          image: marker[platform.IOS]
         }
       })
 
@@ -64,7 +76,6 @@ class BackgroundMap extends React.Component {
           key={business.id}
           coordinate={business.address.location}
           {...markerProps}
-          image={this.isSelected(business) ? SELECTED_TRADER_IMG : UNSELECTED_TRADER_IMG}
       />
   }
 

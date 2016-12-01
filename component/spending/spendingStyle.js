@@ -7,9 +7,6 @@ const IMAGE_SIZE = 42
 const IMAGE_MARGIN = 14
 
 const styles = {
-  container: {
-    flex: 1
-  },
   separator: {
     marginLeft: IMAGE_SIZE + IMAGE_MARGIN * 2,
     marginRight: 0,
@@ -24,7 +21,8 @@ const styles = {
       flexDirection: 'row',
       height: 50,
       paddingRight: 20,
-      alignItems: 'center'
+      alignItems: 'center',
+      backgroundColor: 'white',
     },
     textContainer: {
       flexDirection: 'row',
@@ -68,21 +66,16 @@ const styles = {
   sectionHeader: commonStyle.sectionHeader,
   header: {
     carouselContainer: {
-      paddingTop: marginOffset(30),
-      ...commonStyle.shadow
+      paddingTop: marginOffset(38),
+      ...commonStyle.shadow,
+      paddingBottom: 14,
+      height: marginOffset(106)
     },
     monthlyOption: {
       fontFamily: commonStyle.font.museo500,
       fontSize: 15,
       textAlign: 'center',
-      justifyContent: 'center',
-      alignItems: 'center',
-      color: color.gray
     },
-    priceStyle: {
-      color: color.bristolBlue,
-      size: 32
-    }
   }
 }
 

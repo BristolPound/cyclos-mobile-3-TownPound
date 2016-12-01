@@ -7,11 +7,11 @@ import commonStyle from './style'
 
 const Price = ({prefix, price, color, size, style, center}) => {
   const priceComponents = Math.abs(price).toFixed(2).split('.')
-  const priceBeforeDecimal = !isNaN(priceComponents[0]) ? priceComponents[0] : "-"
-  const priceAfterDecimal = !isNaN(priceComponents[1]) ? priceComponents[1] : "--"
+  const priceBeforeDecimal = !isNaN(priceComponents[0]) ? priceComponents[0] : '-'
+  const priceAfterDecimal = !isNaN(priceComponents[1]) ? priceComponents[1] : '--'
   const isCredit = price > 0
   size = size || 18
-  const smallFontSize = size * 0.8
+  const smallFontSize = size * 0.75
 
   // offset the smaller font based on the difference in baseline
   const marginBottom = baselineDeltaForFonts(size, smallFontSize)

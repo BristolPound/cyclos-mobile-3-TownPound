@@ -8,29 +8,43 @@ import Price from '../Price'
 import * as actions from '../../store/reducer/transaction'
 import { isSameMonth, format } from '../../util/date'
 import styles from './spendingStyle'
+import color from '../../util/colors'
 
-const CAROUSEL_ITEM_WIDTH = 150
+const CAROUSEL_ITEM_WIDTH = 145
 
 export const toMonthString = month =>
   isSameMonth(month, new Date()) ? 'Spent This Month' : format(month, 'MMMM')
 
-const monthOpacity = (distanceFromCentre) => 1 - distanceFromCentre / 3
-
-const MonthOption = ({monthTotal, distanceFromCentre}) =>
-  <View style={{
-        opacity: monthOpacity(distanceFromCentre),
-        width: CAROUSEL_ITEM_WIDTH,
-      }}
-      key={toMonthString(monthTotal.month)}>
-    <DefaultText style={styles.header.monthlyOption}>
-      {toMonthString(monthTotal.month).toUpperCase()}
-    </DefaultText>
-    <Price
-        color={styles.header.priceStyle.color}
-        price={monthTotal.total}
-        size={styles.header.priceStyle.size}
-        center={true} />
-  </View>
+const MonthOption = ({monthTotal, isSelected}) => {
+  const priceProps = isSelected
+    ? {
+        color: color.bristolBlue,
+        size: 32
+    } : {
+        color: color.bristolBlue2,
+        size: 28
+    }
+  const textStyle = isSelected
+    ? {
+      color: color.gray1,
+      paddingBottom: 4
+    } : {
+      color: color.gray2,
+      paddingBottom: 2
+    }
+  return (
+    <View style={{width: CAROUSEL_ITEM_WIDTH}}
+        key={toMonthString(monthTotal.month)}>
+      <DefaultText style={{...styles.header.monthlyOption, ...textStyle}}>
+        {toMonthString(monthTotal.month).toUpperCase()}
+      </DefaultText>
+      <Price
+          {...priceProps}
+          price={monthTotal.total}
+          center={true} />
+    </View>
+  )
+}
 
 class SpendingHeader extends React.Component {
   render() {
@@ -46,13 +60,12 @@ class SpendingHeader extends React.Component {
           <MonthOption
               key={toMonthString(monthTotal.month)}
               monthTotal={monthTotal}
-              distanceFromCentre={Math.min(Math.abs(this.props.selectedMonthIndex - index), 2)} />
+              isSelected={this.props.selectedMonthIndex === index} />
         ) }
       </Carousel>
     </View>
   }
 }
-
 
 const mapDispatchToProps = (dispatch) => bindActionCreators(actions, dispatch)
 
