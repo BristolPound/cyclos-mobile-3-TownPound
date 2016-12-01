@@ -57,17 +57,19 @@ class SpendingTab extends React.Component {
   }
   render() {
     let bodyComponent
+    const dataSource = this.props.transactionsDataSource
     if (this.props.loadingTransactions) {
       bodyComponent = <ActivityIndicator size='large' style={styles.loadingIndicator}/>
-    } else if (this.props.transactionsDataSource.getRowCount()) {
+    } else if (dataSource.getRowCount()) {
       bodyComponent = <ListView
           ref={(lv) => this.listViewRef = lv}
+          style={{backgroundColor: color.offWhite}}
           tabLabel='Transactions'
           pageSize={10}
           renderSeparator={renderSeparator}
           enableEmptySections={true}
           renderRow={transaction => renderRow(transaction, this.props.openDetailsModal)}
-          dataSource={this.props.transactionsDataSource}
+          dataSource={dataSource}
           onScroll={() => !this.props.scrolled && this.props.transactionsScrolled()}
           renderSectionHeader={renderSectionHeader}
           refreshControl={<RefreshControl
@@ -82,7 +84,7 @@ class SpendingTab extends React.Component {
     }
 
     return (
-      <View style={styles.container}>
+      <View style={{flex: 1}}>
         <SpendingHeader />
         {bodyComponent}
       </View>

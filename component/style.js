@@ -11,12 +11,12 @@ export const dimensions = (value) => ({
 })
 
 const layoutDimensions = (top, right = top, bottom = top, left = right, property) => {
-    let styles = {};
-    styles[`${property}Top`] = top;
-    styles[`${property}Right`] = right;
-    styles[`${property}Bottom`] = bottom;
-    styles[`${property}Left`] = left;
-    return styles;
+    let styles = {}
+    styles[`${property}Top`] = top
+    styles[`${property}Right`] = right
+    styles[`${property}Bottom`] = bottom
+    styles[`${property}Left`] = left
+    return styles
 }
 
 export const margin = (top, right, bottom, left) =>
