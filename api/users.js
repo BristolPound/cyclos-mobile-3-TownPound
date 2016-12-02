@@ -28,9 +28,9 @@ export const getBusinesses = (dispatch) =>
       // The prod api gives incorrect shortdisplay (format: DISPLAY (SHORTDISPLAY))
       // Also when logged in on either dev or prod the api uses username & name rather than shortDisplay and display
     if (results) {
-      return results.map(bu => merge(bu, {
-        display: bu.display || bu.name,
-        shortDisplay: parseShortDisplay(bu.shortDisplay || bu.username),
+      return results.map(business => merge(business, {
+        display: business.display || business.name,
+        shortDisplay: parseShortDisplay(business.shortDisplay || business.username),
         category: 'shop', // hardcoded pending database set up of categories.
       }))
     }
@@ -46,5 +46,8 @@ export const getAccountDetails = (dispatch) =>
   get('users/self', {
     fields: ['display', 'shortDisplay', 'image.url', 'email', 'phones'],
     requiresAuthorisation: true
-  },
-  dispatch)
+  }, dispatch)
+  .then(account => merge(account, {
+    display: account.display || account.name,
+    shortDisplay: parseShortDisplay(account.shortDisplay || account.username)
+  }))

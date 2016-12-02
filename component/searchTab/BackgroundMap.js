@@ -2,7 +2,7 @@ import React from 'react'
 import MapView from 'react-native-maps'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Platform } from 'react-native'
+import { Platform, View, Dimensions } from 'react-native'
 import _ from 'lodash'
 import * as actions from '../../store/reducer/business'
 import { maxCollapsedHeight, SEARCH_BAR_MARGIN, SEARCH_BAR_HEIGHT } from './SearchTabStyle'
@@ -21,13 +21,27 @@ const selectedMarkerImage = {
   [platform.ANDROID]: require('./Android_selected_marker.png')
 }
 
+const mapTopOffset = -1 * maxCollapsedHeight + SEARCH_BAR_MARGIN + SEARCH_BAR_HEIGHT + BOTTOM_OFFSET
+const mapHeight =  Dimensions.get('window').height - mapTopOffset - BOTTOM_OFFSET
+const mapWidth = Dimensions.get('window').width
+
 const style = {
-  map: {
+  container: {
     position: 'absolute',
-    top: -1 * maxCollapsedHeight + SEARCH_BAR_MARGIN + SEARCH_BAR_HEIGHT + BOTTOM_OFFSET,
-    bottom: BOTTOM_OFFSET,
+    top: mapTopOffset,
+    height: mapHeight,
     left: 0,
     right: 0
+  },
+  map: {
+    height: mapHeight,
+    width: mapWidth,
+    position: 'absolute'
+  },
+  loadingOverlay: {
+    height: mapHeight,
+    width: mapWidth,
+    backgroundColor: 'white'
   }
 }
 
@@ -35,6 +49,12 @@ class BackgroundMap extends React.Component {
   constructor() {
     super()
     this.ignoreLocationUpdates = false
+    this.state = ({ loading: true })
+  }
+
+  componentDidMount() {
+    // To prevent the user seeing the centre of the earth when opening the app
+    setTimeout(() => this.setState({ loading: false }), 0)
   }
 
   updateViewport(...args) {
@@ -89,16 +109,22 @@ class BackgroundMap extends React.Component {
     }
 
     return (
-      <MapView style={style.map}
-          region={region}
-          showsPointsOfInterest={false}
-          showsUserLocation={true}
-          showsCompass={false}
-          rotateEnabled={false}
-          pitchEnabled={false}
-          onRegionChange={_.debounce(this.updateViewport.bind(this), MAP_PAN_DEBOUNCE_DURATION)}>
-        {markerArray}
-      </MapView>
+      <View style={style.container}>
+        <MapView style={style.map}
+            region={region}
+            showsPointsOfInterest={false}
+            showsUserLocation={true}
+            showsCompass={false}
+            rotateEnabled={false}
+            pitchEnabled={false}
+            onRegionChange={_.debounce(this.updateViewport.bind(this), MAP_PAN_DEBOUNCE_DURATION)}
+            loadingEnabled={true}>
+          {markerArray}
+        </MapView>
+        {this.state.loading
+          ? <View style={style.loadingOverlay}/>
+          : undefined}
+      </View>
     )
   }
 }
