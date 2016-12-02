@@ -11,6 +11,7 @@ import * as actions from '../../store/reducer/login'
 import Login from './Login'
 import LoginOverlay from './LoginOverlay'
 import StatusMessage from '../StatusMessage'
+import PLATFORM from '../../util/Platforms'
 
 const style = {
   container: {
@@ -85,7 +86,7 @@ class Splash  extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.loginFormOpen) {
+    if (nextProps.loginFormOpen && PLATFORM.isAndroid()) {
       this.setState({ showButtons: false})
     }
     if (!nextProps.loginFormOpen && this.props.loginFormOpen) {

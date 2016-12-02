@@ -7,8 +7,7 @@ import { connect } from 'react-redux'
 import color from '../../util/colors'
 import commonStyle from '../style'
 import { openLoginForm } from '../../store/reducer/login'
-import { showModal } from '../../store/reducer/navigation'
-import { modalState } from '../../store/reducer/navigation'
+import { showModal, modalState } from '../../store/reducer/navigation'
 import { LOGIN_STATUSES } from '../../store/reducer/login'
 
 export const TAB_BAR_HEIGHT = 45

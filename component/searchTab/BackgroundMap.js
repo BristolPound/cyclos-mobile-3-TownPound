@@ -54,7 +54,7 @@ class BackgroundMap extends React.Component {
 
   componentDidMount() {
     // To prevent the user seeing the centre of the earth when opening the app
-    setTimeout(() => this.setState({ loading: false }), 0)
+    setTimeout(() => this.setState({ loading: false }), 500)
   }
 
   updateViewport(...args) {
