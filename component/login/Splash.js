@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TouchableHighlight, StyleSheet, Animated,  Easing, Dimensions } from 'react-native'
+import { View, TouchableHighlight, Animated,  Easing, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 import DefaultText from '../DefaultText'
 import marginOffset from '../../util/marginOffset'
@@ -75,12 +75,22 @@ class Splash  extends React.Component {
   constructor() {
     super()
     this.state = {
-      backgroundOffset: new Animated.Value(0)
+      backgroundOffset: new Animated.Value(0),
+      showButtons: true
     }
   }
 
   componentDidMount() {
     this.animateBackground()
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.loginFormOpen) {
+      this.setState({ showButtons: false})
+    }
+    if (!nextProps.loginFormOpen && this.props.loginFormOpen) {
+      setTimeout(() => this.setState({ showButtons: true }), 80)
+    }
   }
 
   animateBackground() {
@@ -117,9 +127,8 @@ class Splash  extends React.Component {
         <View style={style.welcome.container}>
           { this.props.renderWelcomeMessage(this.props) }
         </View>
-        { this.props.loginFormOpen
-          ? undefined
-          : <View style={style.bottomContainer}>
+        { this.state.showButtons
+          ? <View style={style.bottomContainer}>
               <TouchableHighlight
                   style={style.loginButton.container}
                   onPress={() => this.props.openLoginForm(true)}
@@ -134,6 +143,7 @@ class Splash  extends React.Component {
               </TouchableHighlight>
               { this.props.renderInfoText(this.props) }
             </View>
+          : undefined
         }
         <LoginOverlay/>
         <Login hideUsernameInput={this.props.hideUsernameInput}/>

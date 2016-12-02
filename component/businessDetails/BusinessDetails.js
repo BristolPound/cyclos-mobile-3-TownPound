@@ -4,7 +4,7 @@ import HTMLView from 'react-native-htmlview'
 import { View, Text, TouchableOpacity, Linking, StyleSheet, Image } from 'react-native'
 
 import { MultilineText } from '../DefaultText'
-import commonStyle from '../style'
+import commonStyle, { padding } from '../style'
 import addresses from '../../util/addresses'
 import colors from '../../util/colors'
 
@@ -52,6 +52,12 @@ const styles = {
     color: colors.gray1,
     flexWrap: 'wrap'
   },
+  addressOnly: {
+    ...padding(18, 0, 30, 0)
+  },
+  moreDetails: {
+    paddingBottom: 12
+  }
 }
 
 // If expanded, display all items and the description.
@@ -71,7 +77,7 @@ class BusinessDetails extends React.Component {
       fields.length = 2
     }
 
-    return <View style={{paddingBottom: 12}}>
+    return <View style={fields.length > 1 ? styles.moreDetails : styles.addressOnly}>
       {renderFields(fields)}
       { expanded }
     </View>
