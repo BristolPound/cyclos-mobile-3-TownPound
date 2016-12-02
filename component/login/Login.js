@@ -26,10 +26,8 @@ const style = {
     flex: 1,
     height: 68,
     padding: 20,
-    backgroundColor: colors.bristolBlue
   },
   loginButtonText: {
-    color: 'white',
     fontSize: 24,
     textAlign: 'center'
   },
@@ -45,6 +43,9 @@ const style = {
     backgroundColor: colors.gray5
   }
 }
+
+// Cyclos doesn't like special characters or empty usernames :(
+const isValid = (username) => username && !username.match(/\W/)
 
 class Login extends KeyboardComponent {
   constructor() {
@@ -64,39 +65,40 @@ class Login extends KeyboardComponent {
   }
 
   render() {
+    const { username, password, hideUsernameInput, login, usernameUpdated, passwordUpdated } = this.props
     const loginView = (
       <Animated.View style={merge(style.loginContainer, { bottom: this.state.bottom, height: 204 + this.state.keyboardHeight })}>
-        <View style={merge(style.loginContainer, { bottom: this.state.keyboardHeight })}>
-          <TouchableOpacity style={style.loginButton}
-              accessibilityLabel={'Login Button'}
-              onPress={() => this.props.login(this.props.username, this.props.password)}>
-            <DefaultText style={style.loginButtonText}>Log in</DefaultText>
-          </TouchableOpacity>
-          { this.props.hideUsernameInput
-            ? undefined
-            : <TextInput style={style.input}
-                accessibilityLabel={'Input Username'}
-                autoFocus={true}
-                onChangeText={(text) => this.props.usernameUpdated(text)}
-                onSubmitEditing={this.selectPasswordField.bind(this)}
-                placeholder={'Username'}
-                placeholderTextColor={colors.gray4}
-                selectTextOnFocus={true}
-                value={this.props.username} />
-          }
-          <View style={style.separator}/>
-          <TextInput style={style.input}
-              ref={(ref) => this.passwordInputRef = ref}
-              accessibilityLabel={'Input Password'}
-              autoFocus={this.props.hideUsernameInput}
-              onChangeText={(text) => this.props.passwordUpdated(text)}
-              onSubmitEditing={() => this.props.login(this.props.username, this.props.password)}
-              placeholder={'Password'}
+      <View style={merge(style.loginContainer, { bottom: this.state.keyboardHeight })}>
+        <TouchableOpacity style={{ ...style.loginButton, backgroundColor: isValid(username) ? colors.bristolBlue : colors.offWhite }}
+            accessibilityLabel={'Login Button'}
+            onPress={() => isValid(username) && login(username, password)}>
+          <DefaultText style={{ ...style.loginButtonText, color: isValid(username) ? 'white' : 'black' }}>Log in</DefaultText>
+        </TouchableOpacity>
+        { hideUsernameInput
+          ? undefined
+          : <TextInput style={style.input}
+              accessibilityLabel={'Input Username'}
+              autoFocus={true}
+              onChangeText={(text) => usernameUpdated(text)}
+              onSubmitEditing={this.selectPasswordField.bind(this)}
+              placeholder={'Username'}
               placeholderTextColor={colors.gray4}
-              secureTextEntry={true}
               selectTextOnFocus={true}
-              value={this.props.password} />
-        </View>
+              value={username} />
+        }
+        <View style={style.separator}/>
+        <TextInput style={style.input}
+            ref={(ref) => this.passwordInputRef = ref}
+            accessibilityLabel={'Input Password'}
+            autoFocus={hideUsernameInput}
+            onChangeText={(text) => passwordUpdated(text)}
+            onSubmitEditing={() => login(username, password)}
+            placeholder={'Password'}
+            placeholderTextColor={colors.gray4}
+            secureTextEntry={true}
+            selectTextOnFocus={true}
+            value={password} />
+      </View>
       </Animated.View>
     )
     return this.props.loginFormOpen ? loginView : <View style={{ height: 0 }}/>
