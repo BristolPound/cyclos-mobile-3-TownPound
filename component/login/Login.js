@@ -67,38 +67,38 @@ class Login extends KeyboardComponent {
   render() {
     const { username, password, hideUsernameInput, login, usernameUpdated, passwordUpdated } = this.props
     const loginView = (
-      <Animated.View style={merge(style.loginContainer, { bottom: this.state.bottom, height: 204 + this.state.keyboardHeight })}>
-      <View style={merge(style.loginContainer, { bottom: this.state.keyboardHeight })}>
-        <TouchableOpacity style={{ ...style.loginButton, backgroundColor: isValid(username) ? colors.bristolBlue : colors.offWhite }}
-            accessibilityLabel={'Login Button'}
-            onPress={() => isValid(username) && login(username, password)}>
-          <DefaultText style={{ ...style.loginButtonText, color: isValid(username) ? 'white' : 'black' }}>Log in</DefaultText>
-        </TouchableOpacity>
-        { hideUsernameInput
-          ? undefined
-          : <TextInput style={style.input}
-              accessibilityLabel={'Input Username'}
-              autoFocus={true}
-              onChangeText={(text) => usernameUpdated(text)}
-              onSubmitEditing={this.selectPasswordField.bind(this)}
-              placeholder={'Username'}
+      <Animated.View style={merge(style.loginContainer, { bottom: this.state.keyboardHeight, height: hideUsernameInput ? 136 : 204 })}>
+        <Animated.View style={{ bottom: this.state.bottom}}>
+          <TouchableOpacity style={{ ...style.loginButton, backgroundColor: isValid(username) ? colors.bristolBlue : colors.offWhite }}
+              accessibilityLabel={'Login Button'}
+              onPress={() => isValid(username) && login(username, password)}>
+            <DefaultText style={{ ...style.loginButtonText, color: isValid(username) ? 'white' : 'black' }}>Log in</DefaultText>
+          </TouchableOpacity>
+          { hideUsernameInput
+            ? undefined
+            : <TextInput style={style.input}
+                accessibilityLabel={'Input Username'}
+                autoFocus={true}
+                onChangeText={(text) => usernameUpdated(text)}
+                onSubmitEditing={this.selectPasswordField.bind(this)}
+                placeholder={'Username'}
+                placeholderTextColor={colors.gray4}
+                selectTextOnFocus={true}
+                value={username} />
+          }
+          <View style={style.separator}/>
+          <TextInput style={style.input}
+              ref={(ref) => this.passwordInputRef = ref}
+              accessibilityLabel={'Input Password'}
+              autoFocus={hideUsernameInput}
+              onChangeText={(text) => passwordUpdated(text)}
+              onSubmitEditing={() => login(username, password)}
+              placeholder={'Password'}
               placeholderTextColor={colors.gray4}
+              secureTextEntry={true}
               selectTextOnFocus={true}
-              value={username} />
-        }
-        <View style={style.separator}/>
-        <TextInput style={style.input}
-            ref={(ref) => this.passwordInputRef = ref}
-            accessibilityLabel={'Input Password'}
-            autoFocus={hideUsernameInput}
-            onChangeText={(text) => passwordUpdated(text)}
-            onSubmitEditing={() => login(username, password)}
-            placeholder={'Password'}
-            placeholderTextColor={colors.gray4}
-            secureTextEntry={true}
-            selectTextOnFocus={true}
-            value={password} />
-      </View>
+              value={password} />
+        </Animated.View>
       </Animated.View>
     )
     return this.props.loginFormOpen ? loginView : <View style={{ height: 0 }}/>

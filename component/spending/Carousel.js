@@ -82,7 +82,7 @@ class Carousel extends React.Component {
 
   render() {
     return (
-      <View style={ this.props.style }>
+      <View style={{ width: this.props.containerWidth, overflow: 'hidden', ...this.props.style }}>
         <Animated.View style={{ flexDirection: 'row', left: this.state.leftOffset }}
           {...this._panResponder.panHandlers} >
           { this.props.children }

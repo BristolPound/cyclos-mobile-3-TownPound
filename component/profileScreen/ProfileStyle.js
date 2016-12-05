@@ -31,9 +31,6 @@ const styles = {
     businessLogo: {
       ...dimensions(84),
       marginTop: 58,
-      borderColor: colors.bristolBlue,
-      borderRadius: 9,
-      borderWidth: 2
     },
     title: {
       fontFamily: commonStyle.font.museo500,

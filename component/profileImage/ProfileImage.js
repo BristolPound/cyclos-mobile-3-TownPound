@@ -29,9 +29,11 @@ const ProfileImage = ({image, style, colorCode, borderColor, category}) =>
       {layer(backgroundImage[colorCode], {height: style.height - 2, width: style.width - 2})}
       {layer(image ? image : categoryImage[category], {height: style.height - 2, width: style.width - 2})}
     </View>
-    <View style={{height: style.height, width: style.width, position: 'absolute'}}>
-      {layer(border[borderColor], {height: style.height, width: style.width})}
-    </View>
+    {image
+    ? <View style={{height: style.height, width: style.width, position: 'absolute'}}>
+        {layer(border[borderColor], {height: style.height, width: style.width})}
+      </View>
+    : undefined}
   </View>
 
 export default ProfileImage
