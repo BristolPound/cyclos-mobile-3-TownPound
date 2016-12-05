@@ -15,7 +15,8 @@ const ProfileHeader = (props) =>
       <ProfileImage
         image={props.image}
         style={styles.header.businessLogo}
-        category={props.category} />
+        category={props.category}
+        colorCode={0} />
       <DefaultText style={styles.header.title}>{props.name}</DefaultText>
       <DefaultText style={styles.header.subtitle}>{props.username}</DefaultText>
     </View>

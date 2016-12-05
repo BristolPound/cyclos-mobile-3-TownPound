@@ -1,8 +1,8 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { View, TextInput, TouchableHighlight, ActivityIndicator, Dimensions } from 'react-native'
-
+import { View, TextInput, TouchableHighlight, ActivityIndicator, Dimensions, Animated } from 'react-native'
+import KeyboardComponent from './KeyboardComponent'
 import * as actions from '../store/reducer/sendMoney'
 import { openLoginForm } from '../store/reducer/login'
 import merge from '../util/merge'
@@ -21,9 +21,6 @@ const { width } = Dimensions.get('window')
 export const sectionHeight = 68
 
 const styles = {
-  container: {
-    backgroundColor: 'white',
-  },
   buttonContainer: {
     height: sectionHeight,
     backgroundColor: color.bristolBlue,
@@ -43,34 +40,36 @@ const styles = {
   }
 }
 
-const InputComponent = (props) => {
-  let { onButtonPress, buttonText, loading, input, invalidInput, accessibilityLabel } = props
-  const buttonStyle = {fontSize: 24}
+class InputComponent extends KeyboardComponent {
+  render() {
+    let { onButtonPress, buttonText, loading, input, invalidInput, accessibilityLabel } = this.props
+    const buttonStyle = {fontSize: 24}
 
-  return <View style={styles.container} accessibilityLabel={accessibilityLabel}>
-    <TouchableHighlight
-        onPress={() => !invalidInput && onButtonPress ? onButtonPress() : undefined }>
-      <View style={merge(styles.buttonContainer, invalidInput ? {backgroundColor: color.offWhite} : {})}>
-        <View style={{flexDirection: 'row'}}>
-          <DefaultText style={input ? buttonStyle : merge(buttonStyle, {color: 'white'})}>
-            {buttonText}
-          </DefaultText>
+    return <Animated.View style={{backgroundColor: 'white', bottom: this.state.keyboardHeight}} accessibilityLabel={accessibilityLabel}>
+      <TouchableHighlight
+          onPress={() => !invalidInput && onButtonPress ? onButtonPress() : undefined }>
+        <View style={merge(styles.buttonContainer, invalidInput ? {backgroundColor: color.offWhite} : {})}>
+          <View style={{flexDirection: 'row'}}>
+            <DefaultText style={input ? buttonStyle : merge(buttonStyle, {color: 'white'})}>
+              {buttonText}
+            </DefaultText>
 
-          { loading
-            ? <ActivityIndicator size='small' style={styles.loadingSpinner}/>
-            : undefined }
+            { loading
+              ? <ActivityIndicator size='small' style={styles.loadingSpinner}/>
+              : undefined }
+          </View>
         </View>
-      </View>
-    </TouchableHighlight>
+      </TouchableHighlight>
 
-    { input
-      ? <TextInput style={styles.textInput}
-            {...input}
-            autoFocus={true}
-            accessibilityLabel={input.placeholder} />
-      : undefined }
+      { input
+        ? <TextInput style={styles.textInput}
+              {...input}
+              autoFocus={true}
+              accessibilityLabel={input.placeholder} />
+        : undefined }
 
-  </View>
+    </Animated.View>
+  }
 }
 
 

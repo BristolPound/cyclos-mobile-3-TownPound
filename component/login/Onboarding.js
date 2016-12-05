@@ -31,7 +31,7 @@ class Onboarding extends React.Component {
   render() {
     return (
       <Splash loginButtonText='Log in'
-        logoutButtonText='I just want to look around'
+        logoutButtonText="I'm just browsing"
         renderWelcomeMessage={renderWelcomeMessage}
         renderInfoText={renderInfoText} />
     )

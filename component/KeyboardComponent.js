@@ -1,6 +1,7 @@
 import React from 'react'
-import { Keyboard } from 'react-native'
+import { Keyboard, Animated } from 'react-native'
 import PLATFORM from '../util/Platforms'
+import animateTo from '../util/animateTo'
 
 /**
  * Offer common keyboard resizing rules to smooth out the difference between Android and iOS.
@@ -15,7 +16,7 @@ import PLATFORM from '../util/Platforms'
 class KeyboardComponent extends React.Component {
   constructor() {
     super()
-    this.state = {keyboardHeight: 0}
+    this.state = {keyboardHeight: new Animated.Value(0)}
   }
 
   componentWillMount() {
@@ -35,11 +36,11 @@ class KeyboardComponent extends React.Component {
   }
 
   keyboardDidShow(e) {
-    this.setState({keyboardHeight: e.endCoordinates.height})
+    animateTo(this.state.keyboardHeight, e.endCoordinates.height, 300)
   }
 
   keyboardDidHide() {
-    this.setState({keyboardHeight: 0})
+    animateTo(this.state.keyboardHeight, 0, 300)
   }
 }
 
