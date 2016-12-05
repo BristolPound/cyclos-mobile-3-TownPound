@@ -43,30 +43,30 @@ const styles = {
 class InputComponent extends KeyboardComponent {
   render() {
     let { onButtonPress, buttonText, loading, input, invalidInput, accessibilityLabel } = this.props
-    const buttonStyle = {fontSize: 24}
+  const buttonStyle = {fontSize: 24}
 
     return <Animated.View style={{backgroundColor: 'white', bottom: this.state.keyboardHeight}} accessibilityLabel={accessibilityLabel}>
-      <TouchableHighlight
-          onPress={() => !invalidInput && onButtonPress ? onButtonPress() : undefined }>
-        <View style={merge(styles.buttonContainer, invalidInput ? {backgroundColor: color.offWhite} : {})}>
-          <View style={{flexDirection: 'row'}}>
-            <DefaultText style={input ? buttonStyle : merge(buttonStyle, {color: 'white'})}>
-              {buttonText}
-            </DefaultText>
+    <TouchableHighlight
+        onPress={() => !invalidInput && onButtonPress ? onButtonPress() : undefined }>
+      <View style={merge(styles.buttonContainer, invalidInput ? {backgroundColor: color.offWhite} : {})}>
+        <View style={{flexDirection: 'row'}}>
+          <DefaultText style={input ? buttonStyle : merge(buttonStyle, {color: 'white'})}>
+            {buttonText}
+          </DefaultText>
 
-            { loading
-              ? <ActivityIndicator size='small' style={styles.loadingSpinner}/>
-              : undefined }
-          </View>
+          { loading
+            ? <ActivityIndicator size='small' style={styles.loadingSpinner}/>
+            : undefined }
         </View>
-      </TouchableHighlight>
+      </View>
+    </TouchableHighlight>
 
-      { input
-        ? <TextInput style={styles.textInput}
-              {...input}
-              autoFocus={true}
-              accessibilityLabel={input.placeholder} />
-        : undefined }
+    { input
+      ? <TextInput style={styles.textInput}
+            {...input}
+            autoFocus={true}
+            accessibilityLabel={input.placeholder} />
+      : undefined }
 
     </Animated.View>
   }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Modal } from 'react-native'
+import { View } from 'react-native'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -21,6 +21,7 @@ import DeveloperOptions from './DeveloperOptions'
 import color from '../util/colors'
 import merge from '../util/merge'
 import { LOGIN_STATUSES } from '../store/reducer/login'
+import Modal from './Modal'
 
 const style = {
   tabs: {
@@ -93,11 +94,7 @@ const Tabs = (props) =>
               lineTwo='your account details'/> }
       </WithNetworkConnection>
     </ScrollableTabView>
-    <Modal
-      animationType={'slide'}
-      transparent={false}
-      onRequestClose={() => props.showModal(modalState.none)}
-      visible={props.modalState !== modalState.none}>
+    <Modal visible={props.modalVisible}>
       {componentForModalState(props.modalState)}
     </Modal>
     <LoginOverlay/>
@@ -111,6 +108,7 @@ const mapDispatchToProps = (dispatch) =>
 const mapStateToProps = (state) => ({
   navigation: state.navigation,
   modalState: state.navigation.modalState,
+  modalVisible: state.navigation.modalVisible,
   loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
   status: state.status,
   dialogOpen: state.login.loginFormOpen,
