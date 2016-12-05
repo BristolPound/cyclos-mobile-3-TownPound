@@ -6,6 +6,7 @@ import DefaultText, { baselineDeltaForFonts } from './DefaultText'
 import colors from './../util/colors'
 import commonStyle from './style'
 import * as actions from '../store/reducer/login'
+import { updateStatus } from '../store/reducer/statusMessage'
 import ScreenSizes from '../util/ScreenSizes'
 import ProfileHeader from './profileScreen/ProfileHeader'
 
@@ -89,7 +90,10 @@ const Account = (props) => {
         secondaryText: (props.details && props.details.phones && props.details.phones.length > 0) ? props.details.phones[0].normalizedNumber : 'Not set'
       }, {
         text: 'Log out',
-        onPress: props.logout
+        onPress: () => {
+          props.logout()
+          props.updateStatus('Logged out ✓')
+        }
       }]
   }
   ds = ds.cloneWithRowsAndSections(data, Object.keys(data))
@@ -113,7 +117,7 @@ const Account = (props) => {
 }
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(actions, dispatch)
+  bindActionCreators({ ...actions, updateStatus }, dispatch)
 
 const mapStateToProps = state =>  state.account
 
