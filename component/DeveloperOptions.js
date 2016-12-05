@@ -7,8 +7,7 @@ import merge from '../util/merge'
 import { loadBusinessList, resetBusinesses } from '../store/reducer/business'
 import { loadTransactions, resetTransactions } from '../store/reducer/transaction'
 import DefaultText from './DefaultText'
-import { showModal } from '../store/reducer/navigation'
-import { modalState } from '../store/reducer/navigation'
+import { hideModal } from '../store/reducer/navigation'
 import { LOGIN_STATUSES } from '../store/reducer/login'
 import { selectServer, SERVER } from '../store/reducer/developerOptions'
 import { setSessionToken } from '../api/api'
@@ -143,7 +142,7 @@ const DeveloperOptions = props => {
     <View style={{flex: 1}}>
       <View>
         <TouchableHighlight
-          onPress={() => props.showModal(modalState.none)}
+          onPress={() => props.hideModal()}
           underlayColor={color.white}
           accessiblityLabel='Close Developer Options'
         >
@@ -189,7 +188,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     resetTransactions,
     resetBusinesses,
     loadBusinessList,
-    showModal,
+    hideModal,
     selectServer
   }, dispatch)
 

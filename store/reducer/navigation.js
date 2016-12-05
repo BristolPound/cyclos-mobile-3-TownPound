@@ -21,7 +21,8 @@ const initialState = {
   tabIndex: 0,
   modalState: modalState.none,
   mainComponent: mainComponent.onboarding,
-  stateInitialised: false
+  stateInitialised: false,
+  modalVisible: false,
 }
 
 export const navigateToTab = (tabIndex) => ({
@@ -68,6 +69,10 @@ export const showModal = (modalState) => ({
   modalState
 })
 
+export const hideModal = () => ({
+  type: 'navigation/HIDE_MODAL',
+})
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'navigation/NAVIGATE_TO_TAB':
@@ -77,7 +82,13 @@ const reducer = (state = initialState, action) => {
       break
     case 'navigation/SHOW_MODAL':
       state = merge(state, {
-        modalState: action.modalState
+        modalState: action.modalState,
+        modalVisible: true,
+      })
+      break
+    case 'navigation/HIDE_MODAL':
+      state = merge(state, {
+        modalVisible: false
       })
       break
     case LOGGED_OUT:
