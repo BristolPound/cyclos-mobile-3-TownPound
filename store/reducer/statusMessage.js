@@ -46,13 +46,6 @@ const reducer = (state = initialState, action) => {
         backgroundColor: color.bristolBlue
       }
       break
-
-    case 'login/LOGGED_OUT':
-      state = {
-        message: 'Logged out ✓',
-        backgroundColor: color.bristolBlue
-      }
-      break
   }
   return state
 }
