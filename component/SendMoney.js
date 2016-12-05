@@ -1,7 +1,7 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { View, TextInput, TouchableHighlight, ActivityIndicator, Dimensions, Keyboard } from 'react-native'
+import { View, TextInput, TouchableHighlight, ActivityIndicator, Dimensions } from 'react-native'
 
 import * as actions from '../store/reducer/sendMoney'
 import { openLoginForm } from '../store/reducer/login'
@@ -122,7 +122,8 @@ class SendMoney extends React.Component {
             placeholder: 'Amount',
             onChangeText: amt => this.props.updateAmount(amt),
           },
-          invalidInput: isNaN(Number(this.props.amount)) || Number(this.props.amount) > this.props.balance || Number(this.props.amount) <= 0,
+          invalidInput: this.props.amount &&
+            (isNaN(Number(this.props.amount)) || Number(this.props.amount) > this.props.balance || Number(this.props.amount) <= 0),
           accessibilityLabel: 'Enter Amount',
         }
         break
