@@ -13,9 +13,9 @@ const ProfileHeader = (props) =>
     {props.isModal ? renderCloseIcon(props) : undefined}
     <View style={styles.header.center}>
       <ProfileImage
-        img={props.image}
+        image={props.image}
         style={styles.header.businessLogo}
-        category={props.category}/>
+        category={props.category} />
       <DefaultText style={styles.header.title}>{props.name}</DefaultText>
       <DefaultText style={styles.header.subtitle}>{props.username}</DefaultText>
     </View>

@@ -23,7 +23,7 @@ const renderSectionHeader = (sectionData, sectionID) =>
   </View>
 
 const getTransactionImage = (transaction) =>
-  transaction.relatedAccount.user && transaction.relatedAccount.user.image
+  transaction.relatedAccount.user
     ? transaction.relatedAccount.user.image
     : undefined
 
@@ -34,7 +34,7 @@ const renderRow = (transaction, openDetailsModal) =>
       key={transaction.transactionNumber}>
     <View style={styles.row.container}>
       <ProfileImage
-        img={getTransactionImage(transaction)}
+        image={getTransactionImage(transaction)}
         style={styles.row.image}
         category='shop'/>
       <View style={styles.row.textContainer}>
