@@ -50,8 +50,6 @@ const styles = {
       paddingRight: 5,
       ...dimensions(ScreenSizes.isSmall() ? 42 : 44),
       borderRadius: 5,
-      borderWidth: 1,
-      borderColor: color.offWhite
     },
     verticalStack: {
       ...padding(0, 10, 0, 10),

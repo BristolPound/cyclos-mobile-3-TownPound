@@ -123,13 +123,25 @@ export const loadBusinessList = (force = false) =>
     }
   }
 
+const addColorCodes = (list) => {
+  const newList = list.map(b => merge(b))
+  newList.forEach((component, index, newList) => {
+    const compareColorCodes = (distance) =>
+      index >= distance && component.colorCode === newList[index - distance].colorCode
+    do {
+      component.colorCode = Math.floor(Math.random() * 4)
+    } while (compareColorCodes(1) || compareColorCodes(2))
+  })
+  return newList
+}
+
 const getClosestBusinesses = (list, viewport) => {
   const closestBusinesses = _.sortBy(
     list.filter(shouldBeDisplayed(viewport)),
     orderBusinessList(viewport)
   )
   closestBusinesses.length = Math.min(closestBusinesses.length, BUSINESS_LIST_MAX_LENGTH)
-  return closestBusinesses
+  return addColorCodes(closestBusinesses)
 }
 
 const orderBusinessList = (viewport) => (business) => {
@@ -168,6 +180,7 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'business/BUSINESS_LIST_RECEIVED':
       const offsetBusinesses = offsetOverlappingBusinesses(action.businessList)
+      offsetBusinesses = offsetBusinesses.map(business => merge(business, {colorCode: 0}))
       let closestBusinesses = getClosestBusinesses(action.businessList, state.mapViewport)
       state = merge(state, {
         closestBusinesses,
