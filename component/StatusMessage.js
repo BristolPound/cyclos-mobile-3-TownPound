@@ -7,15 +7,14 @@ import merge from '../util/merge'
 import commonStyle from './style'
 import { connect } from 'react-redux'
 import { updateStatus } from '../store/reducer/statusMessage'
-import { modalState } from '../store/reducer/navigation'
+import { screenHeight } from '../util/ScreenSizes'
+import animateTo from '../util/animateTo'
 
 const style = {
   container: {
     position: 'absolute',
-    bottom: -TAB_BAR_HEIGHT,
     left: 0,
     right: 0,
-    height: TAB_BAR_HEIGHT,
     alignItems: 'center',
     justifyContent: 'center',
     ...commonStyle.shadow
@@ -29,21 +28,19 @@ class StatusMessage extends React.Component {
   constructor() {
     super()
     this.state = {
-      bottom: new Animated.Value(-TAB_BAR_HEIGHT)
+      top: new Animated.Value(screenHeight),
+      height: 0
     }
   }
 
-  animateBottomTo(value, callback) {
-    Animated.timing(this.state.bottom, {
-      toValue: value,
-      duration: 300
-    }).start(callback)
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.message !== '' && !nextProps.modalOpen) {
-      this.animateBottomTo(0)
-      setTimeout(() => this.animateBottomTo(-TAB_BAR_HEIGHT, () => nextProps.updateStatus('')), 2000)
+  componentDidUpdate(lastProps) {
+    if (this.props.message && !lastProps.message) {
+      this.setState({ height: TAB_BAR_HEIGHT })
+      animateTo(this.state.top, screenHeight - TAB_BAR_HEIGHT, 300)
+      setTimeout(() => animateTo(this.state.top, screenHeight, 300, undefined, () => {
+        this.setState({ height: 0 })
+        this.props.updateStatus('')
+      }), 1600)
     }
   }
 
@@ -51,8 +48,9 @@ class StatusMessage extends React.Component {
     return (
       <Animated.View style={
           merge(style.container, {
-            bottom: this.state.bottom,
-            backgroundColor: this.props.backgroundColor
+            top: this.state.top,
+            backgroundColor: this.props.backgroundColor,
+            height: this.state.height
           })
         }>
         <DefaultText style={style.text}>
@@ -65,7 +63,6 @@ class StatusMessage extends React.Component {
 
 const mapStateToProps = (state) => ({
   ...state.statusMessage,
-  modalOpen: state.navigation.modalState !== modalState.none,
 })
 
 const mapDispatchToProps = (dispatch) => ({

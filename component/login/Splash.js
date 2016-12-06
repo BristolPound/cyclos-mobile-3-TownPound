@@ -8,9 +8,6 @@ import merge from '../../util/merge'
 import commonStyle, { padding, margin } from './../style.js'
 import { bindActionCreators } from 'redux'
 import * as actions from '../../store/reducer/login'
-import Login from './Login'
-import LoginOverlay from './LoginOverlay'
-import StatusMessage from '../StatusMessage'
 import PLATFORM from '../../util/Platforms'
 
 const style = {
@@ -146,9 +143,6 @@ class Splash  extends React.Component {
             </View>
           : undefined
         }
-        <LoginOverlay/>
-        <Login hideUsernameInput={this.props.hideUsernameInput}/>
-        <StatusMessage/>
       </View>
     )
   }

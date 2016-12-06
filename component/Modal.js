@@ -1,10 +1,8 @@
 import React from 'react'
-import { Dimensions, Animated } from 'react-native'
+import { Animated } from 'react-native'
 import animateTo from '../util/animateTo'
 import merge from '../util/merge'
-import marginOffset from '../util/marginOffset'
-
-const screenHeight = marginOffset(Dimensions.get('window').height)
+import { screenHeight } from '../util/ScreenSizes'
 
 const style = {
   left: 0,

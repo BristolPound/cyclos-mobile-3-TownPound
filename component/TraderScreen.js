@@ -9,8 +9,6 @@ import ProfileHeader from './profileScreen/ProfileHeader'
 import BusinessDetails from './businessDetails/BusinessDetails'
 import SendMoney, { sectionHeight } from './SendMoney'
 import { buildDataSourceForTransactions } from '../util/transaction'
-import Login from './login/Login'
-import LoginOverlay from './login/LoginOverlay'
 
 const TraderScreen = ({ trader, transactionsDataSource, hideModal, loadingProfile }) =>
     <View style={{flex: 1}}>
@@ -19,13 +17,10 @@ const TraderScreen = ({ trader, transactionsDataSource, hideModal, loadingProfil
         renderHeader={asRenderHeader(trader, transactionsDataSource, hideModal, loadingProfile)}
         dataSource={transactionsDataSource} />
       </View>
-      <View style={{bottom: 0, position: 'absolute', flex: 1}}>
-        <SendMoney
-          payeeDisplay={trader.display}
-          payeeShortDisplay={trader.shortDisplay} />
-      </View>
-      <LoginOverlay/>
-      <Login/>
+      <SendMoney
+        businessId={trader.id}
+        payeeDisplay={trader.display}
+        payeeShortDisplay={trader.shortDisplay} />
     </View>
 
 // Currently we pass in returned renderHeader as we delegate to a listView.
