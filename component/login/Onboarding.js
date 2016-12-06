@@ -11,7 +11,7 @@ const style = {
     color: colors.white,
     fontSize: 16,
     fontFamily: commonStyle.museo700
-  },
+  }
 }
 
 

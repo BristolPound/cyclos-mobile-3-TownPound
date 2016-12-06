@@ -3,23 +3,13 @@ import colors from '../../util/colors'
 import commonStyle, { dimensions, margin } from '../style'
 import marginOffset from '../../util/marginOffset'
 
-const headerMargin = 24
+export const headerMargin = 24
 const listMargin = 14
 
 const styles = {
   header: {
     container: {
       marginTop: marginOffset(0),
-    },
-    closeButton: {
-      ...margin(40, 0, 0, headerMargin),
-      position: 'absolute',
-      zIndex: 100,
-    },
-    closeIcon: {
-      ...dimensions(18),
-      ...margin(10),
-      marginLeft: 0
     },
     center: {
       alignItems: 'center',

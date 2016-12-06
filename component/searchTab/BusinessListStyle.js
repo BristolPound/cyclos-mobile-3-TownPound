@@ -25,6 +25,7 @@ const styles = {
       borderTopWidth: 1,
       borderTopColor: color.offWhite,
       height: ROW_HEIGHT,
+      backgroundColor: color.white
     },
     containerHighlighted: {
       backgroundColor: color.offWhite
