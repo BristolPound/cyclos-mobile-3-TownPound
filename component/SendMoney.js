@@ -95,7 +95,10 @@ class SendMoney extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.loading && !this.props.loading && this.state.inputPage === 2) {
+    if (this.props.businessId !== prevProps.businessId) {
+      this.props.updateAmount('')
+      this.setState({ inputPage: Page.Ready })
+    } else if (prevProps.loading && !this.props.loading && this.state.inputPage === 2) {
       this.nextPage()
     }
   }
@@ -142,15 +145,14 @@ class SendMoney extends React.Component {
         break
     }
 
-    return <View>
-      { this.props.loggedIn
+    return (
+      this.props.loggedIn
         ? <InputComponent {...inputProps} />
         : <TouchableHighlight onPress={() => this.props.openLoginForm(true)}
               style={styles.buttonContainer}>
             <DefaultText>Log in to make payment</DefaultText>
           </TouchableHighlight>
-      }
-    </View>
+    )
   }
 }
 

@@ -12,9 +12,6 @@ import NetworkConnection from './NetworkConnection'
 import SpendingTab from './spending/SpendingTab'
 import Account from './Account'
 import LoginToView, { emptyStateImage } from './loggedOutState/LoginToView'
-import Login from './login/Login'
-import LoginOverlay from './login/LoginOverlay'
-import StatusMessage from './StatusMessage'
 import TraderScreen from './TraderScreen'
 import PersonScreen from './PersonScreen'
 import DeveloperOptions from './DeveloperOptions'
@@ -97,9 +94,6 @@ const Tabs = (props) =>
     <Modal visible={props.modalVisible}>
       {componentForModalState(props.modalState)}
     </Modal>
-    <LoginOverlay/>
-    <Login/>
-    <StatusMessage/>
   </View>
 
 const mapDispatchToProps = (dispatch) =>

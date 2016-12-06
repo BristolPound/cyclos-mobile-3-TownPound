@@ -5,6 +5,9 @@ import ReturningLogin from './login/ReturningLogin'
 import Onboarding from './login/Onboarding'
 import { mainComponent } from '../store/reducer/navigation'
 import { connect } from 'react-redux'
+import Login from './login/Login'
+import LoginOverlay from './login/LoginOverlay'
+import StatusMessage from './StatusMessage'
 
 const Root = (props) => {
   // The app is rendered before the state has been loaded via redux-persist. This state property allows
@@ -15,15 +18,25 @@ const Root = (props) => {
       <View style={{flex: 1}}/>
     )
   }
+  let bodyComponent
   if (props.mainComponent === mainComponent.returningLogin) {
-    return <ReturningLogin />
+    bodyComponent = <ReturningLogin />
   } else if (props.mainComponent === mainComponent.onboarding) {
-    return <Onboarding />
+    bodyComponent = <Onboarding />
   } else if (props.mainComponent === mainComponent.tabs){
-    return <Tabs />
+    bodyComponent = <Tabs />
   } else {
     throw new Error('Invalid navigation state')
   }
+
+  return (
+    <View style={{flex: 1}}>
+      {bodyComponent}
+      <LoginOverlay/>
+      <Login hideUsernameInput={props.mainComponent === mainComponent.returningLogin}/>
+      <StatusMessage/>
+    </View>
+  )
 }
 
 const mapStateToProps = (state) => ({
