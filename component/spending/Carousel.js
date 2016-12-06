@@ -24,15 +24,10 @@ class Carousel extends React.Component {
       },
 
       onPanResponderMove: (evt, gestureState) => {
-        const newLocation = _.clamp(this.leftOffsetAtPanStart + gestureState.dx, this.getMinOffset(), this.getMaxOffset())
-        const oldIndex = this.indexAtLeftOffset(this.state.leftOffset._value)
-        const newIndex = this.indexAtLeftOffset(newLocation)
+        const newLocation = this.getLocationAfterMove(gestureState.dx)
         this.setState({
           leftOffset: new Animated.Value(newLocation)
         })
-        if (newIndex !== oldIndex) {
-          this.props.onPageChange && this.props.onPageChange(newIndex)
-        }
       },
 
       onPanResponderRelease: (evt, gestureState) => {
@@ -41,6 +36,12 @@ class Carousel extends React.Component {
           const pressIndex = Math.floor((pressLocation - this.state.leftOffset._value) / this.props.itemWidth)
           this.props.onPress(pressIndex)
         } else {
+          const newLocation = this.getLocationAfterMove(gestureState.dx)
+          const oldIndex = this.indexAtLeftOffset(this.leftOffsetAtPanStart)
+          const newIndex = this.indexAtLeftOffset(newLocation)
+          if (newIndex !== oldIndex && this.props.onPageChange) {
+            this.props.onPageChange(newIndex)
+          }
           this.animateToEndPosition()
         }
       },
@@ -49,6 +50,10 @@ class Carousel extends React.Component {
         this.animateToEndPosition()
       },
     })
+  }
+
+  getLocationAfterMove(dx) {
+    return _.clamp(this.leftOffsetAtPanStart + dx, this.getMinOffset(), this.getMaxOffset())
   }
 
   componentWillReceiveProps(nextProps) {
