@@ -17,20 +17,21 @@ const style = {
 class Modal extends React.Component {
   constructor() {
     super()
-    this.state = { top: new Animated.Value(screenHeight) }
+    this.state = { top: new Animated.Value(screenHeight), active: false }
   }
   componentDidUpdate(lastProps) {
     if (this.props.visible && !lastProps.visible) {
+      this.setState({ active: true })
       animateTo(this.state.top, 0, 300)
     }
     if (!this.props.visible && lastProps.visible) {
-      animateTo(this.state.top, screenHeight, 300)
+      animateTo(this.state.top, screenHeight, 300, undefined, () => this.setState({ active: false }))
     }
   }
   render() {
     return (
       <Animated.View style={merge(style, { top: this.state.top })}>
-        {this.props.children}
+        {this.state.active && this.props.children}
       </Animated.View>
     )
   }

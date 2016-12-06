@@ -32,10 +32,6 @@ const styles = {
     image: {
       ...dimensions(IMAGE_SIZE),
       ...margin(0, IMAGE_MARGIN, 0, IMAGE_MARGIN),
-      borderRadius: 5,
-      borderWidth: 1,
-      borderColor: color.offWhite,
-      backgroundColor: color.transparent
     },
     text: {
       fontFamily: commonStyle.font.museo300,

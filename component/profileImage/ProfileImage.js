@@ -23,17 +23,21 @@ const categoryImage = {
   person: require('./person.png'),
 }
 
-const ProfileImage = ({image, style, colorCode, borderColor, category}) =>
-  <View style={style}>
-    <View style = {{position: 'absolute', margin: 1}}>
-      {layer(backgroundImage[colorCode], {height: style.height - 2, width: style.width - 2})}
-      {layer(image ? image : categoryImage[category], {height: style.height - 2, width: style.width - 2})}
+const CustomImage = ({image, style, borderColor}) => {
+  return (
+    <View style={style}>
+      {layer(image, {height: style.height - 2, width: style.width - 2, margin: 1})}
+      {layer(border[borderColor], {height: style.height, width: style.width})}
     </View>
-    {image
-    ? <View style={{height: style.height, width: style.width, position: 'absolute'}}>
-        {layer(border[borderColor], {height: style.height, width: style.width})}
-      </View>
-    : undefined}
+  )
+}
+
+const Placeholder = ({style, colorCode, category}) =>
+  <View style={style}>
+    {layer(backgroundImage[colorCode], {height: style.height - 2, width: style.width - 2, margin: 1})}
+    {layer(categoryImage[category], {height: style.height - 2, width: style.width - 2, margin: 1})}
   </View>
 
+const ProfileImage = (props) =>
+    props.image ? <CustomImage {...props}/> : <Placeholder {...props}/>
 export default ProfileImage
