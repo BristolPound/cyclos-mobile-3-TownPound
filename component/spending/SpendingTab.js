@@ -22,19 +22,23 @@ const renderSectionHeader = (sectionData, sectionID) =>
     </DefaultText>
   </View>
 
-const getTransactionImage = (transaction) =>
-    transaction.relatedAccount.user && transaction.relatedAccount.user.image
-    ? {uri: transaction.relatedAccount.user.image.url}
-    : undefined
+const getTransactionImage = (user, businessList) => {
+  if (user) {
+    const userDetails = businessList.find(business => business.id === user.id)
+    if (userDetails && userDetails.image) {
+      return { uri: userDetails.image.url }
+    }
+  }
+}
 
-const renderRow = (transaction, openDetailsModal) =>
+const renderRow = (transaction, openDetailsModal, businessList) =>
   <TouchableHighlight
       onPress={() => transaction.relatedAccount.user && openDetailsModal(transaction.relatedAccount.user.id)}
       underlayColor={color.transparent}
       key={transaction.transactionNumber}>
     <View style={styles.row.container}>
       <ProfileImage
-        image={getTransactionImage(transaction)}
+        image={getTransactionImage(transaction.relatedAccount.user, businessList)}
         style={styles.row.image}
         category='shop'
         colorCode={0}/>
@@ -69,7 +73,7 @@ class SpendingTab extends React.Component {
           pageSize={10}
           renderSeparator={renderSeparator}
           enableEmptySections={true}
-          renderRow={transaction => renderRow(transaction, this.props.openDetailsModal)}
+          renderRow={transaction => renderRow(transaction, this.props.openDetailsModal, this.props.businessList)}
           dataSource={dataSource}
           onScroll={() => !this.props.scrolled && this.props.transactionsScrolled()}
           renderSectionHeader={renderSectionHeader}
@@ -101,7 +105,8 @@ const mapDispatchToProps = (dispatch) =>
   }, dispatch)
 
 const mapStateToProps = (state) => ({
-  ...state.transaction
+  ...state.transaction,
+  businessList: state.business.businessList
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(SpendingTab)

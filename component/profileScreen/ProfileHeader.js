@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Image, TouchableHighlight } from 'react-native'
+import { View, Image } from 'react-native'
 import DefaultText from '../DefaultText'
 import ProfileImage from '../profileImage/ProfileImage'
 import styles from './ProfileStyle'
@@ -16,7 +16,7 @@ const ProfileHeader = (props) =>
       { props.isModal ? <CloseButton onPress={props.onPressClose} closeButtonType={CLOSE_BUTTON} /> : undefined }
     <View style={styles.header.center}>
       <ProfileImage
-        image={props.image}
+        image={props.image && {uri: props.image.url}}
         style={styles.header.businessLogo}
         category={props.category}
         colorCode={0} />
