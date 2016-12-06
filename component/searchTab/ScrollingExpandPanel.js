@@ -92,7 +92,7 @@ class ScrollingExpandPanel extends React.Component {
 
     this.positionAtTouchStart = this.getPosition()
 
-    this.props.onPressStart(this.startTouchY - this.innerTopOffsetAtTouchStart - this.outerTopOffsetAtTouchStart)
+    this.props.onPressStart && this.props.onPressStart(this.startTouchY - this.innerTopOffsetAtTouchStart - this.outerTopOffsetAtTouchStart)
 
     // if there is an ongoing animation, stop it
     this.setState({
@@ -235,7 +235,7 @@ class ScrollingExpandPanel extends React.Component {
   }
 
   responderRelease() {
-    this.props.onPressRelease(this.hasMoved)
+    this.props.onPressRelease && this.props.onPressRelease(this.hasMoved)
 
     if (Date.now() - this.timeAtLastPosition > 150) {
       this.velocity = 0

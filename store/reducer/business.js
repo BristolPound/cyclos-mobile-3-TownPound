@@ -46,6 +46,11 @@ export const updateMapViewportAndSelectClosestTrader = (viewport) => ({
   viewport
 })
 
+export const updateSearchMode = (mode) => ({
+    type: 'business/UPDATE_SEARCH_MODE',
+    mode
+})
+
 export const selectBusiness = (businessId) => (dispatch) =>
   dispatch({
     type: 'business/SELECTED_BUSINESS',
@@ -281,6 +286,11 @@ const reducer = (state = initialState, action) => {
       state = merge(state, {
         traderScreenBusinessId: action.id,
       })
+      break
+
+    case 'business/UPDATE_SEARCH_MODE':
+      state = merge(state, { searchMode: action.mode })
+      break
   }
   return state
 }

@@ -147,7 +147,7 @@ const DeveloperOptions = props => {
           underlayColor={color.white}
           accessiblityLabel='Close Developer Options'
         >
-          <Image source={require('./profileScreen/Close.png')} style={{margin: 20}}/>
+          <Image source={require('./common/Close.png')} style={{margin: 20}}/>
         </TouchableHighlight>
       </View>
       <ListView

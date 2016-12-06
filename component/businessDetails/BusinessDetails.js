@@ -4,15 +4,13 @@ import HTMLView from 'react-native-htmlview'
 import { View, Text, TouchableOpacity, Linking, StyleSheet, Image } from 'react-native'
 
 import { MultilineText } from '../DefaultText'
-import commonStyle, { padding } from '../style'
+import commonStyle, { padding, margin } from '../style'
 import addresses from '../../util/addresses'
 import colors from '../../util/colors'
 
 const styles = {
   description: {
-    marginLeft: 24,
-    marginRight: 24,
-    marginTop: 18,
+    ...margin(18, 24, 0, 24)
   },
   minorButtonText: {
     fontFamily: commonStyle.font.museo500,
@@ -30,12 +28,10 @@ const styles = {
     borderTopWidth: StyleSheet.hairlineWidth
   },
   field: {
+    ...margin(18, 24, 0, 24),
     flexDirection: 'row',
     paddingTop: 1,
     backgroundColor: colors.white,
-    marginTop: 18,
-    marginLeft: 24,
-    marginRight: 24
   },
   image: {
     height: 20,
@@ -43,11 +39,11 @@ const styles = {
     marginRight: 16
   },
   item: {
-    flexDirection:'column',
+    flexDirection: 'column',
     flex: 1
   },
   text: {
-    flex:1,
+    flex: 1,
     fontSize: 16,
     color: colors.gray1,
     flexWrap: 'wrap'
@@ -78,8 +74,8 @@ class BusinessDetails extends React.Component {
     }
 
     return <View style={fields.length > 1 ? styles.moreDetails : styles.addressOnly}>
-      {renderFields(fields)}
-      { expanded }
+        {renderFields(fields)}
+        { expanded }
     </View>
   }
 
@@ -111,40 +107,25 @@ class BusinessDetails extends React.Component {
 }
 
 function getFields(business) {
-  const fields = []
+  const fields = [],
+      businessDetail = (key, icon, text) => ({ key, icon, text })
 
   // Order of display should be:
   //    access point*, special offer*, address, opening times*, phone number, email address
   // Note: access point and special offer aren't supported yet.
   // TODO: The businessopeningtimes field isn't in the dev database so hasn't been tested.
-  if (business.address) {
-    fields.push({
-      key: 'addressField',
-      icon: require('./Address.png'),
-      text: addresses.toString(business.address)
-    })
-  }
-  if (business.openingTimes) {
-    fields.push({
-      key: 'openingField',
-      icon: require('./Opening times.png'),
-      text: business.businessopeningtimes
-    })
-  }
-  if (business.businessphone) {
-    fields.push({
-      key: 'phoneField',
-      icon: require('./Phone.png'),
-      text: business.businessphone
-    })
-  }
-  if (business.businessemail) {
-    fields.push({
-      key: 'emailField',
-      icon: require('./Email.png'),
-      text: business.businessemail
-    })
-  }
+    business.address && fields.push(
+      businessDetail('addressField', require('./Address.png'), addresses.toString(business.address))
+    )
+
+    business.businessphone && fields.push(
+      businessDetail('phoneField', require('./Phone.png'), business.businessphone)
+    )
+
+    business.businessemail && fields.push(
+      businessDetail('emailField', require('./Email.png'), business.businessemail)
+    )
+
   return fields
 }
 
@@ -180,10 +161,10 @@ function renderExpander(expandDetailsFn) {
 
 const ViewFields = ({fields}) =>
     <View>
-        {fields.map((field) => (
+        {fields && fields.map((field) => (
             // 'key' is magic so isn't passed down into the method.
             // Hence define a duplicate accessibilityLabel.
-            field.text ?
+            field ?
                 <Field key={field.key} icon={field.icon} text={field.text} accessibilityLabel={field.key}/>
                 : null
         ))}

@@ -1,6 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
 import { connect } from 'react-redux'
+import merge from '../../util/merge'
 import { bindActionCreators } from 'redux'
 import BackgroundMap from './BackgroundMap'
 import ComponentList from './ComponentList'
@@ -8,8 +9,12 @@ import BusinessListItem, { SelectedBusiness } from './BusinessListItem'
 import ScrollingExpandPanel from './ScrollingExpandPanel'
 import styles, { SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN, maxExpandedHeight, maxCollapsedHeight } from './SearchTabStyle'
 import { ROW_HEIGHT } from './BusinessListStyle'
+import { updateSearchMode } from '../../store/reducer/business'
 import { openTraderModal } from '../../store/reducer/navigation'
 import { BUSINESS_LIST_SELECTED_GAP } from './BusinessListStyle'
+import { Overlay } from '../common/Overlay'
+
+import Search from './Search'
 
 const BUSINESS_LIST_GAP_PLACEHOLDER = { pressable: false }
 
@@ -45,7 +50,7 @@ class SearchTab extends React.Component {
   }
 
   render() {
-    const { closestBusinesses, openTraderModal, selectedBusiness } = this.props
+    const { allBusinesses, closestBusinesses, openTraderModal, selectedBusiness, searchMode, updateSearchMode } = this.props
     const { componentList } = this.refs
 
     const noOfCloseBusinesses = closestBusinesses.length,
@@ -73,19 +78,24 @@ class SearchTab extends React.Component {
     return (
       <View style={{flex: 1}}>
         <BackgroundMap/>
+        { searchMode && <Overlay overlayVisible={true} /> }
+        <Search businessList={allBusinesses}
+                updateSearchMode={updateSearchMode}
+                searchMode={searchMode}
+                openTraderModal={openTraderModal}/>
         <ScrollingExpandPanel
-          style={styles.searchTab.expandPanel}
-          topOffset={[ calculatedOffset(expandedHeight), calculatedOffset(collapsedHeight), calculatedOffset(closedHeight) ]}
-          expandedHeight={expandedHeight}
-          onPressRelease={hasMoved => componentList.handleRelease(hasMoved)}
-          onPressStart={location => componentList.highlightItem(location)}
-          childrenHeight={childrenHeight}
-          startPosition={1}>
-          <ComponentList
-            ref='componentList'
-            items={componentArray}
-            componentForItem={selectedComponentView}
-            onPressItem={index => componentArray[index].id && openTraderModal(componentArray[index].id)} />
+            style={merge(styles.searchTab.expandPanel, (searchMode ? styles.searchTab.hide : {})) }
+            topOffset={[ calculatedOffset(expandedHeight), calculatedOffset(collapsedHeight), calculatedOffset(closedHeight) ]}
+            expandedHeight={expandedHeight}
+            onPressRelease={hasMoved => componentList && componentList.handleRelease(hasMoved)}
+            onPressStart={location => componentList && componentList.highlightItem(location)}
+            childrenHeight={childrenHeight}
+            startPosition={1}>
+            <ComponentList
+                ref='componentList'
+                items={componentArray}
+                componentForItem={selectedComponentView}
+                onPressItem={index => componentArray[index].id && openTraderModal(componentArray[index].id)} />
         </ScrollingExpandPanel>
       </View>
     )
@@ -94,9 +104,11 @@ class SearchTab extends React.Component {
 
 const mapStateToProps = (state) => ({
   closestBusinesses: state.business.closestBusinesses.filter(b => b.id !== state.business.selectedBusinessId),
-  selectedBusiness: state.business.businessList.find(b => b.id === state.business.selectedBusinessId)
+  selectedBusiness: state.business.businessList.find(b => b.id === state.business.selectedBusinessId),
+  allBusinesses: state.business.businessList,
+  searchMode: state.business.searchMode
 })
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ openTraderModal }, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({ openTraderModal, updateSearchMode }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchTab)

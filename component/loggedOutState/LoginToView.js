@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Image } from 'react-native'
 import color from '../../util/colors'
 import DefaultText from '../DefaultText'
+import { margin } from '../style';
 
 const styles = {
   container: {
@@ -17,8 +18,7 @@ const styles = {
     fontSize: 20
   },
   image: {
-    marginBottom: 20,
-    marginTop: 200
+    ...margin(200, 0, 20, 0)
   }
 }
 
