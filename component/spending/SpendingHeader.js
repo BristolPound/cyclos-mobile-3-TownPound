@@ -33,8 +33,7 @@ const MonthOption = ({monthTotal, isSelected}) => {
       paddingBottom: 2
     }
   return (
-    <View style={{width: CAROUSEL_ITEM_WIDTH}}
-        key={toMonthString(monthTotal.month)}>
+    <View style={{width: CAROUSEL_ITEM_WIDTH}}>
       <DefaultText style={{...styles.header.monthlyOption, ...textStyle}}>
         {toMonthString(monthTotal.month).toUpperCase()}
       </DefaultText>
@@ -58,7 +57,7 @@ class SpendingHeader extends React.Component {
           onPress={this.props.selectMonth}>
         { this.props.monthlyTotalSpent.map((monthTotal, index) =>
           <MonthOption
-              key={toMonthString(monthTotal.month)}
+              key={index}
               monthTotal={monthTotal}
               isSelected={this.props.selectedMonthIndex === index} />
         ) }

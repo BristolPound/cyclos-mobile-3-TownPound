@@ -23,8 +23,8 @@ const renderSectionHeader = (sectionData, sectionID) =>
   </View>
 
 const getTransactionImage = (transaction) =>
-  transaction.relatedAccount.user
-    ? transaction.relatedAccount.user.image
+    transaction.relatedAccount.user && transaction.relatedAccount.user.image
+    ? {uri: transaction.relatedAccount.user.image.url}
     : undefined
 
 const renderRow = (transaction, openDetailsModal) =>
@@ -36,7 +36,8 @@ const renderRow = (transaction, openDetailsModal) =>
       <ProfileImage
         image={getTransactionImage(transaction)}
         style={styles.row.image}
-        category='shop'/>
+        category='shop'
+        colorCode={0}/>
       <View style={styles.row.textContainer}>
         <DefaultText style={styles.row.text}>
           { transaction.relatedAccount.user ? transaction.relatedAccount.user.display : 'System' }
