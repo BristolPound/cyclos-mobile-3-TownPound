@@ -1,7 +1,7 @@
 import color from '../../util/colors'
 import marginOffset from '../../util/marginOffset'
 import commonStyle from '../style'
-import { margin, padding, horizontalAbsolutePosition } from '../../util/StyleUtils'
+import { margin, padding, horizontalAbsolutePosition, verticalAbsolutePosition } from '../../util/StyleUtils'
 import ScreenSizes from '../../util/ScreenSizes'
 import { Dimensions } from 'react-native'
 import { TAB_BAR_HEIGHT } from '../tabbar/TabBar'
@@ -41,6 +41,27 @@ const styles = {
       color: color.bristolBlue,
       backgroundColor: color.white,
       flex: 1
+    },
+    closeButton: {
+      ...margin(0, 0, 0, 0),
+      ...padding(3, 8, 3, 18),
+      right: 0,
+      borderLeftWidth: 1,
+      borderLeftColor: color.gray5
+    },
+    clearTextButton: {
+      ...padding(0, 2, 2, 5),
+      ...verticalAbsolutePosition(12, 9),
+      right: 65,
+      width: 18,
+      height: 18,
+      borderRadius: 10,
+      backgroundColor: color.gray3
+    },
+    clearText: {
+        color: color.white,
+        fontSize: 14,
+        top: 0
     },
     list: {
       ...commonStyle.shadow,
