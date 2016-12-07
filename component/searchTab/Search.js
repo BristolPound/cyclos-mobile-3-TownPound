@@ -4,7 +4,6 @@ import { View, TextInput, TouchableHighlight } from 'react-native'
 import DefaultText from '../DefaultText'
 import BusinessListHighlight from './BusinessListHighlight'
 import { CloseButton } from '../common/CloseButton'
-import { margin } from '../../util/StyleUtils'
 
 import colors from '../../util/colors'
 import searchTabStyle from './SearchTabStyle'

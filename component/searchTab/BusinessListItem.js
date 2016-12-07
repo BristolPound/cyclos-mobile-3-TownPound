@@ -18,16 +18,15 @@ class BusinessListItem extends React.Component {
     const { container, contents, status, statusSelected, title, verticalStack } = styles.listItem
     const { image, category, display, shortDisplay, colorCode } = this.props.business
     const statusStyle = merge(status, this.props.isSelected ? statusSelected : {})
+
     return (
       <View style={container} ref="businessListItem">
-          <View>
-              <View style={statusStyle}/>
-              <View style={contents}>
-                  <ProfileImage image={image ? {uri: image.url} : undefined} style={styles.listItem.image} category={category || 'shop'} borderColor='offWhite' colorCode={colorCode}/>
-                  <View style={verticalStack}>
-                      <DefaultText style={title}>{display}</DefaultText>
-                      <DefaultText style={styles.listItem.shortDisplay}>{shortDisplay}</DefaultText>
-                  </View>
+          <View style={statusStyle}/>
+          <View style={contents}>
+              <ProfileImage image={image ? {uri: image.url} : undefined} style={styles.listItem.image} category={category || 'shop'} borderColor='offWhite' colorCode={colorCode}/>
+              <View style={verticalStack}>
+                  <DefaultText style={title}>{display}</DefaultText>
+                  <DefaultText style={styles.listItem.shortDisplay}>{shortDisplay}</DefaultText>
               </View>
           </View>
       </View>
