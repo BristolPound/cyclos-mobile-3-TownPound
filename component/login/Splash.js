@@ -121,7 +121,7 @@ class Splash  extends React.Component {
             ]
           })}
           resizeMode='stretch'
-          source={require('../background.jpg')}/>
+          source={require('../../assets/background.jpg')}/>
         <View style={style.welcome.container}>
           { this.props.renderWelcomeMessage(this.props) }
         </View>

@@ -10,7 +10,7 @@ import colors from '../../util/colors'
 import searchTabStyle from './SearchTabStyle'
 import ScrollingExpandPanel from './ScrollingExpandPanel'
 
-const CLOSE_BUTTON = require('./../common/Close_Blue.png')
+const CLOSE_BUTTON = require('./../common/assets/Close_Blue.png')
 
 export default class Search extends React.Component {
     constructor(props) {

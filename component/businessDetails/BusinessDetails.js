@@ -113,15 +113,15 @@ function getFields(business) {
   // Note: access point and special offer aren't supported yet.
   // TODO: The businessopeningtimes field isn't in the dev database so hasn't been tested.
     business.address && fields.push(
-      businessDetail('addressField', require('./Address.png'), addresses.toString(business.address))
+      businessDetail('addressField', require('./assets/Address.png'), addresses.toString(business.address))
     )
 
     business.businessphone && fields.push(
-      businessDetail('phoneField', require('./Phone.png'), business.businessphone)
+      businessDetail('phoneField', require('./assets/Phone.png'), business.businessphone)
     )
 
     business.businessemail && fields.push(
-      businessDetail('emailField', require('./Email.png'), business.businessemail)
+      businessDetail('emailField', require('./assets/Email.png'), business.businessemail)
     )
 
   return fields

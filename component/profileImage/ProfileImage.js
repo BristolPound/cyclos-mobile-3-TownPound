@@ -8,19 +8,19 @@ const layer = (src, style) => {
 }
 
 const backgroundImage = [
-  require('./BrandBlue1.png'),
-  require('./BrandBlue2.png'),
-  require('./DarkBlue.png'),
-  require('./SecondaryBlue1.png'),
+  require('./assets/BrandBlue1.png'),
+  require('./assets/BrandBlue2.png'),
+  require('./assets/DarkBlue1.png'),
+  require('./assets/SecondaryBlue1.png')
 ]
 
 const border = {
-  offWhite: require('./BorderOffWhite.png'),
+  offWhite: require('./assets/BorderOffWhite.png'),
 }
 
 const categoryImage = {
-  shop: require('./shop.png'),
-  person: require('./person.png'),
+  shop: require('./assets/shop.png'),
+  person: require('./assets/person.png'),
 }
 
 const CustomImage = ({image, style, borderColor}) => {

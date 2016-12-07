@@ -13,13 +13,13 @@ const MAP_PAN_DEBOUNCE_DURATION = 150
 const BOTTOM_OFFSET = -25
 
 const markerImage = {
-  [platform.IOS]: require('./Marker.png'),
-  [platform.ANDROID]: require('./Android_marker.png')
+  [platform.IOS]: require('./assets/Marker.png'),
+  [platform.ANDROID]: require('./assets/Android_marker.png')
 }
 
 const selectedMarkerImage = {
-  [platform.IOS]: require('./selected_trader.png'),
-  [platform.ANDROID]: require('./Android_selected_marker.png')
+  [platform.IOS]: require('./assets/selected_trader.png'),
+  [platform.ANDROID]: require('./assets/Android_selected_marker.png')
 }
 
 const mapTopOffset = -1 * maxCollapsedHeight + SEARCH_BAR_MARGIN + SEARCH_BAR_HEIGHT + BOTTOM_OFFSET
