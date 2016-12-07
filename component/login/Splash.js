@@ -24,6 +24,7 @@ const style = {
   background: {
     ...absolutePosition(),
     height: Dimensions.get('window').height,
+    backgroundColor: colors.bristolBlue2
   },
   welcome: {
     container: {
