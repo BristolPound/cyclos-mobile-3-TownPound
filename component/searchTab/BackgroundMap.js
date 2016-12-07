@@ -7,6 +7,7 @@ import _ from 'lodash'
 import * as actions from '../../store/reducer/business'
 import { maxCollapsedHeight, SEARCH_BAR_MARGIN, SEARCH_BAR_HEIGHT } from './SearchTabStyle'
 import platform from '../../util/Platforms'
+import { horizontalAbsolutePosition } from '../../util/StyleUtils'
 
 const MAP_PAN_DEBOUNCE_DURATION = 150
 const BOTTOM_OFFSET = -25
@@ -27,11 +28,9 @@ const mapWidth = Dimensions.get('window').width
 
 const style = {
   container: {
-    position: 'absolute',
+    ...horizontalAbsolutePosition(0, 0),
     top: mapTopOffset,
     height: mapHeight,
-    left: 0,
-    right: 0
   },
   map: {
     height: mapHeight,

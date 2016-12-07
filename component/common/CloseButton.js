@@ -3,7 +3,7 @@ import { Image, TouchableHighlight } from 'react-native'
 
 import color from '../../util/colors'
 import merge from '../../util/merge'
-import { dimensions, margin } from '../style'
+import { dimensions, margin } from '../../util/StyleUtils'
 import { headerMargin } from '../profileScreen/ProfileStyle'
 
 const closeButtonStyle = {

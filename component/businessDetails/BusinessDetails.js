@@ -4,7 +4,8 @@ import HTMLView from 'react-native-htmlview'
 import { View, Text, TouchableOpacity, Linking, StyleSheet, Image } from 'react-native'
 
 import { MultilineText } from '../DefaultText'
-import commonStyle, { padding, margin } from '../style'
+import commonStyle from '../style'
+import { padding, margin, border } from '../../util/StyleUtils'
 import addresses from '../../util/addresses'
 import colors from '../../util/colors'
 
@@ -22,10 +23,7 @@ const styles = {
     paddingBottom: 8
   },
   separator: {
-    borderBottomColor: colors.gray5,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.gray5,
-    borderTopWidth: StyleSheet.hairlineWidth
+    ...border(['bottom', 'top'], colors.gray5, StyleSheet.hairlineWidth)
   },
   field: {
     ...margin(18, 24, 0, 24),

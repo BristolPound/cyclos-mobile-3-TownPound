@@ -1,6 +1,7 @@
 import color from '../../util/colors'
 import marginOffset from '../../util/marginOffset'
-import commonStyle, { margin, padding } from '../style'
+import commonStyle from '../style'
+import { margin, padding, horizontalAbsolutePosition } from '../../util/StyleUtils'
 import ScreenSizes from '../../util/ScreenSizes'
 import { Dimensions } from 'react-native'
 import { TAB_BAR_HEIGHT } from '../tabbar/TabBar'
@@ -22,9 +23,7 @@ export const maxCollapsedHeight = maxExpandedHeight - MAP_HEIGHT
 const styles = {
   searchTab: {
     expandPanel: {
-      position: 'absolute',
-      left: MARGIN_SIZE,
-      right: MARGIN_SIZE
+      ...horizontalAbsolutePosition(MARGIN_SIZE, MARGIN_SIZE)
     },
     searchBar: {
       ...margin(SEARCH_BAR_MARGIN, MARGIN_SIZE, 0, MARGIN_SIZE),

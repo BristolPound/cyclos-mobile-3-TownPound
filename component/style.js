@@ -1,29 +1,10 @@
 import color from '../util/colors'
+import { dimensions, border } from '../util/StyleUtils'
 
 const museo700 = 'MuseoSans-700'
 const museo500 = 'MuseoSans-300' // to be changed when font is available
 const museo300 = 'MuseoSans-300'
 const museo100 = 'MuseoSans-300' // to be changed when font is available
-
-export const dimensions = (value) => ({
-  width: value,
-  height: value
-})
-
-const layoutDimensions = (top, right = top, bottom = top, left = right, property) => {
-    let styles = {}
-    styles[`${property}Top`] = top
-    styles[`${property}Right`] = right
-    styles[`${property}Bottom`] = bottom
-    styles[`${property}Left`] = left
-    return styles
-}
-
-export const margin = (top, right, bottom, left) =>
-    layoutDimensions(top, right, bottom, left, 'margin')
-
-export const padding = (top, right, bottom, left) =>
-    layoutDimensions(top, right, bottom, left, 'padding')
 
 const style = {
   shadow: {
@@ -43,10 +24,7 @@ const style = {
   },
   sectionHeader: {
     container: {
-      borderBottomColor: color.gray5,
-      borderBottomWidth: 1,
-      borderTopColor: color.gray5,
-      borderTopWidth: 1,
+      ...border(['bottom', 'top'], color.gray5, 1),
       height: 34,
       backgroundColor: color.offWhite,
       flexDirection: 'row',

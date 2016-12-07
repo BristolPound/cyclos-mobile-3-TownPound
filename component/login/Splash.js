@@ -5,7 +5,8 @@ import DefaultText from '../DefaultText'
 import marginOffset from '../../util/marginOffset'
 import colors from '../../util/colors'
 import merge from '../../util/merge'
-import commonStyle, { padding, margin } from './../style.js'
+import commonStyle from './../style.js'
+import  { padding, margin, absolutePosition } from '../../util/StyleUtils'
 import { bindActionCreators } from 'redux'
 import * as actions from '../../store/reducer/login'
 import PLATFORM from '../../util/Platforms'
@@ -21,9 +22,8 @@ const style = {
     alignSelf: 'stretch'
   },
   background: {
-    position: 'absolute',
+    ...absolutePosition(),
     height: Dimensions.get('window').height,
-    left: 0,
   },
   welcome: {
     container: {

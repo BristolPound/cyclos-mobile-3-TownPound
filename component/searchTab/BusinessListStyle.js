@@ -1,6 +1,6 @@
 import color from '../../util/colors'
 import ScreenSizes from '../../util/ScreenSizes'
-import {dimensions, padding} from '../style'
+import { dimensions, padding, border } from '../../util/StyleUtils'
 
 export const ROW_HEIGHT = ScreenSizes.isSmall() ? 50 : 60
 const CONTENT_PADDING = ScreenSizes.isSmall() ? 4 : 8
@@ -21,9 +21,8 @@ const styles = {
       borderTopWidth: 0,
     },
     container: {
+      ...border(['top'], color.offWhite, 1),
       flexDirection: 'row',
-      borderTopWidth: 1,
-      borderTopColor: color.offWhite,
       height: ROW_HEIGHT,
       backgroundColor: color.white
     },
@@ -48,8 +47,8 @@ const styles = {
       flexDirection: 'row',
     },
     image: {
-      paddingRight: 5,
       ...dimensions(ScreenSizes.isSmall() ? 42 : 44),
+      paddingRight: 5,
       borderRadius: 5,
     },
     verticalStack: {

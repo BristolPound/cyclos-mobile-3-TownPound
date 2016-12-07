@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Image } from 'react-native'
 import color from '../../util/colors'
 import DefaultText from '../DefaultText'
-import { margin } from '../style';
+import { margin } from '../../util/StyleUtils';
 
 const styles = {
   container: {
