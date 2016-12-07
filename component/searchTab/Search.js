@@ -10,7 +10,7 @@ import colors from '../../util/colors'
 import searchTabStyle from './SearchTabStyle'
 import ScrollingExpandPanel from './ScrollingExpandPanel'
 
-const CLOSE_BUTTON = require('./../common/assets/Close_Blue.png')
+const CLOSE_BUTTON = require('./../common/assets/Close.png')
 
 export default class Search extends React.Component {
     constructor(props) {
@@ -45,10 +45,15 @@ export default class Search extends React.Component {
         this.props.openTraderModal(id)
     }
 
+    _clearText() {
+        this.refs.searchBar.focus()
+        this.setState({ searchTerm: null, filteredBusinessList: [] })
+    }
+
     render() {
         const { filteredBusinessList, searchTerm } = this.state
         const { searchMode } = this.props
-        const { list, searchBar, textInput, searchHeaderText } = searchTabStyle.searchTab
+        const { list, searchBar, textInput, searchHeaderText, closeButton, clearTextButton, clearText } = searchTabStyle.searchTab
 
         return (
             <View>
@@ -62,8 +67,12 @@ export default class Search extends React.Component {
                                selectTextOnFocus={true}
                                style={textInput}
                                value={searchTerm} />
+                    { (searchMode && searchTerm !== null) &&
+                        <TouchableHighlight style={clearTextButton} onPress={() => this._clearText()}>
+                            <DefaultText style={clearText}>x</DefaultText>
+                        </TouchableHighlight> }
                     { searchMode &&
-                        <CloseButton onPress={() => this._closeButtonClick()} closeButtonType={CLOSE_BUTTON} style={{...margin(3,0,0,0), right: 0}} /> }
+                        <CloseButton onPress={() => this._closeButtonClick()} closeButtonType={CLOSE_BUTTON} style={closeButton} /> }
                 </View>
                 { searchMode && (
                     <View style={list}>
