@@ -75,18 +75,18 @@ const style = {
 // see: https://facebook.github.io/react-native/docs/images.html
 const TABS = [
   {
-    active: require('./Search_active.png'),
-    inactive: require('./Search_inactive.png'),
+    active: require('./assets/Search_active.png'),
+    inactive: require('./assets/Search_inactive.png'),
     label: 'Search Tab',
   },
   {
-    active: require('./Spending_active.png'),
-    inactive: require('./Spending_inactive.png'),
+    active: require('./assets/Spending_active.png'),
+    inactive: require('./assets/Spending_inactive.png'),
     label: 'Spending Tab',
   },
   {
-    active: require('./Me_active.png'),
-    inactive: require('./Me_inactive.png'),
+    active: require('./assets/Me_active.png'),
+    inactive: require('./assets/Me_inactive.png'),
     label: 'My Details Tab',
   }
 ]
@@ -110,7 +110,7 @@ const TabBar = (props) =>
       {
         props.loggedIn
           ? <View style={style.amountInnerContainer}>
-              <Image source={require('./balance_symbol.png')} style={style.balanceSymbol}/>
+              <Image source={require('./assets/balance_symbol.png')} style={style.balanceSymbol}/>
               <Price
                   style={style.amount}
                   price={props.balance}

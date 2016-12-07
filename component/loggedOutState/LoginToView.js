@@ -31,11 +31,11 @@ export const emptyStateImage = {
 const getImageSource = (image) => {
   switch(image) {
     case emptyStateImage.spending:
-      return require('./Spending.png')
+      return require('./assets/Spending.png')
     case emptyStateImage.map:
-      return require('./Map.png')
+      return require('./assets/Map.png')
     case emptyStateImage.account:
-      return require('./Account.png')
+      return require('./assets/Account.png')
   }
 }
 

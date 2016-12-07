@@ -6,11 +6,11 @@ import styles from './ProfileStyle'
 
 import  { CloseButton } from '../common/CloseButton'
 
-const CLOSE_BUTTON = require('./../common/Close_Blue.png')
+const CLOSE_BUTTON = require('./../common/assets/Close_Blue.png')
 
 const ProfileHeader = (props) =>
   <View style={styles.header.container}>
-    <Image source={require('./gorillaWithBackground.png')}
+    <Image source={require('./assets/gorillaWithBackground.png')}
       style={styles.header.backgroundImage}
       resizeMode='cover' />
       { props.isModal ? <CloseButton onPress={props.onPressClose} closeButtonType={CLOSE_BUTTON} /> : undefined }
