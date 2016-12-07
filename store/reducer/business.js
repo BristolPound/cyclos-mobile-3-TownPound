@@ -184,8 +184,7 @@ const offsetOverlappingBusinesses = (businesses) => {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'business/BUSINESS_LIST_RECEIVED':
-      const offsetBusinesses = offsetOverlappingBusinesses(action.businessList)
-      offsetBusinesses = offsetBusinesses.map(business => merge(business, {colorCode: 0}))
+      const offsetBusinesses = offsetOverlappingBusinesses(action.businessList).map(business => merge(business, {colorCode: 0}))
       let closestBusinesses = getClosestBusinesses(action.businessList, state.mapViewport)
       state = merge(state, {
         closestBusinesses,

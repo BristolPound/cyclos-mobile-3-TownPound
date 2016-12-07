@@ -6,20 +6,17 @@ import DefaultText from '../DefaultText'
 import colors from '../../util/colors'
 import merge from '../../util/merge'
 import animateTo from '../../util/animateTo'
+import { horizontalAbsolutePosition } from '../../util/StyleUtils'
 import * as actions from '../../store/reducer/login'
 import commonStyle from '../style'
 import KeyboardComponent from '../KeyboardComponent'
 
 const style = {
   loginContainer: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
+    ...horizontalAbsolutePosition(0, 0)
   },
   animatedContainer: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
+    ...horizontalAbsolutePosition(0, 0),
     ...commonStyle.shadow
   },
   loginButton: {

@@ -1,6 +1,7 @@
 import { StyleSheet, Dimensions } from 'react-native'
 import colors from '../../util/colors'
-import commonStyle, { dimensions, margin } from '../style'
+import commonStyle from '../style'
+import { dimensions, margin, border } from '../../util/StyleUtils'
 import marginOffset from '../../util/marginOffset'
 
 export const headerMargin = 24
@@ -64,14 +65,12 @@ const styles = {
       alignSelf: 'center'
     },
     separator: {
-      marginLeft: listMargin,
-      borderColor: colors.gray5,
-      borderWidth: StyleSheet.hairlineWidth
+      ...border(['top', 'right', 'bottom', 'left'], colors.gray5, StyleSheet.hairlineWidth),
+      marginLeft: listMargin
     }
   },
   footer: {
-    borderTopColor: colors.gray5,
-    borderTopWidth: StyleSheet.hairlineWidth,
+    ...border(['top'], colors.gray5, StyleSheet.hairlineWidth),
     backgroundColor: colors.offWhite,
     flex: 1,
     flexDirection: 'column-reverse'

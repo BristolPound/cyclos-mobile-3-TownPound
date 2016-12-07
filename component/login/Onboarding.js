@@ -14,13 +14,14 @@ const style = {
   }
 }
 
-
 const logo = ScreenSizes.isSmall() ? require('./onboarding_logo_SE.png') : require('./onboarding_logo_7.png')
 
 const renderWelcomeMessage = () => <Image source={logo} />
 const renderInfoText = () =>
   <View style={{flex: 1, alignItems: 'center'}}>
-    <DefaultText style={style.infoText}>If you haven't signed up for Bristol Pound,</DefaultText>
+    <DefaultText style={style.infoText}>
+        If you haven't signed up for Bristol Pound,
+    </DefaultText>
     <View style={{flexDirection: 'row'}}>
       <DefaultText style={style.infoText}>you can do so </DefaultText>
       <HyperlinkText text='from our website' style={style.infoText} link={'http://bristolpound.org'} />
