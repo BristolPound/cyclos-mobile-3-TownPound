@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Image } from 'react-native'
 import DefaultText, { HyperlinkText } from '../DefaultText'
 import Splash from './Splash'
-import ScreenSizes from '../../util/ScreenSizes'
+import { isScreenSmall } from '../../util/ScreenSizes'
 import colors from '../../util/colors'
 import commonStyle from '../style'
 
@@ -14,7 +14,7 @@ const style = {
   }
 }
 
-const logo = ScreenSizes.isSmall() ? require('./assets/onboarding_logo_SE.png') : require('./assets/onboarding_logo_7.png')
+const logo = isScreenSmall ? require('./assets/onboarding_logo_SE.png') : require('./assets/onboarding_logo_7.png')
 
 const renderWelcomeMessage = () => <Image source={logo} />
 const renderInfoText = () =>

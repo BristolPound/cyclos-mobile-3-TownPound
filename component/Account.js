@@ -7,7 +7,7 @@ import colors from './../util/colors'
 import commonStyle from './style'
 import * as actions from '../store/reducer/login'
 import { updateStatus } from '../store/reducer/statusMessage'
-import ScreenSizes from '../util/ScreenSizes'
+import { isScreenSmall } from '../util/ScreenSizes'
 import ProfileHeader from './profileScreen/ProfileHeader'
 
 const styles = {
@@ -22,7 +22,7 @@ const styles = {
   sectionHeader: commonStyle.sectionHeader,
   row: {
     container: {
-      height: ScreenSizes.isSmall() ? 40 : 42,
+      height: isScreenSmall ? 40 : 42,
       flexDirection: 'row',
       alignItems: 'center',
       paddingLeft: 14,

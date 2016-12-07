@@ -7,45 +7,55 @@ import BackgroundMap from './BackgroundMap'
 import ComponentList from './ComponentList'
 import BusinessListItem, { SelectedBusiness } from './BusinessListItem'
 import ScrollingExpandPanel from './ScrollingExpandPanel'
-import styles, { SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN, maxExpandedHeight, maxCollapsedHeight } from './SearchTabStyle'
+import styles, { SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN, maxExpandedHeight } from './SearchTabStyle'
 import { ROW_HEIGHT } from './BusinessListStyle'
 import { updateSearchMode } from '../../store/reducer/business'
 import { openTraderModal } from '../../store/reducer/navigation'
 import { BUSINESS_LIST_SELECTED_GAP } from './BusinessListStyle'
 import { Overlay } from '../common/Overlay'
-
 import Search from './Search'
+import calculatePanelHeight from '../../util/calculatePanelHeight'
 
 const BUSINESS_LIST_GAP_PLACEHOLDER = { pressable: false }
 
-const SHORT_LIST_BOTTOM_GAP = 12
 const EXPANDED_LIST_TOP_OFFSET = SEARCH_BAR_HEIGHT + SEARCH_BAR_MARGIN
 
-const calculatePanelHeight = (rowCount, selectedBusiness) => {
-  const selectedBusinessModifier = selectedBusiness ? BUSINESS_LIST_SELECTED_GAP + ROW_HEIGHT : 0
-  const collapsedHeight = Math.min(
-    rowCount * ROW_HEIGHT + selectedBusinessModifier + SHORT_LIST_BOTTOM_GAP,
-    maxCollapsedHeight
-  ) - ((rowCount > 4) ? ROW_HEIGHT : 0)
-  const expandedHeight = Math.max(
-    Math.min(rowCount * ROW_HEIGHT + selectedBusinessModifier, maxExpandedHeight),
-    collapsedHeight
-  )
-  const closedHeight = ROW_HEIGHT * Math.min(rowCount, 1)
-  return ({ collapsedHeight, expandedHeight, closedHeight })
+const ComponentForItem = item => {
+    if (item === BUSINESS_LIST_GAP_PLACEHOLDER) {
+        return <View style={{ height: 10 }}/>
+    }
+    if (item.isSelected) {
+        return <SelectedBusiness business={item}/>
+    }
+    return <BusinessListItem business={item} />
 }
 
 class SearchTab extends React.Component {
-  createComponentArray() {
+  constructor(props) {
+    super()
+    this.componentListArray = this.createComponentListArray(props)
+  }
+
+  createComponentListArray(props) {
     const makePressable = (itemProps) => ({...itemProps, pressable: true})
-    if (this.props.selectedBusiness) {
+    if (props.selectedBusiness) {
       return [
-        { ...makePressable(this.props.selectedBusiness), isSelected: true },
+        { ...makePressable(props.selectedBusiness), isSelected: true },
         BUSINESS_LIST_GAP_PLACEHOLDER,
-        ...this.props.closestBusinesses.map(makePressable)
+        ...props.closestBusinesses.map(makePressable)
       ]
     } else {
-      return this.props.closestBusinesses.map(makePressable)
+      return props.closestBusinesses.map(makePressable)
+    }
+  }
+
+  calculateOffset(heights) {
+    return heights.map(height => EXPANDED_LIST_TOP_OFFSET + maxExpandedHeight - height)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.searchMode === this.props.searchMode) {
+      this.componentListArray = this.createComponentListArray(nextProps)
     }
   }
 
@@ -55,25 +65,13 @@ class SearchTab extends React.Component {
 
     const noOfCloseBusinesses = closestBusinesses.length,
         childrenHeight = selectedBusiness
-            ? noOfCloseBusinesses * ROW_HEIGHT + BUSINESS_LIST_SELECTED_GAP
+            ? (noOfCloseBusinesses + 1) * ROW_HEIGHT + BUSINESS_LIST_SELECTED_GAP
             : noOfCloseBusinesses * ROW_HEIGHT
 
     const { collapsedHeight, expandedHeight, closedHeight } = calculatePanelHeight(
       this.props.closestBusinesses.length,
       this.props.selectedBusiness
     )
-    const calculatedOffset = height => EXPANDED_LIST_TOP_OFFSET + maxExpandedHeight - height
-    const selectedComponentView = item => {
-        if (item === BUSINESS_LIST_GAP_PLACEHOLDER) {
-            return <View style={{ height: 10 }}/>
-        }
-        if (item.isSelected) {
-            return <SelectedBusiness business={item}/>
-        }
-        return <BusinessListItem business={item} />
-    }
-
-    const componentArray = this.createComponentArray()
 
     return (
       <View style={{flex: 1}}>
@@ -85,7 +83,7 @@ class SearchTab extends React.Component {
                 openTraderModal={openTraderModal}/>
         <ScrollingExpandPanel
             style={merge(styles.searchTab.expandPanel, (searchMode ? styles.searchTab.hide : {})) }
-            topOffset={[ calculatedOffset(expandedHeight), calculatedOffset(collapsedHeight), calculatedOffset(closedHeight) ]}
+            topOffset={this.calculateOffset([ expandedHeight, collapsedHeight, closedHeight ])}
             expandedHeight={expandedHeight}
             onPressRelease={hasMoved => componentList && componentList.handleRelease(hasMoved)}
             onPressStart={location => componentList && componentList.highlightItem(location)}
@@ -93,9 +91,9 @@ class SearchTab extends React.Component {
             startPosition={1}>
             <ComponentList
                 ref='componentList'
-                items={componentArray}
-                componentForItem={selectedComponentView}
-                onPressItem={index => componentArray[index].id && openTraderModal(componentArray[index].id)} />
+                items={this.componentListArray}
+                componentForItem={ComponentForItem}
+                onPressItem={index => this.componentListArray[index].id && openTraderModal(this.componentListArray[index].id)} />
         </ScrollingExpandPanel>
       </View>
     )
