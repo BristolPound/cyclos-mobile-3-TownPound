@@ -13,7 +13,7 @@ const MAP_PAN_DEBOUNCE_DURATION = 150
 const BOTTOM_OFFSET = -25
 
 const markerImage = {
-  [platform.IOS]: require('./assets/Marker.png'),
+  [platform.IOS]: require('./assets/Marker_alt.png'),
   [platform.ANDROID]: require('./assets/Android_marker.png')
 }
 
