@@ -13,10 +13,8 @@ import KeyboardComponent from '../KeyboardComponent'
 
 const style = {
   loginContainer: {
-    ...horizontalAbsolutePosition(0, 0)
-  },
-  animatedContainer: {
     ...horizontalAbsolutePosition(0, 0),
+    backgroundColor: 'white',
     ...commonStyle.shadow
   },
   loginButton: {
