@@ -1,7 +1,7 @@
 import color from '../../util/colors'
 import marginOffset from '../../util/marginOffset'
 import commonStyle from '../style'
-import { margin, padding, horizontalAbsolutePosition, verticalAbsolutePosition } from '../../util/StyleUtils'
+import { dimensions, margin, padding, horizontalAbsolutePosition, verticalAbsolutePosition } from '../../util/StyleUtils'
 import { isScreenSmall, screenHeight } from '../../util/ScreenSizes'
 import { TAB_BAR_HEIGHT } from '../tabbar/TabBar'
 
@@ -23,16 +23,15 @@ const styles = {
     },
     searchBar: {
       ...margin(SEARCH_BAR_MARGIN, MARGIN_SIZE, 0, MARGIN_SIZE),
+      ...commonStyle.shadow,
       height: SEARCH_BAR_HEIGHT,
       backgroundColor: color.white,
-      ...commonStyle.shadow,
-      flexDirection: 'row',
+      flexDirection: 'row'
     },
     textInput: {
       ...margin(5, 9),
       ...padding(2),
-      width: SEARCH_INPUT_WIDTH - CLOSE_ICON_WIDTH,
-      height: SEARCH_BAR_HEIGHT - 10,
+      ...dimensions(SEARCH_INPUT_WIDTH - CLOSE_ICON_WIDTH, SEARCH_BAR_HEIGHT - 10),
       fontSize: 16,
       color: color.bristolBlue,
       backgroundColor: color.white,
@@ -48,9 +47,8 @@ const styles = {
     clearTextButton: {
       ...padding(0, 2, 2, 5),
       ...verticalAbsolutePosition(12, 9),
+      ...dimensions(18),
       right: 65,
-      width: 18,
-      height: 18,
       borderRadius: 10,
       backgroundColor: color.gray3
     },

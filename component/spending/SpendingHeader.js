@@ -12,26 +12,15 @@ import color from '../../util/colors'
 
 const CAROUSEL_ITEM_WIDTH = 145
 
-export const toMonthString = month =>
-  isSameMonth(month, new Date()) ? 'Spent This Month' : format(month, 'MMMM')
+export const toMonthString = month => isSameMonth(month, new Date()) ? 'Spent This Month' : format(month, 'MMMM')
 
 const MonthOption = ({monthTotal, isSelected}) => {
-  const priceProps = isSelected
-    ? {
-        color: color.bristolBlue,
-        size: 32
-    } : {
-        color: color.bristolBlue2,
-        size: 28
-    }
-  const textStyle = isSelected
-    ? {
-      color: color.gray1,
-      paddingBottom: 4
-    } : {
-      color: color.gray2,
-      paddingBottom: 2
-    }
+  const basicPriceStyle = (color, size) => ({ color, size }),
+      priceProps = isSelected ? basicPriceStyle(color.bristolBlue, 32) : basicPriceStyle(color.bristolBlue2, 28)
+
+  const basicTextStyle = (color, paddingBottom) => ({ color, paddingBottom }),
+      textStyle = isSelected ? basicTextStyle(color.gray, 4) : basicTextStyle(color.gray2, 2)
+
   return (
     <View style={{width: CAROUSEL_ITEM_WIDTH}}>
       <DefaultText style={{...styles.header.monthlyOption, ...textStyle}}>
@@ -45,26 +34,23 @@ const MonthOption = ({monthTotal, isSelected}) => {
   )
 }
 
-class SpendingHeader extends React.Component {
-  render() {
-    return  <View style={styles.header.carouselContainer}>
-      <Carousel
-          itemWidth={CAROUSEL_ITEM_WIDTH}
-          containerWidth={Dimensions.get('window').width}
-          pageIndex={this.props.selectedMonthIndex}
-          onTouchStart={this.props.scrollTransactionsToTop}
-          onPageChange={this.props.selectMonth}
-          onPress={this.props.selectMonth}>
-        { this.props.monthlyTotalSpent.map((monthTotal, index) =>
-          <MonthOption
-              key={index}
-              monthTotal={monthTotal}
-              isSelected={this.props.selectedMonthIndex === index} />
-        ) }
-      </Carousel>
+export const SpendingHeader = props =>
+    <View style={styles.header.carouselContainer}>
+        <Carousel
+            itemWidth={CAROUSEL_ITEM_WIDTH}
+            containerWidth={Dimensions.get('window').width}
+            pageIndex={props.selectedMonthIndex}
+            onTouchStart={props.scrollTransactionsToTop}
+            onPageChange={props.selectMonth}
+            onPress={props.selectMonth}>
+            { props.monthlyTotalSpent.map((monthTotal, index) =>
+                <MonthOption
+                    key={index}
+                    monthTotal={monthTotal}
+                    isSelected={props.selectedMonthIndex === index} />
+            ) }
+        </Carousel>
     </View>
-  }
-}
 
 const mapDispatchToProps = (dispatch) => bindActionCreators(actions, dispatch)
 

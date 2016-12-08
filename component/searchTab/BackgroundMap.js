@@ -7,7 +7,7 @@ import _ from 'lodash'
 import * as actions from '../../store/reducer/business'
 import { maxCollapsedHeight, SEARCH_BAR_MARGIN, SEARCH_BAR_HEIGHT } from './SearchTabStyle'
 import platform from '../../util/Platforms'
-import { horizontalAbsolutePosition } from '../../util/StyleUtils'
+import { dimensions, horizontalAbsolutePosition } from '../../util/StyleUtils'
 
 const MAP_PAN_DEBOUNCE_DURATION = 150
 const BOTTOM_OFFSET = -25
@@ -33,13 +33,11 @@ const style = {
     height: mapHeight,
   },
   map: {
-    height: mapHeight,
-    width: mapWidth,
+    ...dimensions(mapWidth, mapHeight),
     position: 'absolute'
   },
   loadingOverlay: {
-    height: mapHeight,
-    width: mapWidth,
+    ...dimensions(mapWidth, mapHeight),
     backgroundColor: 'white'
   }
 }

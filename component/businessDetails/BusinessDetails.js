@@ -5,7 +5,7 @@ import { View, Text, TouchableOpacity, Linking, StyleSheet, Image } from 'react-
 
 import { MultilineText } from '../DefaultText'
 import commonStyle from '../style'
-import { padding, margin, border } from '../../util/StyleUtils'
+import { dimensions, padding, margin, border } from '../../util/StyleUtils'
 import addresses from '../../util/addresses'
 import colors from '../../util/colors'
 
@@ -32,8 +32,7 @@ const styles = {
     backgroundColor: colors.white,
   },
   image: {
-    height: 20,
-    width: 18,
+    ...dimensions(18, 20),
     marginRight: 16
   },
   item: {
@@ -43,7 +42,7 @@ const styles = {
   text: {
     flex: 1,
     fontSize: 16,
-    color: colors.gray1,
+    color: colors.gray,
     flexWrap: 'wrap'
   },
   addressOnly: {
