@@ -29,7 +29,7 @@ export const verticalAbsolutePosition = (top, bottom) => ({ position: 'absolute'
 
 export const absolutePosition = (top = 0, right = 0, bottom = 0, left = 0) => merge(horizontalAbsolutePosition(right, left), verticalAbsolutePosition(top, bottom))
 
-export const dimensions = (value) => ({ width: value, height: value })
+export const dimensions = (width, height = width) => ({ width, height })
 
 export const margin = (top, right, bottom, left) =>
     layoutDimensions(top, right, bottom, left, 'margin')

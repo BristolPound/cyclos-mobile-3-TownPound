@@ -9,15 +9,14 @@ import { connect } from 'react-redux'
 import { updateStatus } from '../store/reducer/statusMessage'
 import { screenHeight } from '../util/ScreenSizes'
 import animateTo from '../util/animateTo'
+import { horizontalAbsolutePosition } from '../util/StyleUtils'
 
 const style = {
   container: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
+    ...horizontalAbsolutePosition(0, 0),
+    ...commonStyle.shadow,
     alignItems: 'center',
-    justifyContent: 'center',
-    ...commonStyle.shadow
+    justifyContent: 'center'
   },
   text: {
     color: color.white

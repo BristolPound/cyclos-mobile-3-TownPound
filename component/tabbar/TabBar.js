@@ -5,6 +5,7 @@ import DefaultText from '../DefaultText'
 import Price from '../Price'
 import { connect } from 'react-redux'
 import color from '../../util/colors'
+import { dimensions } from '../../util/StyleUtils'
 import commonStyle from '../style'
 import { openLoginForm } from '../../store/reducer/login'
 import { showModal, modalState } from '../../store/reducer/navigation'
@@ -28,8 +29,7 @@ const style = {
     ...commonStyle.shadow
   },
   separator: {
-    height: TAB_BAR_HEIGHT / 2,
-    width: 1,
+    ...dimensions(1, TAB_BAR_HEIGHT / 2),
     backgroundColor: '#e2e3e6'
   },
   amountContainer: {
@@ -73,22 +73,24 @@ const style = {
 
 // NOTE - The image URLs must be known statically
 // see: https://facebook.github.io/react-native/docs/images.html
+
+const TabItem = (active, inactive, label) => ({ active, inactive, label })
 const TABS = [
-  {
-    active: require('./assets/Search_active.png'),
-    inactive: require('./assets/Search_inactive.png'),
-    label: 'Search Tab',
-  },
-  {
-    active: require('./assets/Spending_active.png'),
-    inactive: require('./assets/Spending_inactive.png'),
-    label: 'Spending Tab',
-  },
-  {
-    active: require('./assets/Me_active.png'),
-    inactive: require('./assets/Me_inactive.png'),
-    label: 'My Details Tab',
-  }
+    TabItem(
+        require('./assets/Search_active.png'),
+        require('./assets/Search_inactive.png'),
+        'Search Tab'
+    ),
+    TabItem(
+        require('./assets/Spending_active.png'),
+        require('./assets/Spending_inactive.png'),
+        'Spending Tab'
+    ),
+    TabItem(
+        require('./assets/Me_active.png'),
+        require('./assets/Me_inactive.png'),
+        'My Details Tab'
+    )
 ]
 
 const TabBar = (props) =>

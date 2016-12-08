@@ -9,6 +9,7 @@ import merge from '../util/merge'
 import { LOGIN_STATUSES } from '../store/reducer/login'
 import DefaultText from './DefaultText'
 import color from '../util/colors'
+import { dimensions } from '../util/StyleUtils'
 
 const Page = {
   Ready: 0,
@@ -22,16 +23,14 @@ export const sectionHeight = 68
 
 const styles = {
   buttonContainer: {
-    height: sectionHeight,
+    ...dimensions(width, sectionHeight),
     backgroundColor: color.bristolBlue,
     alignItems: 'center',
-    justifyContent: 'center',
-    width: width
+    justifyContent: 'center'
   },
   textInput: {
-    width: width,
+    ...dimensions(width, sectionHeight),
     padding: 10,
-    height: sectionHeight,
     textAlign: 'center'
   },
   loadingSpinner: {

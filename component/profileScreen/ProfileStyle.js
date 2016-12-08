@@ -35,8 +35,7 @@ const styles = {
       color: colors.gray
     },
     backgroundImage: {
-      height: 242,
-      width: Dimensions.get('window').width,
+      ...dimensions(Dimensions.get('window').width, 242),
       position: 'absolute'
     },
   },
