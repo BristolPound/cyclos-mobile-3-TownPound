@@ -2,23 +2,19 @@ import color from '../../util/colors'
 import marginOffset from '../../util/marginOffset'
 import commonStyle from '../style'
 import { margin, padding, horizontalAbsolutePosition, verticalAbsolutePosition } from '../../util/StyleUtils'
-import ScreenSizes from '../../util/ScreenSizes'
-import { Dimensions } from 'react-native'
+import { isScreenSmall, screenHeight } from '../../util/ScreenSizes'
 import { TAB_BAR_HEIGHT } from '../tabbar/TabBar'
 
 const MARGIN_SIZE = 10
 const SEARCH_INPUT_WIDTH = 330
 const CLOSE_ICON_WIDTH = 50
-export const SEARCH_BAR_MARGIN_TOP_IOS = 35
+const SEARCH_BAR_MARGIN_IOS = 35
 
-export const SEARCH_BAR_MARGIN = marginOffset(SEARCH_BAR_MARGIN_TOP_IOS)
-export const SEARCH_BAR_HEIGHT = ScreenSizes.isSmall() ? 44 : 48
-export const MAP_HEIGHT = ScreenSizes.isSmall() ? 220 : 275
+export const SEARCH_BAR_MARGIN = marginOffset(SEARCH_BAR_MARGIN_IOS)
+export const SEARCH_BAR_HEIGHT = isScreenSmall ? 44 : 48
 
-// Here we use SEARCH_BAR_MARGIN_TOP_IOS because
-// Dimensions.get('window').height includes the status bar, even on android
-export const maxExpandedHeight = Dimensions.get('window').height - SEARCH_BAR_MARGIN_TOP_IOS - SEARCH_BAR_HEIGHT - TAB_BAR_HEIGHT
-export const maxCollapsedHeight = maxExpandedHeight - MAP_HEIGHT
+export const maxExpandedHeight = screenHeight - SEARCH_BAR_MARGIN - SEARCH_BAR_HEIGHT - TAB_BAR_HEIGHT
+export const maxCollapsedHeight = 45/100 * screenHeight - TAB_BAR_HEIGHT
 
 const styles = {
   searchTab: {
