@@ -110,7 +110,6 @@ function getFields(business) {
   // Order of display should be:
   //    access point*, special offer*, address, opening times*, phone number, email address
   // Note: access point and special offer aren't supported yet.
-  // TODO: The businessopeningtimes field isn't in the dev database so hasn't been tested.
     business.address && fields.push(
       businessDetail('addressField', require('./assets/Address.png'), addresses.toString(business.address))
     )

@@ -26,7 +26,6 @@ export const calculateMonthlyTotalSpent = (sortedTransactions) => {
 
   sortedTransactions.forEach(transaction => {
     const transactionDate = new Date(transaction.date)
-    // TODO: this could be optimised
     const total = totals.find(total => isSameMonth(total.month, transactionDate))
     // Only interested in money spent, not received - hence Math.min
     total.total += Math.min(Number(transaction.amount), 0)
@@ -59,7 +58,6 @@ export const groupTransactionsByBusiness = transactions => {
   return _.sortBy(results, ['amount', 'relatedAccount.user.display'])
 }
 
-//TODO: optimise as this is currently only used to find transactions at the start or end of the list
 export const findTransactionsByDate = (transactions, date) =>
   typeof date === 'string'
   ? transactions
