@@ -21,7 +21,7 @@ const initialState = {
   // username / password state backs the login form
   username: '',
   password: '',
-  // logged in username state stores the username on succesfull login
+  // logged in username state stores the username on successful login
   loggedInUsername: ''
 }
 
@@ -99,11 +99,6 @@ const reducer = (state = initialState, action) => {
       state = merge(state, {
         loggedInUsername: state.username,
         loginStatus: LOGIN_STATUSES.LOGGED_IN,
-      })
-      break
-    case 'login/LOGIN_FAILED':
-      state = merge(state, {
-        loginStatus: LOGIN_STATUSES.LOGIN_FAILED,
       })
       break
     case 'login/LOGIN_IN_PROGRESS':

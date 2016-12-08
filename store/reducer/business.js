@@ -2,25 +2,26 @@ import haversine from 'haversine'
 import _ from 'lodash'
 import moment from 'moment'
 import merge from '../../util/merge'
+import { getClosestBusinesses, offsetOverlappingBusinesses } from '../../util/business';
 import { addFailedAction } from './networkConnection'
 import { getBusinesses, getBusinessProfile } from '../../api/users'
 import { UNEXPECTED_DATA } from '../../api/apiError'
 import { ERROR_SEVERITY, unknownError, updateStatus } from './statusMessage'
 
-const BRISTOL_CITY_CENTRE = { latitude: 51.454513, longitude:  -2.58791 }
+const DEFAULT_COORDINATES = { latitude: 51.454513, longitude:  -2.58791 }
 
-const BUSINESS_LIST_MAX_LENGTH = 50
+const MapViewport = {
+    ...DEFAULT_COORDINATES,
+    latitudeDelta: 0.006,
+    longitudeDelta: 0.006
+}
 
-const initialState = {
+const Business = {
   businessList: [],
   businessListTimestamp: null,
   selectedBusinessId: undefined,
-  closestBusinesses: [ ],
-  mapViewport: {
-    ...BRISTOL_CITY_CENTRE,
-    latitudeDelta: 0.006,
-    longitudeDelta: 0.006
-  },
+  closestBusinesses: [],
+  mapViewport: MapViewport,
   searchMode: false,
   loadingProfile: false,
   traderScreenBusinessId: undefined
@@ -51,21 +52,9 @@ export const updateSearchMode = (mode) => ({
     mode
 })
 
-export const selectBusiness = (businessId) => (dispatch) =>
-  dispatch({
-    type: 'business/SELECTED_BUSINESS',
-    businessId
-  })
-
 export const resetBusinesses = () => ({
   type: 'business/RESET_BUSINESSES',
 })
-
-export const geolocationChanged = (coords, dispatch) => {
-  if (haversine(BRISTOL_CITY_CENTRE, coords) < 75) {//furthest business is around 70km from Bristol centre
-    dispatch(updateMapViewportAndSelectClosestTrader(coords))
-  }
-}
 
 const businessFailedToLoad = () => ({
   type: 'business/FAILED_TO_LOAD'
@@ -80,39 +69,48 @@ const selectBusinessForModal = (id) => ({
   id
 })
 
-export const loadBusinessProfile = (businessId) =>
-  (dispatch) => {
-    dispatch(loadingBusinessProfile())
-    getBusinessProfile(businessId, dispatch)
-      .then(businessProfile => dispatch(businessProfileReceived(businessProfile)))
-      // if this request fails, the modal trader screen will continue to show a spinner
-      // but will be closeable
-      .catch(err => {
-        dispatch(addFailedAction(loadBusinessProfile(businessId)))
-        if (err.type === UNEXPECTED_DATA) {
-          dispatch(updateStatus('Business no longer exists', ERROR_SEVERITY.SEVERE))
-          dispatch(loadBusinessList(true))
-        } else {
-          dispatch(unknownError(err))
-        }
-        dispatch(businessFailedToLoad())
-      })
-  }
+export const selectBusiness = (businessId) => (dispatch) =>
+  dispatch({
+      type: 'business/SELECTED_BUSINESS',
+      businessId
+  })
 
-export const selectAndLoadBusiness = (businessId) =>
-  (dispatch, getState) => {
-    dispatch(selectBusinessForModal(businessId))
-
-    // check to see whether we actually need to load the profile
-    const businessList = getState().business.businessList
-    const business = businessList.find(b => b.id === businessId)
-    if (!business.profilePopulated) {
-      dispatch(loadBusinessProfile(businessId))
+export const geolocationChanged = (coords, dispatch) => {
+    //furthest business is around 70km from Bristol centre
+    if (haversine(DEFAULT_COORDINATES, coords) < 75) {
+        dispatch(updateMapViewportAndSelectClosestTrader(coords))
     }
-  }
+}
 
-export const loadBusinessList = (force = false) =>
-  (dispatch, getState) => {
+export const loadBusinessProfile = (businessId) => (dispatch) => {
+  dispatch(loadingBusinessProfile())
+  getBusinessProfile(businessId, dispatch)
+    .then(businessProfile => dispatch(businessProfileReceived(businessProfile)))
+    // if this request fails, the modal trader screen will continue to show a spinner
+    // but will be closeable
+    .catch(err => {
+      dispatch(addFailedAction(loadBusinessProfile(businessId)))
+      if (err.type === UNEXPECTED_DATA) {
+        dispatch(updateStatus('Business no longer exists', ERROR_SEVERITY.SEVERE))
+        dispatch(loadBusinessList(true))
+      } else {
+        dispatch(unknownError(err))
+      }
+      dispatch(businessFailedToLoad())
+    })
+}
+
+export const selectAndLoadBusiness = (businessId) => (dispatch, getState) => {
+  dispatch(selectBusinessForModal(businessId))
+  // check to see whether we actually need to load the profile
+  const businessList = getState().business.businessList
+  const business = businessList.find(b => b.id === businessId)
+  if (!business.profilePopulated) {
+    dispatch(loadBusinessProfile(businessId))
+  }
+}
+
+export const loadBusinessList = (force = false) => (dispatch, getState) => {
     const persistedDate = getState().business.businessListTimestamp
     if (Date.now() - persistedDate > moment.duration(2, 'days') || force) {
       getBusinesses(dispatch)
@@ -128,60 +126,7 @@ export const loadBusinessList = (force = false) =>
     }
   }
 
-const addColorCodes = (list) => {
-  const newList = list.map(b => merge(b))
-  newList.forEach((component, index, newList) => {
-    const compareColorCodes = (distance) =>
-      index >= distance && component.colorCode === newList[index - distance].colorCode
-    do {
-      component.colorCode = Math.floor(Math.random() * 4)
-    } while (compareColorCodes(1) || compareColorCodes(2))
-  })
-  return newList
-}
-
-const getClosestBusinesses = (list, viewport) => {
-  const closestBusinesses = _.sortBy(
-    list.filter(shouldBeDisplayed(viewport)),
-    orderBusinessList(viewport)
-  )
-  closestBusinesses.length = Math.min(closestBusinesses.length, BUSINESS_LIST_MAX_LENGTH)
-  return addColorCodes(closestBusinesses)
-}
-
-const orderBusinessList = (viewport) => (business) => {
-  if (business.address) {
-    return haversine(viewport, business.address.location)
-  }
-  return Number.MAX_VALUE
-}
-
-const isLocationWithinViewport = (location, viewport) =>
-  Math.abs(location.latitude - viewport.latitude) < viewport.latitudeDelta / 2
-    && Math.abs(location.longitude - viewport.longitude) < viewport.longitudeDelta / 2
-
-const shouldBeDisplayed = (viewport) => (business) =>
-  business.address && isLocationWithinViewport(business.address.location, viewport)
-
-const businessAtLocation = (location) => (business) =>
-  business.address && business.address.location
-    && business.address.location.latitude === location.latitude
-    && business.address.location.longitude === location.longitude
-
-const offsetOverlappingBusinesses = (businesses) => {
-  businesses.forEach((b, index)=> {
-    if (b.address && b.address.location) {
-      const previousBusinesses = businesses.slice(0, index)
-      while (previousBusinesses.find(businessAtLocation(b.address.location))) {
-        b.address.location.longitude -= 0.00004
-        b.address.location.latitude += 0.00002
-      }
-    }
-  })
-  return businesses
-}
-
-const reducer = (state = initialState, action) => {
+const reducer = (state = Business, action) => {
   switch (action.type) {
     case 'business/BUSINESS_LIST_RECEIVED':
       const offsetBusinesses = offsetOverlappingBusinesses(action.businessList).map(business => merge(business, {colorCode: 0}))

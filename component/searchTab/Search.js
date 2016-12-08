@@ -14,6 +14,7 @@ const CLOSE_BUTTON = require('./../common/assets/Close.png')
 export default class Search extends React.Component {
     constructor(props) {
         super(props)
+        this.resetState = this.resetState.bind(this)
         this.state = { searchTerm: null, filteredBusinessList: [] }
     }
 
@@ -37,15 +38,20 @@ export default class Search extends React.Component {
     _closeButtonClick() {
         this._toggleSearchMode()
         this.refs.searchBar.blur()
-        this.setState({ searchTerm: null, filteredBusinessList: [] })
+        this.resetState()
     }
 
     _businessListOnClick(id) {
+        this.refs.searchBar.blur()
         this.props.openTraderModal(id)
     }
 
     _clearText() {
         this.refs.searchBar.focus()
+        this.resetState()
+    }
+
+    resetState() {
         this.setState({ searchTerm: null, filteredBusinessList: [] })
     }
 
