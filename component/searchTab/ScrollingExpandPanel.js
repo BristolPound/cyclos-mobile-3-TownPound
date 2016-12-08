@@ -145,38 +145,40 @@ class ScrollingExpandPanel extends React.Component {
   updateComponentOnMove(event) {
     const currentTouchY = event.nativeEvent.pageY
 
-    if (currentTouchY !== this.startTouchY) {
+    if (Math.abs(currentTouchY - this.startTouchY) > 2) {
       this.hasMoved = true
     }
 
-    // speed of finger
-    const touchVelocity = (currentTouchY - this.lastTouchY) / (Date.now() - this.timeAtLastPosition)
+    if (this.hasMoved) {
+      // speed of finger
+      const touchVelocity = (currentTouchY - this.lastTouchY) / (Date.now() - this.timeAtLastPosition)
 
-    // 'momentum' of component
-    this.velocity = INERTIA * this.velocity + (1 - INERTIA) * touchVelocity
+      // 'momentum' of component
+      this.velocity = INERTIA * this.velocity + (1 - INERTIA) * touchVelocity
 
-    this.timeAtLastPosition = Date.now()
+      this.timeAtLastPosition = Date.now()
 
-    // if it is fully expanded, take this as the new starting state.
-    // Important because the expand/collapse cut-off point is different depending on whether
-    // one is dragging from an expanded or from a collapsed state
-    for (let i = 0; i < this.props.topOffset.length; i++) {
-      const offset = this.props.topOffset[i]
-      if (this.state.currentOuterTopOffset._value <= offset && this.positionAtTouchStart > i
-        || this.state.currentOuterTopOffset._value >= offset && this.positionAtTouchStart < i) {
-          this.positionAtTouchStart = i
+      // if it is fully expanded, take this as the new starting state.
+      // Important because the expand/collapse cut-off point is different depending on whether
+      // one is dragging from an expanded or from a collapsed state
+      for (let i = 0; i < this.props.topOffset.length; i++) {
+        const offset = this.props.topOffset[i]
+        if (this.state.currentOuterTopOffset._value <= offset && this.positionAtTouchStart > i
+          || this.state.currentOuterTopOffset._value >= offset && this.positionAtTouchStart < i) {
+            this.positionAtTouchStart = i
+      }
+      }
+
+      const currentOuterTopOffset = this.getCurrentOuterTopOffset(currentTouchY)
+      const currentInnerTopOffset = -1 * this.getCurrentScroll(currentTouchY)
+
+      this.lastTouchY = currentTouchY
+
+      this.setState({
+        currentOuterTopOffset: new Animated.Value(currentOuterTopOffset),
+        currentInnerTopOffset: new Animated.Value(currentInnerTopOffset),
+      })
     }
-    }
-
-    const currentOuterTopOffset = this.getCurrentOuterTopOffset(currentTouchY)
-    const currentInnerTopOffset = -1 * this.getCurrentScroll(currentTouchY)
-
-    this.lastTouchY = currentTouchY
-
-    this.setState({
-      currentOuterTopOffset: new Animated.Value(currentOuterTopOffset),
-      currentInnerTopOffset: new Animated.Value(currentInnerTopOffset),
-    })
   }
 
   responderMove(event) {
