@@ -26,8 +26,6 @@ export const reducer = combineReducers({
   statusMessage
 })
 
-//TODO: Handle GPS errors
-
 export const initialise = (store) => {
   NetInfo.isConnected.addEventListener(
     'change',
@@ -38,7 +36,7 @@ export const initialise = (store) => {
 
   navigator.geolocation.getCurrentPosition(
     ({coords}) => geolocationChanged(coords, store.dispatch),
-    () => {}
+    () => alert('Unable to get location. Are location services enabled?')
   )
 
   setBaseUrl(store.getState().developerOptions.server)
