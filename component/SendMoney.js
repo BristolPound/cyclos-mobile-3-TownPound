@@ -43,29 +43,30 @@ const styles = {
 class InputComponent extends KeyboardComponent {
   render() {
     let { onButtonPress, buttonText, loading, input, invalidInput, accessibilityLabel } = this.props
-  const buttonStyle = {fontSize: 24}
 
-    return <Animated.View style={{backgroundColor: 'white', bottom: this.state.keyboardHeight}} accessibilityLabel={accessibilityLabel}>
-    <TouchableHighlight
-        onPress={() => !invalidInput && onButtonPress ? onButtonPress() : undefined }>
-      <View style={merge(styles.buttonContainer, invalidInput ? {backgroundColor: color.offWhite} : {})}>
-        <View style={{flexDirection: 'row'}}>
-          <DefaultText style={input ? buttonStyle : merge(buttonStyle, {color: 'white'})}>
-            {buttonText}
-          </DefaultText>
+    const buttonStyle = {fontSize: 24}
 
-          { loading
-            ? <ActivityIndicator size='small' style={styles.loadingSpinner}/>
-            : undefined }
+    return <Animated.View style={{backgroundColor: 'white', bottom: input ? this.state.keyboardHeight : 0}} accessibilityLabel={accessibilityLabel}>
+      <TouchableHighlight
+          onPress={() => !invalidInput && onButtonPress ? onButtonPress() : undefined }>
+        <View style={merge(styles.buttonContainer, invalidInput ? {backgroundColor: color.offWhite} : {})}>
+          <View style={{flexDirection: 'row'}}>
+            <DefaultText style={input ? buttonStyle : merge(buttonStyle, {color: 'white'})}>
+              {buttonText}
+            </DefaultText>
+
+            { loading
+              ? <ActivityIndicator size='small' style={styles.loadingSpinner}/>
+              : undefined }
+          </View>
         </View>
-      </View>
-    </TouchableHighlight>
+      </TouchableHighlight>
 
-    { input
-      ? <TextInput style={styles.textInput}
-            {...input}
-            autoFocus={true}
-            accessibilityLabel={input.placeholder} />
+      { input
+        ? <TextInput style={styles.textInput}
+              {...input}
+              autoFocus={true}
+              accessibilityLabel={input.placeholder} />
       : undefined }
 
     </Animated.View>
