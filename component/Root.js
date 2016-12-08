@@ -14,7 +14,6 @@ const Root = (props) => {
   // the main 'app' UI to be hidden until initialised.
   if (!props.stateInitialised) {
     return (
-      // TODO: style as part of the splash screen
       <View style={{flex: 1}}/>
     )
   }
