@@ -54,11 +54,10 @@ export const offsetOverlappingBusinesses = (businesses) => {
     businesses.forEach((business, index)=> {
         const { address } = business
         if (address && address.location) {
-            let { latitude, longitude } = address.location
             const previousBusinesses = businesses.slice(0, index)
             while (previousBusinesses.find(businessAtLocation(address.location))) {
-                longitude -= 0.00004
-                latitude += 0.00002
+                address.location.longitude -= 0.00004
+                address.location.latitude += 0.00002
             }
         }
     })
