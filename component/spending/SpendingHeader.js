@@ -10,7 +10,7 @@ import { isSameMonth, format } from '../../util/date'
 import styles from './spendingStyle'
 import color from '../../util/colors'
 
-const CAROUSEL_ITEM_WIDTH = 145
+const CAROUSEL_ITEM_WIDTH = 150
 
 export const toMonthString = month => isSameMonth(month, new Date()) ? 'Spent This Month' : format(month, 'MMMM')
 
