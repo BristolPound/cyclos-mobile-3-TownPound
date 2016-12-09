@@ -2,43 +2,57 @@ import React from 'react'
 import { View, TextInput, TouchableHighlight } from 'react-native'
 
 import DefaultText from '../DefaultText'
-import BusinessListHighlight from './BusinessListHighlight'
+import BusinessListItem from './BusinessListItem'
 import { CloseButton } from '../common/CloseButton'
+import ScrollingExpandPanel from './ScrollingExpandPanel'
+import ComponentList from './ComponentList'
 
 import colors from '../../util/colors'
-import searchTabStyle from './SearchTabStyle'
-import ScrollingExpandPanel from './ScrollingExpandPanel'
+import searchTabStyle, { maxExpandedHeight } from './SearchTabStyle'
+import { ROW_HEIGHT } from './BusinessListStyle'
+
+const { list, searchBar, textInput, searchHeaderText, closeButton, clearTextButton, clearText } = searchTabStyle.searchTab
 
 const CLOSE_BUTTON = require('./../common/assets/Close.png')
+
+const ComponentForItem = (item) => {
+  if (typeof item === 'number') {
+    return  <DefaultText style={searchHeaderText}>
+                { item } TRADER MATCHES
+            </DefaultText>
+  }
+  return <BusinessListItem business={item}/>
+}
 
 export default class Search extends React.Component {
     constructor(props) {
         super(props)
         this.resetState = this.resetState.bind(this)
-        this.state = { searchTerm: null, filteredBusinessList: [] }
+        this.state = { searchTerm: null, componentListArray: [] }
     }
 
     _onTextChange(searchTerm) {
-        const { businessList } = this.props
-        const filteredBusinessList = businessList.filter(business => business.display.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1)
-        this.setState({ searchTerm, filteredBusinessList })
-    }
-
-    _toggleSearchMode () {
-        const { searchMode, updateSearchMode } = this.props
-        updateSearchMode(!searchMode)
-    }
-
-    _textInputFocus() {
-        if (this.state.searchTerm === null) {
-            this._toggleSearchMode()
+        if (!this.updating && searchTerm.length >= 3) {
+          this.updating = true
+          const { businessList } = this.props
+          const filteredBusinessList = businessList.filter(business =>
+                      business.display.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1)
+          const componentListArray = this.createComponentListArray(filteredBusinessList)
+          this.setState({ searchTerm, componentListArray })
+          this.updating = false
+        } else if (searchTerm === ''){
+          this.setState({ searchTerm: null })
+        } else {
+          this.setState({ searchTerm })
         }
     }
 
     _closeButtonClick() {
-        this._toggleSearchMode()
+      if (!this.updating) {
+        this.props.updateSearchMode(false)
         this.refs.searchBar.blur()
         this.resetState()
+      }
     }
 
     _businessListOnClick(id) {
@@ -52,27 +66,39 @@ export default class Search extends React.Component {
     }
 
     resetState() {
-        this.setState({ searchTerm: null, filteredBusinessList: [] })
+      if (!this.updating) {
+        this.updating = true
+        this.setState({ searchTerm: null })
+        this.updating = false
+      }
+    }
+
+    createComponentListArray(list) {
+      const makePressable = (itemProps) => ({...itemProps, pressable: true})
+      return [ list.length, ...list.map(makePressable) ]
     }
 
     render() {
-        const { filteredBusinessList, searchTerm } = this.state
-        const { searchMode } = this.props
-        const { list, searchBar, textInput, searchHeaderText, closeButton, clearTextButton, clearText } = searchTabStyle.searchTab
+        const { searchTerm, componentListArray } = this.state
+        const { searchMode, openTraderModal, updateSearchMode } = this.props
+
+        const childrenHeight = componentListArray.length * ROW_HEIGHT + 46
+
+        const { componentList } = this.refs
 
         return (
             <View>
                 <View style={searchBar}>
-                    <TextInput accessibilityLabel={'Search'}
-                               ref="searchBar"
-                               onFocus={() => this._textInputFocus()}
+                    <TextInput accessibilityLabel='Search'
+                               ref='searchBar'
+                               onFocus={() => !searchMode && updateSearchMode(true)}
                                onChangeText={value => this._onTextChange(value)}
                                placeholder={'Search Trader'}
                                placeholderTextColor={colors.gray4}
                                selectTextOnFocus={true}
                                style={textInput}
                                value={searchTerm} />
-                    { (searchMode && searchTerm !== null) &&
+                    { searchMode && searchTerm &&
                         <TouchableHighlight style={clearTextButton} onPress={() => this._clearText()}>
                             <DefaultText style={clearText}>x</DefaultText>
                         </TouchableHighlight> }
@@ -82,17 +108,18 @@ export default class Search extends React.Component {
                 { searchMode && (
                     <View style={list}>
                         <ScrollingExpandPanel topOffset={[0]}
-                                              expandedHeight={50}
-                                              childrenHeight={1000}
-                                              startPosition={0}>
-                            <DefaultText style={searchHeaderText}>
-                                { filteredBusinessList && filteredBusinessList.length } TRADER MATCHES
-                            </DefaultText>
-                            { filteredBusinessList &&
-                                filteredBusinessList.map(business => <BusinessListHighlight key={business.id} business={business} onPress={id => this._businessListOnClick(id)}/>)
-                            }
+                                              expandedHeight={maxExpandedHeight}
+                                              childrenHeight={childrenHeight}
+                                              startPosition={0}
+                                              onPressRelease={hasMoved => componentList && componentList.handleRelease(hasMoved)}
+                                              onPressStart={location => componentList && componentList.highlightItem(location)}>
+                            <ComponentList
+                                ref='componentList'
+                                items={this.state.componentListArray}
+                                componentForItem={ComponentForItem}
+                                onPressItem={index => componentListArray[index - 1].id && openTraderModal(componentListArray[index - 1].id)} />
                         </ScrollingExpandPanel>
-                     </View>
+                    </View>
                 )}
             </View>
         )
