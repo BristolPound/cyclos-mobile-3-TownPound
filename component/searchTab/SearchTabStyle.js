@@ -63,7 +63,8 @@ const styles = {
     },
     searchHeaderText: {
       ...commonStyle.sectionHeader.text,
-      ...margin(20, 0, 10, 14)
+      ...margin(20, 0, 10, 14),
+      backgroundColor: color.transparent
     },
     hide: {
       height: 0
