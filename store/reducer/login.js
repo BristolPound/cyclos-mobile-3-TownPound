@@ -18,9 +18,6 @@ export const LOGIN_STATUSES = {
 const initialState = {
   loginStatus: LOGIN_STATUSES.LOGGED_OUT,
   loginFormOpen: false,
-  // username / password state backs the login form
-  username: '',
-  password: '',
   // logged in username state stores the username on successful login
   loggedInUsername: ''
 }
@@ -29,18 +26,9 @@ export const loginInProgress = () => ({
   type: 'login/LOGIN_IN_PROGRESS'
 })
 
-export const loggedIn = () => ({
-  type: LOGGED_IN
-})
-
-export const usernameUpdated = (username) => ({
-  type: 'login/USERNAME_UPDATED',
+export const loggedIn = (username) => ({
+  type: LOGGED_IN,
   username
-})
-
-export const passwordUpdated = (password) => ({
-  type: 'login/PASSWORD_UPDATED',
-  password
 })
 
 export const loggedOut = () => ({
@@ -57,7 +45,7 @@ export const login = (username, password) =>
     dispatch(loginInProgress())
     authenticate(username, password, dispatch)
       .then(() => {
-        dispatch(loggedIn())
+        dispatch(loggedIn(username))
         dispatch(loadAccountDetails())
         dispatch(loadTransactions())
       })
@@ -85,19 +73,9 @@ export const logout = () => dispatch => {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'login/USERNAME_UPDATED':
-      state = merge(state, {
-        username: action.username
-      })
-      break
-    case 'login/PASSWORD_UPDATED':
-      state = merge(state, {
-        password: action.password
-      })
-      break
     case LOGGED_IN:
       state = merge(state, {
-        loggedInUsername: state.username,
+        loggedInUsername: action.username,
         loginStatus: LOGIN_STATUSES.LOGGED_IN,
       })
       break

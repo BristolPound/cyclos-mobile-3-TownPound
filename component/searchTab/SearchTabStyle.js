@@ -33,7 +33,6 @@ const styles = {
       ...padding(2),
       ...dimensions(SEARCH_INPUT_WIDTH - CLOSE_ICON_WIDTH, SEARCH_BAR_HEIGHT - 10),
       fontSize: 16,
-      color: color.bristolBlue,
       backgroundColor: color.white,
       flex: 1
     },
@@ -47,15 +46,15 @@ const styles = {
     clearTextButton: {
       ...dimensions(20),
       alignSelf: 'center',
-      alignItems: 'center',
       right: 65,
       borderRadius: 10,
       backgroundColor: color.gray3
     },
     clearText: {
-        color: color.white,
-        fontSize: 14,
-        top: 0
+      ...margin(1, 0, 0, 6.5),
+      color: color.white,
+      fontSize: 14,
+      top: 0
     },
     searchHeaderText: {
       ...commonStyle.sectionHeader.text,
