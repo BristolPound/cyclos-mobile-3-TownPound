@@ -1,7 +1,7 @@
 import color from '../../util/colors'
 import marginOffset from '../../util/marginOffset'
 import commonStyle from '../style'
-import { dimensions, margin, padding, horizontalAbsolutePosition, verticalAbsolutePosition } from '../../util/StyleUtils'
+import { dimensions, margin, padding, horizontalAbsolutePosition } from '../../util/StyleUtils'
 import { isScreenSmall, screenHeight } from '../../util/ScreenSizes'
 import { TAB_BAR_HEIGHT } from '../tabbar/TabBar'
 
@@ -45,9 +45,9 @@ const styles = {
       borderLeftColor: color.gray5
     },
     clearTextButton: {
-      ...padding(0, 2, 2, 5),
-      ...verticalAbsolutePosition(12, 9),
-      ...dimensions(18),
+      ...dimensions(20),
+      alignSelf: 'center',
+      alignItems: 'center',
       right: 65,
       borderRadius: 10,
       backgroundColor: color.gray3
