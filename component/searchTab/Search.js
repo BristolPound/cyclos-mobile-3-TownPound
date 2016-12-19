@@ -38,11 +38,13 @@ export default class Search extends React.Component {
         if (searchTerm === '') {
           const componentListArray = this.createComponentListArray(businessList)
           this.setState({ searchTerm: null, componentListArray })
-        } else {
+        } else if (searchTerm.length >= 3) {
           const filteredBusinessList = businessList.filter(business =>
                       business.display.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1)
           const componentListArray = this.createComponentListArray(filteredBusinessList)
           this.setState({ searchTerm, componentListArray })
+        } else {
+          this.setState({ searchTerm, componentListArray: [] })
         }
     }
 
@@ -91,7 +93,7 @@ export default class Search extends React.Component {
                     <TextInput accessibilityLabel='Search'
                                ref='searchBar'
                                onFocus={() => !searchMode && updateSearchMode(true)}
-                               onChangeText={_.debounce(value => this._onTextChange(value), 200)}
+                               onChangeText={_.debounce(value => this._onTextChange(value), 300)}
                                placeholder={'Search Trader'}
                                placeholderTextColor={colors.gray4}
                                selectTextOnFocus={true}
