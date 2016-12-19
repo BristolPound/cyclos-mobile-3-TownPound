@@ -9,6 +9,7 @@ import ScrollingExpandPanel from './ScrollingExpandPanel'
 import ComponentList from './ComponentList'
 
 import colors from '../../util/colors'
+import merge from '../../util/merge'
 import searchTabStyle, { maxExpandedHeight, SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN } from './SearchTabStyle'
 import { ROW_HEIGHT } from './BusinessListStyle'
 
@@ -32,20 +33,22 @@ export default class Search extends React.Component {
         this.state = { searchTerm: null, componentListArray: [] }
     }
 
+    debouncedUpdate = _.debounce((searchTerm) => {
+      const { businessList } = this.props
+      this.refs.ExpandPanel && this.refs.ExpandPanel.resetToInitalState()
+      if (searchTerm.length >= 3) {
+        const filteredBusinessList = businessList.filter(business =>
+                    business.display.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1)
+        const componentListArray = this.createComponentListArray(filteredBusinessList)
+        this.setState({ componentListArray })
+      } else {
+        this.setState({ componentListArray: [] })
+      }
+    }, 300)
+
     _onTextChange(searchTerm) {
-        const { businessList } = this.props
-        this.refs.ExpandPanel && this.refs.ExpandPanel.resetToInitalState()
-        if (searchTerm === '') {
-          const componentListArray = this.createComponentListArray(businessList)
-          this.setState({ searchTerm: null, componentListArray })
-        } else if (searchTerm.length >= 3) {
-          const filteredBusinessList = businessList.filter(business =>
-                      business.display.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1)
-          const componentListArray = this.createComponentListArray(filteredBusinessList)
-          this.setState({ searchTerm, componentListArray })
-        } else {
-          this.setState({ searchTerm, componentListArray: [] })
-        }
+        this.setState({ searchTerm: searchTerm || null })
+        this.debouncedUpdate(searchTerm)
     }
 
     _closeButtonClick() {
@@ -93,11 +96,11 @@ export default class Search extends React.Component {
                     <TextInput accessibilityLabel='Search'
                                ref='searchBar'
                                onFocus={() => !searchMode && updateSearchMode(true)}
-                               onChangeText={_.debounce(value => this._onTextChange(value), 300)}
+                               onChangeText={value => this._onTextChange(value)}
                                placeholder={'Search Trader'}
                                placeholderTextColor={colors.gray4}
                                selectTextOnFocus={true}
-                               style={textInput}
+                               style={merge(textInput, { color: searchTerm && searchTerm.length >= 3 ? colors.bristolBlue : colors.gray4 })}
                                value={searchTerm} />
                     { searchMode && searchTerm &&
                         <TouchableHighlight style={clearTextButton} onPress={() => this._clearText()}>
