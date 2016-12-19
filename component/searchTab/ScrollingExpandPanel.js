@@ -19,21 +19,7 @@ const FRICTION = 0.003
 class ScrollingExpandPanel extends React.Component {
   constructor(props) {
     super()
-
-    this.resetVariablesToStationary()
-
-    this.state = ({
-      // The distance between the top of this component and the top of the parent/screen,
-      // as shown to the user at any point in time. Think of this as the 'master position'.
-      // By default, start collapsed
-      currentOuterTopOffset: new Animated.Value(props.topOffset[props.startPosition]),
-
-      // The distance between the top of the children and the top of this component.
-      // Note that the scrolling behaviour means this will always be zero or negative.
-      // The value of currentInnerTopOffset is simply -1 times the 'scroll distance' of the
-      // inner `View` relative to the outer `View` of this component.
-      currentInnerTopOffset: new Animated.Value(0),
-    })
+    this.resetToInitalState(props)
   }
 
   resetVariablesToStationary() {
@@ -63,6 +49,23 @@ class ScrollingExpandPanel extends React.Component {
 
     //whether or not the gesture has moved
     this.hasMoved = false
+  }
+
+  resetToInitalState(props = this.props) {
+    this.resetVariablesToStationary()
+
+    this.state = ({
+      // The distance between the top of this component and the top of the parent/screen,
+      // as shown to the user at any point in time. Think of this as the 'master position'.
+      // By default, start collapsed
+      currentOuterTopOffset: new Animated.Value(props.topOffset[props.startPosition]),
+
+      // The distance between the top of the children and the top of this component.
+      // Note that the scrolling behaviour means this will always be zero or negative.
+      // The value of currentInnerTopOffset is simply -1 times the 'scroll distance' of the
+      // inner `View` relative to the outer `View` of this component.
+      currentInnerTopOffset: new Animated.Value(0),
+    })
   }
 
   calculateMaxScrollDistance(props) {

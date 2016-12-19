@@ -24,7 +24,7 @@ const styles = {
       ...border(['top'], color.offWhite, 1),
       flexDirection: 'row',
       height: ROW_HEIGHT,
-      backgroundColor: color.white
+      backgroundColor: color.transparent
     },
     containerHighlighted: {
       backgroundColor: color.offWhite

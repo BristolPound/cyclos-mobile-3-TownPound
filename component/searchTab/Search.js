@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, TextInput, TouchableHighlight } from 'react-native'
+import _ from 'lodash'
 
 import DefaultText from '../DefaultText'
 import BusinessListItem from './BusinessListItem'
@@ -8,10 +9,10 @@ import ScrollingExpandPanel from './ScrollingExpandPanel'
 import ComponentList from './ComponentList'
 
 import colors from '../../util/colors'
-import searchTabStyle, { maxExpandedHeight } from './SearchTabStyle'
+import searchTabStyle, { maxExpandedHeight, SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN } from './SearchTabStyle'
 import { ROW_HEIGHT } from './BusinessListStyle'
 
-const { list, searchBar, textInput, searchHeaderText, closeButton, clearTextButton, clearText } = searchTabStyle.searchTab
+const { searchBar, textInput, searchHeaderText, closeButton, clearTextButton, clearText, expandPanel } = searchTabStyle.searchTab
 
 const CLOSE_BUTTON = require('./../common/assets/Close.png')
 
@@ -32,18 +33,16 @@ export default class Search extends React.Component {
     }
 
     _onTextChange(searchTerm) {
-        if (!this.updating && searchTerm.length >= 3) {
-          this.updating = true
-          const { businessList } = this.props
+        const { businessList } = this.props
+        this.refs.ExpandPanel && this.refs.ExpandPanel.resetToInitalState()
+        if (searchTerm === '') {
+          const componentListArray = this.createComponentListArray(businessList)
+          this.setState({ searchTerm: null, componentListArray })
+        } else {
           const filteredBusinessList = businessList.filter(business =>
                       business.display.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1)
           const componentListArray = this.createComponentListArray(filteredBusinessList)
           this.setState({ searchTerm, componentListArray })
-          this.updating = false
-        } else if (searchTerm === ''){
-          this.setState({ searchTerm: null })
-        } else {
-          this.setState({ searchTerm })
         }
     }
 
@@ -82,7 +81,7 @@ export default class Search extends React.Component {
         const { searchTerm, componentListArray } = this.state
         const { searchMode, openTraderModal, updateSearchMode } = this.props
 
-        const childrenHeight = componentListArray.length * ROW_HEIGHT + 46
+        const childrenHeight = componentListArray.length * ROW_HEIGHT
 
         const { componentList } = this.refs
 
@@ -92,7 +91,7 @@ export default class Search extends React.Component {
                     <TextInput accessibilityLabel='Search'
                                ref='searchBar'
                                onFocus={() => !searchMode && updateSearchMode(true)}
-                               onChangeText={value => this._onTextChange(value)}
+                               onChangeText={_.debounce(value => this._onTextChange(value), 200)}
                                placeholder={'Search Trader'}
                                placeholderTextColor={colors.gray4}
                                selectTextOnFocus={true}
@@ -106,8 +105,9 @@ export default class Search extends React.Component {
                         <CloseButton onPress={() => this._closeButtonClick()} closeButtonType={CLOSE_BUTTON} style={closeButton} /> }
                 </View>
                 { searchMode && (
-                    <View style={list}>
-                        <ScrollingExpandPanel topOffset={[0]}
+                        <ScrollingExpandPanel style={expandPanel}
+                                              ref='ExpandPanel'
+                                              topOffset={[ SEARCH_BAR_HEIGHT + SEARCH_BAR_MARGIN ]}
                                               expandedHeight={maxExpandedHeight}
                                               childrenHeight={childrenHeight}
                                               startPosition={0}
@@ -115,11 +115,10 @@ export default class Search extends React.Component {
                                               onPressStart={location => componentList && componentList.highlightItem(location)}>
                             <ComponentList
                                 ref='componentList'
-                                items={this.state.componentListArray}
+                                items={componentListArray}
                                 componentForItem={ComponentForItem}
-                                onPressItem={index => componentListArray[index - 1].id && openTraderModal(componentListArray[index - 1].id)} />
+                                onPressItem={index => componentListArray[index].id && openTraderModal(componentListArray[index].id)} />
                         </ScrollingExpandPanel>
-                    </View>
                 )}
             </View>
         )

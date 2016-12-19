@@ -57,10 +57,6 @@ const styles = {
         fontSize: 14,
         top: 0
     },
-    list: {
-      ...commonStyle.shadow,
-      ...margin(0, MARGIN_SIZE, 0, MARGIN_SIZE)
-    },
     searchHeaderText: {
       ...commonStyle.sectionHeader.text,
       ...margin(20, 0, 10, 14),
