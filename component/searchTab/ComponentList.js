@@ -28,7 +28,7 @@ class ComponentList extends React.Component {
   handleRelease(hasMoved) {
     const index = this.state.highlightedIndex
     if (!hasMoved && this.props.items[index]) {
-      this.props.onPressItem(this.state.highlightedIndex)
+      this.props.onPressItem(index)
     }
     this.setState({
       highlightedIndex: -1
