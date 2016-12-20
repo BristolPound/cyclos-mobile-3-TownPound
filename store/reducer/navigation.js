@@ -23,6 +23,7 @@ const initialState = {
   mainComponent: mainComponent.onboarding,
   stateInitialised: false,
   modalVisible: false,
+  confirmation: undefined
 }
 
 export const navigateToTab = (tabIndex) => ({
@@ -37,6 +38,10 @@ export const selectMainComponent = (componentName) => ({
 
 export const stateInitialised = () => ({
   type: 'navigation/STATE_INITIALIZED'
+})
+
+export const closeConfirmation = () => ({
+  type: 'navigation/CLOSE_CONFIRMATION'
 })
 
 export const openDetailsModal = id =>
@@ -105,6 +110,18 @@ const reducer = (state = initialState, action) => {
     case 'navigation/STATE_INITIALIZED':
       state = merge(state, {
         stateInitialised: true
+      })
+      break
+    case 'sendMoney/TRANSACTION_COMPLETE':
+      if (action.success) {
+        state = merge(state, {
+          confirmation: action.message
+        })
+      }
+      break
+    case 'navigation/CLOSE_CONFIRMATION':
+      state = merge(state, {
+        confirmation: undefined
       })
       break
   }

@@ -19,6 +19,7 @@ import color from '../util/colors'
 import merge from '../util/merge'
 import { LOGIN_STATUSES } from '../store/reducer/login'
 import Modal from './Modal'
+import PaymentConfirmation from './PaymentConfirmation'
 
 const style = {
   tabs: {
@@ -94,6 +95,9 @@ const Tabs = (props) =>
     <Modal visible={props.modalVisible}>
       {componentForModalState(props.modalState)}
     </Modal>
+    <Modal visible={!!props.confirmation}>
+      <PaymentConfirmation />
+    </Modal>
   </View>
 
 const mapDispatchToProps = (dispatch) =>
@@ -106,7 +110,8 @@ const mapStateToProps = (state) => ({
   loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
   status: state.status,
   dialogOpen: state.login.loginFormOpen,
-  online: state.networkConnection.status
+  online: state.networkConnection.status,
+  confirmation: state.navigation.confirmation,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tabs)
