@@ -32,14 +32,22 @@ class StatusMessage extends React.Component {
     }
   }
 
+  slideOut() {
+    this.timeout = setTimeout(() => animateTo(this.state.top, screenHeight, 300, undefined, () => {
+      this.setState({ height: 0 })
+      this.props.updateStatus('')
+      this.timeout = undefined
+    }), 1600)
+  }
+
   componentDidUpdate(lastProps) {
     if (this.props.message && !lastProps.message) {
       this.setState({ height: TAB_BAR_HEIGHT })
       animateTo(this.state.top, screenHeight - TAB_BAR_HEIGHT, 300)
-      setTimeout(() => animateTo(this.state.top, screenHeight, 300, undefined, () => {
-        this.setState({ height: 0 })
-        this.props.updateStatus('')
-      }), 1600)
+      this.scheduleSlideOut()
+    } else if (this.timeout) {
+      clearTimeout(this.timeout)
+      this.scheduleSlideOut()
     }
   }
 
