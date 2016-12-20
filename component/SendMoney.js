@@ -51,7 +51,7 @@ class InputComponent extends KeyboardComponent {
   getButtonTextColor() {
     return this.getButtonColor() === color.offWhite ? 'black' : 'white'
   }
-  
+
   render() {
     let { onButtonPress, buttonText, loading, input, invalidInput, accessibilityLabel } = this.props
 
@@ -113,52 +113,53 @@ class SendMoney extends React.Component {
   render() {
     let inputProps
 
-    switch (this.state.inputPage){
-      case Page.Ready: // Initial state, ready to begin
-        inputProps = {
-          buttonText: 'Send Payment',
-          onButtonPress: () => { this.props.updatePayee(this.props.payeeShortDisplay); this.nextPage() },
-          accessibilityLabel: 'Ready',
-        }
-        break
-      case Page.EnterAmount: // provide amount
-        inputProps = {
-          buttonText: 'Pay ' + this.props.payeeDisplay,
-          onButtonPress: () => { this.props.sendTransaction(); this.nextPage() },
-          input: {
-            keyboardType: 'numeric',
-            value: this.props.amount,
-            placeholder: 'Amount',
-            onChangeText: amt => this.props.updateAmount(amt),
-          },
-          invalidInput: (isNaN(Number(this.props.amount)) || Number(this.props.amount) > this.props.balance || Number(this.props.amount) <= 0),
-          accessibilityLabel: 'Enter Amount',
-        }
-        break
-      case Page.MakingPayment: // in progress
-        inputProps = {
-          buttonText: 'Making Payment',
-          loading: true,
-          accessibilityLabel: 'Making Payment',
-        }
-        break
-      case Page.PaymentComplete: // payment completed
-        inputProps = {
-          buttonText: this.props.message,
-          onButtonPress: () => { this.props.resetForm(); this.nextPage() },
-          accessibilityLabel: 'Payment complete',
-        }
-        break
+    if (this.props.loggedIn) {
+      switch (this.state.inputPage){
+        case Page.Ready: // Initial state, ready to begin
+          inputProps = {
+            buttonText: 'Send Payment',
+            onButtonPress: () => { this.props.updatePayee(this.props.payeeShortDisplay); this.nextPage() },
+            accessibilityLabel: 'Ready',
+          }
+          break
+        case Page.EnterAmount: // provide amount
+          inputProps = {
+            buttonText: 'Pay ' + this.props.payeeDisplay,
+            onButtonPress: () => { this.props.sendTransaction(); this.nextPage() },
+            input: {
+              keyboardType: 'numeric',
+              value: this.props.amount,
+              placeholder: 'Amount',
+              onChangeText: amt => this.props.updateAmount(amt),
+            },
+            invalidInput: isNaN(Number(this.props.amount)) || Number(this.props.amount) > this.props.balance || Number(this.props.amount) <= 0,
+            accessibilityLabel: 'Enter Amount',
+          }
+          break
+        case Page.MakingPayment: // in progress
+          inputProps = {
+            buttonText: 'Making Payment',
+            loading: true,
+            accessibilityLabel: 'Making Payment',
+          }
+          break
+        case Page.PaymentComplete: // payment completed
+          inputProps = {
+            buttonText: this.props.message,
+            onButtonPress: () => { this.props.resetForm(); this.nextPage() },
+            accessibilityLabel: 'Payment complete',
+          }
+          break
+      }
+    } else {
+      inputProps = {
+        buttonText: 'Log in to make payment',
+        onButtonPress: () => this.props.openLoginForm(true),
+        accessibilityLabel: 'Log in to make payment',
+      }
     }
 
-    return (
-      this.props.loggedIn
-        ? <InputComponent {...inputProps} />
-        : <TouchableHighlight onPress={() => this.props.openLoginForm(true)}
-              style={styles.buttonContainer}>
-            <DefaultText>Log in to make payment</DefaultText>
-          </TouchableHighlight>
-    )
+    return <InputComponent {...inputProps} />
   }
 }
 
