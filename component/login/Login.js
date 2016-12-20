@@ -13,7 +13,6 @@ import KeyboardComponent from '../KeyboardComponent'
 
 const style = {
   loginContainer: {
-    ...horizontalAbsolutePosition(0, 0),
     backgroundColor: 'white',
     ...commonStyle.shadow
   },
@@ -70,8 +69,8 @@ class Login extends KeyboardComponent {
   render() {
     const { hideUsernameInput, login } = this.props
     const loginView = (
-      <Animated.View style={merge(style.loginContainer, { bottom: this.state.keyboardHeight, height: hideUsernameInput ? 136 : 204 })}>
-        <Animated.View style={{ bottom: this.state.bottom}}>
+      <Animated.View style={{ ...horizontalAbsolutePosition(0, 0), bottom: this.state.keyboardHeight, height: hideUsernameInput ? 136 : 204 }}>
+        <Animated.View style={merge(style.loginContainer, { bottom: this.state.bottom })}>
           <TouchableOpacity style={{ ...style.loginButton, backgroundColor: isValid(this.username) ? colors.bristolBlue : colors.offWhite }}
               accessibilityLabel={'Login Button'}
               onPress={() => isValid(this.username) && login(this.username, this.password)}>
