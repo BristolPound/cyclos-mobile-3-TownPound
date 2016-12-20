@@ -107,7 +107,7 @@ export default class Search extends React.Component {
                             <DefaultText style={clearText}>x</DefaultText>
                         </TouchableHighlight> }
                     { searchMode &&
-                        <CloseButton onPress={() => this._closeButtonClick()} closeButtonType={CLOSE_BUTTON} style={closeButton} /> }
+                        <CloseButton onPress={() => this._closeButtonClick()} closeButtonType={CLOSE_BUTTON} style={closeButton} size={SEARCH_BAR_HEIGHT}/> }
                 </View>
                 { searchMode && (
                         <ScrollingExpandPanel style={expandPanel}

@@ -8,12 +8,15 @@ import  { CloseButton } from '../common/CloseButton'
 
 const CLOSE_BUTTON = require('./../common/assets/Close_Blue.png')
 
+const renderCloseButton = (onPress) =>
+  <CloseButton style={styles.header.closeButton} onPress={onPress} closeButtonType={CLOSE_BUTTON} size={70}/>
+
 const ProfileHeader = (props) =>
   <View style={styles.header.container}>
     <Image source={require('./assets/gorillaWithBackground.png')}
       style={styles.header.backgroundImage}
       resizeMode='cover' />
-      { props.isModal ? <CloseButton onPress={props.onPressClose} closeButtonType={CLOSE_BUTTON} /> : undefined }
+      { props.isModal ? renderCloseButton(props.onPressClose) : undefined }
     <View style={styles.header.center}>
       <ProfileImage
         image={props.image && {uri: props.image.url}}
@@ -24,6 +27,5 @@ const ProfileHeader = (props) =>
       <DefaultText style={styles.header.subtitle}>{props.username}</DefaultText>
     </View>
   </View>
-
 
 export default ProfileHeader

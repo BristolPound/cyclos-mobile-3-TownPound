@@ -37,16 +37,14 @@ const styles = {
       flex: 1
     },
     closeButton: {
-      ...margin(0, 0, 0, 0),
-      ...padding(3, 8, 3, 18),
-      right: 0,
+      alignSelf: 'center',
       borderLeftWidth: 1,
-      borderLeftColor: color.gray5
+      borderLeftColor: color.gray5,
     },
     clearTextButton: {
       ...dimensions(20),
       alignSelf: 'center',
-      right: 65,
+      right: 13,
       borderRadius: 10,
       backgroundColor: color.gray3
     },
