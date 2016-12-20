@@ -42,8 +42,9 @@ const style = {
 const isValid = (username) => username && !username.match(/\W/)
 
 class Login extends KeyboardComponent {
-  constructor() {
+  constructor(props) {
     super()
+    this.state.username = props.loggedInUsername
   }
 
   selectPasswordField() {
@@ -56,25 +57,32 @@ class Login extends KeyboardComponent {
       this.setState({ bottom })
       animateTo(bottom, 0, 500)
     }
+    if (!this.props.loginFormOpen && lastProps.loginFormOpen) {
+      this.setState({ username: undefined, password: undefined })
+    }
+  }
+
+  login() {
+    this.props.login(this.state.username, this.state.password)
   }
 
   passwordUpdated(newPassword) {
-    this.password = newPassword
+    this.setState({ password: newPassword })
   }
 
   usernameUpdated(newUsername) {
-    this.username = newUsername
+    this.setState({ username: newUsername })
   }
 
   render() {
-    const { hideUsernameInput, login } = this.props
+    const { hideUsernameInput } = this.props
     const loginView = (
       <Animated.View style={{ ...horizontalAbsolutePosition(0, 0), bottom: this.state.keyboardHeight, height: hideUsernameInput ? 136 : 204 }}>
         <Animated.View style={merge(style.loginContainer, { bottom: this.state.bottom })}>
-          <TouchableOpacity style={{ ...style.loginButton, backgroundColor: isValid(this.username) ? colors.bristolBlue : colors.offWhite }}
+          <TouchableOpacity style={{ ...style.loginButton, backgroundColor: isValid(this.state.username) ? colors.bristolBlue : colors.offWhite }}
               accessibilityLabel={'Login Button'}
-              onPress={() => isValid(this.username) && login(this.username, this.password)}>
-            <DefaultText style={{ ...style.loginButtonText, color: isValid(this.username) ? 'white' : 'black' }}>Log in</DefaultText>
+              onPress={() => isValid(this.state.username) && this.login()}>
+            <DefaultText style={{ ...style.loginButtonText, color: isValid(this.state.username) ? 'white' : 'black' }}>Log in</DefaultText>
           </TouchableOpacity>
           { hideUsernameInput
             ? undefined
@@ -93,7 +101,7 @@ class Login extends KeyboardComponent {
               accessibilityLabel={'Input Password'}
               autoFocus={hideUsernameInput}
               onChangeText={(text) => this.passwordUpdated(text)}
-              onSubmitEditing={() => login(this.username, this.password)}
+              onSubmitEditing={() => this.login()}
               placeholder={'Password'}
               placeholderTextColor={colors.gray4}
               secureTextEntry={true}
