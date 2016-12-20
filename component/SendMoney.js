@@ -24,9 +24,9 @@ export const sectionHeight = 68
 const styles = {
   buttonContainer: {
     ...dimensions(width, sectionHeight),
-    backgroundColor: color.bristolBlue,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    flexDirection: 'row'
   },
   textInput: {
     ...dimensions(width, sectionHeight),
@@ -40,22 +40,31 @@ const styles = {
 }
 
 class InputComponent extends KeyboardComponent {
+  getButtonColor() {
+    const { input, invalidInput } = this.props
+    if (input && input.value && invalidInput) {
+      return color.offWhite
+    }
+    return color.bristolBlue
+  }
+
+  getButtonTextColor() {
+    return this.getButtonColor() === color.offWhite ? 'black' : 'white'
+  }
+  
   render() {
     let { onButtonPress, buttonText, loading, input, invalidInput, accessibilityLabel } = this.props
 
     return <Animated.View style={{backgroundColor: 'white', bottom: input ? this.state.keyboardHeight : 0}} accessibilityLabel={accessibilityLabel}>
-      <TouchableHighlight
-          onPress={() => !invalidInput && onButtonPress ? onButtonPress() : undefined }>
-        <View style={merge(styles.buttonContainer, invalidInput ? {backgroundColor: color.offWhite} : {})}>
-          <View style={{flexDirection: 'row'}}>
-            <DefaultText style={{fontSize: 24, color: invalidInput ? 'black' : 'white'}}>
-              {buttonText}
-            </DefaultText>
+      <TouchableHighlight onPress={() => invalidInput ? undefined : onButtonPress()}>
+        <View style={merge(styles.buttonContainer, {backgroundColor: this.getButtonColor()})}>
+          <DefaultText style={{fontSize: 24, color: this.getButtonTextColor()}}>
+            {buttonText}
+          </DefaultText>
 
-            { loading
-              ? <ActivityIndicator size='small' style={styles.loadingSpinner}/>
-              : undefined }
-          </View>
+          { loading
+            ? <ActivityIndicator size='small' style={styles.loadingSpinner}/>
+            : undefined }
         </View>
       </TouchableHighlight>
 
@@ -122,8 +131,7 @@ class SendMoney extends React.Component {
             placeholder: 'Amount',
             onChangeText: amt => this.props.updateAmount(amt),
           },
-          invalidInput: this.props.amount &&
-            (isNaN(Number(this.props.amount)) || Number(this.props.amount) > this.props.balance || Number(this.props.amount) <= 0),
+          invalidInput: (isNaN(Number(this.props.amount)) || Number(this.props.amount) > this.props.balance || Number(this.props.amount) <= 0),
           accessibilityLabel: 'Enter Amount',
         }
         break
