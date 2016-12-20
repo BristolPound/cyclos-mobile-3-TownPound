@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 import { makePayment } from '../../api/payments'
 import merge from '../../util/merge'
 import { loadMoreTransactions } from './transaction'
@@ -38,14 +40,17 @@ const transactionComplete = (success, message) => ({
 export const sendTransaction = () =>
   (dispatch, getState) => {
     dispatch(setLoading())
+    const { payee, amount } = getState().sendMoney
     makePayment({
-        subject: getState().sendMoney.payee,
+        subject: payee,
         description: 'Test description',
-        amount: getState().sendMoney.amount
+        amount: amount
       }, dispatch)
       .then(() => {
+
         dispatch(loadMoreTransactions())
-        dispatch(transactionComplete(true, 'Payment complete'))
+        dispatch(transactionComplete(true, 'Paid ' + payee + ' ' + amount + ' at ' +
+          moment().format('MMMM Do YYYY, h:mm:ss a')))
       })
       .catch(err => {
         if (err.type === UNEXPECTED_ERROR) {
