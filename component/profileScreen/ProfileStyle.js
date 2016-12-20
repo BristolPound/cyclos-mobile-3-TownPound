@@ -53,10 +53,17 @@ const styles = {
       height: 50
     },
     date: {
-      width: 150,
+      width: 77,
       flex: 1,
       alignSelf: 'center',
       color: colors.offBlack
+    },
+    time: {
+      width: 90,
+      fontFamily: commonStyle.font.museo100,
+      flex: 1,
+      alignSelf: 'center',
+      color: colors.gray
     },
     transactionNumber: {
       fontFamily: commonStyle.font.museo100,
