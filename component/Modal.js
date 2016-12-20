@@ -1,5 +1,5 @@
 import React from 'react'
-import { Animated } from 'react-native'
+import { Animated, BackAndroid } from 'react-native'
 import animateTo from '../util/animateTo'
 import merge from '../util/merge'
 import { screenHeight } from '../util/ScreenSizes'
@@ -16,14 +16,21 @@ class Modal extends React.Component {
   constructor() {
     super()
     this.state = { top: new Animated.Value(screenHeight), active: false }
+    this.onBackButtonPressBound = this.onBackButtonPress.bind(this)
+  }
+  onBackButtonPress() {
+    this.props.hideModal && this.props.hideModal()
+    return true
   }
   componentDidUpdate(lastProps) {
     if (this.props.visible && !lastProps.visible) {
       this.setState({ active: true })
       animateTo(this.state.top, 0, 300)
+      BackAndroid.addEventListener('hardwareBackPress', this.onBackButtonPressBound)
     }
     if (!this.props.visible && lastProps.visible) {
       animateTo(this.state.top, screenHeight, 300, undefined, () => this.setState({ active: false }))
+      BackAndroid.removeEventListener('hardwareBackPress', this.onBackButtonPressBound)
     }
   }
   render() {

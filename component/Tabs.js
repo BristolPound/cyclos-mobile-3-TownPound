@@ -92,10 +92,10 @@ const Tabs = (props) =>
               lineTwo='your account details'/> }
       </WithNetworkConnection>
     </ScrollableTabView>
-    <Modal visible={props.modalVisible}>
+    <Modal visible={props.modalVisible} hideModal={!props.confirmation && props.hideModal}>
       {componentForModalState(props.modalState)}
     </Modal>
-    <Modal visible={!!props.confirmation}>
+    <Modal visible={!!props.confirmation} hideModal={props.closeConfirmation}>
       <PaymentConfirmation />
     </Modal>
   </View>
