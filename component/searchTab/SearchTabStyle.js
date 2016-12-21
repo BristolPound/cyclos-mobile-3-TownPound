@@ -1,3 +1,5 @@
+import { Dimensions } from 'react-native'
+
 import color from '../../util/colors'
 import marginOffset from '../../util/marginOffset'
 import commonStyle from '../style'
@@ -6,9 +8,9 @@ import { isScreenSmall, screenHeight } from '../../util/ScreenSizes'
 import { TAB_BAR_HEIGHT } from '../tabbar/TabBar'
 
 const MARGIN_SIZE = 10
-const SEARCH_INPUT_WIDTH = 330
-const CLOSE_ICON_WIDTH = 50
+const CLEAR_TEXT_ICON_WIDTH = 46
 const SEARCH_BAR_MARGIN_IOS = 35
+const SEARCH_BAR_WIDTH = Dimensions.get('window').width - 2 * MARGIN_SIZE
 
 export const SEARCH_BAR_MARGIN = marginOffset(SEARCH_BAR_MARGIN_IOS)
 export const SEARCH_BAR_HEIGHT = isScreenSmall ? 44 : 48
@@ -23,33 +25,34 @@ const styles = {
     },
     searchBar: {
       ...margin(SEARCH_BAR_MARGIN, MARGIN_SIZE, 0, MARGIN_SIZE),
+      ...dimensions(SEARCH_BAR_WIDTH, SEARCH_BAR_HEIGHT),
       ...commonStyle.shadow,
-      height: SEARCH_BAR_HEIGHT,
       backgroundColor: color.white,
       flexDirection: 'row'
     },
     textInput: {
       ...margin(5, 9),
       ...padding(2),
-      ...dimensions(SEARCH_INPUT_WIDTH - CLOSE_ICON_WIDTH, SEARCH_BAR_HEIGHT - 10),
+      ...dimensions(SEARCH_BAR_WIDTH - CLEAR_TEXT_ICON_WIDTH - SEARCH_BAR_HEIGHT, SEARCH_BAR_HEIGHT - 10),
       fontSize: 16,
       backgroundColor: color.white,
       color: color.bristolBlue,
-      flex: 1
     },
     closeButton: {
       alignSelf: 'center',
       borderLeftWidth: 1,
       borderLeftColor: color.gray5,
+      right: 0,
+      position: 'absolute',
     },
     clearTextButton: {
       ...dimensions(20),
       alignSelf: 'center',
-      right: 13,
+      right: 6,
       borderRadius: 10,
       backgroundColor: color.gray3
     },
-    clearText: {
+    clearTextButtonText: {
       ...margin(1, 0, 0, 6.5),
       color: color.white,
       fontSize: 14,
