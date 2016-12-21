@@ -34,6 +34,7 @@ const styles = {
       ...dimensions(SEARCH_INPUT_WIDTH - CLOSE_ICON_WIDTH, SEARCH_BAR_HEIGHT - 10),
       fontSize: 16,
       backgroundColor: color.white,
+      color: color.bristolBlue,
       flex: 1
     },
     closeButton: {
