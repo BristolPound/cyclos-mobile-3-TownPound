@@ -17,10 +17,12 @@ const { searchBar, textInput, searchHeaderText, closeButton, clearTextButton, cl
 
 const CLOSE_BUTTON = require('./../common/assets/Close.png')
 
+const MAX_LIST_LENGTH = 50
+
 const ComponentForItem = (item) => {
-  if (typeof item === 'number') {
+  if (typeof item === 'string') {
     return  <DefaultText style={searchHeaderText}>
-                { item } TRADER MATCHES
+                { item }
             </DefaultText>
   }
   return <BusinessListItem business={item}/>
@@ -36,15 +38,11 @@ export default class Search extends React.Component {
     debouncedUpdate = _.debounce((searchTerm) => {
       const { businessList } = this.props
       this.refs.ExpandPanel && this.refs.ExpandPanel.resetToInitalState()
-      if (searchTerm.length >= 3) {
-        const filteredBusinessList = businessList.filter(business =>
-                    business.display.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1)
-        const componentListArray = this.createComponentListArray(filteredBusinessList)
-        this.setState({ componentListArray })
-      } else {
-        this.setState({ componentListArray: [] })
-      }
-    }, 300)
+      const filteredBusinessList = businessList.filter(business =>
+                  business.display.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1)
+      const componentListArray = this.createComponentListArray(filteredBusinessList)
+      this.setState({ componentListArray })
+    }, 800)
 
     _onTextChange(searchTerm) {
         this.setState({ searchTerm: searchTerm || null })
@@ -78,8 +76,17 @@ export default class Search extends React.Component {
     }
 
     createComponentListArray(list) {
+      const cropped = list.length > MAX_LIST_LENGTH
+      const matches = list.length
+      if (cropped) {
+        list.length = MAX_LIST_LENGTH
+      }
       const makePressable = (itemProps) => ({...itemProps, pressable: true})
-      return [ list.length, ...list.map(makePressable) ]
+      const array = [ '${matches} TRADER MATCHES', ...list.map(makePressable) ]
+      if (cropped) {
+        array.push('${matches - MAX_LIST_LENGTH} ADDITIONAL RESULTS NOT DISPLAYED')
+      }
+      return array
     }
 
     render() {
@@ -100,7 +107,7 @@ export default class Search extends React.Component {
                                placeholder={'Search Trader'}
                                placeholderTextColor={colors.gray4}
                                selectTextOnFocus={true}
-                               style={merge(textInput, { color: searchTerm && searchTerm.length >= 3 ? colors.bristolBlue : colors.gray4 })}
+                               style={textInput}
                                value={searchTerm} />
                     { searchMode && searchTerm &&
                         <TouchableHighlight style={clearTextButton} onPress={() => this._clearText()}>
