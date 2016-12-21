@@ -32,7 +32,7 @@ class StatusMessage extends React.Component {
     }
   }
 
-  slideOut() {
+  scheduleSlideOut() {
     this.timeout = setTimeout(() => animateTo(this.state.top, screenHeight, 300, undefined, () => {
       this.setState({ height: 0 })
       this.props.updateStatus('')
