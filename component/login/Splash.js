@@ -2,37 +2,33 @@ import React from 'react'
 import { View, TouchableHighlight, Animated,  Easing, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 import DefaultText from '../DefaultText'
-import marginOffset from '../../util/marginOffset'
 import colors from '../../util/colors'
 import merge from '../../util/merge'
 import commonStyle from './../style.js'
-import  { padding, margin, absolutePosition } from '../../util/StyleUtils'
+import  { margin, absolutePosition } from '../../util/StyleUtils'
 import { bindActionCreators } from 'redux'
 import * as actions from '../../store/reducer/login'
 import PLATFORM from '../../util/Platforms'
 
+const gapSize = Dimensions.get('window').height / 2 - 170
+
 const style = {
   container: {
-    ...padding(0, 30, 24, 30),
     flex: 1,
     alignItems: 'center'
   },
   bottomContainer : {
     alignItems: 'center',
-    alignSelf: 'stretch'
+    position: 'absolute',
+    bottom: 24,
+    flex: 1,
+    left: 0,
+    right: 0
   },
   background: {
     ...absolutePosition(),
     height: Dimensions.get('window').height,
     backgroundColor: colors.bristolBlue2
-  },
-  welcome: {
-    container: {
-      ...margin(marginOffset(254), 0, 10, 0),
-      flex: 1,
-      justifyContent: 'flex-start',
-      alignItems: 'center'
-    },
   },
   loginButton: {
     container: {
@@ -42,7 +38,7 @@ const style = {
       height: 48,
       alignItems: 'center',
       justifyContent: 'center',
-      marginBottom: 10
+      ...margin(gapSize, 20, 10, 20),
     },
     text: {
       color: colors.bristolBlue2,
@@ -60,7 +56,7 @@ const style = {
       height: 48,
       alignItems: 'center',
       justifyContent: 'center',
-      marginBottom: 18
+      ...margin(0, 20, 18, 20),
     },
     text: {
       color: colors.white,
@@ -123,11 +119,9 @@ class Splash  extends React.Component {
           })}
           resizeMode='stretch'
           source={require('../../assets/background.jpg')}/>
-        <View style={style.welcome.container}>
-          { this.props.renderWelcomeMessage(this.props) }
-        </View>
         { this.state.showButtons
           ? <View style={style.bottomContainer}>
+              { this.props.renderWelcomeMessage(this.props) }
               <TouchableHighlight
                   style={style.loginButton.container}
                   onPress={() => this.props.openLoginForm(true)}
