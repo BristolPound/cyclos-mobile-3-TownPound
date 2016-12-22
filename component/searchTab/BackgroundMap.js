@@ -45,8 +45,7 @@ const style = {
 class BackgroundMap extends React.Component {
   constructor() {
     super()
-    this.ignoreLocationUpdates = false
-    this.state = ({ loading: true })
+    this.state = ({ loading: true, ignoreLocationUpdates: false })
   }
 
   componentDidMount() {
@@ -54,9 +53,12 @@ class BackgroundMap extends React.Component {
     setTimeout(() => this.setState({ loading: false }), 500)
   }
 
+  debouncedReenableUpdates = _.debounce(() => this.setState({ ignoreLocationUpdates: false }), 1400)
+
   updateViewport(...args) {
-    this.ignoreLocationUpdates = true
+    this.setState({ ignoreLocationUpdates: true })
     this.props.updateMapViewport(...args)
+    this.debouncedReenableUpdates()
   }
 
   isSelected(business) {
@@ -98,7 +100,8 @@ class BackgroundMap extends React.Component {
 
   render() {
     // Prevent the map from 'jumping back' to the last processed location
-    const region = this.ignoreLocationUpdates ? undefined : this.props.mapViewport
+    const region = this.state.ignoreLocationUpdates ? undefined : this.props.mapViewport
+
     let markerArray = undefined
     if (this.props.businessList) {
       markerArray = this.props.businessList.filter(b => b.address)

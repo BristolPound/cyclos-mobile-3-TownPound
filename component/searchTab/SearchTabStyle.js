@@ -8,6 +8,8 @@ import { isScreenSmall, screenHeight } from '../../util/ScreenSizes'
 import { TAB_BAR_HEIGHT } from '../tabbar/TabBar'
 
 const MARGIN_SIZE = 10
+const CLEAR_TEXT_ICON_WIDTH = 46
+const NEARBY_WIDTH = 39
 const SEARCH_BAR_MARGIN_IOS = 35
 const SEARCH_BAR_WIDTH = Dimensions.get('window').width - 2 * MARGIN_SIZE
 
@@ -29,10 +31,15 @@ const styles = {
       backgroundColor: color.white,
       flexDirection: 'row'
     },
+    nearbyButton: {
+      width: NEARBY_WIDTH,
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
     textInput: {
       ...margin(5, 9),
       ...padding(2),
-      ...dimensions(SEARCH_BAR_WIDTH - SEARCH_BAR_HEIGHT - 18, SEARCH_BAR_HEIGHT - 10),
+      ...dimensions(SEARCH_BAR_WIDTH - CLEAR_TEXT_ICON_WIDTH - SEARCH_BAR_HEIGHT - NEARBY_WIDTH, SEARCH_BAR_HEIGHT - 10),
       fontSize: 16,
       backgroundColor: color.white,
       color: color.bristolBlue,

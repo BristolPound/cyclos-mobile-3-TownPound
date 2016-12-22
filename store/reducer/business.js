@@ -2,7 +2,7 @@ import haversine from 'haversine'
 import _ from 'lodash'
 import moment from 'moment'
 import merge from '../../util/merge'
-import { getClosestBusinesses, offsetOverlappingBusinesses } from '../../util/business';
+import { getClosestBusinesses, offsetOverlappingBusinesses } from '../../util/business'
 import { addFailedAction } from './networkConnection'
 import { getBusinesses, getBusinessProfile } from '../../api/users'
 import { UNEXPECTED_DATA } from '../../api/apiError'
@@ -24,7 +24,8 @@ const Business = {
   mapViewport: MapViewport,
   searchMode: false,
   loadingProfile: false,
-  traderScreenBusinessId: undefined
+  traderScreenBusinessId: undefined,
+  geolocationStatus: null
 }
 
 export const businessListReceived = (businessList) => ({
@@ -75,12 +76,22 @@ export const selectBusiness = (businessId) => (dispatch) =>
       businessId
   })
 
+export const geolocationSuccess = (location) => ({
+  type: 'business/GEOLOCATION_SUCCESS',
+  location
+})
+
 export const geolocationChanged = (coords, dispatch) => {
+    dispatch(geolocationSuccess(coords))
     //furthest business is around 70km from Bristol centre
     if (haversine(DEFAULT_COORDINATES, coords) < 75) {
         dispatch(updateMapViewportAndSelectClosestTrader(coords))
     }
 }
+
+export const geolocationFailed = () => ({
+  type: 'business/GEOLOCATION_FAILED'
+})
 
 export const loadBusinessProfile = (businessId) => (dispatch) => {
   dispatch(loadingBusinessProfile())
@@ -234,6 +245,14 @@ const reducer = (state = Business, action) => {
 
     case 'business/UPDATE_SEARCH_MODE':
       state = merge(state, { searchMode: action.mode })
+      break
+
+    case 'business/GEOLOCATION_FAILED':
+      state = merge(state, { geolocationStatus: false })
+      break
+
+    case 'business/GEOLOCATION_SUCCESS':
+      state = merge(state, { geolocationStatus: action.location })
       break
   }
   return state

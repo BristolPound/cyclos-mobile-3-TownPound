@@ -1,6 +1,7 @@
 import React from 'react'
-import { View, TextInput } from 'react-native'
+import { View, TextInput, TouchableOpacity, Image } from 'react-native'
 import _ from 'lodash'
+import haversine from 'haversine'
 
 import DefaultText from '../DefaultText'
 import BusinessListItem from './BusinessListItem'
@@ -12,9 +13,11 @@ import colors from '../../util/colors'
 import searchTabStyle, { maxExpandedHeight, SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN } from './SearchTabStyle'
 import { ROW_HEIGHT } from './BusinessListStyle'
 
-const { searchBar, textInput, searchHeaderText, closeButton, expandPanel } = searchTabStyle.searchTab
+const { searchBar, textInput, searchHeaderText, closeButton, expandPanel, nearbyButton } = searchTabStyle.searchTab
 
 const CLOSE_BUTTON = require('./../common/assets/Close.png')
+const NEARBY_BLUE = require('./assets/nearby_blue.png')
+const NEARBY_GREY = require('./assets/nearby_grey.png')
 
 const MAX_LIST_LENGTH = 50
 
@@ -58,6 +61,14 @@ export default class Search extends React.Component {
       this.setState({ searchTerm: null })
     }
 
+    nearbyButtonEnabled() {
+      return this.props.geolocation && haversine(this.props.geolocation, this.props.mapViewport) > 0.1 //km
+    }
+
+    nearbyButtonPressed() {
+      this.props.updateMapViewport(this.props.geolocation)
+    }
+
     createComponentListArray(list) {
       const cropped = list.length > MAX_LIST_LENGTH
       const matches = list.length
@@ -83,6 +94,10 @@ export default class Search extends React.Component {
       return (
         <View>
           <View style={searchBar}>
+            <TouchableOpacity style={nearbyButton}
+                onPress={this.nearbyButtonEnabled() ? () => this.nearbyButtonPressed() : undefined}>
+              <Image source={this.nearbyButtonEnabled() ? NEARBY_BLUE : NEARBY_GREY}/>
+            </TouchableOpacity>
             <TextInput accessibilityLabel='Search'
                        ref='textInput'
                        onFocus={() => !searchMode && updateSearchMode(true)}

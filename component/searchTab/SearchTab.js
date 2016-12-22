@@ -9,7 +9,7 @@ import BusinessListItem, { SelectedBusiness } from './BusinessListItem'
 import ScrollingExpandPanel from './ScrollingExpandPanel'
 import styles, { SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN, maxExpandedHeight } from './SearchTabStyle'
 import { ROW_HEIGHT, BUSINESS_LIST_SELECTED_GAP} from './BusinessListStyle'
-import { updateSearchMode } from '../../store/reducer/business'
+import { updateSearchMode, updateMapViewport } from '../../store/reducer/business'
 import { openTraderModal } from '../../store/reducer/navigation'
 import { Overlay } from '../common/Overlay'
 import Search from './Search'
@@ -59,7 +59,8 @@ class SearchTab extends React.Component {
   }
 
   render() {
-    const { allBusinesses, closestBusinesses, openTraderModal, selectedBusiness, searchMode, updateSearchMode } = this.props
+    const { allBusinesses, closestBusinesses, openTraderModal, selectedBusiness, searchMode, updateSearchMode,
+        geolocationStatus, mapViewport, updateMapViewport } = this.props
     const { componentList } = this.refs
 
     const noOfCloseBusinesses = closestBusinesses.length,
@@ -73,7 +74,7 @@ class SearchTab extends React.Component {
     )
 
     const exitSearchMode = () => {
-      this.refs.search.closeSearchScreen();
+      this.refs.search.closeSearchScreen()
     }
 
     return (
@@ -84,7 +85,10 @@ class SearchTab extends React.Component {
                 updateSearchMode={updateSearchMode}
                 searchMode={searchMode}
                 openTraderModal={openTraderModal}
-                ref='search'/>
+                ref='search'
+                geolocation={geolocationStatus}
+                mapViewport={mapViewport}
+                updateMapViewport={updateMapViewport}/>
         <ScrollingExpandPanel
             style={merge(styles.searchTab.expandPanel, (searchMode ? styles.searchTab.hide : {})) }
             topOffset={this.calculateOffset([ expandedHeight, collapsedHeight, closedHeight ])}
@@ -108,9 +112,11 @@ const mapStateToProps = (state) => ({
   closestBusinesses: state.business.closestBusinesses.filter(b => b.id !== state.business.selectedBusinessId),
   selectedBusiness: state.business.businessList.find(b => b.id === state.business.selectedBusinessId),
   allBusinesses: state.business.businessList,
-  searchMode: state.business.searchMode
+  searchMode: state.business.searchMode,
+  mapViewport: state.business.mapViewport,
+  geolocationStatus: state.business.geolocationStatus
 })
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ openTraderModal, updateSearchMode }, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({ openTraderModal, updateSearchMode, updateMapViewport }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchTab)
