@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 import { NetInfo } from 'react-native'
 
 import transaction from './reducer/transaction'
-import business, { loadBusinessList, geolocationChanged } from './reducer/business'
+import business, { loadBusinessList, geolocationChanged, geoloctaionFailed } from './reducer/business'
 import person from './reducer/person'
 import navigation, { selectMainComponent, mainComponent, stateInitialised } from './reducer/navigation'
 import login from './reducer/login'
@@ -36,7 +36,10 @@ export const initialise = (store) => {
 
   navigator.geolocation.getCurrentPosition(
     ({coords}) => geolocationChanged(coords, store.dispatch),
-    () => alert('Unable to get location. Are location services enabled?')
+    () => {
+      alert('Unable to get location. Are location services enabled?')
+      store.dispatch(geoloctaionFailed())
+    }
   )
 
   setBaseUrl(store.getState().developerOptions.server)
