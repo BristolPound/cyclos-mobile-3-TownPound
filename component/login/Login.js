@@ -58,7 +58,7 @@ class Login extends KeyboardComponent {
       animateTo(bottom, 0, 500)
     }
     if (!this.props.loginFormOpen && lastProps.loginFormOpen) {
-      this.setState({ username: undefined, password: undefined })
+      this.setState({ password: undefined })
     }
   }
 

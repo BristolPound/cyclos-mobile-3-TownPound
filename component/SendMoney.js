@@ -1,7 +1,7 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { View, TextInput, TouchableHighlight, ActivityIndicator, Dimensions, Animated } from 'react-native'
+import { View, TextInput, TouchableOpacity, ActivityIndicator, Dimensions, Animated } from 'react-native'
 import KeyboardComponent from './KeyboardComponent'
 import * as actions from '../store/reducer/sendMoney'
 import { openLoginForm } from '../store/reducer/login'
@@ -22,11 +22,16 @@ const { width } = Dimensions.get('window')
 export const sectionHeight = 68
 
 const styles = {
-  buttonContainer: {
-    ...dimensions(width, sectionHeight),
-    alignItems: 'center',
+  button: {
+    height: sectionHeight,
+    flex: 1,
     justifyContent: 'center',
-    flexDirection: 'row'
+    alignItems: 'center',
+  },
+  buttonInnerContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: 'transparent'
   },
   textInput: {
     ...dimensions(width, sectionHeight),
@@ -56,8 +61,9 @@ class InputComponent extends KeyboardComponent {
     let { onButtonPress, buttonText, loading, input, invalidInput, accessibilityLabel } = this.props
 
     return <Animated.View style={{backgroundColor: 'white', bottom: input ? this.state.keyboardHeight : 0}} accessibilityLabel={accessibilityLabel}>
-      <TouchableHighlight onPress={() => invalidInput ? undefined : onButtonPress()}>
-        <View style={merge(styles.buttonContainer, {backgroundColor: this.getButtonColor()})}>
+      <TouchableOpacity style={merge(styles.button, {backgroundColor: this.getButtonColor()})}
+          onPress={() => invalidInput ? undefined : onButtonPress()}>
+        <View style={styles.buttonInnerContainer}>
           <DefaultText style={{fontSize: 24, color: this.getButtonTextColor()}}>
             {buttonText}
           </DefaultText>
@@ -66,7 +72,7 @@ class InputComponent extends KeyboardComponent {
             ? <ActivityIndicator size='small' style={styles.loadingSpinner}/>
             : undefined }
         </View>
-      </TouchableHighlight>
+      </TouchableOpacity>
 
       { input
         ? <TextInput style={styles.textInput}
