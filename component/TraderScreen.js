@@ -9,12 +9,13 @@ import ProfileHeader from './profileScreen/ProfileHeader'
 import BusinessDetails from './businessDetails/BusinessDetails'
 import SendMoney, { sectionHeight } from './SendMoney'
 import { buildDataSourceForTransactions } from '../util/transaction'
+import { resetForm } from '../store/reducer/sendMoney'
 
-const TraderScreen = ({ trader, transactionsDataSource, hideModal, loadingProfile }) =>
+const TraderScreen = ({ trader, transactionsDataSource, hideModal, loadingProfile, resetForm }) =>
     <View style={{flex: 1}}>
       <View style={{flex: 1, maxHeight: marginOffset(Dimensions.get('window').height) - sectionHeight}}>
       <TransactionList
-        renderHeader={asRenderHeader(trader, transactionsDataSource, hideModal, loadingProfile)}
+        renderHeader={asRenderHeader(trader, transactionsDataSource, hideModal, loadingProfile, resetForm)}
         dataSource={transactionsDataSource} />
       </View>
       <SendMoney
@@ -25,14 +26,14 @@ const TraderScreen = ({ trader, transactionsDataSource, hideModal, loadingProfil
 
 // Currently we pass in returned renderHeader as we delegate to a listView.
 // One alternative would be to encapsulate this and use `props.children` instead.
-const asRenderHeader = (trader, transactionsDataSource, hideModal, loadingProfile) => () =>
+const asRenderHeader = (trader, transactionsDataSource, hideModal, loadingProfile, resetForm) => () =>
   <View style={{flex: 1}}>
     <ProfileHeader
       name={trader.display}
       username={trader.shortDisplay}
       image={trader.image}
       category={trader.category}
-      onPressClose={() => hideModal()}
+      onPressClose={() => {hideModal(); resetForm()}}
       isModal={true} />
       <BusinessDetails business={trader} isExpanded={transactionsDataSource.getRowCount() === 0}/>
       { loadingProfile
@@ -56,6 +57,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(actions, dispatch)
+  bindActionCreators({ ...actions, resetForm }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TraderScreen)
