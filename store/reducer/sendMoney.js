@@ -74,7 +74,7 @@ export const sendTransaction = () =>
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'sendMoney/RESET_FORM':
-      state = merge(initialState)
+      state = initialState
       break
     case 'sendMoney/UPDATE_PAYEE':
       state = merge(state, {

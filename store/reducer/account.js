@@ -18,6 +18,10 @@ export const accountBalanceReceived = account => ({
   account
 })
 
+export const resetAccount = () => ({
+  type: 'account/RESET'
+})
+
 const accountDetailsReceived = details => ({
   type: 'account/ACCOUNT_DETAILS_RECEIVED',
   details
@@ -54,6 +58,9 @@ const reducer = (state = initialState, action) => {
         details: action.details,
         loadingDetails: false
       })
+      break
+    case 'account/RESET':
+      state = initialState
       break
   }
   return state

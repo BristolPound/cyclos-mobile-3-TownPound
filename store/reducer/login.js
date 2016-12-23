@@ -1,7 +1,7 @@
 import merge from '../../util/merge'
 import { authenticate } from '../../api/api'
 import ApiError, { UNAUTHORIZED_ACCESS } from '../../api/apiError'
-import { loadAccountDetails } from './account'
+import { loadAccountDetails, resetAccount } from './account'
 import { loadTransactions, resetTransactions } from './transaction'
 import { deleteSessionToken } from '../../api/api'
 import { updateStatus, ERROR_SEVERITY, unknownError } from './statusMessage'
@@ -69,6 +69,7 @@ export const login = (username, password) =>
 export const logout = () => dispatch => {
   dispatch(loggedOut())
   dispatch(resetTransactions())
+  dispatch(resetAccount())
 }
 
 const reducer = (state = initialState, action) => {
