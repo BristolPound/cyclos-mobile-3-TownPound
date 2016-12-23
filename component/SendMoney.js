@@ -64,7 +64,7 @@ class InputComponent extends KeyboardComponent {
       <TouchableOpacity style={merge(styles.button, {backgroundColor: this.getButtonColor()})}
           onPress={() => invalidInput ? undefined : onButtonPress()}>
         <View style={styles.buttonInnerContainer}>
-          <DefaultText style={{fontSize: 24, color: this.getButtonTextColor()}}>
+          <DefaultText style={{fontSize: 24, color: this.getButtonTextColor(), textAlign: 'center', width: Dimensions.get('window').width - 20}}>
             {buttonText}
           </DefaultText>
 
