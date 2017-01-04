@@ -47,15 +47,15 @@ export default class Search extends React.Component {
       this.debouncedUpdate(searchTerm)
     }
 
-    _closeButtonClick() {
-      this.props.updateSearchMode(false)
-      this.refs.textInput.blur()
-      this.setState({ searchTerm: null })
-    }
-
     _businessListOnClick(id) {
       this.refs.textInput.blur()
       this.props.openTraderModal(id)
+    }
+
+    closeSearchScreen() {
+      this.props.updateSearchMode(false)
+      this.refs.textInput.blur()
+      this.setState({ searchTerm: null })
     }
 
     createComponentListArray(list) {
@@ -93,7 +93,7 @@ export default class Search extends React.Component {
                        style={textInput}
                        value={searchTerm} />
             { searchMode &&
-                <CloseButton onPress={() => this._closeButtonClick()} closeButtonType={CLOSE_BUTTON} style={closeButton} size={SEARCH_BAR_HEIGHT}/> }
+                <CloseButton onPress={() => this.closeSearchScreen()} closeButtonType={CLOSE_BUTTON} style={closeButton} size={SEARCH_BAR_HEIGHT}/> }
           </View>
           { searchMode && (
                   <ScrollingExpandPanel style={expandPanel}

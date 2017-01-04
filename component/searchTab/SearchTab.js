@@ -72,14 +72,19 @@ class SearchTab extends React.Component {
       this.props.selectedBusiness
     )
 
+    const exitSearchMode = () => {
+      this.refs.search.closeSearchScreen();
+    }
+
     return (
       <View style={{flex: 1}}>
         <BackgroundMap/>
-        { searchMode && <Overlay overlayVisible={true} /> }
+        { searchMode && <Overlay overlayVisible={true} onPress={exitSearchMode}/> }
         <Search businessList={allBusinesses}
                 updateSearchMode={updateSearchMode}
                 searchMode={searchMode}
-                openTraderModal={openTraderModal}/>
+                openTraderModal={openTraderModal}
+                ref='search'/>
         <ScrollingExpandPanel
             style={merge(styles.searchTab.expandPanel, (searchMode ? styles.searchTab.hide : {})) }
             topOffset={this.calculateOffset([ expandedHeight, collapsedHeight, closedHeight ])}
