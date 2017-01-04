@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TextInput, TouchableHighlight } from 'react-native'
+import { View, TextInput } from 'react-native'
 import _ from 'lodash'
 
 import DefaultText from '../DefaultText'
@@ -9,11 +9,10 @@ import ScrollingExpandPanel from './ScrollingExpandPanel'
 import ComponentList from './ComponentList'
 
 import colors from '../../util/colors'
-import merge from '../../util/merge'
 import searchTabStyle, { maxExpandedHeight, SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN } from './SearchTabStyle'
 import { ROW_HEIGHT } from './BusinessListStyle'
 
-const { searchBar, textInput, searchHeaderText, closeButton, clearTextButton, clearTextButtonText, expandPanel } = searchTabStyle.searchTab
+const { searchBar, textInput, searchHeaderText, closeButton, expandPanel } = searchTabStyle.searchTab
 
 const CLOSE_BUTTON = require('./../common/assets/Close.png')
 
@@ -51,20 +50,12 @@ export default class Search extends React.Component {
     _closeButtonClick() {
       this.props.updateSearchMode(false)
       this.refs.textInput.blur()
-      this.resetState()
+      this.setState({ searchTerm: null })
     }
 
     _businessListOnClick(id) {
       this.refs.textInput.blur()
       this.props.openTraderModal(id)
-    }
-
-    _clearText() {
-      this.resetState()
-    }
-
-    resetState() {
-      this.setState({ searchTerm: null })
     }
 
     createComponentListArray(list) {
@@ -101,10 +92,6 @@ export default class Search extends React.Component {
                        selectTextOnFocus={true}
                        style={textInput}
                        value={searchTerm} />
-            { searchMode && searchTerm &&
-                <TouchableHighlight style={clearTextButton} onPress={() => this._clearText()}>
-                  <DefaultText style={clearTextButtonText}>x</DefaultText>
-                </TouchableHighlight> }
             { searchMode &&
                 <CloseButton onPress={() => this._closeButtonClick()} closeButtonType={CLOSE_BUTTON} style={closeButton} size={SEARCH_BAR_HEIGHT}/> }
           </View>
