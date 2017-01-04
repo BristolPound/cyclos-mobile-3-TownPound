@@ -8,7 +8,6 @@ import { isScreenSmall, screenHeight } from '../../util/ScreenSizes'
 import { TAB_BAR_HEIGHT } from '../tabbar/TabBar'
 
 const MARGIN_SIZE = 10
-const CLEAR_TEXT_ICON_WIDTH = 46
 const SEARCH_BAR_MARGIN_IOS = 35
 const SEARCH_BAR_WIDTH = Dimensions.get('window').width - 2 * MARGIN_SIZE
 
@@ -33,7 +32,7 @@ const styles = {
     textInput: {
       ...margin(5, 9),
       ...padding(2),
-      ...dimensions(SEARCH_BAR_WIDTH - CLEAR_TEXT_ICON_WIDTH - SEARCH_BAR_HEIGHT, SEARCH_BAR_HEIGHT - 10),
+      ...dimensions(SEARCH_BAR_WIDTH - SEARCH_BAR_HEIGHT - 18, SEARCH_BAR_HEIGHT - 10),
       fontSize: 16,
       backgroundColor: color.white,
       color: color.bristolBlue,
@@ -44,19 +43,6 @@ const styles = {
       borderLeftColor: color.gray5,
       right: 0,
       position: 'absolute',
-    },
-    clearTextButton: {
-      ...dimensions(20),
-      alignSelf: 'center',
-      right: 6,
-      borderRadius: 10,
-      backgroundColor: color.gray3
-    },
-    clearTextButtonText: {
-      ...margin(1, 0, 0, 6.5),
-      color: color.white,
-      fontSize: 14,
-      top: 0
     },
     searchHeaderText: {
       ...commonStyle.sectionHeader.text,
