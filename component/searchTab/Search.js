@@ -35,9 +35,9 @@ export default class Search extends React.Component {
 
     debouncedUpdate = _.debounce((searchTerm) => {
       const { businessList } = this.props
+      const termMatches = (field) => field.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
       this.refs.ExpandPanel && this.refs.ExpandPanel.resetToInitalState()
-      const filteredBusinessList = businessList.filter(business =>
-                  business.display.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1)
+      const filteredBusinessList = businessList.filter(business => termMatches(business.display) || termMatches(business.shortDisplay))
       const componentListArray = this.createComponentListArray(filteredBusinessList)
       this.setState({ componentListArray })
     }, 800)
