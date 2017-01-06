@@ -8,15 +8,14 @@ import TransactionList from './profileScreen/TransactionList'
 import ProfileHeader from './profileScreen/ProfileHeader'
 import BusinessDetails from './businessDetails/BusinessDetails'
 import SendMoney, { sectionHeight } from './SendMoney'
-import { buildDataSourceForTransactions } from '../util/transaction'
 import { resetForm } from '../store/reducer/sendMoney'
 
-const TraderScreen = ({ trader, transactionsDataSource, hideModal, loadingProfile, resetForm }) =>
+const TraderScreen = ({ trader, transactions, hideModal, loadingProfile, resetForm }) =>
     <View style={{flex: 1}}>
       <View style={{flex: 1, maxHeight: marginOffset(Dimensions.get('window').height) - sectionHeight}}>
       <TransactionList
-        renderHeader={asRenderHeader(trader, transactionsDataSource, hideModal, loadingProfile, resetForm)}
-        dataSource={transactionsDataSource} />
+        renderHeader={asRenderHeader(trader, transactions, hideModal, loadingProfile, resetForm)}
+        dataSource={transactions} />
       </View>
       <SendMoney
         businessId={trader.id}
@@ -26,7 +25,7 @@ const TraderScreen = ({ trader, transactionsDataSource, hideModal, loadingProfil
 
 // Currently we pass in returned renderHeader as we delegate to a listView.
 // One alternative would be to encapsulate this and use `props.children` instead.
-const asRenderHeader = (trader, transactionsDataSource, hideModal, loadingProfile, resetForm) => () =>
+const asRenderHeader = (trader, transactions, hideModal, loadingProfile, resetForm) => () =>
   <View style={{flex: 1}}>
     <ProfileHeader
       name={trader.display}
@@ -35,24 +34,22 @@ const asRenderHeader = (trader, transactionsDataSource, hideModal, loadingProfil
       category={trader.category}
       onPressClose={() => {hideModal(); resetForm()}}
       isModal={true} />
-      <BusinessDetails business={trader} isExpanded={transactionsDataSource.getRowCount() === 0}/>
+      <BusinessDetails business={trader} isExpanded={transactions.length === 0}/>
       { loadingProfile
         ? <ActivityIndicator style={{marginBottom: 10}} size='large'/>
         : undefined }
     </View>
 
-// filter the transaction list to contain only those relating to this trader
-const dataSourceForSelectedBusiness = (state) => {
-  const transactions = state.transaction.transactions.filter(transaction =>
-      transaction.relatedAccount.kind === 'user' && transaction.relatedAccount.user.id === state.business.traderScreenBusinessId)
-
-  return buildDataSourceForTransactions(transactions)
+const getTransactionsForSelectedBusiness = (state) => {
+    return state.transaction.transactions.filter(transaction => {
+        return transaction.relatedAccount.kind === 'user' && transaction.relatedAccount.user.id === state.business.traderScreenBusinessId
+    })
 }
 
 // Redux Setup
 const mapStateToProps = (state) => ({
     trader: state.business.businessList.find(b => b.id === state.business.traderScreenBusinessId) || {},
-    transactionsDataSource: dataSourceForSelectedBusiness(state),
+    transactions: getTransactionsForSelectedBusiness(state),
     loadingProfile: state.business.loadingProfile
 })
 
