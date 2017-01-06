@@ -65,11 +65,14 @@ export const findTransactionsByDate = (transactions, date) =>
     .map(tr => tr.id)
   : []
 
-export const buildDataSourceForTransactions = (transactions) => {
+export const buildDataSourceForTransactions = (transactions, datasource) => {
   const sortedTransactions = sortTransactions(transactions)
   const group = groupTransactionsByDate(sortedTransactions, 'mmmm yyyy', true)
+  if (datasource) {
+    return datasource.cloneWithRowsAndSections(group.groups, group.groupOrder)
+  }
   const dataSource = new ListView.DataSource({
-    rowHasChanged: (a, b) => a.transactionNumber !== b.transactionNumber,
+    rowHasChanged: (a, b) => a.transactionNumber !== b.transactionNumber || a.selected !== b.selected,
     sectionHeaderHasChanged: (a, b) => a !== b
   })
   return dataSource.cloneWithRowsAndSections(group.groups, group.groupOrder)

@@ -52,6 +52,11 @@ const styles = {
       justifyContent: 'center',
       height: 50
     },
+    columnContainer: {
+      ...margin(0, listMargin, 0, listMargin),
+      flexDirection: 'column',
+      justifyContent: 'center'
+    },
     date: {
       width: 77,
       flex: 1,
