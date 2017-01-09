@@ -39,7 +39,7 @@ const style = {
 }
 
 // Cyclos doesn't like special characters or empty usernames :(
-const isValid = (username) => username && !username.match(/\W/)
+const detailsValid = (username, password) => username && !username.match(/\W/) && password && password.indexOf(' ') === -1
 
 class Login extends KeyboardComponent {
   constructor(props) {
@@ -79,10 +79,10 @@ class Login extends KeyboardComponent {
     const loginView = (
       <Animated.View style={{ ...horizontalAbsolutePosition(0, 0), bottom: this.state.keyboardHeight, height: hideUsernameInput ? 136 : 204 }}>
         <Animated.View style={merge(style.loginContainer, { bottom: this.state.bottom })}>
-          <TouchableOpacity style={{ ...style.loginButton, backgroundColor: isValid(this.state.username) ? colors.bristolBlue : colors.offWhite }}
+          <TouchableOpacity style={{ ...style.loginButton, backgroundColor: detailsValid(this.state.username, this.state.password) ? colors.bristolBlue : colors.offWhite }}
               accessibilityLabel={'Login Button'}
-              onPress={() => isValid(this.state.username) && this.login()}>
-            <DefaultText style={{ ...style.loginButtonText, color: isValid(this.state.username) ? 'white' : 'black' }}>Log in</DefaultText>
+              onPress={() => detailsValid(this.state.username, this.state.password) && this.login()}>
+            <DefaultText style={{ ...style.loginButtonText, color: detailsValid(this.state.username, this.state.password) ? 'white' : 'black' }}>Log in</DefaultText>
           </TouchableOpacity>
           { hideUsernameInput
             ? undefined
