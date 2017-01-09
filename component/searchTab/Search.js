@@ -33,21 +33,29 @@ const ComponentForItem = (item) => {
 export default class Search extends React.Component {
     constructor(props) {
       super(props)
-      this.state = { searchTerm: null, componentListArray: [] }
+      this.state = { searchTerms: [], componentListArray: [], input: null }
     }
 
-    debouncedUpdate = _.debounce((searchTerm) => {
+    debouncedUpdate = _.debounce(() => {
       const { businessList } = this.props
-      const termMatches = (field) => field.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
+      const termsMatch = (field) => {
+        let match = true
+        this.state.searchTerms.forEach((term) => {
+          if (match && field.toLowerCase().indexOf(term.toLowerCase()) === -1) {
+            match = false
+          }
+        })
+        return match
+      }
       this.refs.ExpandPanel && this.refs.ExpandPanel.resetToInitalState()
-      const filteredBusinessList = businessList.filter(business => termMatches(business.display) || termMatches(business.shortDisplay))
+      const filteredBusinessList = businessList.filter(business => termsMatch(business.display) || termsMatch(business.shortDisplay))
       const componentListArray = this.createComponentListArray(filteredBusinessList)
       this.setState({ componentListArray })
     }, 800)
 
-    _onChangeText(searchTerm) {
-      this.setState({ searchTerm: searchTerm || null })
-      this.debouncedUpdate(searchTerm)
+    _onChangeText(input) {
+      this.setState({ searchTerms: input.split(' '), input: input || null })
+      this.debouncedUpdate()
     }
 
     _businessListOnClick(id) {
@@ -58,7 +66,7 @@ export default class Search extends React.Component {
     closeSearchScreen() {
       this.props.updateSearchMode(false)
       this.refs.textInput.blur()
-      this.setState({ searchTerm: null })
+      this.setState({ searchTerms: [], input: null })
     }
 
     nearbyButtonEnabled() {
@@ -84,7 +92,7 @@ export default class Search extends React.Component {
     }
 
     render() {
-      const { searchTerm, componentListArray } = this.state
+      const { componentListArray, input } = this.state
       const { searchMode, openTraderModal, updateSearchMode } = this.props
 
       const childrenHeight = componentListArray.length * ROW_HEIGHT
@@ -106,7 +114,7 @@ export default class Search extends React.Component {
                        placeholderTextColor={colors.gray4}
                        selectTextOnFocus={true}
                        style={textInput}
-                       value={searchTerm} />
+                       value={input} />
             { searchMode &&
                 <CloseButton onPress={() => this.closeSearchScreen()} closeButtonType={CLOSE_BUTTON} style={closeButton} size={SEARCH_BAR_HEIGHT}/> }
           </View>
