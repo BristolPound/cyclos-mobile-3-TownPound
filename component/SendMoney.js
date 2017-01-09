@@ -1,7 +1,7 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { View, TextInput, TouchableHighlight, ActivityIndicator, Dimensions, Animated } from 'react-native'
+import { View, TextInput, TouchableOpacity, ActivityIndicator, Dimensions, Animated } from 'react-native'
 import KeyboardComponent from './KeyboardComponent'
 import * as actions from '../store/reducer/sendMoney'
 import { openLoginForm } from '../store/reducer/login'
@@ -46,8 +46,7 @@ const styles = {
 
 class InputComponent extends KeyboardComponent {
   getButtonColor() {
-    const { input, invalidInput } = this.props
-    if (input && input.value && invalidInput) {
+    if (this.props.invalidInput) {
       return color.offWhite
     }
     return color.bristolBlue
@@ -61,9 +60,8 @@ class InputComponent extends KeyboardComponent {
     let { onButtonPress, buttonText, loading, input, invalidInput, accessibilityLabel } = this.props
 
     return <Animated.View style={{backgroundColor: 'white', bottom: input ? this.state.keyboardHeight : 0}} accessibilityLabel={accessibilityLabel}>
-      <TouchableHighlight style={merge(styles.button, {backgroundColor: this.getButtonColor()})}
-          onPress={invalidInput ? undefined : onButtonPress}
-          underlayColor={color.bristolBlue2}>
+      <TouchableOpacity style={merge(styles.button, {backgroundColor: this.getButtonColor()})}
+          onPress={invalidInput ? undefined : onButtonPress}>
         <View style={styles.buttonInnerContainer}>
           <DefaultText style={{fontSize: 24, color: this.getButtonTextColor(), textAlign: 'center', width: Dimensions.get('window').width - 20}}>
             {buttonText}
@@ -73,7 +71,7 @@ class InputComponent extends KeyboardComponent {
             ? <ActivityIndicator size='small' style={styles.loadingSpinner}/>
             : undefined }
         </View>
-      </TouchableHighlight>
+      </TouchableOpacity>
 
       { input
         ? <TextInput style={styles.textInput}
@@ -117,6 +115,18 @@ class SendMoney extends React.Component {
     }
   }
 
+  isInputInvalid() {
+    const { amount } = this.props
+    return (
+      isNaN(Number(this.props.amount))
+        || Number(amount) > this.props.balance
+        || Number(amount) <= 0
+        || (amount.charAt(0) === '0' && amount.charAt(1) !== '.')
+        || amount.charAt(amount.length - 1) === '.'
+        || (amount.split('.')[1] && amount.split('.')[1].length > 2)
+    )
+  }
+
   render() {
     let inputProps
 
@@ -140,7 +150,7 @@ class SendMoney extends React.Component {
                 placeholder: 'Amount',
                 onChangeText: amt => this.props.updateAmount(amt),
               },
-              invalidInput: isNaN(Number(this.props.amount)) || Number(this.props.amount) > this.props.balance || Number(this.props.amount) <= 0,
+              invalidInput: this.isInputInvalid(),
               accessibilityLabel: 'Enter Amount',
             }
             break
