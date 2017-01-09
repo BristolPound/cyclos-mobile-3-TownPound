@@ -77,9 +77,11 @@ class SpendingTab extends React.Component {
           dataSource={dataSource}
           onScroll={() => !this.props.scrolled && this.props.transactionsScrolled()}
           renderSectionHeader={renderSectionHeader}
-          refreshControl={<RefreshControl
-            refreshing={this.props.refreshing}
-            onRefresh={() => !this.props.refreshing ? this.props.loadMoreTransactions() : undefined} />
+          refreshControl={this.props.selectedMonthIndex === this.props.monthlyTotalSpent.length - 1
+            ? <RefreshControl
+                  refreshing={this.props.refreshing}
+                  onRefresh={() => !this.props.refreshing ? this.props.loadMoreTransactions() : undefined} />
+            : undefined
           }/>
     } else {
       bodyComponent = <View style={styles.noTransactions.container}>
