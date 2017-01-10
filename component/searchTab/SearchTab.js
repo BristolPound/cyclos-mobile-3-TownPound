@@ -95,7 +95,7 @@ class SearchTab extends React.Component {
             expandedHeight={expandedHeight}
             onPressRelease={hasMoved => componentList && componentList.handleRelease(hasMoved)}
             onPressStart={location => componentList && componentList.highlightItem(location)}
-            childrenHeight={childrenHeight}
+            childrenHeight={childrenHeight + BUSINESS_LIST_SELECTED_GAP}
             startPosition={1}>
             <ComponentList
                 ref='componentList'
