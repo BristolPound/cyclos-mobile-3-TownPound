@@ -45,9 +45,6 @@ const style = {
     paddingRight: 10,
     height: TAB_BAR_HEIGHT
   },
-  loginText: {
-    color: color.bristolBlue
-  },
   centerChildren: {
     flex: 1,
     flexDirection:'row',
@@ -122,11 +119,11 @@ const TabBar = (props) =>
             </View>
           : <TouchableHighlight
                 style={style.centerChildren}
-                onPress={() => props.openLoginForm(true)}
+                onPress={props.connection ? () => props.openLoginForm(true) : undefined}
                 underlayColor={color.transparent}
                 accessibilityLabel='Log in Tab'>
               <View>
-                <DefaultText style={style.loginText}>Log in</DefaultText>
+                <DefaultText style={{ color: props.connection ? color.bristolBlue : color.offWhite }}>Log in</DefaultText>
               </View>
             </TouchableHighlight>
       }
@@ -137,7 +134,8 @@ const TabBar = (props) =>
 
 const mapStateToProps = (state) => ({
   loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
-  balance: state.account.balance
+  balance: state.account.balance,
+  connection: state.networkConnection.status
 })
 
 const mapDispatchToProps = (dispatch) =>
