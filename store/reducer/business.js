@@ -116,7 +116,7 @@ export const selectAndLoadBusiness = (businessId) => (dispatch, getState) => {
   // check to see whether we actually need to load the profile
   const businessList = getState().business.businessList
   const business = businessList.find(b => b.id === businessId)
-  if (!business.profilePopulated) {
+  if (!business.profilePopulated && getState().networkConnection.status) {
     dispatch(loadBusinessProfile(businessId))
   }
 }
