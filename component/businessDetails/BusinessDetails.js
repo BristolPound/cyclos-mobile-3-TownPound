@@ -1,26 +1,16 @@
 import React from 'react'
 
 import HTMLView from 'react-native-htmlview'
-import { View, Text, TouchableOpacity, Linking, StyleSheet, Image } from 'react-native'
+import { View, Linking, StyleSheet, Image } from 'react-native'
 
 import { MultilineText } from '../DefaultText'
-import commonStyle from '../style'
-import { dimensions, padding, margin, border } from '../../util/StyleUtils'
+import { dimensions, margin, border } from '../../util/StyleUtils'
 import addresses from '../../util/addresses'
 import colors from '../../util/colors'
 
 const styles = {
   description: {
     ...margin(18, 24, 0, 24)
-  },
-  minorButtonText: {
-    fontFamily: commonStyle.font.museo500,
-    alignSelf: 'center',
-    color: colors.bristolBlue,
-    backgroundColor: colors.transparent,
-    fontSize: 14,
-    marginTop: 18,
-    paddingBottom: 8
   },
   separator: {
     ...border(['bottom', 'top'], colors.gray5, StyleSheet.hairlineWidth)
@@ -45,61 +35,15 @@ const styles = {
     color: colors.gray,
     flexWrap: 'wrap'
   },
-  addressOnly: {
-    ...padding(18, 0, 30, 0)
-  },
-  moreDetails: {
-    paddingBottom: 12
-  }
 }
 
-// If expanded, display all items and the description.
-// If not expanded, then display only the first two (non-description) items, as well as a link to display any more.
 class BusinessDetails extends React.Component {
-
-  constructor(props) {
-    super(props)
-    this.state = {isExpanded: props.isExpanded}
-  }
-
   render() {
     const fields = getFields(this.props.business)
-    const expanded = this.renderExpandedDetails(fields, this.props.business.description)
-
-    if (fields.length > 2) {
-      fields.length = 2
-    }
-
     return <View style={fields.length > 1 ? styles.moreDetails : styles.addressOnly}>
         {renderFields(fields)}
-        { expanded }
+        {renderDescription(this.props.business.description)}
     </View>
-  }
-
-
-  // if there's a description render it either as html or a view details button.
-  // Ironically the details to be displayed is the description, not the business details (address etc.)
-  // that are always displayed.
-  renderExpandedDetails(fields, description) {
-    let expanded = null
-    if (this.state.isExpanded) {
-      const expandedFields = (fields.length > 2) ?
-        fields.slice(2) : []
-      expanded =
-        <View style={{marginBottom: 18}}>
-          {renderFields(expandedFields)}
-          {renderDescription(description)}
-        </View>
-    } else if (fields.length > 2 || description) {
-      // there are details that could be expanded.
-      expanded = renderExpander(() => this.expandDetails())
-    }
-    // else no details to expand.
-    return expanded
-  }
-
-  expandDetails() {
-    this.setState({isExpanded: true})
   }
 }
 
@@ -129,7 +73,7 @@ function getFields(business) {
 // 'this._validateURL is not a function'
 function renderDescription(description) {
   return description ?
-    <View style={{paddingTop: 12}}>
+    <View style={{paddingTop: 12, paddingBottom: 12}}>
       <View style={styles.separator}/>
       <View style={styles.description} accessibilityLabel='Business Description'>
         <HTMLView value={description} onLinkPress={url => Linking.openURL(url)}/>
@@ -140,19 +84,6 @@ function renderDescription(description) {
 
 function renderFields(fields) {
   return (fields.length > 0) ? <ViewFields fields={fields}/> : null
-}
-
-function renderExpander(expandDetailsFn) {
-  return <View style={{paddingTop: 12}}>
-            <View style={styles.separator}/>
-            <TouchableOpacity
-              onPress={expandDetailsFn}
-              accessiblityLabel='View Full Details'>
-              <View>
-                <Text style={styles.minorButtonText}>VIEW DETAILS</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
 }
 
 const ViewFields = ({fields}) =>
