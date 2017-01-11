@@ -10,9 +10,9 @@ import { isSameMonth, format } from '../../util/date'
 import styles from './spendingStyle'
 import color from '../../util/colors'
 
-const CAROUSEL_ITEM_WIDTH = 150
+const CAROUSEL_ITEM_WIDTH = Dimensions.get('window').width / 3
 
-export const toMonthString = month => isSameMonth(month, new Date()) ? 'Spent This Month' : format(month, 'MMMM')
+export const toMonthString = month => isSameMonth(month, new Date()) ? 'This Month' : format(month, 'MMMM')
 
 const MonthOption = ({monthTotal, isSelected}) => {
   const basicPriceStyle = (color, size) => ({ color, size }),
@@ -35,22 +35,21 @@ const MonthOption = ({monthTotal, isSelected}) => {
 }
 
 export const SpendingHeader = props =>
-    <View style={styles.header.carouselContainer}>
-        <Carousel
-            itemWidth={CAROUSEL_ITEM_WIDTH}
-            containerWidth={Dimensions.get('window').width}
-            pageIndex={props.selectedMonthIndex}
-            onTouchStart={props.scrollTransactionsToTop}
-            onPageChange={props.selectMonth}
-            onPress={props.selectMonth}>
-            { props.monthlyTotalSpent.map((monthTotal, index) =>
-                <MonthOption
-                    key={index}
-                    monthTotal={monthTotal}
-                    isSelected={props.selectedMonthIndex === index} />
-            ) }
-        </Carousel>
-    </View>
+  <Carousel
+      style={styles.header.carousel}
+      itemWidth={CAROUSEL_ITEM_WIDTH}
+      containerWidth={Dimensions.get('window').width}
+      pageIndex={props.selectedMonthIndex}
+      onTouchStart={props.scrollTransactionsToTop}
+      onPageChange={props.selectMonth}
+      onPress={props.selectMonth}>
+      { props.monthlyTotalSpent.map((monthTotal, index) =>
+          <MonthOption
+              key={index}
+              monthTotal={monthTotal}
+              isSelected={props.selectedMonthIndex === index} />
+      ) }
+  </Carousel>
 
 const mapDispatchToProps = (dispatch) => bindActionCreators(actions, dispatch)
 

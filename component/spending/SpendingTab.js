@@ -92,7 +92,9 @@ class SpendingTab extends React.Component {
 
     return (
       <View style={{flex: 1}}>
-        <SpendingHeader />
+        <View style={styles.header.carouselContainer}>
+          <SpendingHeader />
+        </View>
         {bodyComponent}
       </View>
     )
