@@ -53,9 +53,9 @@ export class MultilineText extends Component {
   render() {
     const newStyle = merge(style, this.props.style)
     return (
-      <Text
+      <Text {...this.props}
           ref={component => this._root = component}
-          {...merge(this.props, {style: newStyle})}>
+          style={newStyle}>
         {this.props.children}
       </Text>
     )
