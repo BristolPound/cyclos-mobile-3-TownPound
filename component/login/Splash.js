@@ -41,7 +41,6 @@ const style = {
       ...margin(gapSize, 20, 10, 20),
     },
     text: {
-      color: colors.bristolBlue2,
       fontSize: 22,
       fontFamily: commonStyle.museo500
     }
@@ -124,9 +123,11 @@ class Splash  extends React.Component {
               { this.props.renderWelcomeMessage(this.props) }
               <TouchableHighlight
                   style={style.loginButton.container}
-                  onPress={() => this.props.openLoginForm(true)}
+                  onPress={this.props.connection ? () => this.props.openLoginForm(true) : undefined}
                   underlayColor={colors.offWhite}>
-                <DefaultText style={style.loginButton.text}>{this.props.loginButtonText}</DefaultText>
+                <DefaultText style={merge(style.loginButton.text, { color: this.props.connection ? colors.bristolBlue2 : colors.offWhite })}>
+                  {this.props.connection ? this.props.loginButtonText : 'No internet connection'}
+                </DefaultText>
               </TouchableHighlight>
               <TouchableHighlight
                   style={style.skipButton.container}
@@ -144,7 +145,8 @@ class Splash  extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    ...state.login
+    ...state.login,
+    connection: state.networkConnection.status
 })
 
 const mapDispatchToProps = (dispatch) =>
