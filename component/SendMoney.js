@@ -1,7 +1,7 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { View, TextInput, TouchableOpacity, ActivityIndicator, Dimensions, Animated } from 'react-native'
+import { View, TextInput, TouchableHighlight, ActivityIndicator, Dimensions, Animated } from 'react-native'
 import KeyboardComponent from './KeyboardComponent'
 import * as actions from '../store/reducer/sendMoney'
 import { openLoginForm } from '../store/reducer/login'
@@ -61,8 +61,9 @@ class InputComponent extends KeyboardComponent {
     let { onButtonPress, buttonText, loading, input, invalidInput, accessibilityLabel } = this.props
 
     return <Animated.View style={{backgroundColor: 'white', bottom: input ? this.state.keyboardHeight : 0}} accessibilityLabel={accessibilityLabel}>
-      <TouchableOpacity style={merge(styles.button, {backgroundColor: this.getButtonColor()})}
-          onPress={() => invalidInput ? undefined : onButtonPress()}>
+      <TouchableHighlight style={merge(styles.button, {backgroundColor: this.getButtonColor()})}
+          onPress={invalidInput ? undefined : onButtonPress}
+          underlayColor={color.bristolBlue2}>
         <View style={styles.buttonInnerContainer}>
           <DefaultText style={{fontSize: 24, color: this.getButtonTextColor(), textAlign: 'center', width: Dimensions.get('window').width - 20}}>
             {buttonText}
@@ -72,7 +73,7 @@ class InputComponent extends KeyboardComponent {
             ? <ActivityIndicator size='small' style={styles.loadingSpinner}/>
             : undefined }
         </View>
-      </TouchableOpacity>
+      </TouchableHighlight>
 
       { input
         ? <TextInput style={styles.textInput}
@@ -119,49 +120,56 @@ class SendMoney extends React.Component {
   render() {
     let inputProps
 
-    if (this.props.loggedIn) {
-      switch (this.state.inputPage){
-        case Page.Ready: // Initial state, ready to begin
-          inputProps = {
-            buttonText: 'Send Payment',
-            onButtonPress: () => { this.props.updatePayee(this.props.payeeShortDisplay); this.nextPage() },
-            accessibilityLabel: 'Ready',
-          }
-          break
-        case Page.EnterAmount: // provide amount
-          inputProps = {
-            buttonText: 'Pay ' + this.props.payeeDisplay,
-            onButtonPress: () => { this.props.sendTransaction(); this.nextPage() },
-            input: {
-              keyboardType: 'numeric',
-              value: this.props.amount,
-              placeholder: 'Amount',
-              onChangeText: amt => this.props.updateAmount(amt),
-            },
-            invalidInput: isNaN(Number(this.props.amount)) || Number(this.props.amount) > this.props.balance || Number(this.props.amount) <= 0,
-            accessibilityLabel: 'Enter Amount',
-          }
-          break
-        case Page.MakingPayment: // in progress
-          inputProps = {
-            buttonText: 'Making Payment',
-            loading: true,
-            accessibilityLabel: 'Making Payment',
-          }
-          break
-        case Page.PaymentComplete: // payment completed
-          inputProps = {
-            buttonText: this.props.message,
-            onButtonPress: () => { this.props.resetForm(); this.nextPage() },
-            accessibilityLabel: 'Payment complete',
-          }
-          break
+    if (this.props.connection) {
+      if (this.props.loggedIn) {
+        switch (this.state.inputPage){
+          case Page.Ready: // Initial state, ready to begin
+            inputProps = {
+              buttonText: 'Send Payment',
+              onButtonPress: () => { this.props.updatePayee(this.props.payeeShortDisplay); this.nextPage() },
+              accessibilityLabel: 'Ready',
+            }
+            break
+          case Page.EnterAmount: // provide amount
+            inputProps = {
+              buttonText: 'Pay ' + this.props.payeeDisplay,
+              onButtonPress: () => { this.props.sendTransaction(); this.nextPage() },
+              input: {
+                keyboardType: 'numeric',
+                value: this.props.amount,
+                placeholder: 'Amount',
+                onChangeText: amt => this.props.updateAmount(amt),
+              },
+              invalidInput: isNaN(Number(this.props.amount)) || Number(this.props.amount) > this.props.balance || Number(this.props.amount) <= 0,
+              accessibilityLabel: 'Enter Amount',
+            }
+            break
+          case Page.MakingPayment: // in progress
+            inputProps = {
+              buttonText: 'Making Payment',
+              loading: true,
+              accessibilityLabel: 'Making Payment',
+            }
+            break
+          case Page.PaymentComplete: // payment completed
+            inputProps = {
+              buttonText: this.props.message,
+              onButtonPress: () => { this.props.resetForm(); this.nextPage() },
+              accessibilityLabel: 'Payment complete',
+            }
+            break
+        }
+      } else {
+        inputProps = {
+          buttonText: 'Log in to make payment',
+          onButtonPress: () => this.props.openLoginForm(true),
+          accessibilityLabel: 'Log in to make payment',
+        }
       }
     } else {
       inputProps = {
-        buttonText: 'Log in to make payment',
-        onButtonPress: () => this.props.openLoginForm(true),
-        accessibilityLabel: 'Log in to make payment',
+        buttonText: 'No internet connection',
+        accessibilityLabel: 'No internet connection',
       }
     }
 
@@ -175,7 +183,8 @@ const mapDispatchToProps = (dispatch) =>
 const mapStateToProps = (state) => ({
   ...state.sendMoney,
   balance: state.account.balance,
-  loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN
+  loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
+  connection: state.networkConnection.status
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendMoney)

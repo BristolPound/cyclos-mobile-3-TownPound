@@ -27,10 +27,13 @@ export const reducer = combineReducers({
 })
 
 export const initialise = (store) => {
-  NetInfo.isConnected.addEventListener(
-    'change',
-    (status) => store.dispatch(connectivityChanged(status))
-  )
+  NetInfo.isConnected.fetch()
+    .then((status) => status && store.dispatch(connectivityChanged(true)))
+    .then(() => NetInfo.isConnected.addEventListener(
+      'change',
+      (status) => store.dispatch(connectivityChanged(status))
+    ))
+
 
   store.dispatch(loadBusinessList())
 
