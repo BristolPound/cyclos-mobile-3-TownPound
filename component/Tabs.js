@@ -16,7 +16,6 @@ import TraderScreen from './TraderScreen'
 import PersonScreen from './PersonScreen'
 import DeveloperOptions from './DeveloperOptions'
 import color from '../util/colors'
-import merge from '../util/merge'
 import { LOGIN_STATUSES } from '../store/reducer/login'
 import Modal from './Modal'
 import PaymentConfirmation from './PaymentConfirmation'
@@ -31,12 +30,6 @@ const style = {
   },
   flex: {
     flex: 1
-  },
-  login: {
-    opacity: 0.7,
-    transform: [
-      {scale: 0.9}
-    ]
   }
 }
 
@@ -66,7 +59,7 @@ const Tabs = (props) =>
         tabBarPosition='bottom'
         initialPage={props.navigation.tabIndex}
         tabBarActiveTextColor={color.bristolBlue}
-        style={merge(style.tabs, props.dialogOpen ? style.login : {})}
+        style={style.tabs}
         tabBarBackgroundColor={color.lightGray}
         scrollWithoutAnimation={true}
         locked={true}
