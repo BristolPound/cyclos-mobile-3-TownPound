@@ -83,9 +83,11 @@ export const logout = () => dispatch => {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case LOGGED_IN:
+      const failedAttempts = state.failedAttempts.filter(attempt => attempt.username !== action.username)
       state = merge(state, {
         loggedInUsername: action.username,
         loginStatus: LOGIN_STATUSES.LOGGED_IN,
+        failedAttempts
       })
       break
     case 'login/LOGIN_IN_PROGRESS':
