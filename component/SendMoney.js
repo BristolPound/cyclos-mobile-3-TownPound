@@ -102,7 +102,7 @@ class SendMoney extends React.Component {
         if (this.state.inputPage === Page.PaymentComplete) {
           this.nextPage()
         }
-      }, 1800)
+      }, 2000)
     }
   }
 
@@ -131,7 +131,13 @@ class SendMoney extends React.Component {
     let inputProps
 
     if (this.props.connection) {
-      if (this.props.loggedIn) {
+      if (this.state.inputPage === Page.PaymentComplete) {
+        inputProps = {
+          buttonText: this.props.message,
+          onButtonPress: () => { this.props.resetForm(); this.nextPage() },
+          accessibilityLabel: 'Payment complete'
+        }
+      } else if (this.props.loggedIn) {
         switch (this.state.inputPage){
           case Page.Ready: // Initial state, ready to begin
             inputProps = {
@@ -159,13 +165,6 @@ class SendMoney extends React.Component {
               buttonText: 'Making Payment',
               loading: true,
               accessibilityLabel: 'Making Payment',
-            }
-            break
-          case Page.PaymentComplete: // payment completed
-            inputProps = {
-              buttonText: this.props.message,
-              onButtonPress: () => { this.props.resetForm(); this.nextPage() },
-              accessibilityLabel: 'Payment complete',
             }
             break
         }
