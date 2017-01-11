@@ -131,7 +131,7 @@ export default class Search extends React.Component {
                           ref='componentList'
                           items={componentListArray}
                           componentForItem={ComponentForItem}
-                          onPressItem={index => componentListArray[index].id && openTraderModal(componentListArray[index].id)} />
+                          onPressItem={index => componentListArray[index].id && this._businessListOnClick(componentListArray[index].id)} />
                   </ScrollingExpandPanel>
           )}
         </View>
