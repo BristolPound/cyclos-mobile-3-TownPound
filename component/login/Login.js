@@ -78,14 +78,22 @@ class Login extends KeyboardComponent {
   }
 
   render() {
-    const { hideUsernameInput } = this.props
+    let loginButtonText = 'Log in'
+    const { hideUsernameInput, failedAttempts } = this.props
+    const failuresForUsername = failedAttempts.find(attempt => attempt.username === this.state.username)
+    if (failuresForUsername) {
+      const remainingAttempts = 3 - failuresForUsername.noOfFails
+      loginButtonText += ` (${remainingAttempts} attempt${remainingAttempts === 1 ? '' : 's'} remaining)`
+    }
     const loginView = (
       <Animated.View style={{ ...horizontalAbsolutePosition(0, 0), bottom: this.state.keyboardHeight, height: hideUsernameInput ? 136 : 204 }}>
         <Animated.View style={merge(style.loginContainer, { bottom: this.state.bottom })}>
           <TouchableOpacity style={{ ...style.loginButton, backgroundColor: detailsValid(this.state.username, this.state.password) ? colors.bristolBlue : colors.offWhite }}
               accessibilityLabel={'Login Button'}
               onPress={() => detailsValid(this.state.username, this.state.password) && this.login()}>
-            <DefaultText style={{ ...style.loginButtonText, color: detailsValid(this.state.username, this.state.password) ? 'white' : 'black' }}>Log in</DefaultText>
+            <DefaultText style={{ ...style.loginButtonText, color: detailsValid(this.state.username, this.state.password) ? 'white' : 'black' }}>
+              {loginButtonText}
+            </DefaultText>
           </TouchableOpacity>
           { hideUsernameInput
             ? undefined

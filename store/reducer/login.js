@@ -19,7 +19,8 @@ const initialState = {
   loginStatus: LOGIN_STATUSES.LOGGED_OUT,
   loginFormOpen: false,
   // logged in username state stores the username on successful login
-  loggedInUsername: ''
+  loggedInUsername: '',
+  failedAttempts: []
 }
 
 export const loginInProgress = () => ({
@@ -40,6 +41,11 @@ export const openLoginForm = (open = true) => ({
   open
 })
 
+const attemptFailed = (username) => ({
+  type: 'login/ATTEMPT_FAILED',
+  username
+})
+
 export const login = (username, password) =>
   (dispatch) => {
     dispatch(loginInProgress())
@@ -57,6 +63,8 @@ export const login = (username, password) =>
                 dispatch(updateStatus('Account temporarily blocked', ERROR_SEVERITY.SEVERE))
               } else if (json && json.code === 'login') {
                 dispatch(updateStatus('Your details are incorrect'))
+                dispatch(attemptFailed(username))
+                dispatch(openLoginForm(true))
               } else {
                 dispatch(unknownError(err))
               }
@@ -93,6 +101,20 @@ const reducer = (state = initialState, action) => {
     case 'login/OPEN_LOGIN_FORM':
       state = merge(state, {
         loginFormOpen: action.open
+      })
+      break
+    case 'login/ATTEMPT_FAILED':
+      const index = state.failedAttempts.findIndex(attempt => attempt.username === action.username)
+      let newFailedAttempts
+      if (index !== -1) {
+        const noOfFails = state.failedAttempts[index].noOfFails
+        newFailedAttempts = state.failedAttempts.slice()
+        newFailedAttempts[index] = { username: action.username, noOfFails: noOfFails + 1 }
+      } else {
+        newFailedAttempts = [ ...state.failedAttempts, { username: action.username, noOfFails: 1 } ]
+      }
+      state = merge(state, {
+        failedAttempts: newFailedAttempts
       })
       break
   }
