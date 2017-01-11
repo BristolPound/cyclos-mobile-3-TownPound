@@ -1,7 +1,7 @@
 import color from '../../util/colors'
 import marginOffset from '../../util/marginOffset'
 import commonStyle from '../style'
-import { dimensions, margin, padding, border } from '../../util/StyleUtils'
+import { dimensions, margin, border } from '../../util/StyleUtils'
 import { baselineDeltaForFonts } from '../DefaultText'
 
 const IMAGE_SIZE = 42
@@ -65,15 +65,18 @@ const styles = {
     sectionHeader: commonStyle.sectionHeader,
     header: {
         carouselContainer: {
-            ...commonStyle.shadow,
-            ...padding(marginOffset(38), 0, 14, 0),
+            ...commonStyle.minorShadow,
+            backgroundColor: color.white,
             height: marginOffset(106)
         },
         monthlyOption: {
             fontFamily: commonStyle.font.museo500,
             fontSize: 15,
-            textAlign: 'center',
+            textAlign: 'center'
         },
+        carousel: {
+          ...margin(marginOffset(38), 0, 14, 0)
+        }
     }
 }
 
