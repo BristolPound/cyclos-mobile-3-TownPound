@@ -60,6 +60,9 @@ class Login extends KeyboardComponent {
     if (!this.props.loginFormOpen && lastProps.loginFormOpen) {
       this.setState({ password: undefined })
     }
+    if (this.props.loggedInUsername !== lastProps.loggedInUsername) {
+      this.setState({ username: this.props.loggedInUsername })
+    }
   }
 
   login() {
@@ -93,7 +96,8 @@ class Login extends KeyboardComponent {
                 onSubmitEditing={this.selectPasswordField.bind(this)}
                 placeholder={'Username'}
                 placeholderTextColor={colors.gray4}
-                selectTextOnFocus={true} />
+                selectTextOnFocus={true}
+                value={this.state.username} />
           }
           <View style={style.separator}/>
           <TextInput style={style.input}

@@ -87,7 +87,7 @@ const reducer = (state = initialState, action) => {
       })
       break
     case LOGGED_OUT:
-      state = initialState
+      state = merge(state, { loginStatus: LOGIN_STATUSES.LOGGED_OUT })
       deleteSessionToken()
       break
     case 'login/OPEN_LOGIN_FORM':

@@ -3,7 +3,8 @@ import moment from 'moment'
 import { makePayment } from '../../api/payments'
 import merge from '../../util/merge'
 import { loadMoreTransactions } from './transaction'
-import { UNEXPECTED_ERROR } from '../../api/apiError'
+import { UNEXPECTED_ERROR, UNAUTHORIZED_ACCESS } from '../../api/apiError'
+import { logout } from './login'
 
 const initialState = {
   payee: '',
@@ -53,7 +54,10 @@ export const sendTransaction = () =>
           moment().format('MMMM Do YYYY, h:mm:ss a')))
       })
       .catch(err => {
-        if (err.type === UNEXPECTED_ERROR) {
+        if (err.type === UNAUTHORIZED_ACCESS) {
+            dispatch(transactionComplete(false, 'Session expired'))
+            dispatch(logout())
+        } else if (err.type === UNEXPECTED_ERROR) {
           err.response.json()
             .then(json => {
               if (json && json.code === 'dailyAmountExceeded') {
