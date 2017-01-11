@@ -1,7 +1,7 @@
 import React from 'react'
-
+import Communications from 'react-native-communications'
 import HTMLView from 'react-native-htmlview'
-import { View, Linking, StyleSheet, Image } from 'react-native'
+import { View, Linking, StyleSheet, Image, TouchableOpacity } from 'react-native'
 
 import { MultilineText } from '../DefaultText'
 import { dimensions, margin, border } from '../../util/StyleUtils'
@@ -37,6 +37,28 @@ const styles = {
   },
 }
 
+const Field = ({icon, text, accessibilityLabel, onPress}) =>
+  <View style={styles.field}>
+    <Image style={styles.image} source={icon}/>
+    <TouchableOpacity style={styles.item} accessibilityLabel={accessibilityLabel} onPress={onPress}>
+      <MultilineText style={styles.text}>{text}</MultilineText>
+    </TouchableOpacity>
+  </View>
+
+const renderFields = (fields) =>
+  (fields.length > 0)
+  ? <View>
+      {fields.map((field) => (
+        // 'key' is magic so isn't passed down into the method.
+        // Hence define a duplicate accessibilityLabel.
+        field
+          ? <Field {...field} accessibilityLabel={field.key}/>
+          : null
+      ))}
+    </View>
+  : null
+
+
 class BusinessDetails extends React.Component {
   render() {
     const fields = getFields(this.props.business)
@@ -49,7 +71,7 @@ class BusinessDetails extends React.Component {
 
 function getFields(business) {
   const fields = [],
-      businessDetail = (key, icon, text) => ({ key, icon, text })
+      businessDetail = (key, icon, text, onPress) => ({ key, icon, text, onPress })
 
   // Order of display should be:
   //    access point*, special offer*, address, opening times*, phone number, email address
@@ -59,11 +81,11 @@ function getFields(business) {
     )
 
     business.businessphone && fields.push(
-      businessDetail('phoneField', require('./assets/Phone.png'), business.businessphone)
+      businessDetail('phoneField', require('./assets/Phone.png'), business.businessphone, () => Communications.phonecall(business.businessphone, true))
     )
 
     business.businessemail && fields.push(
-      businessDetail('emailField', require('./assets/Email.png'), business.businessemail)
+      businessDetail('emailField', require('./assets/Email.png'), business.businessemail, () => Communications.email([business.businessemail], null, null, null, null))
     )
 
   return fields
@@ -81,28 +103,5 @@ function renderDescription(description) {
     </View>
     : null
 }
-
-function renderFields(fields) {
-  return (fields.length > 0) ? <ViewFields fields={fields}/> : null
-}
-
-const ViewFields = ({fields}) =>
-    <View>
-        {fields && fields.map((field) => (
-            // 'key' is magic so isn't passed down into the method.
-            // Hence define a duplicate accessibilityLabel.
-            field ?
-                <Field key={field.key} icon={field.icon} text={field.text} accessibilityLabel={field.key}/>
-                : null
-        ))}
-    </View>
-
-const Field = ({icon, text, accessibilityLabel}) =>
-    <View style={styles.field}>
-        <Image style={styles.image} source={icon}/>
-        <View style={styles.item} accessibilityLabel={accessibilityLabel}>
-            <MultilineText style={styles.text}>{text}</MultilineText>
-        </View>
-    </View>
 
 export default BusinessDetails
