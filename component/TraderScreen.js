@@ -9,23 +9,24 @@ import ProfileHeader from './profileScreen/ProfileHeader'
 import BusinessDetails from './businessDetails/BusinessDetails'
 import SendMoney, { sectionHeight } from './SendMoney'
 import { resetForm } from '../store/reducer/sendMoney'
+import { goToLocation } from '../store/reducer/navigation'
 
-const TraderScreen = ({ trader, transactions, hideModal, loadingProfile, resetForm }) =>
-    <View style={{flex: 1}}>
-      <View style={{flex: 1, maxHeight: marginOffset(Dimensions.get('window').height) - sectionHeight}}>
-      <TransactionList
-        renderHeader={asRenderHeader(trader, transactions, hideModal, loadingProfile, resetForm)}
-        dataSource={transactions} />
-      </View>
-      <SendMoney
-        businessId={trader.id}
-        payeeDisplay={trader.display}
-        payeeShortDisplay={trader.shortDisplay} />
+const TraderScreen = ({ trader, transactions, hideModal, loadingProfile, resetForm, goToLocation }) =>
+  <View style={{flex: 1}}>
+    <View style={{flex: 1, maxHeight: marginOffset(Dimensions.get('window').height) - sectionHeight}}>
+    <TransactionList
+      renderHeader={asRenderHeader(trader, transactions, hideModal, loadingProfile, resetForm, goToLocation)}
+      listData={transactions} />
     </View>
+    <SendMoney
+      businessId={trader.id}
+      payeeDisplay={trader.display}
+      payeeShortDisplay={trader.shortDisplay} />
+  </View>
 
 // Currently we pass in returned renderHeader as we delegate to a listView.
 // One alternative would be to encapsulate this and use `props.children` instead.
-const asRenderHeader = (trader, transactions, hideModal, loadingProfile, resetForm) => () =>
+const asRenderHeader = (trader, transactions, hideModal, loadingProfile, resetForm, goToLocation) => () =>
   <View style={{flex: 1}}>
     <ProfileHeader
       name={trader.display}
@@ -34,16 +35,16 @@ const asRenderHeader = (trader, transactions, hideModal, loadingProfile, resetFo
       category={trader.category}
       onPressClose={() => {hideModal(); resetForm()}}
       isModal={true} />
-      <BusinessDetails business={trader} isExpanded={transactions.length === 0}/>
+      <BusinessDetails business={trader} goToLocation={goToLocation}/>
       { loadingProfile
         ? <ActivityIndicator style={{marginBottom: 10}} size='large'/>
         : undefined }
-    </View>
+  </View>
 
 const getTransactionsForSelectedBusiness = (state) => {
-    return state.transaction.transactions.filter(transaction => {
-        return transaction.relatedAccount.kind === 'user' && transaction.relatedAccount.user.id === state.business.traderScreenBusinessId
-    })
+  return state.transaction.transactions.filter(transaction => {
+    return transaction.relatedAccount.kind === 'user' && transaction.relatedAccount.user.id === state.business.traderScreenBusinessId
+  })
 }
 
 // Redux Setup
@@ -54,6 +55,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ ...actions, resetForm }, dispatch)
+  bindActionCreators({ ...actions, resetForm, goToLocation }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TraderScreen)
