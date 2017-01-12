@@ -1,3 +1,11 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+/*
+  This screen does not work. Currently there is no way to to open it, so it doesnt matter.
+  If we do want to add a person screen at some point, it must be updated to match TraderScreen
+  because TransactionList has changed
+*/
+/////////////////////////////////////////////////////////////////////////////////////////
+
 import React from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import { connect } from 'react-redux'

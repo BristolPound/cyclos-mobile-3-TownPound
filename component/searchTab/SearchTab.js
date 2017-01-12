@@ -53,9 +53,7 @@ class SearchTab extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.searchMode === this.props.searchMode) {
-      this.componentListArray = this.createComponentListArray(nextProps)
-    }
+    this.componentListArray = this.createComponentListArray(nextProps)
   }
 
   render() {

@@ -16,13 +16,19 @@ import { buildDataSourceForTransactions} from '../../util/transaction'
 export default class TransactionList extends Component {
   constructor(props) {
     super(props)
-    this.state = { dataSource: buildDataSourceForTransactions(props.dataSource) }
+    this.state = { dataSource: buildDataSourceForTransactions(props.listData) }
     this.setSelected = this.setSelected.bind(this)
+  }
+
+  componentDidUpdate(lastProps) {
+    if (this.props.listData !== lastProps.listData) {
+      this.setState({ dataSource: buildDataSourceForTransactions(this.props.listData, this.state.dataSource) })
+    }
   }
 
   // update the transaction in data source to be selected/unselected
   setSelected(transactionNumber, newSelectedValue) {
-     const ds = this.props.dataSource.slice()
+     const ds = this.props.listData.slice()
      const index = ds.findIndex(transaction => transaction.transactionNumber === transactionNumber)
      const mod = merge(ds[index])
      mod.selected = newSelectedValue
