@@ -23,7 +23,7 @@ export default class TransactionItem extends React.Component {
           key={transaction.transactionNumber}>
           <View style={styles.list.columnContainer}>
             <View style={styles.list.rowContainer}>
-                <DefaultText style={styles.list.date}>{format(transaction.date, 'DD MMM')}</DefaultText>
+                <DefaultText style={styles.list.date}>{format(transaction.date, 'DD MMMM')}</DefaultText>
                 <DefaultText style={styles.list.time}>{format(transaction.date, 'hh:mm:ss')}</DefaultText>
                 <Price
                   style={styles.list.price}
