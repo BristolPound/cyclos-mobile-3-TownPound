@@ -59,13 +59,15 @@ export const transactionsScrolled = () => ({
 })
 
 const handleError = (dispatch) => (err) => {
+  dispatch(failedToLoadTransactions())
   if (err.type === UNAUTHORIZED_ACCESS) {
-    dispatch(loggedOut())
     dispatch(updateStatus('Your session has expired'))
-    dispatch(openLoginForm(true))
+    setTimeout(() => {
+      dispatch(loggedOut())
+      dispatch(openLoginForm(true))
+    }, 500)
   } else {
     dispatch(unknownError(err))
-    dispatch(failedToLoadTransactions())
   }
 }
 
