@@ -16,6 +16,15 @@ const style = {
     },
     elevation: 10,
   },
+  minorShadow: {
+    shadowColor: 'black',
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    shadowOffset: {
+      ...dimensions(0)
+    },
+    elevation: 5,
+  },
   font: {
     museo700,
     museo500,
