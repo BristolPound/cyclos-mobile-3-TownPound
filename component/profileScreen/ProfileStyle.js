@@ -6,6 +6,7 @@ import marginOffset from '../../util/marginOffset'
 
 const headerMargin = 24
 const listMargin = 14
+const screenWidth = Dimensions.get('window').width
 
 const styles = {
   header: {
@@ -41,33 +42,33 @@ const styles = {
       color: colors.gray
     },
     backgroundImage: {
-      ...dimensions(Dimensions.get('window').width, 242),
+      ...dimensions(screenWidth, 242),
       position: 'absolute'
     },
   },
   list: {
     rowContainer: {
-      ...margin(0, listMargin, 0, listMargin),
       flexDirection: 'row',
       justifyContent: 'center',
       height: 50
     },
     columnContainer: {
-      ...margin(0, listMargin, 0, listMargin),
       flexDirection: 'column',
       justifyContent: 'center'
     },
     date: {
-      width: 77,
+      width: screenWidth / 3 + 30,
       flex: 1,
       alignSelf: 'center',
-      color: colors.offBlack
+      color: colors.offBlack,
+      paddingLeft: 12
     },
     time: {
-      width: 90,
+      width: screenWidth / 3 - 20,
       fontFamily: commonStyle.font.museo100,
       flex: 1,
       alignSelf: 'center',
+      textAlign: 'center',
       color: colors.gray
     },
     transactionNumber: {
@@ -78,8 +79,9 @@ const styles = {
     },
     price: {
       flex: 1,
-      width: 90,
-      alignSelf: 'center'
+      width: screenWidth / 3 - 10,
+      alignSelf: 'center',
+      paddingRight: 12
     },
     separator: {
       ...border(['top', 'right', 'bottom', 'left'], colors.gray5, StyleSheet.hairlineWidth),
