@@ -11,7 +11,8 @@ const initialState = {
   amount: undefined,
   loading: false,
   success: undefined,
-  message: ''
+  message: '',
+  timestamp: undefined
 }
 
 export const resetForm = () => ({
@@ -32,10 +33,12 @@ const setLoading = () => ({
   type: 'sendMoney/SET_LOADING'
 })
 
-const transactionComplete = (success, message) => ({
+const transactionComplete = (success, message, amount, timestamp) => ({
   type: 'sendMoney/TRANSACTION_COMPLETE',
   success,
-  message
+  message,
+  amount,
+  timestamp
 })
 
 export const sendTransaction = () =>
@@ -50,25 +53,24 @@ export const sendTransaction = () =>
       .then(() => {
 
         dispatch(loadMoreTransactions())
-        dispatch(transactionComplete(true, 'Paid ' + payee + ' ' + amount + ' at ' +
-          moment().format('MMMM Do YYYY, h:mm:ss a')))
+        dispatch(transactionComplete(true, 'Transaction complete', amount, moment().format('MMMM Do YYYY, h:mm:ss a')))
       })
       .catch(err => {
         if (err.type === UNAUTHORIZED_ACCESS) {
-            dispatch(transactionComplete(false, 'Session expired'))
+            dispatch(transactionComplete(false, 'Session expired', 0, null))
             dispatch(logout())
         } else if (err.type === UNEXPECTED_ERROR) {
           err.response.json()
             .then(json => {
               if (json && json.code === 'dailyAmountExceeded') {
-                dispatch(transactionComplete(false, 'Daily amount has been exceeded.'))
+                dispatch(transactionComplete(false, 'Daily amount has been exceeded.', 0, null))
               } else if (json && json.code === 'insufficientBalance') {
-                dispatch(transactionComplete(false, 'Insufficient balance.'))
+                dispatch(transactionComplete(false, 'Insufficient balance.', 0, null))
               } else {
-                dispatch(transactionComplete(false, 'Error on sending transaction.'))
+                dispatch(transactionComplete(false, 'Error on sending transaction.', 0, null))
               }
             })
-            .catch(() => dispatch(transactionComplete(false, 'Error on sending transaction.')))
+            .catch(() => dispatch(transactionComplete(false, 'Error on sending transaction.', 0, null)))
         } else {
           dispatch(transactionComplete(false, 'Error on sending transaction.'))
         }
@@ -99,6 +101,8 @@ const reducer = (state = initialState, action) => {
       state = merge(initialState, {
         success: action.success,
         message: action.message,
+        amount: action.amount,
+        timestamp: action.timestamp
       })
       break
   }
