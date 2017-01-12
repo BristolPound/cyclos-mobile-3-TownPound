@@ -10,12 +10,13 @@ import ScrollingExpandPanel from './ScrollingExpandPanel'
 import ComponentList from './ComponentList'
 
 import colors from '../../util/colors'
+import { addColorCodes } from '../../util/business'
 import searchTabStyle, { maxExpandedHeight, SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN } from './SearchTabStyle'
 import { ROW_HEIGHT } from './BusinessListStyle'
 
 const { searchBar, textInput, searchHeaderText, closeButton, expandPanel, nearbyButton } = searchTabStyle.searchTab
 
-const CLOSE_BUTTON = require('./../common/assets/Close.png')
+const CLOSE_BUTTON = require('../common/assets/Close.png')
 const NEARBY_BLUE = require('./assets/nearby_blue.png')
 const NEARBY_GREY = require('./assets/nearby_grey.png')
 
@@ -49,7 +50,7 @@ export default class Search extends React.Component {
       }
       this.refs.ExpandPanel && this.refs.ExpandPanel.resetToInitalState()
       const filteredBusinessList = businessList.filter(business => termsMatch(business.display) || termsMatch(business.shortDisplay))
-      const componentListArray = this.createComponentListArray(filteredBusinessList)
+      const componentListArray = this.createComponentListArray(addColorCodes(filteredBusinessList))
       this.setState({ componentListArray })
     }, 800)
 

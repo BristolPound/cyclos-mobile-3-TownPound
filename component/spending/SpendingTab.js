@@ -41,7 +41,7 @@ const renderRow = (transaction, openDetailsModal, businessList) =>
         image={getTransactionImage(transaction.relatedAccount.user, businessList)}
         style={styles.row.image}
         category='shop'
-        colorCode={0}/>
+        colorCode={transaction.colorCode}/>
       <View style={styles.row.textContainer}>
         <DefaultText style={styles.row.text}>
           { transaction.relatedAccount.user ? transaction.relatedAccount.user.display : 'System' }
@@ -62,8 +62,9 @@ class SpendingTab extends React.Component {
   }
   render() {
     let bodyComponent
-    const dataSource = this.props.transactionsDataSource
-    if (this.props.loadingTransactions) {
+    const props = this.props
+    const dataSource = props.transactionsDataSource
+    if (props.loadingTransactions) {
       bodyComponent = <ActivityIndicator size='large' style={styles.loadingIndicator}/>
     } else if (dataSource.getRowCount()) {
       bodyComponent = <ListView
@@ -73,14 +74,14 @@ class SpendingTab extends React.Component {
           pageSize={10}
           renderSeparator={renderSeparator}
           enableEmptySections={true}
-          renderRow={transaction => renderRow(transaction, this.props.openDetailsModal, this.props.businessList)}
+          renderRow={transaction => renderRow(transaction, props.openDetailsModal, props.businessList)}
           dataSource={dataSource}
-          onScroll={() => !this.props.scrolled && this.props.transactionsScrolled()}
+          onScroll={() => !props.scrolled && props.transactionsScrolled()}
           renderSectionHeader={renderSectionHeader}
-          refreshControl={this.props.selectedMonthIndex === this.props.monthlyTotalSpent.length - 1
+          refreshControl={props.selectedMonthIndex === props.monthlyTotalSpent.length - 1
             ? <RefreshControl
-                  refreshing={this.props.refreshing}
-                  onRefresh={() => !this.props.refreshing ? this.props.loadMoreTransactions() : undefined} />
+                  refreshing={props.refreshing}
+                  onRefresh={() => !props.refreshing ? props.loadMoreTransactions() : undefined} />
             : undefined
           }/>
     } else {
