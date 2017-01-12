@@ -85,10 +85,10 @@ const Tabs = (props) =>
               lineTwo='your account details'/> }
       </WithNetworkConnection>
     </ScrollableTabView>
-    <Modal visible={props.modalVisible} hideModal={!props.confirmation && props.hideModal}>
+    <Modal visible={props.modalVisible} hideModal={!props.message && props.hideModal}>
       {componentForModalState(props.modalState)}
     </Modal>
-    <Modal visible={!!props.confirmation} hideModal={props.closeConfirmation}>
+    <Modal visible={!!props.message} hideModal={props.closeConfirmation}>
       <PaymentConfirmation />
     </Modal>
   </View>
@@ -104,7 +104,7 @@ const mapStateToProps = (state) => ({
   status: state.status,
   dialogOpen: state.login.loginFormOpen,
   online: state.networkConnection.status,
-  confirmation: state.navigation.confirmation,
+  message: state.navigation.message,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tabs)
