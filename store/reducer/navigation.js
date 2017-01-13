@@ -24,7 +24,9 @@ const initialState = {
   mainComponent: mainComponent.onboarding,
   stateInitialised: false,
   modalVisible: false,
-  confirmation: undefined
+  message: undefined,
+  amount: undefined,
+  timestamp: undefined
 }
 
 export const navigateToTab = (tabIndex) => ({
@@ -124,13 +126,17 @@ const reducer = (state = initialState, action) => {
     case 'sendMoney/TRANSACTION_COMPLETE':
       if (action.success) {
         state = merge(state, {
-          confirmation: action.message
+          message: action.message,
+          amount: action.amount,
+          timestamp: action.timestamp
         })
       }
       break
     case 'navigation/CLOSE_CONFIRMATION':
       state = merge(state, {
-        confirmation: undefined
+          message: undefined,
+          amount: undefined,
+          timestamp: undefined
       })
       break
   }

@@ -1,26 +1,60 @@
-import { TouchableHighlight } from 'react-native'
+import { TouchableHighlight, View, Image } from 'react-native'
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
 import colors from '../util/colors'
-import { MultilineText } from './DefaultText'
+import commonStyle from './style'
+import DefaultText from './DefaultText'
 import { closeConfirmation } from '../store/reducer/navigation'
+import ProfileImage from './profileImage/ProfileImage'
+import styles from './profileScreen/ProfileStyle'
 
 const style = {
-  background: {
-    flex: 1,
-    backgroundColor: colors.bristolBlue
-  }
+	background: {
+		flex: 1,
+		backgroundColor: colors.bristolBlue,
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+    title: {
+		fontFamily: commonStyle.font.museo500,
+		marginTop: 8,
+		fontSize: 20,
+		color: colors.offBlack
+    },
+	subtitle: {
+		marginBottom: 46,
+		fontSize: 18,
+		color: colors.gray
+    },
+	time: {
+		fontFamily: commonStyle.font.museo100,
+		color: colors.gray
+    }
 }
 
 const PaymentConfirmation = (props) =>
   <TouchableHighlight onPress={props.closeConfirmation} style={style.background}>
-    <MultilineText> {props.confirmation} </MultilineText>
+  	<View style={style.background}>
+  		<DefaultText>{props.message}</DefaultText>
+  		<ProfileImage
+        	image={props.trader.image && {uri: props.trader.image.url}}
+        	style={styles.header.businessLogo}
+        	category={props.trader.category}
+        	colorCode={0} />
+      <DefaultText style={style.title}>{props.trader.display}</DefaultText>
+      <DefaultText style={style.subtitle}>{props.trader.shortDisplay}</DefaultText>
+      <DefaultText style={style.time}>{props.timestamp}</DefaultText>
+      <DefaultText>{props.amount}</DefaultText>
+    </View>
   </TouchableHighlight>
 
 const mapStateToProps = (state) => ({
-  confirmation: state.navigation.confirmation
+	trader: state.business.businessList.find(b => b.id === state.business.traderScreenBusinessId) || {},
+	message: state.navigation.message,
+	amount: state.navigation.amount,
+  timestamp: state.navigation.timestamp
 })
 
 const mapDispatchToProps = (dispatch) =>
