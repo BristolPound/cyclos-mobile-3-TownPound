@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Dimensions } from 'react-native'
+import { View, Dimensions, TouchableHighlight } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Carousel from './Carousel'
@@ -14,7 +14,7 @@ const CAROUSEL_ITEM_WIDTH = Dimensions.get('window').width / 3
 
 export const toMonthString = month => isSameMonth(month, new Date()) ? 'This Month' : format(month, 'MMMM')
 
-const MonthOption = ({monthTotal, isSelected}) => {
+const MonthOption = ({index, monthTotal, isSelected, selectMonth}) => {
   const basicPriceStyle = (color, size) => ({ color, size }),
       priceProps = isSelected ? basicPriceStyle(color.bristolBlue, 32) : basicPriceStyle(color.bristolBlue2, 28)
 
@@ -22,15 +22,17 @@ const MonthOption = ({monthTotal, isSelected}) => {
       textStyle = isSelected ? basicTextStyle(color.gray, 4) : basicTextStyle(color.gray2, 2)
 
   return (
-    <View style={{width: CAROUSEL_ITEM_WIDTH}}>
-      <DefaultText style={{...styles.header.monthlyOption, ...textStyle}}>
-        {toMonthString(monthTotal.month).toUpperCase()}
-      </DefaultText>
-      <Price
-          {...priceProps}
-          price={monthTotal.total}
-          center={true} />
-    </View>
+    <TouchableHighlight onPress={() => selectMonth(index)} underlayColor='rgba(230, 230, 230, 0.5)'>
+      <View style={{width: CAROUSEL_ITEM_WIDTH}}>
+        <DefaultText style={{...styles.header.monthlyOption, ...textStyle}}>
+          {toMonthString(monthTotal.month).toUpperCase()}
+        </DefaultText>
+        <Price
+            {...priceProps}
+            price={monthTotal.total}
+            center={true} />
+      </View>
+    </TouchableHighlight>
   )
 }
 
@@ -40,13 +42,14 @@ export const SpendingHeader = props =>
       itemWidth={CAROUSEL_ITEM_WIDTH}
       containerWidth={Dimensions.get('window').width}
       pageIndex={props.selectedMonthIndex}
-      onPageChange={props.selectMonth}
-      onPress={props.selectMonth}>
+      onPageChange={props.selectMonth}>
       { props.monthlyTotalSpent.map((monthTotal, index) =>
           <MonthOption
               key={index}
+              index={index}
               monthTotal={monthTotal}
-              isSelected={props.selectedMonthIndex === index} />
+              isSelected={props.selectedMonthIndex === index}
+              selectMonth={props.selectMonth} />
       ) }
   </Carousel>
 
