@@ -40,7 +40,6 @@ export const SpendingHeader = props =>
       itemWidth={CAROUSEL_ITEM_WIDTH}
       containerWidth={Dimensions.get('window').width}
       pageIndex={props.selectedMonthIndex}
-      onTouchStart={props.scrollTransactionsToTop}
       onPageChange={props.selectMonth}
       onPress={props.selectMonth}>
       { props.monthlyTotalSpent.map((monthTotal, index) =>

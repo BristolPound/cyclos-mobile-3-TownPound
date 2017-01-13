@@ -31,17 +31,14 @@ class Carousel extends React.Component {
       },
 
       onPanResponderRelease: (evt, gestureState) => {
-        if (gestureState.dx === 0 && this.props.onPress) {
+        if (gestureState.dx <= 3 && this.props.onPress) {
           const pressLocation = evt.nativeEvent.pageX
           const pressIndex = Math.floor((pressLocation - this.state.leftOffset._value) / this.props.itemWidth)
           this.props.onPress(pressIndex)
         } else {
           const newLocation = this.getLocationAfterMove(gestureState.dx)
-          const oldIndex = this.indexAtLeftOffset(this.leftOffsetAtPanStart)
           const newIndex = this.indexAtLeftOffset(newLocation)
-          if (newIndex !== oldIndex && this.props.onPageChange) {
-            this.props.onPageChange(newIndex)
-          }
+          this.props.onPageChange && this.props.onPageChange(newIndex)
           this.animateToEndPosition()
         }
       },
