@@ -50,10 +50,6 @@ const failedToLoadTransactions = () => ({
   type: 'transaction/FAILED_TO_LOAD'
 })
 
-export const scrollTransactionsToTop = () => ({
-  type: 'transaction/SCROLL_TO_TOP'
-})
-
 export const transactionsScrolled = () => ({
   type: 'transaction/SCROLLED'
 })
@@ -172,10 +168,6 @@ const reducer = (state = initialState, action) => {
         scrolled: true,
       })
       break
-    case 'transaction/SCROLL_TO_TOP':
-      state = merge(state, {
-        scrolled: false
-      })
   }
   return state
 }
