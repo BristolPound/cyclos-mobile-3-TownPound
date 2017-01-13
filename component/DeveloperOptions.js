@@ -154,13 +154,15 @@ const DeveloperOptions = props => {
         dataSource={infoSource}
         renderRow={(accountOption, i) => <DeveloperInfo {...accountOption} index={i}/> }
         renderSectionHeader={renderSectionHeader}
-        accessibilityLabel='Developer Info'/>
+        accessibilityLabel='Developer Info'
+        removeClippedSubviews={false}/>
       <ListView
         style={{flex: 1}}
         dataSource={actionsSource}
         renderRow={(accountOption, i) => <DeveloperAction {...accountOption} index={i}/> }
         renderSectionHeader={renderSectionHeader}
-        accessibilityLabel='Developer Actions'/>
+        accessibilityLabel='Developer Actions'
+        removeClippedSubviews={false}/>
     </View>
   )
 }

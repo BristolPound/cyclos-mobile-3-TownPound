@@ -82,7 +82,8 @@ class SpendingTab extends React.Component {
                   refreshing={this.props.refreshing}
                   onRefresh={() => !this.props.refreshing ? this.props.loadMoreTransactions() : undefined} />
             : undefined
-          }/>
+          }
+          removeClippedSubviews={false}/>
     } else {
       bodyComponent = <View style={styles.noTransactions.container}>
         <DefaultText style={styles.noTransactions.text}>You have made no transactions</DefaultText>
