@@ -4,7 +4,7 @@ import haversine from 'haversine'
 
 const BUSINESS_LIST_MAX_LENGTH = 50
 
-const addColorCodes = (list) => {
+export const addColorCodes = (list) => {
     const newList = list.map(b => merge(b))
     newList.forEach((component, index, newList) => {
         const compareColorCodes = (distance) =>

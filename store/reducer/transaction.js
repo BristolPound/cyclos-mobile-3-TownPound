@@ -3,6 +3,7 @@ import merge from '../../util/merge'
 import _ from 'lodash'
 import { groupTransactionsByDate, calculateMonthlyTotalSpent, filterTransactions,
   sortTransactions, findTransactionsByDate } from '../../util/transaction'
+import { addColorCodes } from '../../util/business'
 import { getTransactions, getAccountBalance } from '../../api/accounts'
 import { updateStatus, unknownError } from './statusMessage'
 import { loggedOut, openLoginForm } from './login'
@@ -122,17 +123,17 @@ const reducer = (state = initialState, action) => {
       break
     case 'transaction/TRANSACTIONS_RECEIVED':
       const mergedTransactions = _.uniqBy([...state.transactions, ...action.transactions], 'transactionNumber')
-      const sortedTransactions = sortTransactions(mergedTransactions)
-      const monthlyTotalSpent = calculateMonthlyTotalSpent(sortedTransactions)
+      const coloredSortedTransactions = addColorCodes(sortTransactions(mergedTransactions))
+      const monthlyTotalSpent = calculateMonthlyTotalSpent(coloredSortedTransactions)
       const selectedMonthIndex = lastIndex(monthlyTotalSpent)
       state = merge(state, {
         loadingTransactions: false,
         refreshing: false,
         monthlyTotalSpent,
         selectedMonthIndex,
-        transactions: sortedTransactions,
+        transactions: coloredSortedTransactions,
         transactionsDataSource: filterTransactionsByMonth(
-          state.transactionsDataSource, sortedTransactions, monthlyTotalSpent[selectedMonthIndex].month
+          state.transactionsDataSource, coloredSortedTransactions, monthlyTotalSpent[selectedMonthIndex].month
         ),
         scrolled: false,
       })
