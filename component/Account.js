@@ -111,7 +111,8 @@ const Account = (props) => {
         scrollEnabled={false}
         renderSeparator={renderSeparator}
         renderSectionHeader={renderSectionHeader}
-        renderRow={(accountOption, i) => <AccountOption {...accountOption} index={i}/> }/>
+        renderRow={(accountOption, i) => <AccountOption {...accountOption} index={i}/> }
+        removeClippedSubviews={false}/>
     </View>
   )
 }

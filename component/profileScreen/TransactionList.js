@@ -44,7 +44,8 @@ export default class TransactionList extends Component {
         renderRow={transaction => this.props.renderRow
           || <TransactionItem transaction={transaction} setSelected={this.setSelected} selected={transaction.selected} />}
         renderSeparator={renderSeparator}
-        renderSectionHeader={renderSectionHeader}/>
+        renderSectionHeader={renderSectionHeader}
+        removeClippedSubviews={false}/>
     )
   }
 }
