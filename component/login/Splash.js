@@ -116,7 +116,7 @@ class Splash  extends React.Component {
               {translateX: this.state.backgroundOffset}
             ]
           })}
-          resizeMode='stretch'
+          resizeMode='cover'
           source={require('../../assets/background.jpg')}/>
         { this.state.showButtons
           ? <View style={style.bottomContainer}>
