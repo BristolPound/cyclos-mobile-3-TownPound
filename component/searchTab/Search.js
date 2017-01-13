@@ -93,7 +93,7 @@ export default class Search extends React.Component {
 
     render() {
       const { componentListArray, input } = this.state
-      const { searchMode, openTraderModal, updateSearchMode } = this.props
+      const { searchMode, updateSearchMode } = this.props
 
       const childrenHeight = componentListArray.length * ROW_HEIGHT
 
