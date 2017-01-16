@@ -12,6 +12,10 @@ import commonStyle from '../style'
 import KeyboardComponent from '../KeyboardComponent'
 
 const style = {
+  outerContainer: {
+    ...horizontalAbsolutePosition(0, 0),
+    height: 204
+  },
   loginContainer: {
     backgroundColor: 'white',
     ...commonStyle.shadow
@@ -86,7 +90,7 @@ class Login extends KeyboardComponent {
       loginButtonText += ` (${remainingAttempts} attempt${remainingAttempts === 1 ? '' : 's'} remaining)`
     }
     const loginView = (
-      <Animated.View style={{ ...horizontalAbsolutePosition(0, 0), bottom: this.state.keyboardHeight, height: hideUsernameInput ? 136 : 204 }}>
+      <Animated.View style={merge(style.outerContainer, { bottom: this.state.keyboardHeight })}>
         <Animated.View style={merge(style.loginContainer, { bottom: this.state.bottom })}>
           <TouchableOpacity style={{ ...style.loginButton, backgroundColor: detailsValid(this.state.username, this.state.password) ? colors.bristolBlue : colors.offWhite }}
               accessibilityLabel={'Login Button'}
@@ -95,18 +99,17 @@ class Login extends KeyboardComponent {
               {loginButtonText}
             </DefaultText>
           </TouchableOpacity>
-          { hideUsernameInput
-            ? undefined
-            : <TextInput style={style.input}
-                accessibilityLabel={'Input Username'}
-                autoFocus={true}
-                onChangeText={(text) => this.usernameUpdated(text)}
-                onSubmitEditing={this.selectPasswordField.bind(this)}
-                placeholder={'Username'}
-                placeholderTextColor={colors.gray4}
-                selectTextOnFocus={true}
-                value={this.state.username} />
-          }
+          <TextInput style={style.input}
+              accessibilityLabel={'Input Username'}
+              autoFocus={!hideUsernameInput}
+              onChangeText={(text) => this.usernameUpdated(text)}
+              onSubmitEditing={this.selectPasswordField.bind(this)}
+              placeholder={'Username'}
+              placeholderTextColor={colors.gray4}
+              selectTextOnFocus={true}
+              value={this.state.username}
+              underlineColorAndroid={colors.transparent}
+              autoCorrect={false} />
           <View style={style.separator}/>
           <TextInput style={style.input}
               ref={(ref) => this.passwordInputRef = ref}
@@ -117,7 +120,8 @@ class Login extends KeyboardComponent {
               placeholder={'Password'}
               placeholderTextColor={colors.gray4}
               secureTextEntry={true}
-              selectTextOnFocus={true} />
+              selectTextOnFocus={true}
+              underlineColorAndroid={colors.transparent} />
         </Animated.View>
       </Animated.View>
     )
