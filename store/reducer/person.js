@@ -8,7 +8,6 @@ import { getPersonProfile } from '../../api/users'
 
 const initialState = {
   personList: [],
-  loadingProfile: false,
   selectedPersonId: undefined
 }
 
@@ -16,32 +15,18 @@ export const resetProfile = () => ({
   type: 'person/RESET_PROFILE',
 })
 
-const profileFailedToLoad = () => ({
-  type: 'person/FAILED_TO_LOAD'
-})
-
 export const personProfileReceived = (personProfile) => ({
   type: 'person/PERSON_PROFILE_RECEIVED',
   personProfile
 })
 
-const loadingPersonProfile = () => ({
-  type: 'person/LOADING_PROFILE'
-})
-
-const finishedLoadingPersonProfile = () => ({
-  type: 'person/FINISHED_LOADING_PROFILE'
-})
-
 export const loadPersonProfile = (personId) => (dispatch) => {
-  dispatch(loadingPersonProfile())
   getPersonProfile(personId, dispatch)
     .then(personProfile => {
       addContact(personId, dispatch)
         .then((newContactsList) => {
           dispatch(updatePersonList(newContactsList))
           dispatch(personProfileReceived(personProfile))
-          dispatch(finishedLoadingPersonProfile())
         })
         .catch((err) => dispatch(unknownError(err)))
     })
@@ -54,7 +39,6 @@ export const loadPersonProfile = (personId) => (dispatch) => {
       } else {
         dispatch(unknownError(err))
       }
-      dispatch(profileFailedToLoad())
     })
 }
 
@@ -120,26 +104,7 @@ const reducer = (state = initialState, action) => {
     case 'person/RESET_PROFILE':
       state = merge(state, {
         personList: [],
-        loadingProfile: false,
         selectedPersonId: undefined
-      })
-      break
-
-    case 'person/FAILED_TO_LOAD':
-      state = merge(state, {
-        loadingProfile: false
-      })
-      break
-
-    case 'person/LOADING_PROFILE':
-      state = merge(state, {
-        loadingProfile: true
-      })
-      break
-
-    case 'person/FINISHED_LOADING_PROFILE':
-      state = merge(state, {
-        loadingProfile: false
       })
       break
   }

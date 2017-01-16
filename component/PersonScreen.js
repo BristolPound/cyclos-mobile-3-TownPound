@@ -11,11 +11,11 @@ import marginOffset from '../util/marginOffset'
 import BusinessDetails from './businessDetails/BusinessDetails'
 import SendMoney, { sectionHeight } from './SendMoney'
 
-const PersonScreen = ({trader, transactions, hideModal, loadingProfile, resetForm}) =>
+const PersonScreen = ({trader, transactions, hideModal, resetForm}) =>
   <View style={{flex: 1}}>
     <View style={{flex: 1, maxHeight: marginOffset(Dimensions.get('window').height) - sectionHeight}}>
     <TransactionList
-      renderHeader={renderHeader(trader, transactions, hideModal, loadingProfile, resetForm)}
+      renderHeader={renderHeader(trader, transactions, hideModal, resetForm)}
       listData={transactions} />
     </View>
     <SendMoney
@@ -24,7 +24,7 @@ const PersonScreen = ({trader, transactions, hideModal, loadingProfile, resetFor
       payeeShortDisplay={trader.username} />
   </View>
 
-const renderHeader = (trader, transactions, hideModal, loadingProfile, resetForm) => () =>
+const renderHeader = (trader, transactions, hideModal, resetForm) => () =>
     <View style={{flex: 1}}>
       <ProfileHeader
         name={trader.name}
@@ -34,9 +34,6 @@ const renderHeader = (trader, transactions, hideModal, loadingProfile, resetForm
         onPressClose={() => {hideModal(); resetForm()}}
         isModal={true} />
         <BusinessDetails business={trader}/>
-        { loadingProfile
-          ? <ActivityIndicator style={{marginBottom: 10}} size='large'/>
-          : undefined }
     </View>
 
 
@@ -50,8 +47,7 @@ const getTransactionsForSelectedPerson = (state) => {
 
 const mapStateToProps = (state) => ({
   trader: state.person.personList.find(p => p.id === state.person.selectedPersonId) || {},
-  transactions: getTransactionsForSelectedPerson(state),
-  loadingProfile: state.person.loadingProfile
+  transactions: getTransactionsForSelectedPerson(state)
 })
 
 const mapDispatchToProps = (dispatch) =>
