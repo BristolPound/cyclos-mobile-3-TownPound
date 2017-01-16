@@ -42,6 +42,28 @@ export const getBusinessProfile = (businessId, dispatch) =>
     fields: ['id', 'customValues']
   }, dispatch)
 
+export const getPersonProfile = (personId, dispatch) =>
+  get('users/' + personId, {
+    fields: [
+      'id',
+      'image.url',
+      'display',
+      'shortDisplay',
+      'username',
+      'name',
+      'customValues',
+      'email',
+      'phones'
+    ]
+  }, dispatch)
+  .then(account => merge(account, {
+    display: account.display || account.name,
+    shortDisplay: parseShortDisplay(account.shortDisplay || account.username),
+    businessphone: account.phone || account.businessphone,
+    businessemail: account.email || account.businessemail,
+    category: 'person'
+  }))
+
 export const getAccountDetails = (dispatch) =>
   get('users/self', {
     fields: ['display', 'shortDisplay', 'image.url', 'email', 'phones'],
