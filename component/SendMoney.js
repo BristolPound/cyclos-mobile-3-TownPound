@@ -24,7 +24,6 @@ export const sectionHeight = 68
 const styles = {
   button: {
     height: sectionHeight,
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },

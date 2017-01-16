@@ -9,7 +9,7 @@ import BusinessListItem, { SelectedBusiness } from './BusinessListItem'
 import ScrollingExpandPanel from './ScrollingExpandPanel'
 import styles, { SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN, maxExpandedHeight } from './SearchTabStyle'
 import { ROW_HEIGHT, BUSINESS_LIST_SELECTED_GAP} from './BusinessListStyle'
-import { updateSearchMode, updateMapViewport } from '../../store/reducer/business'
+import * as actions from '../../store/reducer/business'
 import { openTraderModal } from '../../store/reducer/navigation'
 import { Overlay } from '../common/Overlay'
 import Search from './Search'
@@ -57,8 +57,7 @@ class SearchTab extends React.Component {
   }
 
   render() {
-    const { allBusinesses, closestBusinesses, openTraderModal, selectedBusiness, searchMode, updateSearchMode,
-        geolocationStatus, mapViewport, updateMapViewport } = this.props
+    const { allBusinesses, closestBusinesses, openTraderModal, selectedBusiness, searchMode } = this.props
     const { componentList } = this.refs
 
     const noOfCloseBusinesses = closestBusinesses.length,
@@ -79,14 +78,7 @@ class SearchTab extends React.Component {
       <View style={{flex: 1}}>
         <BackgroundMap/>
         { searchMode && <Overlay overlayVisible={true} onPress={exitSearchMode}/> }
-        <Search businessList={allBusinesses}
-                updateSearchMode={updateSearchMode}
-                searchMode={searchMode}
-                openTraderModal={openTraderModal}
-                ref='search'
-                geolocation={geolocationStatus}
-                mapViewport={mapViewport}
-                updateMapViewport={updateMapViewport}/>
+        <Search ref='search' {...this.props}/>
         <ScrollingExpandPanel
             style={merge(styles.searchTab.expandPanel, (searchMode ? styles.searchTab.hide : {})) }
             topOffset={this.calculateOffset([ expandedHeight, collapsedHeight, closedHeight ])}
@@ -115,6 +107,6 @@ const mapStateToProps = (state) => ({
   geolocationStatus: state.business.geolocationStatus
 })
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ openTraderModal, updateSearchMode, updateMapViewport }, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({ openTraderModal, ...actions }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchTab)

@@ -22,6 +22,7 @@ const Business = {
   selectedBusinessId: undefined,
   closestBusinesses: [],
   mapViewport: MapViewport,
+  forceRegion: MapViewport,
   searchMode: false,
   loadingProfile: false,
   traderScreenBusinessId: undefined,
@@ -31,6 +32,10 @@ const Business = {
 export const businessListReceived = (businessList) => ({
   type: 'business/BUSINESS_LIST_RECEIVED',
   businessList
+})
+
+export const moveMap = () => ({
+  type: 'business/MOVE_MAP'
 })
 
 export const businessProfileReceived = (businessProfile) => ({
@@ -253,6 +258,10 @@ const reducer = (state = Business, action) => {
 
     case 'business/GEOLOCATION_SUCCESS':
       state = merge(state, { geolocationStatus: action.location })
+      break
+
+    case 'business/MOVE_MAP':
+      state = merge(state, { forceRegion: state.mapViewport })
       break
   }
   return state
