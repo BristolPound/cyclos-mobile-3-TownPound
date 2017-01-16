@@ -53,8 +53,7 @@ class ReturningLogin extends React.Component {
       <Splash loginButtonText='Log in'
         logoutButtonText="I'm just browsing"
         renderWelcomeMessage={renderWelcomeMessage}
-        renderInfoText={renderInfoText}
-        hideUsernameInput={true} />
+        renderInfoText={renderInfoText} />
     )
   }
 }

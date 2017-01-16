@@ -77,7 +77,6 @@ class SearchTab extends React.Component {
 
     return (
       <View style={{flex: 1}}>
-        <BackgroundMap/>
         { searchMode && <Overlay overlayVisible={true} onPress={exitSearchMode}/> }
         <Search businessList={allBusinesses}
                 updateSearchMode={updateSearchMode}

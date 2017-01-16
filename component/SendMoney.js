@@ -1,7 +1,7 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { View, TextInput, TouchableOpacity, ActivityIndicator, Dimensions, Animated } from 'react-native'
+import { View, TextInput, TouchableOpacity, Dimensions, Animated } from 'react-native'
 import KeyboardComponent from './KeyboardComponent'
 import * as actions from '../store/reducer/sendMoney'
 import { openLoginForm } from '../store/reducer/login'
@@ -57,7 +57,7 @@ class InputComponent extends KeyboardComponent {
   }
 
   render() {
-    let { onButtonPress, buttonText, loading, input, invalidInput, accessibilityLabel } = this.props
+    let { onButtonPress, buttonText, input, invalidInput, accessibilityLabel } = this.props
 
     return <Animated.View style={{backgroundColor: 'white', bottom: input ? this.state.keyboardHeight : 0}} accessibilityLabel={accessibilityLabel}>
       <TouchableOpacity style={merge(styles.button, {backgroundColor: this.getButtonColor()})}
@@ -66,10 +66,6 @@ class InputComponent extends KeyboardComponent {
           <DefaultText style={{fontSize: 24, color: this.getButtonTextColor(), textAlign: 'center', width: Dimensions.get('window').width - 20}}>
             {buttonText}
           </DefaultText>
-
-          { loading
-            ? <ActivityIndicator size='small' style={styles.loadingSpinner}/>
-            : undefined }
         </View>
       </TouchableOpacity>
 
@@ -134,7 +130,7 @@ class SendMoney extends React.Component {
       if (this.state.inputPage === Page.PaymentComplete) {
         inputProps = {
           buttonText: this.props.message,
-          onButtonPress: () => { this.props.resetForm(); this.nextPage() },
+          onButtonPress: () => { this.nextPage() },
           accessibilityLabel: 'Payment complete'
         }
       } else if (this.props.loggedIn) {
