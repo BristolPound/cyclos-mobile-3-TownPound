@@ -115,7 +115,8 @@ export default class Search extends React.Component {
                        placeholderTextColor={colors.gray4}
                        selectTextOnFocus={true}
                        style={textInput}
-                       value={input} />
+                       value={input}
+                       underlineColorAndroid={colors.transparent}/>
             { searchMode &&
                 <CloseButton onPress={() => this.closeSearchScreen()} closeButtonType={CLOSE_BUTTON} style={closeButton} size={SEARCH_BAR_HEIGHT}/> }
           </View>
