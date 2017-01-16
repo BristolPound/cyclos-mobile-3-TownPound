@@ -43,9 +43,10 @@ const style = {
 }
 
 class BackgroundMap extends React.Component {
-  constructor() {
+  constructor(props) {
     super()
-    this.state = ({ loading: true, ignoreLocationUpdates: false })
+    this.state = ({ loading: true })
+    this.region = props.forceRegion
   }
 
   componentDidMount() {
@@ -53,16 +54,16 @@ class BackgroundMap extends React.Component {
     setTimeout(() => this.setState({ loading: false }), 500)
   }
 
-  debouncedReenableUpdates = _.debounce(() => this.setState({ ignoreLocationUpdates: false }), 1400)
-
-  updateViewport(...args) {
-    this.setState({ ignoreLocationUpdates: true })
-    this.props.updateMapViewport(...args)
-    this.debouncedReenableUpdates()
-  }
-
   isSelected(business) {
     return this.props.selectedBusinessId === business.id
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.forceRegion !== this.props.forceRegion) {
+      this.region = nextProps.forceRegion
+    } else {
+      this.region = undefined
+    }
   }
 
   renderMarker(business) {
@@ -99,9 +100,6 @@ class BackgroundMap extends React.Component {
   }
 
   render() {
-    // Prevent the map from 'jumping back' to the last processed location
-    const region = this.state.ignoreLocationUpdates ? undefined : this.props.mapViewport
-
     let markerArray = undefined
     if (this.props.businessList) {
       markerArray = this.props.businessList.filter(b => b.address)
@@ -111,13 +109,13 @@ class BackgroundMap extends React.Component {
     return (
       <View style={style.container}>
         <MapView style={style.map}
-            region={region}
+            region={this.region}
             showsPointsOfInterest={false}
             showsUserLocation={true}
             showsCompass={false}
             rotateEnabled={false}
             pitchEnabled={false}
-            onRegionChange={_.debounce(this.updateViewport.bind(this), MAP_PAN_DEBOUNCE_DURATION)}
+            onRegionChange={_.debounce(this.props.updateMapViewport, MAP_PAN_DEBOUNCE_DURATION)}
             loadingEnabled={true}>
           {markerArray}
         </MapView>

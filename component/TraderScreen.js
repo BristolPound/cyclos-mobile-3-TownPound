@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { View, ActivityIndicator, Dimensions } from 'react-native'
+import { View, Dimensions } from 'react-native'
 import marginOffset from '../util/marginOffset'
 import * as actions from '../store/reducer/navigation'
 import TransactionList from './profileScreen/TransactionList'
@@ -36,9 +36,6 @@ const asRenderHeader = (trader, transactions, hideModal, loadingProfile, resetFo
       onPressClose={() => {hideModal(); resetForm()}}
       isModal={true} />
       <BusinessDetails business={trader} goToLocation={goToLocation}/>
-      { loadingProfile
-        ? <ActivityIndicator style={{marginBottom: 10}} size='large'/>
-        : undefined }
   </View>
 
 const getTransactionsForSelectedBusiness = (state) => {

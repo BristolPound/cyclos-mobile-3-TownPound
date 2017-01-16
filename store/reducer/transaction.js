@@ -149,11 +149,13 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'transaction/SELECT_MONTH':
-      state = merge(state, {
-        selectedMonthIndex: action.monthIndex,
-        transactionsDataSource: filterTransactionsByMonthIndex(state, action.monthIndex),
-        scrolled: false
-      })
+      if (state.selectedMonthIndex !== action.monthIndex) {
+        state = merge(state, {
+          selectedMonthIndex: action.monthIndex,
+          transactionsDataSource: filterTransactionsByMonthIndex(state, action.monthIndex),
+          scrolled: false
+        })
+      }
       break
     case 'transaction/RESET_TRANSACTIONS':
       state = initialState
