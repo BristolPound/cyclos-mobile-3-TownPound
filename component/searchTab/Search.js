@@ -38,7 +38,7 @@ export default class Search extends React.Component {
     }
 
     debouncedUpdate = _.debounce(() => {
-      const { businessList } = this.props
+      const { allBusinesses } = this.props
       const termsMatch = (field) => {
         let match = true
         this.state.searchTerms.forEach((term) => {
@@ -49,7 +49,7 @@ export default class Search extends React.Component {
         return match
       }
       this.refs.ExpandPanel && this.refs.ExpandPanel.resetToInitalState()
-      const filteredBusinessList = businessList.filter(business => termsMatch(business.display) || termsMatch(business.shortDisplay))
+      const filteredBusinessList = allBusinesses.filter(business => termsMatch(business.display) || termsMatch(business.shortDisplay))
       const componentListArray = this.createComponentListArray(addColorCodes(filteredBusinessList))
       this.setState({ componentListArray })
     }, 800)
@@ -71,11 +71,12 @@ export default class Search extends React.Component {
     }
 
     nearbyButtonEnabled() {
-      return this.props.geolocation && haversine(this.props.geolocation, this.props.mapViewport) > 0.1 //km
+      return this.props.geolocationStatus && haversine(this.props.geolocationStatus, this.props.mapViewport) > 0.1 //km
     }
 
     nearbyButtonPressed() {
-      this.props.updateMapViewport(this.props.geolocation)
+      this.props.updateMapViewport(this.props.geolocationStatus)
+      this.props.moveMap()
     }
 
     createComponentListArray(list) {

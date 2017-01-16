@@ -3,7 +3,7 @@ import merge from '../../util/merge'
 import { selectAndLoadBusiness } from './business'
 import { selectAndLoadPerson } from './person'
 import { LOGGED_OUT, LOGGED_IN } from './login'
-import { updateMapViewportAndSelectClosestTrader, updateSearchMode } from './business'
+import { updateMapViewportAndSelectClosestTrader, updateSearchMode, moveMap } from './business'
 
 export const modalState = {
   none: 'none',
@@ -86,6 +86,7 @@ export const goToLocation = (location) =>
     dispatch(updateSearchMode(false))
     dispatch(updateMapViewportAndSelectClosestTrader(location))
     dispatch(navigateToTab(0))
+    dispatch(moveMap())
     dispatch(hideModal())
   }
 
