@@ -12,7 +12,7 @@ const renderCloseButton = (onPress) =>
   <CloseButton style={styles.header.closeButton} onPress={onPress} closeButtonType={CLOSE_BUTTON} size={70}/>
 
 const ProfileHeader = (props) =>
-  <View style={styles.header.container}>
+  <View>
     <Image source={require('./assets/gorillaWithBackground.png')}
       style={styles.header.backgroundImage}
       resizeMode='cover' />

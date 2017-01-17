@@ -1,7 +1,6 @@
 import { Dimensions } from 'react-native'
 
 import color from '../../util/colors'
-import marginOffset from '../../util/marginOffset'
 import commonStyle from '../style'
 import { dimensions, margin, padding, horizontalAbsolutePosition } from '../../util/StyleUtils'
 import { isScreenSmall, screenHeight } from '../../util/ScreenSizes'
@@ -10,10 +9,9 @@ import { TAB_BAR_HEIGHT } from '../tabbar/TabBarStyle'
 const MARGIN_SIZE = 10
 const CLEAR_TEXT_ICON_WIDTH = 46
 const NEARBY_WIDTH = 39
-const SEARCH_BAR_MARGIN_IOS = 35
+export const SEARCH_BAR_MARGIN = 35
 const SEARCH_BAR_WIDTH = Dimensions.get('window').width - 2 * MARGIN_SIZE
 
-export const SEARCH_BAR_MARGIN = marginOffset(SEARCH_BAR_MARGIN_IOS)
 export const SEARCH_BAR_HEIGHT = isScreenSmall ? 44 : 48
 
 export const maxExpandedHeight = screenHeight - SEARCH_BAR_MARGIN - SEARCH_BAR_HEIGHT - TAB_BAR_HEIGHT
