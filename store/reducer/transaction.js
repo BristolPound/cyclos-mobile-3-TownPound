@@ -155,6 +155,10 @@ const reducer = (state = initialState, action) => {
           transactionsDataSource: filterTransactionsByMonthIndex(state, action.monthIndex),
           scrolled: false
         })
+      } else { // tapping the same month should scroll to the top 
+        state = merge(state, {
+          scrolled: false,
+        })
       }
       break
     case 'transaction/RESET_TRANSACTIONS':
