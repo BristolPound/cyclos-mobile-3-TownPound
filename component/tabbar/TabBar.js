@@ -5,68 +5,10 @@ import DefaultText from '../DefaultText'
 import Price from '../Price'
 import { connect } from 'react-redux'
 import color from '../../util/colors'
-import { dimensions } from '../../util/StyleUtils'
-import commonStyle from '../style'
 import { openLoginForm } from '../../store/reducer/login'
 import { showModal, modalState } from '../../store/reducer/navigation'
 import { LOGIN_STATUSES } from '../../store/reducer/login'
-
-export const TAB_BAR_HEIGHT = 45
-const BASELINE = 9
-// react native doesn't support adjusting text baseline, so we have to use a magic number
-// in order to align the amount with the icons
-const MAGIC_NUMBER = 6
-
-const style = {
-  tabBar: {
-    height: TAB_BAR_HEIGHT,
-    flexDirection: 'row',
-    alignItems: 'stretch',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'white',
-    ...commonStyle.shadow
-  },
-  separator: {
-    ...dimensions(1, TAB_BAR_HEIGHT / 2),
-    backgroundColor: '#e2e3e6'
-  },
-  amountContainer: {
-    width: 142,
-    backgroundColor: '#f4f4f4',
-    flexDirection: 'row',
-    justifyContent: 'flex-end'
-  },
-  amountInnerContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
-    paddingRight: 10,
-    height: TAB_BAR_HEIGHT
-  },
-  centerChildren: {
-    flex: 1,
-    flexDirection:'row',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  iconContainer: {
-    height: TAB_BAR_HEIGHT,
-    flex: 1,
-    flexDirection:'row',
-    justifyContent:'center',
-    alignItems: 'flex-end',
-    paddingBottom: BASELINE
-  },
-  balanceSymbol: {
-    paddingRight: 4,
-    marginBottom: BASELINE
-  },
-  amount: {
-    marginBottom: BASELINE - MAGIC_NUMBER
-  }
-}
+import style from './TabBarStyle'
 
 // NOTE - The image URLs must be known statically
 // see: https://facebook.github.io/react-native/docs/images.html

@@ -6,41 +6,9 @@ import DefaultText from '../DefaultText'
 import colors from '../../util/colors'
 import merge from '../../util/merge'
 import animateTo from '../../util/animateTo'
-import { horizontalAbsolutePosition } from '../../util/StyleUtils'
 import * as actions from '../../store/reducer/login'
-import commonStyle from '../style'
 import KeyboardComponent from '../KeyboardComponent'
-
-const style = {
-  outerContainer: {
-    ...horizontalAbsolutePosition(0, 0),
-    height: 204
-  },
-  loginContainer: {
-    backgroundColor: 'white',
-    ...commonStyle.shadow
-  },
-  loginButton: {
-    flex: 1,
-    height: 68,
-    padding: 20,
-  },
-  loginButtonText: {
-    fontSize: 24,
-    textAlign: 'center'
-  },
-  input: {
-    height: 68,
-    fontSize: 20,
-    color: colors.bristolBlue,
-    backgroundColor: 'white',
-    textAlign: 'center'
-  },
-  separator: {
-    height: 1,
-    backgroundColor: colors.gray5
-  }
-}
+import styles from './LoginStyle'
 
 // Cyclos doesn't like special characters or empty usernames :(
 const detailsValid = (username, password) => username && !username.match(/\W/) && password && password.indexOf(' ') === -1
@@ -90,16 +58,16 @@ class Login extends KeyboardComponent {
       loginButtonText += ` (${remainingAttempts} attempt${remainingAttempts === 1 ? '' : 's'} remaining)`
     }
     const loginView = (
-      <Animated.View style={merge(style.outerContainer, { bottom: this.state.keyboardHeight })}>
-        <Animated.View style={merge(style.loginContainer, { bottom: this.state.bottom })}>
-          <TouchableOpacity style={{ ...style.loginButton, backgroundColor: detailsValid(this.state.username, this.state.password) ? colors.bristolBlue : colors.offWhite }}
+      <Animated.View style={merge(styles.outerContainer, { bottom: this.state.keyboardHeight })}>
+        <Animated.View style={merge(styles.loginContainer, { bottom: this.state.bottom })}>
+          <TouchableOpacity style={{ ...styles.loginButton, backgroundColor: detailsValid(this.state.username, this.state.password) ? colors.bristolBlue : colors.offWhite }}
               accessibilityLabel={'Login Button'}
               onPress={() => detailsValid(this.state.username, this.state.password) && this.login()}>
-            <DefaultText style={{ ...style.loginButtonText, color: detailsValid(this.state.username, this.state.password) ? 'white' : 'black' }}>
+            <DefaultText style={{ ...styles.loginButtonText, color: detailsValid(this.state.username, this.state.password) ? 'white' : 'black' }}>
               {loginButtonText}
             </DefaultText>
           </TouchableOpacity>
-          <TextInput style={style.input}
+          <TextInput style={styles.input}
               accessibilityLabel={'Input Username'}
               autoFocus={!hideUsernameInput}
               onChangeText={(text) => this.usernameUpdated(text)}
@@ -110,8 +78,8 @@ class Login extends KeyboardComponent {
               value={this.state.username}
               underlineColorAndroid={colors.transparent}
               autoCorrect={false} />
-          <View style={style.separator}/>
-          <TextInput style={style.input}
+          <View style={styles.separator}/>
+          <TextInput style={styles.input}
               ref={(ref) => this.passwordInputRef = ref}
               accessibilityLabel={'Input Password'}
               autoFocus={hideUsernameInput}

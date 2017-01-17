@@ -5,7 +5,7 @@ import marginOffset from '../../util/marginOffset'
 import commonStyle from '../style'
 import { dimensions, margin, padding, horizontalAbsolutePosition } from '../../util/StyleUtils'
 import { isScreenSmall, screenHeight } from '../../util/ScreenSizes'
-import { TAB_BAR_HEIGHT } from '../tabbar/TabBar'
+import { TAB_BAR_HEIGHT } from '../tabbar/TabBarStyle'
 
 const MARGIN_SIZE = 10
 const CLEAR_TEXT_ICON_WIDTH = 46

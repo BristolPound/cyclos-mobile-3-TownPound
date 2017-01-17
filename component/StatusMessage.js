@@ -1,6 +1,6 @@
 import React from 'react'
 import { Animated } from 'react-native'
-import { TAB_BAR_HEIGHT } from './tabbar/TabBar'
+import { TAB_BAR_HEIGHT } from './tabbar/TabBarStyle'
 import DefaultText from './DefaultText'
 import color from '../util/colors'
 import merge from '../util/merge'
