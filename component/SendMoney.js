@@ -36,10 +36,6 @@ const styles = {
     ...dimensions(width, sectionHeight),
     padding: 10,
     textAlign: 'center'
-  },
-  loadingSpinner: {
-    backgroundColor: color.transparent,
-    marginLeft: 20
   }
 }
 
