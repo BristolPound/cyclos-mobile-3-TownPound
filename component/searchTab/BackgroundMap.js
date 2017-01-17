@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Platform, View, Dimensions } from 'react-native'
 import _ from 'lodash'
+import { MultilineText, HyperlinkText } from '../DefaultText'
 import * as actions from '../../store/reducer/business'
 import { maxCollapsedHeight, SEARCH_BAR_MARGIN, SEARCH_BAR_HEIGHT } from './SearchTabStyle'
 import platform from '../../util/Platforms'
@@ -27,7 +28,7 @@ const mapHeight =  Dimensions.get('window').height - mapTopOffset - BOTTOM_OFFSE
 const mapWidth = Dimensions.get('window').width
 
 const style = {
-  container: {
+  mapContainer: {
     ...horizontalAbsolutePosition(0, 0),
     top: mapTopOffset,
     height: mapHeight,
@@ -39,6 +40,15 @@ const style = {
   loadingOverlay: {
     ...dimensions(mapWidth, mapHeight),
     backgroundColor: 'white'
+  },
+  warningContainer: {
+    backgroundColor: 'red',
+    height: 320,
+    ...horizontalAbsolutePosition(0, 0),
+    flex: 1,
+    alignItems: 'center',
+    paddingTop: 100,
+    top: - mapTopOffset
   }
 }
 
@@ -111,7 +121,16 @@ class BackgroundMap extends React.Component {
     }
 
     return (
-      <View style={style.container}>
+      <View style={style.mapContainer}>
+        {this.state.loading
+          ? undefined
+          : <View style={style.warningContainer}>
+            <MultilineText style={{textAlign: 'center'}}>
+              Google Play Services is out of date. You can get the latest version from the Play Store:
+            </MultilineText>
+            <HyperlinkText text='Update play services'
+                link='https://play.google.com/store/apps/details?id=com.google.android.gms' />
+          </View>}
         <MapView style={style.map}
             region={this.region}
             showsPointsOfInterest={false}
