@@ -57,7 +57,7 @@ class SearchTab extends React.Component {
   }
 
   render() {
-    const { allBusinesses, closestBusinesses, openTraderModal, selectedBusiness, searchMode } = this.props
+    const { closestBusinesses, openTraderModal, selectedBusiness, searchMode } = this.props
     const { componentList } = this.refs
 
     const noOfCloseBusinesses = closestBusinesses.length,
