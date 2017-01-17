@@ -2,7 +2,6 @@ import { StyleSheet, Dimensions } from 'react-native'
 import colors from '../../util/colors'
 import commonStyle from '../style'
 import { dimensions, margin, border } from '../../util/StyleUtils'
-import marginOffset from '../../util/marginOffset'
 
 const headerMargin = 24
 const listMargin = 14
@@ -15,9 +14,6 @@ const styles = {
         marginLeft: 8,
         position: 'absolute',
         zIndex: 100,
-    },
-    container: {
-      marginTop: marginOffset(0),
     },
     center: {
       alignItems: 'center',

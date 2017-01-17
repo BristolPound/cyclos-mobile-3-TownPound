@@ -1,19 +1,17 @@
 import React from 'react'
-import { ActivityIndicator, View, Dimensions } from 'react-native'
+import { View, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from '../store/reducer/navigation'
 import ProfileHeader from './profileScreen/ProfileHeader'
 import TransactionList from './profileScreen/TransactionList'
 import { resetForm } from '../store/reducer/sendMoney'
-import { buildDataSourceForTransactions } from '../util/transaction'
-import marginOffset from '../util/marginOffset'
 import BusinessDetails from './businessDetails/BusinessDetails'
 import SendMoney, { sectionHeight } from './SendMoney'
 
 const PersonScreen = ({trader, transactions, hideModal, resetForm}) =>
   <View style={{flex: 1}}>
-    <View style={{flex: 1, maxHeight: marginOffset(Dimensions.get('window').height) - sectionHeight}}>
+    <View style={{flex: 1, maxHeight: Dimensions.get('window').height - sectionHeight}}>
     <TransactionList
       renderHeader={renderHeader(trader, transactions, hideModal, resetForm)}
       listData={transactions} />

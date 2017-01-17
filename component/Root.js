@@ -1,6 +1,6 @@
 import React from 'react'
 import Tabs from './Tabs'
-import { View } from 'react-native'
+import { View, StatusBar } from 'react-native'
 import ReturningLogin from './login/ReturningLogin'
 import Onboarding from './login/Onboarding'
 import { mainComponent } from '../store/reducer/navigation'
