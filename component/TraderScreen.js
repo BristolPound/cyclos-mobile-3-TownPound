@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { View, Dimensions } from 'react-native'
-import marginOffset from '../util/marginOffset'
 import * as actions from '../store/reducer/navigation'
 import TransactionList from './profileScreen/TransactionList'
 import ProfileHeader from './profileScreen/ProfileHeader'
@@ -13,7 +12,7 @@ import { goToLocation } from '../store/reducer/navigation'
 
 const TraderScreen = ({ trader, transactions, hideModal, resetForm, goToLocation }) =>
   <View style={{flex: 1}}>
-    <View style={{flex: 1, maxHeight: marginOffset(Dimensions.get('window').height) - sectionHeight}}>
+    <View style={{flex: 1, maxHeight: Dimensions.get('window').height - sectionHeight}}>
     <TransactionList
       renderHeader={asRenderHeader(trader, transactions, hideModal, resetForm, goToLocation)}
       listData={transactions} />

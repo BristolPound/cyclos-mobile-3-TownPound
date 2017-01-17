@@ -1,5 +1,4 @@
 import color from '../../util/colors'
-import marginOffset from '../../util/marginOffset'
 import commonStyle from '../style'
 import { dimensions, margin, border } from '../../util/StyleUtils'
 import { baselineDeltaForFonts } from '../DefaultText'
@@ -67,7 +66,7 @@ const styles = {
         carouselContainer: {
             ...commonStyle.minorShadow,
             backgroundColor: color.white,
-            height: marginOffset(106)
+            height: 106
         },
         monthlyOption: {
             fontFamily: commonStyle.font.museo500,
@@ -75,7 +74,7 @@ const styles = {
             textAlign: 'center'
         },
         carousel: {
-          ...margin(marginOffset(38), 0, 14, 0)
+          ...margin(38, 0, 14, 0)
         }
     }
 }
