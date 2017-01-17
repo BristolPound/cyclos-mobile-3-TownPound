@@ -1,11 +1,11 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { ListView, View, ActivityIndicator, TouchableHighlight, RefreshControl } from 'react-native'
+import { ListView, View, ActivityIndicator, TouchableHighlight, RefreshControl, TouchableOpacity } from 'react-native'
 import moment from 'moment'
 import ProfileImage from '../profileImage/ProfileImage'
 import SpendingHeader from './SpendingHeader'
-import DefaultText from '../DefaultText'
+import DefaultText, { MultilineText } from '../DefaultText'
 import Price from '../Price'
 import color from '../../util/colors'
 import * as actions from '../../store/reducer/transaction'
@@ -86,10 +86,13 @@ class SpendingTab extends React.Component {
           }
           removeClippedSubviews={false}/>
     } else {
-      bodyComponent = <View style={styles.noTransactions.container}>
-        <DefaultText style={styles.noTransactions.text}>You have made no transactions</DefaultText>
-        <DefaultText style={styles.noTransactions.text}>this month</DefaultText>
-      </View>
+      bodyComponent =
+        <TouchableOpacity style={{flex: 1}}onPress={() => !props.refreshing && props.selectedMonthIndex === 0 ? props.loadMoreTransactions() : undefined}>
+          <View style={styles.noTransactions.container}>
+            <MultilineText style={styles.noTransactions.text}>You have made no transactions this month</MultilineText>
+            {props.selectedMonthIndex === 0 ? <DefaultText style={{ ...styles.noTransactions.text, marginTop: 20 }}>Tap to refresh</DefaultText> : undefined}
+          </View>
+        </TouchableOpacity>
     }
 
     return (
