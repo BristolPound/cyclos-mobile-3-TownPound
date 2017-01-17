@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import Login from './login/Login'
 import LoginOverlay from './login/LoginOverlay'
 import StatusMessage from './StatusMessage'
+import color from '../util/colors'
 
 const Root = (props) => {
   // The app is rendered before the state has been loaded via redux-persist. This state property allows
@@ -30,6 +31,10 @@ const Root = (props) => {
 
   return (
     <View style={{flex: 1}}>
+      <StatusBar animated={true}
+          backgroundColor={color.transparent}
+          translucent={true}
+          barStyle={props.mainComponent === mainComponent.returningLogin ? 'light-content' : 'dark-content'}/>
       {bodyComponent}
       <LoginOverlay/>
       <Login hideUsernameInput={props.mainComponent === mainComponent.returningLogin}/>
