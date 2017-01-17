@@ -58,7 +58,8 @@ const styles = {
             backgroundColor: color.offWhite
         },
         text: {
-            color: color.gray3
+            color: color.gray3,
+            textAlign: 'center'
         }
     },
     sectionHeader: commonStyle.sectionHeader,
