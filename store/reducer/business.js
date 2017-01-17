@@ -78,10 +78,11 @@ export const geolocationSuccess = (location) => ({
 })
 
 export const geolocationChanged = (coords, dispatch) => {
+    const { latitude, longitude } = coords
     dispatch(geolocationSuccess(coords))
     //furthest business is around 70km from Bristol centre
     if (haversine(DEFAULT_COORDINATES, coords) < 75) {
-        dispatch(updateMapViewportAndSelectClosestTrader(coords))
+        dispatch(updateMapViewportAndSelectClosestTrader({ latitude, longitude }))
         dispatch(moveMap())
     }
 }

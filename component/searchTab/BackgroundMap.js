@@ -43,10 +43,12 @@ const style = {
 }
 
 class BackgroundMap extends React.Component {
+  regionChanged = () => {}
   constructor(props) {
     super()
     this.state = ({ loading: true })
     this.region = props.forceRegion
+    setTimeout(() => this.regionChanged = _.debounce(this.props.updateMapViewport, MAP_PAN_DEBOUNCE_DURATION), 2500)
   }
 
   componentDidMount() {
@@ -115,7 +117,7 @@ class BackgroundMap extends React.Component {
             showsCompass={false}
             rotateEnabled={false}
             pitchEnabled={false}
-            onRegionChange={_.debounce(this.props.updateMapViewport, MAP_PAN_DEBOUNCE_DURATION)}
+            onRegionChange={this.regionChanged}
             loadingEnabled={true}>
           {markerArray}
         </MapView>
