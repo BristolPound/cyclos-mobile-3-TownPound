@@ -1,41 +1,10 @@
 import React from 'react'
 import Communications from 'react-native-communications'
 import HTMLView from 'react-native-htmlview'
-import { View, Linking, StyleSheet, Image, TouchableOpacity } from 'react-native'
-
+import { View, Linking, Image, TouchableOpacity } from 'react-native'
 import { MultilineText } from '../DefaultText'
-import { dimensions, margin, border } from '../../util/StyleUtils'
 import addresses from '../../util/addresses'
-import colors from '../../util/colors'
-
-const styles = {
-  description: {
-    ...margin(18, 24, 0, 24)
-  },
-  separator: {
-    ...border(['bottom', 'top'], colors.gray5, StyleSheet.hairlineWidth)
-  },
-  field: {
-    ...margin(18, 24, 0, 24),
-    flexDirection: 'row',
-    paddingTop: 1,
-    backgroundColor: colors.white,
-  },
-  image: {
-    ...dimensions(18, 20),
-    marginRight: 16
-  },
-  item: {
-    flexDirection: 'column',
-    flex: 1
-  },
-  text: {
-    flex: 1,
-    fontSize: 16,
-    color: colors.gray,
-    flexWrap: 'wrap'
-  },
-}
+import styles from './BusinessDetailsStyle'
 
 const Field = ({icon, text, accessibilityLabel, onPress}) =>
   <View style={styles.field}>

@@ -1,0 +1,61 @@
+import { Dimensions } from 'react-native'
+import colors from '../../util/colors'
+import commonStyle from './../style.js'
+import  { margin, absolutePosition } from '../../util/StyleUtils'
+
+const gapSize = Dimensions.get('window').height / 2 - 170
+
+const style = {
+  container: {
+    flex: 1,
+    alignItems: 'center'
+  },
+  bottomContainer : {
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 24,
+    flex: 1,
+    left: 0,
+    right: 0
+  },
+  background: {
+    ...absolutePosition(),
+    height: Dimensions.get('window').height,
+    backgroundColor: colors.bristolBlue2
+  },
+  loginButton: {
+    container: {
+      backgroundColor: colors.white,
+      borderRadius: 10,
+      alignSelf: 'stretch',
+      height: 48,
+      alignItems: 'center',
+      justifyContent: 'center',
+      ...margin(gapSize, 20, 10, 20),
+    },
+    text: {
+      fontSize: 22,
+      fontFamily: commonStyle.museo500
+    }
+  },
+  skipButton: {
+    container: {
+      backgroundColor: colors.transparent,
+      borderRadius: 10,
+      borderWidth: 1.5,
+      borderColor: colors.white,
+      alignSelf: 'stretch',
+      height: 48,
+      alignItems: 'center',
+      justifyContent: 'center',
+      ...margin(0, 20, 18, 20),
+    },
+    text: {
+      color: colors.white,
+      fontSize: 18,
+      fontFamily: commonStyle.museo500
+    }
+  }
+}
+
+export default style

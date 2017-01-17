@@ -1,33 +1,8 @@
 import React from 'react'
 import { View } from 'react-native'
-import commonStyle from '../style'
 import DefaultText from '../DefaultText'
-import colors from '../../util/colors'
 import Splash from './Splash'
-
-const style = {
-  welcome: {
-    welcomeText: {
-      color: colors.white,
-      fontSize: 26,
-      fontFamily: commonStyle.museo300
-    },
-    usernameText: {
-      color: colors.white,
-      fontSize: 30,
-      fontFamily: commonStyle.museo700
-    },
-  },
-  infoText: {
-    color: colors.white,
-    fontSize: 16,
-    fontFamily: commonStyle.museo700
-  },
-  centerContainer: {
-    flex: 1,
-    alignItems: 'center'
-  }
-}
+import style from './ReturningLoginStyle'
 
 const renderWelcomeMessage = (props) => {
   return (

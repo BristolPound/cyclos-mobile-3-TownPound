@@ -2,37 +2,11 @@ import { TouchableHighlight, View, Image } from 'react-native'
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-
-import colors from '../util/colors'
-import commonStyle from './style'
 import DefaultText from './DefaultText'
 import { closeConfirmation } from '../store/reducer/navigation'
 import ProfileImage from './profileImage/ProfileImage'
 import styles from './profileScreen/ProfileStyle'
-
-const style = {
-	background: {
-		flex: 1,
-		backgroundColor: colors.bristolBlue,
-		justifyContent: 'center',
-		alignItems: 'center'
-	},
-    title: {
-		fontFamily: commonStyle.font.museo500,
-		marginTop: 8,
-		fontSize: 20,
-		color: colors.offBlack
-    },
-	subtitle: {
-		marginBottom: 46,
-		fontSize: 18,
-		color: colors.gray
-    },
-	time: {
-		fontFamily: commonStyle.font.museo100,
-		color: colors.gray
-    }
-}
+import style from './PaymentConfirmationStyle'
 
 const PaymentConfirmation = (props) =>
   <TouchableHighlight onPress={props.closeConfirmation} style={style.background}>
