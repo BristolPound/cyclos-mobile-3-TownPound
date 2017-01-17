@@ -43,6 +43,7 @@ const style = {
 }
 
 class BackgroundMap extends React.Component {
+  regionChanged = () => {}
   constructor(props) {
     super()
     this.state = ({ loading: true })
@@ -51,7 +52,11 @@ class BackgroundMap extends React.Component {
 
   componentDidMount() {
     // To prevent the user seeing the centre of the earth when opening the app
-    setTimeout(() => this.setState({ loading: false }), 500)
+    // and to prevent phony region changes
+    setTimeout(() => {
+      this.regionChanged = _.debounce(this.props.updateMapViewport, MAP_PAN_DEBOUNCE_DURATION)
+      this.setState({loading: false})
+    }, platform.isIOS() ? 1500 : 500)
   }
 
   isSelected(business) {
@@ -95,8 +100,7 @@ class BackgroundMap extends React.Component {
       return <MapView.Marker
           key={business.id}
           coordinate={business.address.location}
-          {...markerProps}
-      />
+          {...markerProps} />
   }
 
   render() {
@@ -115,7 +119,9 @@ class BackgroundMap extends React.Component {
             showsCompass={false}
             rotateEnabled={false}
             pitchEnabled={false}
-            onRegionChange={_.debounce(this.props.updateMapViewport, MAP_PAN_DEBOUNCE_DURATION)}
+            scrollEnabled={!this.state.loading}
+            zoomEnabled={!this.state.loading}
+            onRegionChange={this.regionChanged}
             loadingEnabled={true}>
           {markerArray}
         </MapView>
