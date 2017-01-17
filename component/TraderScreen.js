@@ -11,11 +11,11 @@ import SendMoney, { sectionHeight } from './SendMoney'
 import { resetForm } from '../store/reducer/sendMoney'
 import { goToLocation } from '../store/reducer/navigation'
 
-const TraderScreen = ({ trader, transactions, hideModal, loadingProfile, resetForm, goToLocation }) =>
+const TraderScreen = ({ trader, transactions, hideModal, resetForm, goToLocation }) =>
   <View style={{flex: 1}}>
     <View style={{flex: 1, maxHeight: marginOffset(Dimensions.get('window').height) - sectionHeight}}>
     <TransactionList
-      renderHeader={asRenderHeader(trader, transactions, hideModal, loadingProfile, resetForm, goToLocation)}
+      renderHeader={asRenderHeader(trader, transactions, hideModal, resetForm, goToLocation)}
       listData={transactions} />
     </View>
     <SendMoney
@@ -26,7 +26,7 @@ const TraderScreen = ({ trader, transactions, hideModal, loadingProfile, resetFo
 
 // Currently we pass in returned renderHeader as we delegate to a listView.
 // One alternative would be to encapsulate this and use `props.children` instead.
-const asRenderHeader = (trader, transactions, hideModal, loadingProfile, resetForm, goToLocation) => () =>
+const asRenderHeader = (trader, transactions, hideModal, resetForm, goToLocation) => () =>
   <View style={{flex: 1}}>
     <ProfileHeader
       name={trader.display}
@@ -47,8 +47,7 @@ const getTransactionsForSelectedBusiness = (state) => {
 // Redux Setup
 const mapStateToProps = (state) => ({
     trader: state.business.businessList.find(b => b.id === state.business.traderScreenBusinessId) || {},
-    transactions: getTransactionsForSelectedBusiness(state),
-    loadingProfile: state.business.loadingProfile
+    transactions: getTransactionsForSelectedBusiness(state)
 })
 
 const mapDispatchToProps = (dispatch) =>

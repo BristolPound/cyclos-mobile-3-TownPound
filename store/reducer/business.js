@@ -24,7 +24,6 @@ const Business = {
   mapViewport: MapViewport,
   forceRegion: MapViewport,
   searchMode: false,
-  loadingProfile: false,
   traderScreenBusinessId: undefined,
   geolocationStatus: null
 }
@@ -62,14 +61,6 @@ export const resetBusinesses = () => ({
   type: 'business/RESET_BUSINESSES',
 })
 
-const businessFailedToLoad = () => ({
-  type: 'business/FAILED_TO_LOAD'
-})
-
-const loadingBusinessProfile = () => ({
-  type: 'business/LOADING_PROFILE'
-})
-
 const selectBusinessForModal = (id) => ({
   type: 'business/SET_TRADER_SCREEN_ID',
   id
@@ -99,7 +90,6 @@ export const geolocationFailed = () => ({
 })
 
 export const loadBusinessProfile = (businessId) => (dispatch) => {
-  dispatch(loadingBusinessProfile())
   getBusinessProfile(businessId, dispatch)
     .then(businessProfile => dispatch(businessProfileReceived(businessProfile)))
     // if this request fails, the modal trader screen will continue to show a spinner
@@ -112,7 +102,6 @@ export const loadBusinessProfile = (businessId) => (dispatch) => {
       } else {
         dispatch(unknownError(err))
       }
-      dispatch(businessFailedToLoad())
     })
 }
 
@@ -179,8 +168,7 @@ const reducer = (state = Business, action) => {
         ..._.slice(state.businessList, index + 1)
       ]
       state = merge(state, {
-        businessList: newBusinessList,
-        loadingProfile: false
+        businessList: newBusinessList
       })
       break
 
@@ -227,18 +215,6 @@ const reducer = (state = Business, action) => {
         businessListTimestamp: null,
         closestBusinesses: [ ],
         traderScreenBusinessId: undefined
-      })
-      break
-
-    case 'business/FAILED_TO_LOAD':
-      state = merge(state, {
-        loadingProfile: false
-      })
-      break
-
-    case 'business/LOADING_PROFILE':
-      state = merge(state, {
-        loadingProfile: true
       })
       break
 
