@@ -14,8 +14,7 @@ class Carousel extends React.Component {
 
   componentWillMount() {
     this._panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => !this.busy,
 
       onPanResponderGrant: () => {
         this.leftOffsetAtPanStart = this.state.leftOffset._value
@@ -36,17 +35,22 @@ class Carousel extends React.Component {
           const pressIndex = Math.floor((pressLocation - this.state.leftOffset._value) / this.props.itemWidth)
           this.props.onPress(pressIndex)
         } else {
-          const newLocation = this.getLocationAfterMove(gestureState.dx)
-          const newIndex = this.indexAtLeftOffset(newLocation)
-          this.props.onPageChange && this.props.onPageChange(newIndex)
-          this.animateToEndPosition()
+          this.onRelease(gestureState.dx)
         }
       },
 
-      onPanResponderTerminate: () => {
-        this.animateToEndPosition()
-      },
+      onPanResponderTerminate: () => this.onRelease(),
     })
+  }
+
+  onRelease(dx = this.state.leftOffset._value - this.leftOffsetAtPanStart) {
+    const newLocation = this.getLocationAfterMove(dx)
+    const newIndex = this.indexAtLeftOffset(newLocation)
+    if (newIndex !== this.props.pageIndex && this.props.onPageChange) {
+      this.props.onPageChange(newIndex)
+    } else {
+      this.animateLeftOffsetTo(this.leftOffsetAtIndex(newIndex))
+    }
   }
 
   getLocationAfterMove(dx) {
@@ -55,7 +59,7 @@ class Carousel extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.pageIndex !== this.props.pageIndex) {
-      animateTo(this.state.leftOffset, this.leftOffsetAtIndex(nextProps.pageIndex), 200)
+      this.animateLeftOffsetTo(this.leftOffsetAtIndex(nextProps.pageIndex))
     }
   }
 
@@ -78,8 +82,14 @@ class Carousel extends React.Component {
     return this.getMaxOffset() - (this.props.children.length - 1) * this.props.itemWidth
   }
 
-  animateToEndPosition() {
-    animateTo(this.state.leftOffset, this.leftOffsetAtIndex(this.indexAtLeftOffset(this.state.leftOffset._value)), 200)
+  animateLeftOffsetTo(destination) {
+    this.busy = true
+    animateTo(this.state.leftOffset,
+      destination,
+      200,
+      undefined,
+      () => this.busy = false
+    )
   }
 
   render() {
