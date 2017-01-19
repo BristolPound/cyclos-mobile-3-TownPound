@@ -44,11 +44,16 @@ class ScrollingExpandPanel extends React.Component {
     // whether or not the list was expanded when the gesture began
     this.positionAtTouchStart = -1
 
-    //whether or not an 'event' is taking place
+    // whether or not an 'event' is taking place
     this.responderGranted = false
 
-    //whether or not the gesture has moved
+    // whether or not the gesture has moved
     this.hasMoved = false
+
+    // Android has a bug where overflow: 'hidden' does not work.
+    // To work around this, we have to manually determine
+    // which presses are in the part which is meant to be visible
+    this.outOfBounds = false
   }
 
   resetToInitalState(props = this.props) {
@@ -88,22 +93,30 @@ class ScrollingExpandPanel extends React.Component {
   }
 
   responderGrant(event) {
-    this.startTouchY = this.lastTouchY = event.nativeEvent.pageY
-    this.outerTopOffsetAtTouchStart = this.state.currentOuterTopOffset._value
-    this.innerTopOffsetAtTouchStart = this.state.currentInnerTopOffset._value
-    this.timeAtLastPosition = this.timeAtTouchStart = Date.now()
+    if (this.outOfBounds) {
+      return
+    }
+    if (event.nativeEvent.pageY < this.props.topOffset[0]) {
+      this.props.outOfBoundsPress(event.nativeEvent.pageX)
+      this.outOfBounds = true
+    } else {
+      this.startTouchY = this.lastTouchY = event.nativeEvent.pageY
+      this.outerTopOffsetAtTouchStart = this.state.currentOuterTopOffset._value
+      this.innerTopOffsetAtTouchStart = this.state.currentInnerTopOffset._value
+      this.timeAtLastPosition = this.timeAtTouchStart = Date.now()
 
-    this.positionAtTouchStart = this.getPosition()
+      this.positionAtTouchStart = this.getPosition()
 
-    this.props.onPressStart && this.props.onPressStart(this.startTouchY - this.innerTopOffsetAtTouchStart - this.outerTopOffsetAtTouchStart)
+      this.props.onPressStart && this.props.onPressStart(this.startTouchY - this.innerTopOffsetAtTouchStart - this.outerTopOffsetAtTouchStart)
 
-    // if there is an ongoing animation, stop it
-    this.setState({
-      currentOuterTopOffset: new Animated.Value(this.state.currentOuterTopOffset._value),
-      currentInnerTopOffset: new Animated.Value(this.state.currentInnerTopOffset._value),
-    })
+      // if there is an ongoing animation, stop it
+      this.setState({
+        currentOuterTopOffset: new Animated.Value(this.state.currentOuterTopOffset._value),
+        currentInnerTopOffset: new Animated.Value(this.state.currentInnerTopOffset._value),
+      })
 
-    this.responderGranted = true
+      this.responderGranted = true
+    }
   }
 
   // utility for helping to find position and scrollposition
@@ -185,6 +198,9 @@ class ScrollingExpandPanel extends React.Component {
   }
 
   responderMove(event) {
+    if (this.outOfBounds) {
+      return
+    }
     // first check that responderGrant has already been called - if something in the
     // list has touch responders on it then this may not have occurred.
     if (this.responderGranted) {
@@ -240,6 +256,10 @@ class ScrollingExpandPanel extends React.Component {
   }
 
   responderRelease() {
+    if (this.outOfBounds) {
+      this.outOfBounds = false
+      return
+    }
     this.props.onPressRelease && this.props.onPressRelease(this.hasMoved)
 
     if (Date.now() - this.timeAtLastPosition > 150) {
@@ -267,8 +287,8 @@ class ScrollingExpandPanel extends React.Component {
             ...this.props.style
           }}
           onStartShouldSetResponder={() => true}
-          onResponderGrant={this.responderGrant.bind(this)}
           onMoveShouldSetResponder={() => true}
+          onResponderGrant={this.responderGrant.bind(this)}
           onResponderMove={this.responderMove.bind(this)}
           onResponderRelease={this.responderRelease.bind(this)}>
         <Animated.View style={{ top: this.state.currentInnerTopOffset }}>
