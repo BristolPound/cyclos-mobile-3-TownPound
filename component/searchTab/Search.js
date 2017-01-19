@@ -64,7 +64,7 @@ export default class Search extends React.Component {
       this.props.openTraderModal(id)
     }
 
-    closeSearchScreen() {
+    closeButtonPressed() {
       this.props.updateSearchMode(false)
       this.refs.textInput.blur()
       this.setState({ searchTerms: [], input: null })
@@ -75,9 +75,11 @@ export default class Search extends React.Component {
     }
 
     nearbyButtonPressed() {
-      const { latitude, longitude } = this.props.geolocationStatus
-      this.props.updateMapViewport({ latitude, longitude })
-      this.props.moveMap()
+      if (this.nearbyButtonEnabled()) {
+        const { latitude, longitude } = this.props.geolocationStatus
+        this.props.updateMapViewport({ latitude, longitude })
+        this.props.moveMap()
+      }
     }
 
     createComponentListArray(list) {
@@ -96,7 +98,7 @@ export default class Search extends React.Component {
 
     render() {
       const { componentListArray, input } = this.state
-      const { searchMode, updateSearchMode } = this.props
+      const { searchMode, updateSearchMode, outOfBoundsPress } = this.props
 
       const childrenHeight = componentListArray.length * ROW_HEIGHT
 
@@ -106,7 +108,7 @@ export default class Search extends React.Component {
         <View>
           <View style={searchBar}>
             <TouchableOpacity style={nearbyButton}
-                onPress={this.nearbyButtonEnabled() ? () => this.nearbyButtonPressed() : undefined}>
+                onPress={() => this.nearbyButtonPressed()}>
               <Image source={this.nearbyButtonEnabled() ? NEARBY_BLUE : NEARBY_GREY}/>
             </TouchableOpacity>
             <TextInput accessibilityLabel='Search'
@@ -120,7 +122,7 @@ export default class Search extends React.Component {
                        value={input}
                        underlineColorAndroid={colors.transparent}/>
             { searchMode &&
-                <CloseButton onPress={() => this.closeSearchScreen()} closeButtonType={CLOSE_BUTTON} style={closeButton} size={SEARCH_BAR_HEIGHT}/> }
+                <CloseButton onPress={() => this.closeButtonPressed()} closeButtonType={CLOSE_BUTTON} style={closeButton} size={SEARCH_BAR_HEIGHT}/> }
           </View>
           { searchMode && (
                   <ScrollingExpandPanel style={expandPanel}
@@ -130,7 +132,8 @@ export default class Search extends React.Component {
                                         childrenHeight={childrenHeight}
                                         startPosition={0}
                                         onPressRelease={hasMoved => componentList && componentList.handleRelease(hasMoved)}
-                                        onPressStart={location => componentList && componentList.highlightItem(location)}>
+                                        onPressStart={location => componentList && componentList.highlightItem(location)}
+                                        outOfBoundsPress={outOfBoundsPress}>
                       <ComponentList
                           ref='componentList'
                           items={componentListArray}
