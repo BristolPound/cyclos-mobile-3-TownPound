@@ -1,13 +1,12 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
-import merge from '../../util/merge'
 import { bindActionCreators } from 'redux'
 import BackgroundMap from './BackgroundMap'
 import ComponentList from './ComponentList'
 import BusinessListItem, { SelectedBusiness } from './BusinessListItem'
 import ScrollingExpandPanel from './ScrollingExpandPanel'
-import styles, { SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN, maxExpandedHeight } from './SearchTabStyle'
+import styles, { SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN, NEARBY_WIDTH, maxExpandedHeight } from './SearchTabStyle'
 import { ROW_HEIGHT, BUSINESS_LIST_SELECTED_GAP} from './BusinessListStyle'
 import * as actions from '../../store/reducer/business'
 import { openTraderModal } from '../../store/reducer/navigation'
@@ -56,6 +55,17 @@ class SearchTab extends React.Component {
     this.componentListArray = this.createComponentListArray(nextProps)
   }
 
+  searchBarPressed(pageX) {
+    if (pageX < SEARCH_BAR_MARGIN + NEARBY_WIDTH) {
+      this.refs.search.nearbyButtonPressed()
+    } else if (this.props.searchMode && pageX > Dimensions.get('window').width - SEARCH_BAR_MARGIN - SEARCH_BAR_HEIGHT) {
+      this.refs.search.closeButtonPressed()
+    } else {
+      this.refs.search.refs.textInput.focus()
+      !this.props.searchMode && this.props.updateSearchMode(true)
+    }
+  }
+
   render() {
     const { closestBusinesses, openTraderModal, selectedBusiness, searchMode } = this.props
     const { componentList } = this.refs
@@ -71,28 +81,29 @@ class SearchTab extends React.Component {
     )
 
     const exitSearchMode = () => {
-      this.refs.search.closeSearchScreen()
+      this.refs.search.closeButtonPressed()
     }
 
     return (
       <View style={{flex: 1}}>
         <BackgroundMap/>
         { searchMode && <Overlay overlayVisible={true} onPress={exitSearchMode}/> }
-        <Search ref='search' {...this.props}/>
-        <ScrollingExpandPanel
-            style={merge(styles.searchTab.expandPanel, (searchMode ? styles.searchTab.hide : {})) }
+        <Search ref='search' {...this.props} outOfBoundsPress={(pageX) => this.searchBarPressed(pageX)}/>
+        {!searchMode && <ScrollingExpandPanel
+            style={styles.searchTab.expandPanel}
             topOffset={this.calculateOffset([ expandedHeight, collapsedHeight, closedHeight ])}
             expandedHeight={expandedHeight}
             onPressRelease={hasMoved => componentList && componentList.handleRelease(hasMoved)}
             onPressStart={location => componentList && componentList.highlightItem(location)}
             childrenHeight={childrenHeight + BUSINESS_LIST_SELECTED_GAP}
-            startPosition={1}>
+            startPosition={1}
+            outOfBoundsPress={(pageX) => this.searchBarPressed(pageX)}>
             <ComponentList
                 ref='componentList'
                 items={this.componentListArray}
                 componentForItem={ComponentForItem}
                 onPressItem={index => this.componentListArray[index].id && openTraderModal(this.componentListArray[index].id)} />
-        </ScrollingExpandPanel>
+        </ScrollingExpandPanel>}
       </View>
     )
   }

@@ -7,8 +7,7 @@ import { isScreenSmall, screenHeight } from '../../util/ScreenSizes'
 import { TAB_BAR_HEIGHT } from '../tabbar/TabBarStyle'
 
 const MARGIN_SIZE = 10
-const CLEAR_TEXT_ICON_WIDTH = 46
-const NEARBY_WIDTH = 39
+export const NEARBY_WIDTH = 39
 export const SEARCH_BAR_MARGIN = 35
 const SEARCH_BAR_WIDTH = Dimensions.get('window').width - 2 * MARGIN_SIZE
 
@@ -37,7 +36,7 @@ const styles = {
     textInput: {
       ...margin(5, 9),
       ...padding(2),
-      ...dimensions(SEARCH_BAR_WIDTH - CLEAR_TEXT_ICON_WIDTH - SEARCH_BAR_HEIGHT - NEARBY_WIDTH, SEARCH_BAR_HEIGHT - 10),
+      ...dimensions(SEARCH_BAR_WIDTH - SEARCH_BAR_HEIGHT - NEARBY_WIDTH, SEARCH_BAR_HEIGHT - 10),
       fontSize: 16,
       backgroundColor: color.white,
       color: color.bristolBlue,
