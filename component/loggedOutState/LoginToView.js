@@ -2,14 +2,12 @@ import React from 'react'
 import { View, Image } from 'react-native'
 import color from '../../util/colors'
 import DefaultText from '../DefaultText'
-import { margin } from '../../util/StyleUtils';
 
 const styles = {
   container: {
     flex: 1,
-    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     backgroundColor: color.offWhite
   },
   text: {
@@ -18,7 +16,7 @@ const styles = {
     fontSize: 20
   },
   image: {
-    ...margin(200, 0, 20, 0)
+    marginBottom: 20
   }
 }
 
