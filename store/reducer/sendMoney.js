@@ -33,12 +33,13 @@ const setLoading = () => ({
   type: 'sendMoney/SET_LOADING'
 })
 
-const transactionComplete = (success, message, amount, timestamp) => ({
+const transactionComplete = (success, message, amount, timestamp, transactionNumber) => ({
   type: 'sendMoney/TRANSACTION_COMPLETE',
   success,
   message,
   amount,
-  timestamp
+  timestamp,
+  transactionNumber
 })
 
 export const sendTransaction = () =>
@@ -50,10 +51,10 @@ export const sendTransaction = () =>
         description: 'Test description',
         amount: amount
       }, dispatch)
-      .then(() => {
+      .then((result) => {
 
         dispatch(loadMoreTransactions())
-        dispatch(transactionComplete(true, 'Transaction complete', amount, moment().format('MMMM Do YYYY, h:mm:ss a')))
+        dispatch(transactionComplete(true, 'Transaction complete', amount, moment().format('MMMM Do YYYY, h:mm:ss a'), result.transactionNumber))
       })
       .catch(err => {
         if (err.type === UNAUTHORIZED_ACCESS) {
