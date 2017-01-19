@@ -12,7 +12,6 @@ const styles = {
     ...commonStyle.shadow
   },
   loginButton: {
-    flex: 1,
     height: 68,
     padding: 20,
   },
