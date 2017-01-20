@@ -1,4 +1,3 @@
-import color from '../../util/colors'
 import { dimensions } from '../../util/StyleUtils'
 import commonStyle from '../style'
 
