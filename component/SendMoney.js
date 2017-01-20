@@ -4,12 +4,13 @@ import { connect } from 'react-redux'
 import { View, TextInput, TouchableOpacity, Dimensions, Animated } from 'react-native'
 import KeyboardComponent from './KeyboardComponent'
 import * as actions from '../store/reducer/sendMoney'
-import { openLoginForm } from '../store/reducer/login'
+import { openLoginForm, LOGIN_STATUSES } from '../store/reducer/login'
 import merge from '../util/merge'
-import { LOGIN_STATUSES } from '../store/reducer/login'
 import DefaultText from './DefaultText'
 import color from '../util/colors'
 import { dimensions } from '../util/StyleUtils'
+import { setOverlayOpen } from '../store/reducer/navigation'
+import { Overlay } from './common/Overlay'
 
 const Page = {
   Ready: 0,
@@ -25,7 +26,7 @@ const styles = {
   button: {
     height: sectionHeight,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   buttonInnerContainer: {
     alignItems: 'center',
@@ -75,33 +76,32 @@ class InputComponent extends KeyboardComponent {
   }
 }
 
-
 class SendMoney extends React.Component {
 
-  constructor() {
+  constructor(props) {
     super()
-    this.state = {
-      inputPage: Page.Ready,
-    }
+    props.updatePage(Page.Ready)
   }
 
   nextPage() {
-    const nextPage = (this.state.inputPage + 1) % Object.keys(Page).length
-    this.setState({ inputPage: nextPage })
+    const nextPage = (this.props.inputPage + 1) % Object.keys(Page).length
+    this.props.updatePage( nextPage )
     if (nextPage === Page.PaymentComplete) {
       setTimeout(() => {
-        if (this.state.inputPage === Page.PaymentComplete) {
+        if (this.props.inputPage === Page.PaymentComplete) {
           this.nextPage()
         }
-      }, 2000)
+      }, 200)
+    } else if (nextPage === Page.EnterAmount) {
+      this.props.setOverlayOpen(true)
     }
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.businessId !== prevProps.businessId) {
       this.props.updateAmount('')
-      this.setState({ inputPage: Page.Ready })
-    } else if (prevProps.loading && !this.props.loading && this.state.inputPage === 2) {
+      this.props.updatePage( Page.Ready )
+    } else if (prevProps.loading && !this.props.loading && this.props.inputPage === 2) {
       this.nextPage()
     }
   }
@@ -122,24 +122,24 @@ class SendMoney extends React.Component {
     let inputProps
 
     if (this.props.connection) {
-      if (this.state.inputPage === Page.PaymentComplete) {
+      if (this.props.inputPage === Page.PaymentComplete) {
         inputProps = {
           buttonText: this.props.message,
           onButtonPress: () => { this.nextPage() },
           accessibilityLabel: 'Payment complete'
         }
       } else if (this.props.loggedIn) {
-        switch (this.state.inputPage){
+        switch (this.props.inputPage){
           case Page.Ready: // Initial state, ready to begin
             inputProps = {
               buttonText: 'Send Payment',
-              onButtonPress: () => { this.props.updatePayee(this.props.payeeShortDisplay); this.nextPage() },
+              onButtonPress: () => { this.props.updatePayee(this.props.trader.shortDisplay); this.nextPage() },
               accessibilityLabel: 'Ready',
             }
             break
           case Page.EnterAmount: // provide amount
             inputProps = {
-              buttonText: 'Pay ' + this.props.payeeDisplay,
+              buttonText: 'Pay ' + this.props.trader.display,
               onButtonPress: () => { this.props.sendTransaction(); this.nextPage() },
               input: {
                 keyboardType: 'numeric',
@@ -178,11 +178,14 @@ class SendMoney extends React.Component {
 }
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ ...actions, openLoginForm }, dispatch)
+  bindActionCreators({ ...actions, openLoginForm, setOverlayOpen }, dispatch)
 
 const mapStateToProps = (state) => ({
   ...state.sendMoney,
+  businessId: state.business.traderScreenBusinessId,
+  trader: state.business.businessList.find(b => b.id === state.business.traderScreenBusinessId) || {},
   balance: state.account.balance,
+  overlayVisible: state.navigation.overlayVisible,
   loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
   connection: state.networkConnection.status
 })

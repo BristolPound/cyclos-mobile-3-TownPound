@@ -3,12 +3,13 @@ import Tabs from './Tabs'
 import { View, StatusBar } from 'react-native'
 import ReturningLogin from './login/ReturningLogin'
 import Onboarding from './login/Onboarding'
-import { mainComponent } from '../store/reducer/navigation'
+import { mainComponent, modalState } from '../store/reducer/navigation'
 import { connect } from 'react-redux'
 import Login from './login/Login'
 import LoginOverlay from './login/LoginOverlay'
 import StatusMessage from './StatusMessage'
 import color from '../util/colors'
+import SendMoney from './SendMoney'
 
 const Root = (props) => {
   // The app is rendered before the state has been loaded via redux-persist. This state property allows
@@ -37,14 +38,18 @@ const Root = (props) => {
           barStyle={props.mainComponent === mainComponent.returningLogin ? 'light-content' : 'dark-content'}/>
       {bodyComponent}
       <LoginOverlay/>
+      { (props.modalState === modalState.traderScreen && props.inputPage !== 3) ? <SendMoney /> : undefined }
       <Login hideUsernameInput={props.mainComponent === mainComponent.returningLogin}/>
       <StatusMessage/>
+      
     </View>
   )
 }
 
 const mapStateToProps = (state) => ({
-    ...state.navigation
+    ...state.navigation,
+    inputPage: state.sendMoney.inputPage,
+    traderScreenBusinessId: state.business.traderScreenBusinessId
 })
 
 export default connect(mapStateToProps)(Root)
