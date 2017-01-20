@@ -12,7 +12,6 @@ const styles = {
     closeButton: {
         marginTop: 32,
         marginLeft: 8,
-        position: 'absolute',
         zIndex: 100,
     },
     center: {
@@ -23,8 +22,7 @@ const styles = {
       ...margin(40, headerMargin, 0, 0)
     },
     businessLogo: {
-      ...dimensions(84),
-      marginTop: 58,
+      ...dimensions(84)
     },
     title: {
       fontFamily: commonStyle.font.museo500,
