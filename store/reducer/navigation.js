@@ -22,6 +22,7 @@ const initialState = {
   tabIndex: 0,
   modalState: modalState.none,
   mainComponent: mainComponent.onboarding,
+  overlayVisible: false,
   stateInitialised: false,
   modalVisible: false,
   message: undefined,
@@ -32,6 +33,11 @@ const initialState = {
 export const navigateToTab = (tabIndex) => ({
   type: 'navigation/NAVIGATE_TO_TAB',
   tabIndex
+})
+
+export const setOverlayOpen = (value) => ({
+  type: 'navigation/OVERLAY_VISIBLE',
+  value
 })
 
 export const selectMainComponent = (componentName) => ({
@@ -132,6 +138,22 @@ const reducer = (state = initialState, action) => {
           timestamp: action.timestamp
         })
       }
+      break
+    case 'login/LOGIN_IN_PROGRESS':
+      state = merge(state, {
+        overlayVisible: false
+      })
+      break
+    case 'login/OPEN_LOGIN_FORM':
+      state = merge(state, {
+        overlayVisible: action.open
+      })
+      break
+    case 'navigation/OVERLAY_VISIBLE':
+      console.log(action)
+      state = merge(state, {
+          overlayVisible: action.value
+      })
       break
     case 'navigation/CLOSE_CONFIRMATION':
       state = merge(state, {
