@@ -1,10 +1,9 @@
-import { TouchableHighlight, View, Image, TouchableOpacity } from 'react-native'
+import { View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { closeConfirmation } from '../store/reducer/navigation'
 import style from './PaymentConfirmationStyle'
-import Price from './Price'
 import ProfileHeader from './profileScreen/ProfileHeader'
 import DefaultText from './DefaultText'
 
@@ -15,21 +14,23 @@ const PaymentConfirmation = (props) => {
     const priceAfterDecimal = !isNaN(priceComponents[1]) ? priceComponents[1] : '--'
 
     return (
-      <View style={style.container}>
-      	<View style={style.innerContainer}>
-          <ProfileHeader
-            name={props.trader.display}
-            username={props.trader.shortDisplay}
-            image={props.trader.image}
-            category={props.trader.category}
-            onPressClose={() => {closeConfirmation()}}
-            isModal={true}
-            paymentComplete={true} />
-          {renderPrice(priceBeforeDecimal, priceAfterDecimal)}
-          {renderDetails(props.transactionNumber, props.timestamp)}
+      props.message
+      ? <View style={style.container}>
+        	<View style={style.innerContainer}>
+            <ProfileHeader
+              name={props.trader.display}
+              username={props.trader.shortDisplay}
+              image={props.trader.image}
+              category={props.trader.category}
+              onPressClose={props.closeConfirmation}
+              isModal={true}
+              paymentComplete={true} />
+            {renderPrice(priceBeforeDecimal, priceAfterDecimal)}
+            {renderDetails(props.transactionNumber, props.timestamp)}
+          </View>
+          {renderButton()}
         </View>
-        {renderButton()}
-      </View>
+      : null
     )
 }
 
