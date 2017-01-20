@@ -50,6 +50,7 @@ const styles = {
     },
     searchHeaderText: {
       ...commonStyle.sectionHeader.text,
+      color: color.gray1,
       ...margin(20, 0, 10, 14),
       backgroundColor: color.transparent
     },
