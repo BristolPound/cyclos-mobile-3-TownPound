@@ -129,7 +129,8 @@ const reducer = (state = initialState, action) => {
         state = merge(state, {
           message: action.message,
           amount: action.amount,
-          timestamp: action.timestamp
+          timestamp: action.timestamp,
+          transactionNumber: action.transactionNumber
         })
       }
       break

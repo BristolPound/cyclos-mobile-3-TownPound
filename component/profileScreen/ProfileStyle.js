@@ -33,7 +33,6 @@ const styles = {
       color: colors.offBlack
     },
     subtitle: {
-      marginBottom: 46,
       fontSize: 18,
       color: colors.gray
     },
@@ -76,7 +75,6 @@ const styles = {
     price: {
       flex: 1,
       width: screenWidth / 3 - 10,
-      alignSelf: 'center',
       paddingRight: 12
     },
     separator: {
