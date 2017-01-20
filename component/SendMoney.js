@@ -93,7 +93,7 @@ class SendMoney extends React.Component {
         if (this.state.inputPage === Page.PaymentComplete) {
           this.nextPage()
         }
-      }, 2000)
+      }, 100)
     }
   }
 
