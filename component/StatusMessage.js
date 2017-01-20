@@ -1,15 +1,15 @@
 import React from 'react'
 import { Animated } from 'react-native'
+import { connect } from 'react-redux'
 import { TAB_BAR_HEIGHT } from './tabbar/TabBarStyle'
 import DefaultText from './DefaultText'
 import color from '../util/colors'
 import merge from '../util/merge'
 import commonStyle from './style'
-import { connect } from 'react-redux'
 import { updateStatus } from '../store/reducer/statusMessage'
-import { screenHeight } from '../util/ScreenSizes'
 import animateTo from '../util/animateTo'
 import { horizontalAbsolutePosition } from '../util/StyleUtils'
+import { sectionHeight } from './SendMoney'
 
 const style = {
   container: {
@@ -27,13 +27,13 @@ class StatusMessage extends React.Component {
   constructor() {
     super()
     this.state = {
-      top: new Animated.Value(screenHeight),
+      bottom: new Animated.Value(-sectionHeight),
       height: 0
     }
   }
 
   scheduleSlideOut() {
-    this.timeout = setTimeout(() => animateTo(this.state.top, screenHeight, 300, undefined, () => {
+    this.timeout = setTimeout(() => animateTo(this.state.bottom, -sectionHeight, 300, undefined, () => {
       this.setState({ height: 0 })
       this.props.updateStatus('')
       this.timeout = undefined
@@ -42,8 +42,9 @@ class StatusMessage extends React.Component {
 
   componentDidUpdate(lastProps) {
     if (this.props.message && !lastProps.message) {
-      this.setState({ height: TAB_BAR_HEIGHT })
-      animateTo(this.state.top, screenHeight - TAB_BAR_HEIGHT, 300)
+      const height = this.props.modalVisible ? sectionHeight : TAB_BAR_HEIGHT
+      this.setState({ height })
+      animateTo(this.state.bottom, 0, 300)
       this.scheduleSlideOut()
     } else if (this.timeout) {
       clearTimeout(this.timeout)
@@ -55,7 +56,7 @@ class StatusMessage extends React.Component {
     return (
       <Animated.View style={
           merge(style.container, {
-            top: this.state.top,
+            bottom: this.state.bottom,
             backgroundColor: this.props.backgroundColor,
             height: this.state.height
           })
@@ -70,6 +71,7 @@ class StatusMessage extends React.Component {
 
 const mapStateToProps = (state) => ({
   ...state.statusMessage,
+  modalVisible: state.navigation.modalVisible
 })
 
 const mapDispatchToProps = (dispatch) => ({
