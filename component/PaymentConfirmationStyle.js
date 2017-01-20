@@ -2,7 +2,7 @@ import colors from '../util/colors'
 import commonStyle from './style'
 import { Dimensions } from 'react-native'
 import { baselineDeltaForFonts } from './DefaultText'
-import { dimensions, margin, border } from '../util/StyleUtils'
+import { border } from '../util/StyleUtils'
 import { isScreenSmall } from '../util/ScreenSizes'
 
 const sectionHeight = 68
@@ -47,7 +47,7 @@ const style = {
 	pricePoundLogoContainer: {
 			alignSelf: 'flex-end',
 			marginRight: 12,
-			marginBottom: baselineDeltaForFonts(80, 58)
+			marginBottom: 11
 	},
 	priceBeforeDecimal: {
 			fontFamily: commonStyle.font.museo500,
