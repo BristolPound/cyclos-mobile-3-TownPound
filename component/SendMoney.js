@@ -152,7 +152,7 @@ class SendMoney extends React.Component {
       if (this.props.inputPage === Page.PaymentComplete) {
         inputProps = {
           buttonText: this.props.message,
-          onButtonPress: () => { this.nextPage() },
+          onButtonPress: () => {},
           accessibilityLabel: 'Payment complete'
         }
       } else if (this.props.loggedIn) {
