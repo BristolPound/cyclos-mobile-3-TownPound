@@ -8,11 +8,19 @@ import { logout } from './login'
 
 const initialState = {
   payee: '',
-  amount: undefined,
+  amount: '',
   loading: false,
   success: undefined,
   message: '',
-  timestamp: undefined
+  timestamp: undefined,
+  inputPage: undefined
+}
+
+const Page = {
+  Ready: 0,
+  EnterAmount: 1,
+  MakingPayment: 2,
+  PaymentComplete: 3,
 }
 
 export const resetForm = () => ({
@@ -22,6 +30,11 @@ export const resetForm = () => ({
 export const updatePayee = (payee) => ({
   type: 'sendMoney/UPDATE_PAYEE',
   payee
+})
+
+export const updatePage = (page) => ({
+  type: 'sendMoney/UPDATE_PAGE',
+  page
 })
 
 export const updateAmount = (amount) => ({
@@ -98,12 +111,34 @@ const reducer = (state = initialState, action) => {
         loading: true
       })
       break
+    case 'sendMoney/UPDATE_PAGE':
+      state = merge(state, {
+        inputPage: action.page
+      })
+      break
+    case 'navigation/OVERLAY_VISIBLE':
+      if (action.value === false) {
+        if ( state.inputPage === Page.EnterAmount && state.amount == '' ) {
+          state = merge(state, {
+            inputPage: Page.Ready
+          })
+        }        
+      }
+      break
+    case 'navigation/SHOW_MODAL':
+      if (action.modalState === 'traderScreen') {
+        state = merge(state, {
+            inputPage: Page.Ready
+          })
+      }
+      break
     case 'sendMoney/TRANSACTION_COMPLETE':
       state = merge(initialState, {
         success: action.success,
         message: action.message,
-        amount: undefined,
-        timestamp: action.timestamp
+        amount: '',
+        timestamp: action.timestamp,
+        inputPage: Page.PaymentComplete
       })
       break
   }

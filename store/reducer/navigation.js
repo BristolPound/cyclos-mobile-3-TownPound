@@ -22,6 +22,7 @@ const initialState = {
   tabIndex: 0,
   modalState: modalState.none,
   mainComponent: mainComponent.onboarding,
+  overlayVisible: false,
   stateInitialised: false,
   modalVisible: false,
   message: undefined,
@@ -32,6 +33,11 @@ const initialState = {
 export const navigateToTab = (tabIndex) => ({
   type: 'navigation/NAVIGATE_TO_TAB',
   tabIndex
+})
+
+export const setOverlayOpen = (value) => ({
+  type: 'navigation/OVERLAY_VISIBLE',
+  value
 })
 
 export const selectMainComponent = (componentName) => ({
@@ -105,7 +111,8 @@ const reducer = (state = initialState, action) => {
       break
     case 'navigation/HIDE_MODAL':
       state = merge(state, {
-        modalVisible: false
+        modalVisible: false,
+        modalState: modalState.none
       })
       break
     case LOGGED_OUT:
@@ -130,9 +137,25 @@ const reducer = (state = initialState, action) => {
           message: action.message,
           amount: action.amount,
           timestamp: action.timestamp,
-          transactionNumber: action.transactionNumber
+          transactionNumber: action.transactionNumber,
+          overlayVisible: false
         })
       }
+      break
+    case 'login/LOGIN_IN_PROGRESS':
+      state = merge(state, {
+        overlayVisible: false
+      })
+      break
+    case 'login/OPEN_LOGIN_FORM':
+      state = merge(state, {
+        overlayVisible: action.open
+      })
+      break
+    case 'navigation/OVERLAY_VISIBLE':
+      state = merge(state, {
+          overlayVisible: action.value
+      })
       break
     case 'navigation/CLOSE_CONFIRMATION':
       state = merge(state, {
