@@ -38,7 +38,7 @@ const Root = (props) => {
           barStyle={props.mainComponent === mainComponent.returningLogin ? 'light-content' : 'dark-content'}/>
       {bodyComponent}
       <LoginOverlay/>
-      { (props.modalState === modalState.traderScreen && props.inputPage !== 3) ? <SendMoney /> : undefined }
+      { (props.modalState === modalState.traderScreen && props.inputPage !== undefined) ? <SendMoney /> : undefined }
       <Login hideUsernameInput={props.mainComponent === mainComponent.returningLogin}/>
       <StatusMessage/>
       

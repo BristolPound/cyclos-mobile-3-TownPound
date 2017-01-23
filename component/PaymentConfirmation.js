@@ -1,8 +1,9 @@
-import { View, Image, TouchableOpacity } from 'react-native'
+import { View, Image } from 'react-native'
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { closeConfirmation } from '../store/reducer/navigation'
+import { updatePage } from '../store/reducer/sendMoney'
 import style from './PaymentConfirmationStyle'
 import ProfileHeader from './profileScreen/ProfileHeader'
 import DefaultText from './DefaultText'
@@ -22,26 +23,16 @@ const PaymentConfirmation = (props) => {
               username={props.trader.shortDisplay}
               image={props.trader.image}
               category={props.trader.category}
-              onPressClose={props.closeConfirmation}
+              onPressClose={() => {props.closeConfirmation() && props.updatePage(0)}}
               isModal={true}
               paymentComplete={true} />
             {renderPrice(priceBeforeDecimal, priceAfterDecimal)}
             {renderDetails(props.transactionNumber, props.timestamp)}
           </View>
-          {renderButton()}
         </View>
       : null
     )
 }
-
-const renderButton = () =>
-  <TouchableOpacity style={style.buttonContainer}>
-      <View style={style.buttonInnerContainer}>
-        <DefaultText style={style.buttonText}>
-          Transaction complete
-        </DefaultText>
-      </View>
-  </TouchableOpacity>
 
 const renderPrice = (priceBeforeDecimal, priceAfterDecimal) =>
   <View style={style.priceContainer}>
@@ -94,6 +85,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ closeConfirmation }, dispatch)
+  bindActionCreators({ closeConfirmation, updatePage }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PaymentConfirmation)
