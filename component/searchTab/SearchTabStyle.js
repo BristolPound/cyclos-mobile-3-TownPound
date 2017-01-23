@@ -19,7 +19,8 @@ export const maxCollapsedHeight = 45/100 * screenHeight - TAB_BAR_HEIGHT
 const styles = {
   searchTab: {
     expandPanel: {
-      ...horizontalAbsolutePosition(MARGIN_SIZE, MARGIN_SIZE)
+      ...horizontalAbsolutePosition(MARGIN_SIZE, MARGIN_SIZE),
+      zIndex: 100
     },
     searchBar: {
       ...margin(SEARCH_BAR_MARGIN, MARGIN_SIZE, 0, MARGIN_SIZE),
