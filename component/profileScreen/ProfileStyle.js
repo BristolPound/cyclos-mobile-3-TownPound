@@ -13,9 +13,7 @@ const styles = {
         marginTop: 15,
         marginLeft: 8,
         zIndex: 100,
-    },
-    center: {
-      alignItems: 'center',
+        position: 'absolute'
     },
     expandIcon: {
       ...dimensions(16),
@@ -23,7 +21,7 @@ const styles = {
     },
     businessLogo: {
       ...dimensions(84),
-      marginTop: -26
+      marginTop: 58
     },
     title: {
       fontFamily: commonStyle.font.museo500,
