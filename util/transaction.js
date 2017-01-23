@@ -72,7 +72,7 @@ export const buildDataSourceForTransactions = (transactions, datasource) => {
     return datasource.cloneWithRowsAndSections(group.groups, group.groupOrder)
   }
   const dataSource = new ListView.DataSource({
-    rowHasChanged: (a, b) => a.transactionNumber !== b.transactionNumber || a.selected !== b.selected,
+    rowHasChanged: (a, b) => a.transactionNumber !== b.transactionNumber,
     sectionHeaderHasChanged: (a, b) => a !== b
   })
   return dataSource.cloneWithRowsAndSections(group.groups, group.groupOrder)
