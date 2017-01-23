@@ -7,6 +7,7 @@ import { addFailedAction } from './networkConnection'
 import { getBusinesses, getBusinessProfile } from '../../api/users'
 import { UNEXPECTED_DATA } from '../../api/apiError'
 import { ERROR_SEVERITY, unknownError, updateStatus } from './statusMessage'
+import { hideModal } from './navigation'
 
 const DEFAULT_COORDINATES = { latitude: 51.454513, longitude:  -2.58791 }
 
@@ -99,6 +100,7 @@ export const loadBusinessProfile = (businessId) => (dispatch) => {
     .catch(err => {
       dispatch(addFailedAction(loadBusinessProfile(businessId)))
       if (err.type === UNEXPECTED_DATA) {
+        dispatch(hideModal())
         dispatch(updateStatus('Business no longer exists', ERROR_SEVERITY.SEVERE))
         dispatch(loadBusinessList(true))
       } else {
