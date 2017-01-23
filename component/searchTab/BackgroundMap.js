@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Platform, View, Dimensions } from 'react-native'
 import _ from 'lodash'
-import { MultilineText, HyperlinkText } from '../DefaultText'
+import { MultilineText } from '../DefaultText'
 import * as actions from '../../store/reducer/business'
 import { maxCollapsedHeight, SEARCH_BAR_MARGIN, SEARCH_BAR_HEIGHT } from './SearchTabStyle'
 import platform from '../../util/Platforms'
@@ -126,10 +126,8 @@ class BackgroundMap extends React.Component {
           ? undefined
           : <View style={style.warningContainer}>
             <MultilineText style={{textAlign: 'center'}}>
-              Google Play Services is out of date. You can get the latest version from the Play Store:
+              Google Play Services is out of date. You can get the latest version from the Play Store
             </MultilineText>
-            <HyperlinkText text='Update play services'
-                link='https://play.google.com/store/apps/details?id=com.google.android.gms' />
           </View>}
         <MapView style={style.map}
             region={this.region}
