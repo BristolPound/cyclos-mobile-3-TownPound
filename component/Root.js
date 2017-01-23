@@ -48,8 +48,7 @@ const Root = (props) => {
 
 const mapStateToProps = (state) => ({
     ...state.navigation,
-    inputPage: state.sendMoney.inputPage,
-    traderScreenBusinessId: state.business.traderScreenBusinessId
+    inputPage: state.sendMoney.inputPage
 })
 
 export default connect(mapStateToProps)(Root)

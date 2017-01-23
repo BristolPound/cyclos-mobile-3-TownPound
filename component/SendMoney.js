@@ -9,7 +9,6 @@ import merge from '../util/merge'
 import DefaultText from './DefaultText'
 import color from '../util/colors'
 import { setOverlayOpen } from '../store/reducer/navigation'
-import { Overlay } from './common/Overlay'
 import { dimensions, border } from '../util/StyleUtils'
 import commonStyle from './style'
 import Price from './Price'
@@ -113,13 +112,13 @@ class InputComponent extends KeyboardComponent {
 
 class SendMoney extends React.Component {
 
-  constructor(props) {
+  constructor() {
     super()
   }
 
   nextPage() {
     const nextPage = (this.props.inputPage + 1) % Object.keys(Page).length
-    this.props.updatePage( nextPage )
+    this.props.updatePage(nextPage)
     if (nextPage === Page.EnterAmount) {
       this.props.setOverlayOpen(true)
     }
@@ -128,7 +127,7 @@ class SendMoney extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.businessId !== prevProps.businessId) {
       this.props.updateAmount('')
-      this.props.updatePage( Page.Ready )
+      this.props.updatePage(Page.Ready)
     } else if (prevProps.loading && !this.props.loading && this.props.inputPage === 2) {
       this.nextPage()
     }
@@ -214,7 +213,6 @@ const mapStateToProps = (state) => ({
   businessId: state.business.traderScreenBusinessId,
   trader: state.business.businessList.find(b => b.id === state.business.traderScreenBusinessId) || {},
   balance: state.account.balance,
-  overlayVisible: state.navigation.overlayVisible,
   loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
   connection: state.networkConnection.status
 })
