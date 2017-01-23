@@ -115,19 +115,12 @@ class SendMoney extends React.Component {
 
   constructor(props) {
     super()
-    props.updatePage(Page.Ready)
   }
 
   nextPage() {
     const nextPage = (this.props.inputPage + 1) % Object.keys(Page).length
     this.props.updatePage( nextPage )
-    if (nextPage === Page.PaymentComplete) {
-      setTimeout(() => {
-        if (this.props.inputPage === Page.PaymentComplete) {
-          this.nextPage()
-        }
-      }, 200)
-    } else if (nextPage === Page.EnterAmount) {
+    if (nextPage === Page.EnterAmount) {
       this.props.setOverlayOpen(true)
     }
   }

@@ -8,7 +8,7 @@ import { logout } from './login'
 
 const initialState = {
   payee: '',
-  amount: undefined,
+  amount: '',
   loading: false,
   success: undefined,
   message: '',
@@ -117,21 +117,28 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'navigation/OVERLAY_VISIBLE':
-      if ( state.inputPage === Page.EnterAmount && state.amount == '' ) {
-        state = merge(state, {
-          inputPage: Page.Ready
-        })
+      if (action.value === false) {
+        if ( state.inputPage === Page.EnterAmount && state.amount == '' ) {
+          state = merge(state, {
+            inputPage: Page.Ready
+          })
+        }        
       }
-      state = merge(state, {
-          overlayVisible: action.value
-      })
+      break
+    case 'navigation/SHOW_MODAL':
+      if (action.modalState === 'traderScreen') {
+        state = merge(state, {
+            inputPage: Page.Ready
+          })
+      }
       break
     case 'sendMoney/TRANSACTION_COMPLETE':
       state = merge(initialState, {
         success: action.success,
         message: action.message,
-        amount: undefined,
-        timestamp: action.timestamp
+        amount: '',
+        timestamp: action.timestamp,
+        inputPage: Page.PaymentComplete
       })
       break
   }

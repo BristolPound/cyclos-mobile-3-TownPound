@@ -111,7 +111,8 @@ const reducer = (state = initialState, action) => {
       break
     case 'navigation/HIDE_MODAL':
       state = merge(state, {
-        modalVisible: false
+        modalVisible: false,
+        modalState: modalState.none
       })
       break
     case LOGGED_OUT:
@@ -136,7 +137,8 @@ const reducer = (state = initialState, action) => {
           message: action.message,
           amount: action.amount,
           timestamp: action.timestamp,
-          transactionNumber: action.transactionNumber
+          transactionNumber: action.transactionNumber,
+          overlayVisible: false
         })
       }
       break
@@ -151,7 +153,6 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'navigation/OVERLAY_VISIBLE':
-      console.log(action)
       state = merge(state, {
           overlayVisible: action.value
       })
