@@ -45,9 +45,9 @@ const renderButton = () =>
 
 const renderPrice = (priceBeforeDecimal, priceAfterDecimal) =>
   <View style={style.priceContainer}>
-    <DefaultText style={style.pricePoundLogoContainer}>
-      <Image source={require('./tabbar/assets/balance_symbol@3x.png')} style={style.pricePoundLogo} />
-    </DefaultText>
+    <View style={style.pricePoundLogoContainer}>
+      <Image source={require('./common/assets/Shape.png')} style={style.pricePoundLogo} />
+    </View>
     <DefaultText style={style.priceBeforeDecimal}>
         {priceBeforeDecimal}
     </DefaultText>
