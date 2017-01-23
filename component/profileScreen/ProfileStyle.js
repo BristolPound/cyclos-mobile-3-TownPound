@@ -10,7 +10,7 @@ const listMargin = 4 + screenWidth / 40
 const styles = {
   header: {
     closeButton: {
-        marginTop: 32,
+        marginTop: 15,
         marginLeft: 8,
         zIndex: 100,
     },
@@ -22,7 +22,8 @@ const styles = {
       ...margin(40, headerMargin, 0, 0)
     },
     businessLogo: {
-      ...dimensions(84)
+      ...dimensions(84),
+      marginTop: -26
     },
     title: {
       fontFamily: commonStyle.font.museo500,
@@ -34,7 +35,7 @@ const styles = {
       color: colors.gray
     },
     backgroundImage: {
-      ...dimensions(screenWidth, 242),
+      ...dimensions(screenWidth, 248),
       position: 'absolute'
     },
   },

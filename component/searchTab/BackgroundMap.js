@@ -52,6 +52,32 @@ const style = {
   }
 }
 
+export const renderMarker = ({ key, address, selected, onPress }) => {
+  // we have to separate out the behaviour by platform for Image placing:
+  //     https://github.com/airbnb/react-native-maps/blob/master/docs/marker.md
+  //       ios - centerOffset: By default, the center point of an annotation view is placed at the coordinate point of the associated annotation.
+  //       android - anchor: manually center
+
+    const marker = selected ? selectedMarkerImage : markerImage
+
+    const markerProps = Platform.select({
+      android: {
+        anchor: {x: 0.5, y: 0.5},  // center image on location.
+        image: marker[platform.ANDROID]
+      },
+      ios: {
+        image: marker[platform.IOS]
+      }
+    })
+
+    // custom image file
+    return <MapView.Marker
+        onPress={onPress}
+        key={key}
+        coordinate={address.location}
+        {...markerProps} />
+}
+
 class BackgroundMap extends React.Component {
   regionChanged = () => {}
   constructor(props) {
@@ -81,43 +107,16 @@ class BackgroundMap extends React.Component {
     }
   }
 
-  renderMarker(business) {
-    // we have to separate out the behaviour by platform for:
-    // * behaviour - https://github.com/airbnb/react-native-maps#custom-callouts
-    //     android moves viewspace when the marker is selected, ios shouldn't.
-    // * Image placing:
-    //     https://github.com/airbnb/react-native-maps/blob/master/docs/marker.md
-    //       ios - centerOffset: By default, the center point of an annotation view is placed at the coordinate point of the associated annotation.
-    //       android - anchor: manually center
-
-      const marker = this.isSelected(business) ? selectedMarkerImage : markerImage
-
-      const markerProps = Platform.select({
-        android: {
-          onPress: () => {
-            this.props.updateMapViewportAndSelectClosestTrader(business.address.location)
-          },
-          anchor: {x: 0.5, y: 0.5},  // center image on location.
-          image: marker[platform.ANDROID]
-        },
-        ios: {
-          onPress: () => this.props.selectBusiness(business.id),
-          image: marker[platform.IOS]
-        }
-      })
-
-      // custom image file
-      return <MapView.Marker
-          key={business.id}
-          coordinate={business.address.location}
-          {...markerProps} />
-  }
-
   render() {
     let markerArray = undefined
     if (this.props.businessList) {
       markerArray = this.props.businessList.filter(b => b.address)
-        .map(this.renderMarker.bind(this))
+        .map((business) => renderMarker({
+          key: business.id,
+          address: business.address,
+          selected: this.isSelected(business),
+          onPress: () => this.props.selectBusiness(business.id)
+        }))
     }
 
     return (
@@ -139,7 +138,8 @@ class BackgroundMap extends React.Component {
             scrollEnabled={!this.state.loading}
             zoomEnabled={!this.state.loading}
             onRegionChange={this.regionChanged}
-            loadingEnabled={true}>
+            loadingEnabled={true}
+            moveOnMarkerPress={false}>
           {markerArray}
         </MapView>
         {this.state.loading
