@@ -1,16 +1,18 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { View, TextInput, TouchableOpacity, Dimensions, Animated } from 'react-native'
+import { View, TextInput, TouchableOpacity, Dimensions, Animated, Image } from 'react-native'
 import KeyboardComponent from './KeyboardComponent'
 import * as actions from '../store/reducer/sendMoney'
 import { openLoginForm, LOGIN_STATUSES } from '../store/reducer/login'
 import merge from '../util/merge'
 import DefaultText from './DefaultText'
 import color from '../util/colors'
-import { dimensions } from '../util/StyleUtils'
 import { setOverlayOpen } from '../store/reducer/navigation'
 import { Overlay } from './common/Overlay'
+import { dimensions, border } from '../util/StyleUtils'
+import commonStyle from './style'
+import Price from './Price'
 
 const Page = {
   Ready: 0,
@@ -37,7 +39,37 @@ const styles = {
     ...dimensions(width, sectionHeight),
     padding: 10,
     textAlign: 'center'
+  },
+  balanceContainer: {
+    ...border(['bottom'], color.gray5, 1),
+    backgroundColor: color.offWhite,
+    height: 46,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  priceContainer: {
+    flex: 1,
+    right: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: color.transparent,
+    justifyContent: 'flex-end'
   }
+}
+
+const BalanceMessage = ({ balance }) => {
+  return (
+    <View style={styles.balanceContainer}>
+      <DefaultText style={commonStyle.sectionHeader.text}>CURRENT BALANCE</DefaultText>
+      <View style={styles.priceContainer}>
+        <Image source={require('./tabbar/assets/balance_symbol.png')}/>
+        <Price prefix=''
+            price={balance}
+            size={30}
+            color={color.bristolBlue}/>
+      </View>
+    </View>
+  )
 }
 
 class InputComponent extends KeyboardComponent {
@@ -53,7 +85,7 @@ class InputComponent extends KeyboardComponent {
   }
 
   render() {
-    let { onButtonPress, buttonText, input, invalidInput, accessibilityLabel } = this.props
+    let { onButtonPress, buttonText, input, invalidInput, accessibilityLabel, balance } = this.props
 
     return <Animated.View style={{backgroundColor: 'white', bottom: input ? this.state.keyboardHeight : 0}} accessibilityLabel={accessibilityLabel}>
       <TouchableOpacity style={merge(styles.button, {backgroundColor: this.getButtonColor()})}
@@ -66,11 +98,14 @@ class InputComponent extends KeyboardComponent {
       </TouchableOpacity>
 
       { input
-        ? <TextInput style={styles.textInput}
-              {...input}
-              autoFocus={true}
-              accessibilityLabel={input.placeholder} />
-      : undefined }
+        ? <View>
+            <TextInput style={styles.textInput}
+                {...input}
+                autoFocus={true}
+                accessibilityLabel={input.placeholder} />
+            <BalanceMessage balance={balance}/>
+          </View>
+        : undefined }
 
     </Animated.View>
   }
@@ -149,6 +184,7 @@ class SendMoney extends React.Component {
               },
               invalidInput: this.isInputInvalid(),
               accessibilityLabel: 'Enter Amount',
+              balance: this.props.balance
             }
             break
           case Page.MakingPayment: // in progress
