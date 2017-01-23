@@ -37,8 +37,22 @@ export default class Search extends React.Component {
       this.state = { searchTerms: [], componentListArray: [], input: null }
     }
 
-    debouncedUpdate = _.debounce(() => {
-      const { allBusinesses } = this.props
+    componentWillReceiveProps(nextProps) {
+      if (nextProps.allBusinesses !== this.props.allBusinesses) {
+        let changedCount = 0
+        nextProps.allBusinesses.forEach((business, index) => {
+          if (business.id !== this.props.allBusinesses[index].id) {
+            changedCount++
+          }
+        })
+        // If the change was due to dodgy data, not just because the details were loaded for a business
+        if (changedCount > 1) {
+          this.setState({ componentListArray: this.updateResults(nextProps.allBusinesses) })
+        }
+      }
+    }
+
+    updateResults = (allBusinesses = this.props.allBusinesses) => {
       const termsMatch = (field) => {
         let match = true
         this.state.searchTerms.forEach((term) => {
@@ -50,9 +64,11 @@ export default class Search extends React.Component {
       }
       this.refs.ExpandPanel && this.refs.ExpandPanel.resetToInitalState()
       const filteredBusinessList = allBusinesses.filter(business => termsMatch(business.display) || termsMatch(business.shortDisplay))
-      const componentListArray = this.createComponentListArray(addColorCodes(filteredBusinessList))
+      const componentListArray = this.createComponentListArray(filteredBusinessList)
       this.setState({ componentListArray })
-    }, 800)
+    }
+
+    debouncedUpdate = _.debounce(() => this.updateResults(), 800)
 
     _onChangeText(input) {
       this.setState({ searchTerms: input.split(' '), input: input || null })
@@ -88,8 +104,9 @@ export default class Search extends React.Component {
       if (cropped) {
         list.length = MAX_LIST_LENGTH
       }
+      const coloredList = addColorCodes(list)
       const makePressable = (itemProps) => ({...itemProps, pressable: true})
-      const array = [ `${matches} TRADER MATCHES`, ...list.map(makePressable) ]
+      const array = [ `${matches} TRADER MATCHES`, ...coloredList.map(makePressable) ]
       if (cropped) {
         array.push(`${matches - MAX_LIST_LENGTH} ADDITIONAL RESULTS NOT DISPLAYED`)
       }
