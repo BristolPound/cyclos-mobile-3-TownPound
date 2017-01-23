@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native'
-import { dimensions, margin, border } from '../../util/StyleUtils'
+import { dimensions, margin, border, padding } from '../../util/StyleUtils'
+import commonStyle from '../style'
 import colors from '../../util/colors'
 
 const styles = {
@@ -29,6 +30,21 @@ const styles = {
     color: colors.gray,
     flexWrap: 'wrap'
   },
+  minorButtonText: {
+    fontFamily: commonStyle.font.museo500,
+    alignSelf: 'center',
+    color: colors.bristolBlue,
+    backgroundColor: colors.transparent,
+    fontSize: 14,
+    marginTop: 18,
+    paddingBottom: 8
+  },
+  addressOnly: {
+    ...padding(18, 0, 30, 0)
+  },
+  moreDetails: {
+    paddingBottom: 12
+  }
 }
 
 export default styles
