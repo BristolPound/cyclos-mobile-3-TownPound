@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Image, TouchableHighlight } from 'react-native'
+import { View, Image } from 'react-native'
 import MapView from 'react-native-maps'
 import DefaultText from '../DefaultText'
 import ProfileImage from '../profileImage/ProfileImage'
@@ -58,17 +58,15 @@ const ProfileHeader = (props) => {
     <View>
       { getBackground(props) }
       { props.isModal ? renderCloseButton(props.onPressClose) : undefined }
-      <TouchableHighlight onPress={props.goToLocation} underlayColor='transparent'>
-        <View style={styles.header.center}>
-          <ProfileImage
-            image={props.image && {uri: props.image.url}}
-            style={styles.header.businessLogo}
-            category={props.category}
-            colorCode={0} />
-          <DefaultText style={styles.header.title}>{props.name}</DefaultText>
-          <DefaultText style={getSubtitleStyle()}>{props.username}</DefaultText>
-        </View>
-      </TouchableHighlight>
+      <View style={{ alignItems: 'center' }}>
+        <ProfileImage
+          image={props.image && {uri: props.image.url}}
+          style={styles.header.businessLogo}
+          category={props.category}
+          colorCode={0} />
+        <DefaultText style={styles.header.title}>{props.name}</DefaultText>
+        <DefaultText style={getSubtitleStyle()}>{props.username}</DefaultText>
+      </View>
     </View>
   )
 }
