@@ -35,7 +35,7 @@ const asRenderHeader = (trader, transactions, hideModal, resetForm, goToLocation
       address={trader.address}
       onPressClose={() => {hideModal(); resetForm()}}
       isModal={true}
-      goToLocation={goToLocation}/>
+      goToLocation={() => goToLocation(trader.address.location)}/>
       <BusinessDetails business={trader} goToLocation={goToLocation}/>
   </View>
 
