@@ -32,8 +32,10 @@ const asRenderHeader = (trader, transactions, hideModal, resetForm, goToLocation
       username={trader.shortDisplay}
       image={trader.image}
       category={trader.category}
+      address={trader.address}
       onPressClose={() => {hideModal(); resetForm()}}
-      isModal={true} />
+      isModal={true}
+      goToLocation={goToLocation}/>
       <BusinessDetails business={trader} goToLocation={goToLocation}/>
   </View>
 
