@@ -16,7 +16,8 @@ import animateTo from '../util/animateTo'
 class KeyboardComponent extends React.Component {
   constructor() {
     super()
-    this.state = {keyboardHeight: new Animated.Value(0)}
+    this.keyboardOpen = false
+    this.state = { keyboardHeight: new Animated.Value(0) }
   }
 
   componentWillMount() {
@@ -37,10 +38,14 @@ class KeyboardComponent extends React.Component {
 
   keyboardDidShow(e) {
     animateTo(this.state.keyboardHeight, e.endCoordinates.height, 300)
+    this.keyboardOpen = true
   }
 
   keyboardDidHide() {
-    animateTo(this.state.keyboardHeight, 0, 300)
+    if (this.keyboardOpen) {
+      animateTo(this.state.keyboardHeight, 0, 300)
+      this.keyboardOpen = false
+    }
   }
 }
 
