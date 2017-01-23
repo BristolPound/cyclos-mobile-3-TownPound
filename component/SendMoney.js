@@ -51,6 +51,13 @@ class InputComponent extends KeyboardComponent {
     return this.getButtonColor() === color.offWhite ? 'black' : 'white'
   }
 
+  // To fix issue #636
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.accessibilityLabel === 'Payment complete') {
+      this.keyboardDidHide()
+    }
+  }
+
   render() {
     let { onButtonPress, buttonText, input, invalidInput, accessibilityLabel } = this.props
 
