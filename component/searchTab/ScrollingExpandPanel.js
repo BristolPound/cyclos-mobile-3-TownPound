@@ -163,6 +163,7 @@ class ScrollingExpandPanel extends React.Component {
 
     if (Math.abs(currentTouchY - this.startTouchY) > 2) {
       this.hasMoved = true
+      this.props.onMove && this.props.onMove()
     }
 
     if (this.hasMoved) {

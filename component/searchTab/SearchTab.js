@@ -95,6 +95,7 @@ class SearchTab extends React.Component {
             expandedHeight={expandedHeight}
             onPressRelease={hasMoved => componentList && componentList.handleRelease(hasMoved)}
             onPressStart={location => componentList && componentList.highlightItem(location)}
+            onMove={() => componentList && componentList.handleRelease(true)}
             childrenHeight={childrenHeight + BUSINESS_LIST_SELECTED_GAP}
             startPosition={1}
             outOfBoundsPress={(pageX) => this.searchBarPressed(pageX)}>
