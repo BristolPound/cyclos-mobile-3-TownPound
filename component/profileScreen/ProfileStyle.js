@@ -4,8 +4,8 @@ import commonStyle from '../style'
 import { dimensions, margin, border } from '../../util/StyleUtils'
 
 const headerMargin = 24
-const listMargin = 14
 const screenWidth = Dimensions.get('window').width
+const listMargin = 4 + screenWidth / 40
 
 const styles = {
   header: {
@@ -28,10 +28,8 @@ const styles = {
       fontFamily: commonStyle.font.museo500,
       marginTop: 8,
       fontSize: 20,
-      color: colors.offBlack
     },
     subtitle: {
-      marginBottom: 46,
       fontSize: 18,
       color: colors.gray
     },
@@ -46,36 +44,46 @@ const styles = {
       justifyContent: 'center',
       height: 50
     },
-    columnContainer: {
-      flexDirection: 'column',
-      justifyContent: 'center'
-    },
-    date: {
-      width: screenWidth / 3 + 30,
+    leftColumn: {
+      width: screenWidth / 3,
       flex: 1,
-      alignSelf: 'center',
-      color: colors.offBlack,
-      paddingLeft: 12
+      paddingLeft: listMargin,
+      alignSelf: 'center'
     },
-    time: {
-      width: screenWidth / 3 - 20,
-      fontFamily: commonStyle.font.museo100,
+    dateNumbers: {
+      marginTop: 5,
+      fontFamily: commonStyle.font.museo500
+    },
+    dateLetters: {
+      marginTop: 5,
+    },
+    day: {
+      position: 'absolute',
+      fontSize: 17,
+      top: 24,
+      left: listMargin
+    },
+    midColumnOuter: {
       flex: 1,
-      alignSelf: 'center',
-      textAlign: 'center',
-      color: colors.gray
+      width: screenWidth / 3 ,
+      alignItems: 'center',
+      alignSelf: 'center'
     },
-    transactionNumber: {
+    midColumnInner: {
+      alignSelf: 'center'
+    },
+    timeText: {
+      fontFamily: commonStyle.font.museo500,
+    },
+    idText: {
       fontFamily: commonStyle.font.museo100,
       fontSize: 16,
-      alignSelf: 'center',
-      color: colors.gray
     },
     price: {
       flex: 1,
-      width: screenWidth / 3 - 10,
+      width: screenWidth / 3,
       alignSelf: 'center',
-      paddingRight: 12
+      paddingRight: listMargin
     },
     separator: {
       ...border(['top', 'right', 'bottom', 'left'], colors.gray5, StyleSheet.hairlineWidth),

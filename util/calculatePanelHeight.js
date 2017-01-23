@@ -11,7 +11,7 @@ const calculatePanelHeight = (rowCount, selectedBusiness) => {
     maxCollapsedHeight
   )
   const expandedHeight = Math.max(
-    Math.min(rowCount * ROW_HEIGHT + selectedBusinessModifier, maxExpandedHeight),
+    Math.min(rowCount * ROW_HEIGHT + selectedBusinessModifier + BUSINESS_LIST_SELECTED_GAP, maxExpandedHeight),
     collapsedHeight
   )
   const closedHeight = ROW_HEIGHT * Math.min(rowCount, 1)

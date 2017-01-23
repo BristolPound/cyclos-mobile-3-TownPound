@@ -3,7 +3,6 @@ import { View, ListView } from 'react-native'
 import DefaultText from '../DefaultText'
 import styles from './ProfileStyle'
 import commonStyle from '../style'
-import merge from '../../util/merge'
 import TransactionItem from './TransactionItem'
 import { buildDataSourceForTransactions} from '../../util/transaction'
 
@@ -17,7 +16,6 @@ export default class TransactionList extends Component {
   constructor(props) {
     super(props)
     this.state = { dataSource: buildDataSourceForTransactions(props.listData) }
-    this.setSelected = this.setSelected.bind(this)
   }
 
   componentDidUpdate(lastProps) {
@@ -26,26 +24,16 @@ export default class TransactionList extends Component {
     }
   }
 
-  // update the transaction in data source to be selected/unselected
-  setSelected(transactionNumber, newSelectedValue) {
-     const ds = this.props.listData.slice()
-     const index = ds.findIndex(transaction => transaction.transactionNumber === transactionNumber)
-     const mod = merge(ds[index])
-     mod.selected = newSelectedValue
-     ds.splice(index,1,mod)
-     this.setState({ dataSource: buildDataSourceForTransactions(ds, this.state.dataSource) })
-  }
-
   render() {
     return (
       <ListView
         renderHeader={this.props.renderHeader}
         dataSource={this.state.dataSource}
-        renderRow={transaction => this.props.renderRow
-          || <TransactionItem transaction={transaction} setSelected={this.setSelected} selected={transaction.selected} />}
+        renderRow={this.props.renderRow || TransactionItem}
         renderSeparator={renderSeparator}
         renderSectionHeader={renderSectionHeader}
-        removeClippedSubviews={false}/>
+        removeClippedSubviews={false}
+        />
     )
   }
 }
