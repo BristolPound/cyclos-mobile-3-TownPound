@@ -17,10 +17,6 @@ const TraderScreen = ({ trader, transactions, hideModal, resetForm, goToLocation
       renderHeader={asRenderHeader(trader, transactions, hideModal, resetForm, goToLocation)}
       listData={transactions} />
     </View>
-    <SendMoney
-      businessId={trader.id}
-      payeeDisplay={trader.display}
-      payeeShortDisplay={trader.shortDisplay} />
   </View>
 
 // Currently we pass in returned renderHeader as we delegate to a listView.
