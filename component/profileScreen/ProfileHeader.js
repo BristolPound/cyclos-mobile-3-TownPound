@@ -5,7 +5,7 @@ import DefaultText from '../DefaultText'
 import ProfileImage from '../profileImage/ProfileImage'
 import styles from './ProfileStyle'
 import merge from '../../util/merge'
-import { renderMarker } from '../searchTab/BackgroundMap'
+import { MapMarker } from '../searchTab/BackgroundMap'
 
 import  { CloseButton } from '../common/CloseButton'
 
@@ -38,11 +38,7 @@ const background = (props) => {
           scrollEnabled={false}
           zoomEnabled={false}
           onPress={props.goToLocation}>
-        {renderMarker({
-          key: 'marker',
-          address: props.address,
-          selected: true
-        })}
+        <MapMarker key='marker' coordinate={props.address.location} selected={true} />
       </MapView>
     )
   }

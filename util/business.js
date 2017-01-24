@@ -26,7 +26,7 @@ const isLocationWithinViewport = (location, viewport) => {
         &&  isCoordinateWithinViewport(location.longitude, viewport.longitude, viewport.longitudeDelta)
 }
 
-const shouldBeDisplayed = (viewport) => (business) =>
+export const shouldBeDisplayed = (viewport) => (business) =>
     business.address && isLocationWithinViewport(business.address.location, viewport)
 
 const businessAtLocation = (location) => (business) => {
