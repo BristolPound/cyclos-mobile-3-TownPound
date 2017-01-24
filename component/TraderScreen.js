@@ -6,7 +6,7 @@ import * as actions from '../store/reducer/navigation'
 import TransactionList from './profileScreen/TransactionList'
 import ProfileHeader from './profileScreen/ProfileHeader'
 import BusinessDetails from './businessDetails/BusinessDetails'
-import SendMoney, { sectionHeight } from './SendMoney'
+import { sectionHeight } from './SendMoney'
 import { resetForm } from '../store/reducer/sendMoney'
 import { goToLocation } from '../store/reducer/navigation'
 
