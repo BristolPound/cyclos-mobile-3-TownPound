@@ -50,6 +50,10 @@ export default class Search extends React.Component {
           this.setState({ componentListArray: this.updateResults(nextProps.allBusinesses) })
         }
       }
+      if (!nextProps.searchMode && this.props.searchMode) {
+        this.refs.textInput.blur()
+        this.setState({ searchTerms: [], input: null, componentListArray: [] })
+      }
     }
 
     updateResults = (allBusinesses = this.props.allBusinesses) => {
@@ -63,7 +67,9 @@ export default class Search extends React.Component {
         return match
       }
       this.refs.ExpandPanel && this.refs.ExpandPanel.resetToInitalState()
-      const filteredBusinessList = allBusinesses.filter(business => termsMatch(business.display) || termsMatch(business.shortDisplay))
+      const filteredBusinessList = this.state.searchTerms.length
+      ? allBusinesses.filter(business => termsMatch(business.display) || termsMatch(business.shortDisplay))
+      : []
       const componentListArray = this.createComponentListArray(filteredBusinessList)
       this.setState({ componentListArray })
     }
@@ -71,19 +77,13 @@ export default class Search extends React.Component {
     debouncedUpdate = _.debounce(() => this.updateResults(), 800)
 
     _onChangeText(input) {
-      this.setState({ searchTerms: input.split(' '), input: input || null })
+      this.setState({ searchTerms: input ? input.split(' ') : [], input: input || null })
       this.debouncedUpdate()
     }
 
     _businessListOnClick(id) {
       this.refs.textInput.blur()
       this.props.openTraderModal(id)
-    }
-
-    closeButtonPressed() {
-      this.props.updateSearchMode(false)
-      this.refs.textInput.blur()
-      this.setState({ searchTerms: [], input: null })
     }
 
     nearbyButtonEnabled() {
@@ -139,7 +139,7 @@ export default class Search extends React.Component {
                        value={input}
                        underlineColorAndroid={colors.transparent}/>
             { searchMode &&
-                <CloseButton onPress={() => this.closeButtonPressed()} closeButtonType={CLOSE_BUTTON} style={closeButton} size={SEARCH_BAR_HEIGHT}/> }
+                <CloseButton onPress={() => this.props.updateSearchMode(false)} closeButtonType={CLOSE_BUTTON} style={closeButton} size={SEARCH_BAR_HEIGHT}/> }
           </View>
           { searchMode && (
                   <ScrollingExpandPanel style={expandPanel}
