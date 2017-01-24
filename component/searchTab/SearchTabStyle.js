@@ -27,7 +27,8 @@ const styles = {
       ...dimensions(SEARCH_BAR_WIDTH, SEARCH_BAR_HEIGHT),
       ...commonStyle.shadow,
       backgroundColor: color.white,
-      flexDirection: 'row'
+      flexDirection: 'row',
+      borderRadius: 2
     },
     nearbyButton: {
       width: NEARBY_WIDTH,

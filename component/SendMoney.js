@@ -27,12 +27,8 @@ const styles = {
   button: {
     height: sectionHeight,
     justifyContent: 'center',
-    alignItems: 'center'
-  },
-  buttonInnerContainer: {
     alignItems: 'center',
     flexDirection: 'row',
-    backgroundColor: 'transparent'
   },
   textInput: {
     ...dimensions(width, sectionHeight),
@@ -93,17 +89,21 @@ class InputComponent extends KeyboardComponent {
   render() {
     let { onButtonPress, buttonText, input, invalidInput, accessibilityLabel, balance } = this.props
 
-    return <Animated.View style={{backgroundColor: 'white', bottom: input ? this.state.keyboardHeight : 0}} accessibilityLabel={accessibilityLabel}>
-      <TouchableOpacity style={merge(styles.button, {backgroundColor: this.getButtonColor()})}
-          onPress={invalidInput ? undefined : onButtonPress}>
-        <View style={styles.buttonInnerContainer}>
-          <DefaultText style={{fontSize: 24, color: this.getButtonTextColor(), textAlign: 'center', width: Dimensions.get('window').width - 20}}>
-            {buttonText}
-          </DefaultText>
-        </View>
-      </TouchableOpacity>
+    const button = <View style={merge(styles.button, { backgroundColor: this.getButtonColor() })}>
+      <DefaultText style={{fontSize: 24, color: this.getButtonTextColor(), textAlign: 'center', width: Dimensions.get('window').width - 20}}>
+        {buttonText}
+      </DefaultText>
+    </View>
 
-      { input
+    return <Animated.View style={{backgroundColor: 'white', bottom: input ? this.state.keyboardHeight : 0}} accessibilityLabel={accessibilityLabel}>
+
+      {accessibilityLabel === 'Payment complete'
+        ? button
+        : <TouchableOpacity onPress={invalidInput ? undefined : onButtonPress}>
+            {button}
+          </TouchableOpacity>}
+
+      {input
         ? <View>
             <TextInput style={styles.textInput}
                 {...input}
@@ -111,7 +111,7 @@ class InputComponent extends KeyboardComponent {
                 accessibilityLabel={input.placeholder} />
             <BalanceMessage balance={balance}/>
           </View>
-        : undefined }
+        : undefined}
 
     </Animated.View>
   }

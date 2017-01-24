@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Image } from 'react-native'
+import { View, Image, Dimensions } from 'react-native'
 import MapView from 'react-native-maps'
 import DefaultText from '../DefaultText'
 import ProfileImage from '../profileImage/ProfileImage'
@@ -14,6 +14,10 @@ const CLOSE_BUTTON = require('./../common/assets/Close_Blue.png')
 const renderCloseButton = (onPress) =>
   <CloseButton style={styles.header.closeButton} onPress={onPress} closeButtonType={CLOSE_BUTTON} size={70}/>
 
+const screenWidth = Dimensions.get('window').width,
+  screenHeight = Dimensions.get('window').height
+
+
 const getMapRegion = (location) => ({
   latitude: location.latitude + 0.00038,
   longitude: location.longitude,
@@ -23,26 +27,30 @@ const getMapRegion = (location) => ({
 
 const background = (props) => {
   if (props.address && props.address.location) {
-    return <MapView style={styles.header.backgroundImage}
-        region={getMapRegion(props.address.location)}
-        showsPointsOfInterest={false}
-        showsUserLocation={false}
-        showsCompass={false}
-        rotateEnabled={false}
-        pitchEnabled={false}
-        scrollEnabled={false}
-        zoomEnabled={false}
-        onPress={props.goToLocation}>
-      {renderMarker({
-        key: 'marker',
-        address: props.address,
-        selected: true
-      })}
-    </MapView>
+    return (
+      <MapView style={styles.header.backgroundImage}
+          region={getMapRegion(props.address.location)}
+          showsPointsOfInterest={false}
+          showsUserLocation={false}
+          showsCompass={false}
+          rotateEnabled={false}
+          pitchEnabled={false}
+          scrollEnabled={false}
+          zoomEnabled={false}
+          onPress={props.goToLocation}>
+        {renderMarker({
+          key: 'marker',
+          address: props.address,
+          selected: true
+        })}
+      </MapView>
+    )
   }
-  return <Image source={require('./assets/gorillaWithBackground.png')}
-      style={styles.header.backgroundImage}
-      resizeMode='cover' />
+  return (
+    <Image source={require('./assets/gorillaWithBackground.png')}
+        style={styles.header.backgroundImage}
+        resizeMode='cover' />
+  )
 }
 
 const ProfileHeader = (props) => {
@@ -55,7 +63,7 @@ const ProfileHeader = (props) => {
   }
 
   return (
-    <View>
+    <View style={{ width: screenWidth, height: props.paymentComplete ? screenHeight / 2 - 45 : 248 }}>
       { getBackground(props) }
       { props.isModal ? renderCloseButton(props.onPressClose) : undefined }
       <View style={{ alignItems: 'center' }}>

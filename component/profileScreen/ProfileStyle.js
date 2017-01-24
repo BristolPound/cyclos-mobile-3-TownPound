@@ -36,6 +36,9 @@ const styles = {
       ...dimensions(screenWidth, 248),
       position: 'absolute'
     },
+    backgroundImageContainer: {
+      width: screenWidth,
+    }
   },
   list: {
     rowContainer: {
