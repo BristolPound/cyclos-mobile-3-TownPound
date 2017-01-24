@@ -18,9 +18,6 @@ const style = {
     alignItems: 'center',
     justifyContent: 'center'
   },
-  text: {
-    color: color.white
-  }
 }
 
 class StatusMessage extends React.Component {
@@ -28,7 +25,8 @@ class StatusMessage extends React.Component {
     super()
     this.state = {
       bottom: new Animated.Value(-sectionHeight),
-      height: 0
+      height: 0,
+      fontSize: 18
     }
   }
 
@@ -43,7 +41,8 @@ class StatusMessage extends React.Component {
   componentDidUpdate(lastProps) {
     if (this.props.message && !lastProps.message) {
       const height = this.props.modalVisible ? sectionHeight : TAB_BAR_HEIGHT
-      this.setState({ height })
+      const fontSize = this.props.modalVisible ? 24 : 18
+      this.setState({ height, fontSize })
       animateTo(this.state.bottom, 0, 300)
       this.scheduleSlideOut()
     } else if (this.timeout) {
@@ -61,7 +60,7 @@ class StatusMessage extends React.Component {
             height: this.state.height
           })
         }>
-        <DefaultText style={style.text}>
+        <DefaultText style={{ color: color.white, fontSize: this.state.fontSize }}>
           {this.props.message}
         </DefaultText>
       </Animated.View>
