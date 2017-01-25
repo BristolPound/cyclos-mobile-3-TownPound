@@ -26,12 +26,18 @@ const Business = {
   forceRegion: MapViewport,
   searchMode: false,
   traderScreenBusinessId: undefined,
-  geolocationStatus: null
+  geolocationStatus: null,
+  businessListRef: null,
 }
 
 export const businessListReceived = (businessList) => ({
   type: 'business/BUSINESS_LIST_RECEIVED',
   businessList
+})
+
+export const registerBusinessList = (ref) => ({
+  type: 'business/REGISTER_BUSINESS_LIST',
+  ref
 })
 
 export const moveMap = () => ({
@@ -243,6 +249,13 @@ const reducer = (state = Business, action) => {
     case 'business/MOVE_MAP':
       state = merge(state, { forceRegion: state.mapViewport })
       break
+
+    case 'business/REGISTER_BUSINESS_LIST':
+      state = merge(state, { businessListRef: action.ref })
+      break
+
+    case 'navigation/NAVIGATE_TO_TAB':
+      state = merge(state, { searchMode: false })
   }
   return state
 }
