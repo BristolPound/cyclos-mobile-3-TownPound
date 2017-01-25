@@ -8,14 +8,11 @@ import { sectionHeight } from './SendMoney'
 
 const style = {
   container: {
-		flexDirection: 'column',
 		justifyContent: 'space-between',
 		height: Dimensions.get('window').height - sectionHeight
   },
 	innerContainer: {
-		flexDirection: 'column',
 		justifyContent: 'space-between',
-		height: Dimensions.get('window').height
   },
 	buttonContainer: {
       height: sectionHeight,
@@ -69,10 +66,6 @@ const style = {
       ...border(['bottom'], colors.gray5, 1),
       marginHorizontal: 24
   },
-	detailsContainer: {
-		flexDirection: 'column',
-		justifyContent: 'flex-start'
-	},
 	detailsInnerContainer: {
 		marginVertical: isScreenSmall ? 12 : 18
 	},
