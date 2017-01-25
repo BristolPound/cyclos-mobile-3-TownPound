@@ -89,7 +89,7 @@ class SearchTab extends React.Component {
         <BackgroundMap/>
         { searchMode && <Overlay overlayVisible={true} onPress={exitSearchMode}/> }
         <Search ref='search' {...this.props} outOfBoundsPress={(pageX) => this.searchBarPressed(pageX)}/>
-        {!searchMode && <ScrollingExpandPanel
+        {!searchMode && <ScrollingExpandPanel ref={this.props.registerBusinessList}
             style={styles.searchTab.expandPanel}
             topOffset={this.calculateOffset([ expandedHeight, collapsedHeight, closedHeight ])}
             expandedHeight={expandedHeight}

@@ -30,10 +30,15 @@ const initialState = {
   timestamp: undefined
 }
 
-export const navigateToTab = (tabIndex) => ({
-  type: 'navigation/NAVIGATE_TO_TAB',
-  tabIndex
-})
+export const navigateToTab = (tabIndex) =>
+  (dispatch, getState) => {
+    const { businessListRef } = getState().business
+    businessListRef && businessListRef.resetToInitalState()
+    dispatch ({
+      type: 'navigation/NAVIGATE_TO_TAB',
+      tabIndex
+    })
+  }
 
 export const setOverlayOpen = (value) => ({
   type: 'navigation/OVERLAY_VISIBLE',
