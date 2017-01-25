@@ -1,4 +1,4 @@
-import { View, Image } from 'react-native'
+import { View, Image, ScrollView } from 'react-native'
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -17,7 +17,7 @@ const PaymentConfirmation = (props) => {
     return (
       props.message
       ? <View style={style.container}>
-        	<View style={style.innerContainer}>
+        	<ScrollView contentContainerStyle={style.innerContainer}>
             <ProfileHeader
               name={props.trader.display}
               username={props.trader.shortDisplay}
@@ -28,7 +28,7 @@ const PaymentConfirmation = (props) => {
               paymentComplete={true} />
             {renderPrice(priceBeforeDecimal, priceAfterDecimal)}
             {renderDetails(props.transactionNumber, props.timestamp)}
-          </View>
+          </ScrollView>
         </View>
       : null
     )
