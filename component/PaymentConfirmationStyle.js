@@ -4,19 +4,18 @@ import { Dimensions } from 'react-native'
 import { baselineDeltaForFonts } from './DefaultText'
 import { border } from '../util/StyleUtils'
 import { isScreenSmall } from '../util/ScreenSizes'
-
-const sectionHeight = 68
+import { sectionHeight } from './SendMoney'
 
 const style = {
   container: {
 		flexDirection: 'column',
 		justifyContent: 'space-between',
-		height: Dimensions.get('window').height
+		height: Dimensions.get('window').height - sectionHeight
   },
 	innerContainer: {
 		flexDirection: 'column',
 		justifyContent: 'space-between',
-		height: Dimensions.get('window').height-sectionHeight
+		height: Dimensions.get('window').height
   },
 	buttonContainer: {
       height: sectionHeight,
