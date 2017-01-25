@@ -12,6 +12,7 @@ import { maxCollapsedHeight, SEARCH_BAR_MARGIN, SEARCH_BAR_HEIGHT } from './Sear
 import platform from '../../util/Platforms'
 import { dimensions, horizontalAbsolutePosition } from '../../util/StyleUtils'
 import { shouldBeDisplayed } from '../../util/business'
+import merge from '../../util/merge'
 
 const MAP_PAN_DEBOUNCE_TIME = 300
 const BOTTOM_OFFSET = -25
@@ -100,11 +101,13 @@ const renderBusinessMarker = (business, isSelected, onPress) => {
 
 class BackgroundMap extends React.Component {
   onRegionChangeComplete = () => {}
+  onRegionChange = () => {}
 
   constructor(props) {
     super()
     this.state = ({ loading: true, markerArray: [] })
-    this.forceRegion = this.currentRegion = props.forceRegion
+    this.forceRegion = merge(props.forceRegion)
+    this.currentRegion = merge(props.forceRegion)
     this.supercluster = supercluster({})
   }
 
@@ -116,6 +119,7 @@ class BackgroundMap extends React.Component {
         this.props.updateMapViewport(region)
         this.updateMarkers()
       }, MAP_PAN_DEBOUNCE_TIME)
+      this.onRegionChange = (region) => this.currentRegion = merge(region)
       if (this.props.businessList) {
         this.populateSupercluster()
       }
@@ -125,7 +129,9 @@ class BackgroundMap extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.forceRegion !== this.props.forceRegion) {
-      this.forceRegion = this.currentRegion = nextProps.forceRegion
+      this.forceRegion = merge(nextProps.forceRegion)
+      this.currentRegion = merge(nextProps.forceRegion)
+      this.updateMarkers()
     } else {
       this.forceRegion = undefined
     }
@@ -206,7 +212,7 @@ class BackgroundMap extends React.Component {
             pitchEnabled={false}
             scrollEnabled={!this.state.loading}
             zoomEnabled={!this.state.loading}
-            onRegionChange={(region) => this.currentRegion = region}
+            onRegionChange={(region) => this.onRegionChange(region)}
             onRegionChangeComplete={(region) => this.onRegionChangeComplete(region)}
             loadingEnabled={true}
             moveOnMarkerPress={false}>
