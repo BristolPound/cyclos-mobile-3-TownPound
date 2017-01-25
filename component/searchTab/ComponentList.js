@@ -46,7 +46,8 @@ class ComponentList extends React.Component {
               : 'white'
           }
           return (
-            <View style={{ backgroundColor: containerBackgroundColor }}
+            //zIndex is required for overflow to work on android
+            <View style={{ backgroundColor: containerBackgroundColor, overflow: 'hidden', zIndex: 100 }}
                 onLayout={(event) => this.captureChildLayout(event, index)}
                 key={item.id || index}>
               {this.props.componentForItem(item)}
