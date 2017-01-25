@@ -292,7 +292,7 @@ class ScrollingExpandPanel extends React.Component {
           onResponderGrant={this.responderGrant.bind(this)}
           onResponderMove={this.responderMove.bind(this)}
           onResponderRelease={this.responderRelease.bind(this)}>
-        <Animated.View style={{ top: this.state.currentInnerTopOffset }}>
+        <Animated.View style={{ top: this.state.currentInnerTopOffset }} removeClippedSubviews={true}>
           {this.props.children}
         </Animated.View>
       </Animated.View>
