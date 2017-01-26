@@ -25,6 +25,7 @@ const initialState = {
   overlayVisible: false,
   stateInitialised: false,
   modalVisible: false,
+  modalOpen: false,
   message: undefined,
   amount: undefined,
   timestamp: undefined
@@ -43,6 +44,10 @@ export const navigateToTab = (tabIndex) =>
 export const setOverlayOpen = (value) => ({
   type: 'navigation/OVERLAY_VISIBLE',
   value
+})
+
+export const modalOpened = () => ({
+  type: 'navigation/MODAL_OPENED'
 })
 
 export const selectMainComponent = (componentName) => ({
@@ -117,6 +122,7 @@ const reducer = (state = initialState, action) => {
     case 'navigation/HIDE_MODAL':
       state = merge(state, {
         modalVisible: false,
+        modalOpen: false,
         modalState: modalState.none
       })
       break
@@ -169,6 +175,10 @@ const reducer = (state = initialState, action) => {
           timestamp: undefined
       })
       break
+    case 'navigation/MODAL_OPENED':
+      state = merge(state, {
+        modalOpen: true
+      })
   }
   return state
 }
