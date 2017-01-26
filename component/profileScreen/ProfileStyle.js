@@ -34,7 +34,8 @@ const styles = {
     },
     backgroundImage: {
       ...dimensions(screenWidth, 248),
-      position: 'absolute'
+      position: 'absolute',
+      backgroundColor: '#EAEAEA'
     },
     backgroundImageContainer: {
       width: screenWidth,

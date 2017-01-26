@@ -85,7 +85,7 @@ const Tabs = (props) =>
               lineTwo='your account details'/> }
       </WithNetworkConnection>
     </ScrollableTabView>
-    <Modal visible={props.modalVisible} hideModal={!props.message && props.hideModal}>
+    <Modal visible={props.modalVisible} hideModal={!props.message && props.hideModal} modalOpened={props.modalOpened}>
       {componentForModalState(props.modalState)}
     </Modal>
     <Modal visible={!!props.message} hideModal={props.closeConfirmation}>
