@@ -53,13 +53,6 @@ const renderRow = (transaction, openDetailsModal, businessList) =>
 
 
 class SpendingTab extends React.Component {
-  componentWillReceiveProps(nextProps) {
-    if (this.listViewRef && !nextProps.scrolled) {
-      // Yes, ListView really wants us to call this twice
-      this.listViewRef.scrollTo({ y: 0 })
-      this.listViewRef.scrollTo({ y: 0 })
-    }
-  }
   render() {
     let bodyComponent
     const props = this.props
@@ -68,15 +61,14 @@ class SpendingTab extends React.Component {
       bodyComponent = <ActivityIndicator size='large' style={styles.loadingIndicator}/>
     } else if (dataSource.getRowCount()) {
       bodyComponent = <ListView
-          ref={(lv) => this.listViewRef = lv}
-          style={{backgroundColor: color.offWhite}}
+          ref={this.props.registerSpendingList}
+          style={{ backgroundColor: color.offWhite }}
           tabLabel='Transactions'
           pageSize={10}
           renderSeparator={renderSeparator}
           enableEmptySections={true}
           renderRow={transaction => renderRow(transaction, props.openDetailsModal, props.businessList)}
           dataSource={dataSource}
-          onScroll={() => !props.scrolled && props.transactionsScrolled()}
           renderSectionHeader={renderSectionHeader}
           refreshControl={props.selectedMonthIndex === props.monthlyTotalSpent.length - 1
             ? <RefreshControl
@@ -106,16 +98,14 @@ class SpendingTab extends React.Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({
-    ...actions,
-    navigateToTransactionTab: navigateToTransactionTab,
-    openDetailsModal: openDetailsModal
-  }, dispatch)
-
 const mapStateToProps = (state) => ({
   ...state.transaction,
   businessList: state.business.businessList
 })
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators({
+    ...actions, navigateToTransactionTab, openDetailsModal
+  }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(SpendingTab)
