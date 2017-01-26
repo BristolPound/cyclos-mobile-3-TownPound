@@ -16,10 +16,12 @@ class Carousel extends React.Component {
     this._panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: () => !this.busy,
 
-      onPanResponderGrant: () => {
+      onStartShouldSetPanResponder: () => !this.busy,
+
+      onPanResponderGrant: (evt) => {
         this.leftOffsetAtPanStart = this.state.leftOffset._value
         this.setState({ leftOffset: new Animated.Value(this.state.leftOffset._value) })
-        this.props.onTouchStart && this.props.onTouchStart()
+        this.props.onTouchStart && this.props.onTouchStart(this.getPressIndex(evt.nativeEvent.pageX))
       },
 
       onPanResponderMove: (evt, gestureState) => {
@@ -27,29 +29,28 @@ class Carousel extends React.Component {
         this.setState({
           leftOffset: new Animated.Value(newLocation)
         })
-      },
-
-      onPanResponderRelease: (evt, gestureState) => {
-        if (gestureState.dx <= 3 && this.props.onPress) {
-          const pressLocation = evt.nativeEvent.pageX
-          const pressIndex = Math.floor((pressLocation - this.state.leftOffset._value) / this.props.itemWidth)
-          this.props.onPress(pressIndex)
-        } else {
-          this.onRelease(gestureState.dx)
+        if (Math.abs(gestureState.dx) > 3) {
+          this.props.onMove()
         }
       },
 
-      onPanResponderTerminate: () => this.onRelease(),
+      onPanResponderRelease: (evt, gestureState) => this.onRelease(evt.nativeEvent.pageX, gestureState.dx),
+
+      onPanResponderTerminate: (evt, gestureState) => this.onRelease(evt.nativeEvent.pageX, gestureState.dx),
     })
   }
 
-  onRelease(dx = this.state.leftOffset._value - this.leftOffsetAtPanStart) {
-    const newLocation = this.getLocationAfterMove(dx)
-    const newIndex = this.indexAtLeftOffset(newLocation)
-    if (newIndex !== this.props.pageIndex && this.props.onPageChange) {
-      this.props.onPageChange(newIndex)
+  onRelease(pageX, dx) {
+    if (Math.abs(dx) <= 3 && this.props.onPress) {
+      this.props.onPress(this.getPressIndex(pageX))
     } else {
-      this.animateLeftOffsetTo(this.leftOffsetAtIndex(newIndex))
+      const newLocation = this.getLocationAfterMove(dx)
+      const newIndex = this.indexAtLeftOffset(newLocation)
+      if (newIndex !== this.props.pageIndex && this.props.onPageChange) {
+        this.props.onPageChange(newIndex)
+      } else {
+        this.animateLeftOffsetTo(this.leftOffsetAtIndex(newIndex))
+      }
     }
   }
 
@@ -61,6 +62,10 @@ class Carousel extends React.Component {
     if (nextProps.pageIndex !== this.props.pageIndex) {
       this.animateLeftOffsetTo(this.leftOffsetAtIndex(nextProps.pageIndex))
     }
+  }
+
+  getPressIndex(pageX) {
+    return Math.floor((pageX - this.state.leftOffset._value) / this.props.itemWidth)
   }
 
   leftOffsetAtIndex(index, props = this.props) {

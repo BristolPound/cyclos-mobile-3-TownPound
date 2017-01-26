@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Image, TouchableHighlight } from 'react-native'
+import { View, Image, TouchableOpacity } from 'react-native'
 import { bindActionCreators } from 'redux'
 import DefaultText from '../DefaultText'
 import Price from '../Price'
@@ -36,14 +36,13 @@ const TabBar = (props) =>
   <View style={style.tabBar}>
     {TABS.map((tab, index) =>
       <View style={style.centerChildren} key={index}>
-        <TouchableHighlight
+        <TouchableOpacity
             style={style.iconContainer}
             onPress={() => props.goToPage(index)}
             onLongPress={() => props.showModal(modalState.developerOptions)}
-            underlayColor={color.transparent}
             accessibilityLabel={tab.label}>
           <Image source={props.activeTab === index ? tab.active : tab.inactive}/>
-        </TouchableHighlight>
+        </TouchableOpacity>
         {index !== TABS.length - 1 ? <View style={style.separator}/> : undefined}
       </View>
     )}
@@ -59,15 +58,14 @@ const TabBar = (props) =>
                   size={30}
                   color={color.bristolBlue}/>
             </View>
-          : <TouchableHighlight
+          : <TouchableOpacity
                 style={style.centerChildren}
                 onPress={props.connection ? () => props.openLoginForm(true) : undefined}
-                underlayColor={color.transparent}
                 accessibilityLabel='Log in Tab'>
               <View>
                 <DefaultText style={{ color: props.connection ? color.bristolBlue : color.offWhite }}>Log in</DefaultText>
               </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
       }
     </View>
   </View>
