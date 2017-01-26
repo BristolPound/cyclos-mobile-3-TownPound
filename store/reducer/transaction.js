@@ -72,7 +72,7 @@ export const loadTransactions = () =>
   (dispatch) => {
     dispatch(updateLoadingTransactions())
     // fetch up to 10 pages of transactions
-    getTransactions(dispatch, {}, (result, pageNo) => pageNo > 10)
+    getTransactions(dispatch, {}, (result, pageNo) => pageNo > 6)
       .then(transactions => {
         dispatch(transactionsReceived(transactions))
       })
