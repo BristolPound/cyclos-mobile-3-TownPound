@@ -42,7 +42,7 @@ export default class TransactionList extends Component {
         renderSectionHeader={renderSectionHeader}
         removeClippedSubviews={false}
         initialListSize={12}
-        />
+        decelerationRate='fast' />
     )
   }
 }
