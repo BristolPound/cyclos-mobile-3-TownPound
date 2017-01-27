@@ -41,6 +41,7 @@ export default class TransactionList extends Component {
         renderSeparator={renderSeparator}
         renderSectionHeader={renderSectionHeader}
         removeClippedSubviews={false}
+        initialListSize={12}
         />
     )
   }
