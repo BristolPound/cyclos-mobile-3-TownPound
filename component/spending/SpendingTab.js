@@ -71,8 +71,8 @@ class SpendingTab extends React.Component {
           ref={(lv) => this.listViewRef = lv}
           style={{backgroundColor: color.offWhite}}
           tabLabel='Transactions'
-          pageSize={10}
           renderSeparator={renderSeparator}
+          initialListSize={15}
           enableEmptySections={true}
           renderRow={transaction => renderRow(transaction, props.openDetailsModal, props.businessList)}
           dataSource={dataSource}
