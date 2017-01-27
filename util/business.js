@@ -42,11 +42,14 @@ const businessAtLocation = (location) => (business) => {
 }
 
 export const getClosestBusinesses = (list, viewport) => {
+    const visibleBusinesses = list.filter(shouldBeDisplayed(viewport))
+    if (visibleBusinesses.length > BUSINESS_LIST_MAX_LENGTH) {
+      return []
+    }
     const closestBusinesses = _.sortBy(
-        list.filter(shouldBeDisplayed(viewport)),
+        visibleBusinesses,
         orderBusinessList(viewport)
     )
-    closestBusinesses.length = Math.min(closestBusinesses.length, BUSINESS_LIST_MAX_LENGTH)
     return addColorCodes(closestBusinesses)
 }
 
