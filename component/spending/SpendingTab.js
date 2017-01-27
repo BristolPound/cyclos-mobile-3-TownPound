@@ -71,6 +71,7 @@ class SpendingTab extends React.Component {
           ref={(lv) => this.listViewRef = lv}
           style={{backgroundColor: color.offWhite}}
           tabLabel='Transactions'
+          decelerationRate='fast' 
           renderSeparator={renderSeparator}
           initialListSize={15}
           enableEmptySections={true}
