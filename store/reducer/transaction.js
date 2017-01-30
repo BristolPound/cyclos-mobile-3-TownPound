@@ -35,9 +35,10 @@ export const selectMonth = (monthIndex) =>
     })
   }
 
-const transactionsReceived = (transactions) => ({
+const transactionsReceived = (transactions, keepOldTransactions) => ({
   type: 'transaction/TRANSACTIONS_RECEIVED',
-  transactions
+  transactions,
+  keepOldTransactions
 })
 
 export const updateLoadingTransactions = () => ({
@@ -74,13 +75,16 @@ const handleError = (dispatch) => (err) => {
   }
 }
 
-export const loadTransactions = () =>
-  (dispatch) => {
+const loadTransactionsSuccessCriteria = (transactions) =>
+  (result, pageNo) => pageNo > 6
+    || transactions.find(t => t.id === result[result.length - 1].id)
+
+export const loadTransactions = (keepOldTransactions) =>
+  (dispatch, getState) => {
     dispatch(updateLoadingTransactions())
-    // fetch up to 10 pages of transactions
-    getTransactions(dispatch, {}, (result, pageNo) => pageNo > 6)
+    getTransactions(dispatch, {}, loadTransactionsSuccessCriteria(getState().transaction.transactions))
       .then(transactions => {
-        dispatch(transactionsReceived(transactions))
+        dispatch(transactionsReceived(transactions, keepOldTransactions))
       })
       .catch(handleError(dispatch))
     }
@@ -96,7 +100,7 @@ export const loadMoreTransactions = () =>
       excludedIds: excludeIdList
     })
     .then(transactions => {
-      dispatch(transactionsReceived(transactions))
+      dispatch(transactionsReceived(transactions, true))
       getAccountBalance(dispatch)
         .then(account => dispatch(accountBalanceReceived(account)))
     })
@@ -127,7 +131,9 @@ const reducer = (state = initialState, action) => {
       }
       break
     case 'transaction/TRANSACTIONS_RECEIVED':
-      const mergedTransactions = _.uniqBy([...state.transactions, ...action.transactions], 'transactionNumber')
+      const mergedTransactions = action.keepOldTransactions
+        ? _.uniqBy([...state.transactions, ...action.transactions], 'transactionNumber')
+        : action.transactions
       const coloredSortedTransactions = addColorCodes(sortTransactions(mergedTransactions))
       const monthlyTotalSpent = calculateMonthlyTotalSpent(coloredSortedTransactions)
       const selectedMonthIndex = lastIndex(monthlyTotalSpent)
