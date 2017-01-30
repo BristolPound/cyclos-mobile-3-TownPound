@@ -25,21 +25,23 @@ const getMapRegion = (location) => ({
   longitudeDelta: 0.0003
 })
 
-const background = (props) => {
+const Background = (props) => {
   if (props.address && props.address.location) {
     return (
-      <MapView style={styles.header.backgroundImage}
-          region={getMapRegion(props.address.location)}
-          showsPointsOfInterest={false}
-          showsUserLocation={false}
-          showsCompass={false}
-          rotateEnabled={false}
-          pitchEnabled={false}
-          scrollEnabled={false}
-          zoomEnabled={false}
-          onPress={props.goToLocation}>
-        <MapMarker key='marker' coordinate={props.address.location} selected={true} />
-      </MapView>
+      props.showMap
+      ? <MapView style={styles.header.backgroundImage}
+            region={getMapRegion(props.address.location)}
+            showsPointsOfInterest={false}
+            showsUserLocation={false}
+            showsCompass={false}
+            rotateEnabled={false}
+            pitchEnabled={false}
+            scrollEnabled={false}
+            zoomEnabled={false}
+            onPress={props.goToLocation}>
+          <MapMarker key='marker' coordinate={props.address.location} selected={true} />
+        </MapView>
+      : <View style={styles.header.backgroundImage} />
     )
   }
   return (
@@ -51,7 +53,7 @@ const background = (props) => {
 
 const ProfileHeader = (props) => {
   const getBackground = () => {
-    return props.paymentComplete ? undefined  : background(props)
+    return props.paymentComplete ? undefined  : <Background {...props} />
   }
 
   const getSubtitleStyle = () => {
