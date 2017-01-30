@@ -64,6 +64,7 @@ const ProfileHeader = (props) => {
     <View style={{ width: screenWidth, height: props.paymentComplete ? screenHeight / 2 - 45 : 248 }}>
       { getBackground(props) }
       { props.isModal ? renderCloseButton(props.onPressClose) : undefined }
+      { props.isModal ? renderCloseButton(props.onPressClose) : undefined }
       <View style={{ alignItems: 'center' }}>
         <ProfileImage
           image={props.image && {uri: props.image.url}}
