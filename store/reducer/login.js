@@ -47,13 +47,13 @@ const attemptFailed = (username) => ({
 })
 
 export const login = (username, password) =>
-  (dispatch) => {
+  (dispatch, getState) => {
     dispatch(loginInProgress())
     authenticate(username, password, dispatch)
       .then(() => {
+        dispatch(loadTransactions(username === getState().login.loggedInUsername))
         dispatch(loggedIn(username))
         dispatch(loadAccountDetails())
-        dispatch(loadTransactions())
       })
       .catch (err => {
         if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
