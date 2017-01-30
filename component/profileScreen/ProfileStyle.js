@@ -1,23 +1,32 @@
 import { StyleSheet, Dimensions } from 'react-native'
 import colors from '../../util/colors'
 import commonStyle from '../style'
-import { dimensions, margin, border } from '../../util/StyleUtils'
+import { dimensions, margin, border, horizontalAbsolutePosition } from '../../util/StyleUtils'
 
-const headerMargin = 24
 const screenWidth = Dimensions.get('window').width
 const listMargin = 4 + screenWidth / 40
 
 const styles = {
   header: {
+    buttonBar: {
+      ...horizontalAbsolutePosition(0, 0),
+      marginTop: 15,
+      height: 70,
+      zIndex: 70
+    },
     closeButton: {
-        marginTop: 15,
         marginLeft: 8,
         zIndex: 100,
         position: 'absolute'
     },
+    expandButton: {
+      ...dimensions(70),
+      position: 'absolute',
+      right: 8,
+    },
     expandIcon: {
-      ...dimensions(16),
-      ...margin(40, headerMargin, 0, 0)
+      ...dimensions(18),
+      ...margin(26)
     },
     businessLogo: {
       ...dimensions(84),

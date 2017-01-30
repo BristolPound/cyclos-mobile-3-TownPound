@@ -1,7 +1,6 @@
 import React from 'react'
-import { Image, TouchableHighlight } from 'react-native'
+import { Image, TouchableOpacity } from 'react-native'
 
-import color from '../../util/colors'
 import merge from '../../util/merge'
 import { dimensions, margin } from '../../util/StyleUtils'
 
@@ -13,8 +12,8 @@ const style = {
 
 export const CloseButton = props => {
     return (
-        <TouchableHighlight style={merge(dimensions(props.size), props.style)} onPress={props.onPress} underlayColor={color.transparent}>
+        <TouchableOpacity style={merge(dimensions(props.size), props.style)} onPress={props.onPress}>
             <Image style={merge(style.closeIcon, margin((props.size - 18) / 2))} source={props.closeButtonType} />
-        </TouchableHighlight>
+        </TouchableOpacity>
     )
 }

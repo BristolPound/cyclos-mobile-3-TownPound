@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Image, Dimensions } from 'react-native'
+import { View, Image, Dimensions, TouchableOpacity } from 'react-native'
 import MapView from 'react-native-maps'
 import DefaultText from '../DefaultText'
 import ProfileImage from '../profileImage/ProfileImage'
@@ -9,14 +9,39 @@ import { MapMarker } from '../searchTab/BackgroundMap'
 
 import  { CloseButton } from '../common/CloseButton'
 
-const CLOSE_BUTTON = require('./../common/assets/Close_Blue.png')
-
-const renderCloseButton = (onPress) =>
-  <CloseButton style={styles.header.closeButton} onPress={onPress} closeButtonType={CLOSE_BUTTON} size={70}/>
+const closeButton = require('./../common/assets/Close_Blue.png')
+const expandIcon = require('./assets/Expand.png')
 
 const screenWidth = Dimensions.get('window').width,
   screenHeight = Dimensions.get('window').height
 
+const renderCloseButton = (onPress) =>
+  <CloseButton style={styles.header.closeButton} onPress={onPress} closeButtonType={closeButton} size={70}/>
+
+const renderExpandButton = (goToLocation) => {
+  if (!goToLocation) {
+    return undefined
+  }
+  return <TouchableOpacity onPress={goToLocation} style={styles.header.expandButton}>
+    <Image source={expandIcon} style={styles.header.expandIcon}/>
+  </TouchableOpacity>
+}
+
+
+const renderButtonBar = (props) => {
+  if (!props.isModal) {
+    return undefined
+  }
+  // Each button is doubled because they disappear on android (RN issue #12060)
+  return (
+    <View style={styles.header.buttonBar}>
+      {renderCloseButton(props.onPressClose)}
+      {renderCloseButton(props.onPressClose)}
+      {props.address && props.address.location && renderExpandButton(props.goToLocation)}
+      {props.address && props.address.location && renderExpandButton(props.goToLocation)}
+    </View>
+  )
+}
 
 const getMapRegion = (location) => ({
   latitude: location.latitude + 0.00038,
@@ -25,7 +50,7 @@ const getMapRegion = (location) => ({
   longitudeDelta: 0.0003
 })
 
-const Background = (props) => {
+const renderBackground = (props) => {
   if (props.address && props.address.location) {
     return (
       props.showMap
@@ -52,19 +77,14 @@ const Background = (props) => {
 }
 
 const ProfileHeader = (props) => {
-  const getBackground = () => {
-    return props.paymentComplete ? undefined  : <Background {...props} />
-  }
-
   const getSubtitleStyle = () => {
     return props.paymentComplete ? styles.header.subtitle : merge(styles.header.subtitle, {marginBottom: 46})
   }
 
   return (
     <View style={{ width: screenWidth, height: props.paymentComplete ? screenHeight / 2 - 45 : 248 }}>
-      { getBackground(props) }
-      { props.isModal ? renderCloseButton(props.onPressClose) : undefined }
-      { props.isModal ? renderCloseButton(props.onPressClose) : undefined }
+      {!props.paymentComplete && renderBackground(props)}
+      {renderButtonBar(props)}
       <View style={{ alignItems: 'center' }}>
         <ProfileImage
           image={props.image && {uri: props.image.url}}
