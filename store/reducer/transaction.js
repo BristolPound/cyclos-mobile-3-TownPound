@@ -22,15 +22,20 @@ const initialState = {
     rowHasChanged: (a, b) => a.transactionNumber !== b.transactionNumber,
     sectionHeaderHasChanged: (a, b) => a !== b
   }),
-  scrolled: false
+  spendingListRef: null
 }
 
-export const selectMonth = monthIndex => ({
-  type: 'transaction/SELECT_MONTH',
-  monthIndex
-})
+export const selectMonth = (monthIndex) =>
+  (dispatch, getState) => {
+    const { spendingListRef } = getState().transaction
+    spendingListRef && spendingListRef.scrollTo({ y: 0, animated: false })
+    dispatch ({
+      type: 'transaction/SELECT_MONTH',
+      monthIndex
+    })
+  }
 
-const transactionsReceived = transactions => ({
+const transactionsReceived = (transactions) => ({
   type: 'transaction/TRANSACTIONS_RECEIVED',
   transactions
 })
@@ -51,8 +56,9 @@ const failedToLoadTransactions = () => ({
   type: 'transaction/FAILED_TO_LOAD'
 })
 
-export const transactionsScrolled = () => ({
-  type: 'transaction/SCROLLED'
+export const registerSpendingList = (ref) => ({
+  type: 'transaction/REGISTER_LIST',
+  ref
 })
 
 const handleError = (dispatch) => (err) => {
@@ -117,7 +123,6 @@ const reducer = (state = initialState, action) => {
         state = merge(state, {
           selectedMonthIndex: lastIndex(state.monthlyTotalSpent),
           transactionsDataSource: filterTransactionsByMonthIndex(state, lastIndex(state.monthlyTotalSpent)),
-          scrolled: false
         })
       }
       break
@@ -135,7 +140,6 @@ const reducer = (state = initialState, action) => {
         transactionsDataSource: filterTransactionsByMonth(
           state.transactionsDataSource, coloredSortedTransactions, monthlyTotalSpent[selectedMonthIndex].month
         ),
-        scrolled: false,
       })
       break
     case 'transaction/LOADING_TRANSACTIONS':
@@ -153,11 +157,9 @@ const reducer = (state = initialState, action) => {
         state = merge(state, {
           selectedMonthIndex: action.monthIndex,
           transactionsDataSource: filterTransactionsByMonthIndex(state, action.monthIndex),
-          scrolled: false
         })
-      } else { // tapping the same month should scroll to the top 
+      } else { // tapping the same month should scroll to the top
         state = merge(state, {
-          scrolled: false,
         })
       }
       break
@@ -170,11 +172,10 @@ const reducer = (state = initialState, action) => {
         refreshing: false
       })
       break
-    case 'transaction/SCROLLED':
+    case 'transaction/REGISTER_LIST':
       state = merge(state, {
-        scrolled: true,
+        spendingListRef: action.ref
       })
-      break
   }
   return state
 }
