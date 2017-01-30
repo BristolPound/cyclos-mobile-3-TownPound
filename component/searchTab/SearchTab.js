@@ -52,7 +52,10 @@ class SearchTab extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.componentListArray = this.createComponentListArray(nextProps)
+    if (nextProps.selectedBusiness !== this.props.selectedBusiness
+        || nextProps.closestBusinesses !== this.props.closestBusinesses) {
+      this.componentListArray = this.createComponentListArray(nextProps)
+    }
   }
 
   searchBarPressed(pageX) {

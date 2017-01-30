@@ -2,47 +2,41 @@ import React from 'react'
 import MapView from 'react-native-maps'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Platform, View, Dimensions } from 'react-native'
+import { View, Image } from 'react-native'
 import _ from 'lodash'
 import supercluster from 'supercluster'
 
-import { MultilineText } from '../DefaultText'
+import DefaultText, { MultilineText } from '../DefaultText'
 import * as actions from '../../store/reducer/business'
-import { maxCollapsedHeight, SEARCH_BAR_MARGIN, SEARCH_BAR_HEIGHT } from './SearchTabStyle'
 import platform from '../../util/Platforms'
-import { dimensions, horizontalAbsolutePosition } from '../../util/StyleUtils'
+import { horizontalAbsolutePosition } from '../../util/StyleUtils'
 import { shouldBeDisplayed } from '../../util/business'
 import merge from '../../util/merge'
 
-const MAP_PAN_DEBOUNCE_TIME = 300
-const BOTTOM_OFFSET = -25
+const MAP_PAN_DEBOUNCE_TIME = 600
 
-const markerImage = {
-  [platform.IOS]: require('./assets/Marker_alt.png'),
-  [platform.ANDROID]: require('./assets/Android_marker.png')
-}
+const markerImage = require('./assets/Marker_alt.png')
 
-const selectedMarkerImage = {
-  [platform.IOS]: require('./assets/selected_trader.png'),
-  [platform.ANDROID]: require('./assets/Android_selected_marker.png')
-}
+const selectedMarkerImage = require('./assets/selected_trader.png')
 
-const mapTopOffset = -1 * maxCollapsedHeight + SEARCH_BAR_MARGIN + SEARCH_BAR_HEIGHT + BOTTOM_OFFSET
-const mapHeight =  Dimensions.get('window').height - mapTopOffset - BOTTOM_OFFSET
-const mapWidth = Dimensions.get('window').width
+const clusterImage = require('./assets/Android_marker.png')
 
 const style = {
   mapContainer: {
     ...horizontalAbsolutePosition(0, 0),
-    top: mapTopOffset,
-    height: mapHeight,
+    top: -80,
+    bottom: -80,
   },
   map: {
-    ...dimensions(mapWidth, mapHeight),
-    position: 'absolute'
+    ...horizontalAbsolutePosition(0, 0),
+    top: 0,
+    bottom: 0,
   },
   loadingOverlay: {
-    ...dimensions(mapWidth, mapHeight),
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
     backgroundColor: 'white'
   },
   warningContainer: {
@@ -52,44 +46,61 @@ const style = {
     flex: 1,
     alignItems: 'center',
     paddingTop: 100,
-    top: - mapTopOffset
+    top: 0
   }
 }
 
-export const MapMarker = ({ coordinate, selected, onPress }) => {
+export const MapMarker = ({ coordinate, selected, onPress, pointCount }) => {
+  if (pointCount) {
+    const width = pointCount > 99 ? 34 : 24
+    return <MapView.Marker
+        coordinate={coordinate}
+        anchor={platform.isIOS() ? null : { x: 0.5, y: 0.5 }}>
+      <View style={{ alignItems: 'center', width }}>
+        <Image source={clusterImage} style={{ position: 'absolute', left: (width - 18) / 2 }}/>
+        <DefaultText style={platform.isIOS() ? { bottom: 1 } : {}}>{pointCount}</DefaultText>
+      </View>
+    </MapView.Marker>
+  }
+
   const marker = selected ? selectedMarkerImage : markerImage
-
-  const markerProps = Platform.select({
-    android: {
-      anchor: {x: 0.5, y: 0.5},  // center image on location.
-      image: marker[platform.ANDROID]
-    },
-    ios: {
-      image: marker[platform.IOS]
-    }
-  })
-
-  // custom image file
   return <MapView.Marker
       coordinate={coordinate}
       onPress={onPress}
-      {...markerProps} />
+      anchor={platform.isIOS() ? null : { x: 0.5, y: 0.5 }}
+      image={marker}/>
 }
 
-const renderClusteredMarker = ({ geometry, properties, id }, index) => {
-  // we have to separate out the behaviour by platform for Image placing:
-  //     https://github.com/airbnb/react-native-maps/blob/master/docs/marker.md
-  //       ios - centerOffset: By default, the center point of an annotation view is placed at the coordinate point of the associated annotation.
-  //       android - anchor: manually center
-  const coordinate = {
-    longitude: geometry.coordinates[0],
-    latitude: geometry.coordinates[1]
+const renderClusteredMarker = ({ selectBusiness, businessList, selectedBusinessId }) =>
+  ({ geometry, properties }) => {
+    // we have to separate out the behaviour by platform for Image placing:
+    //     https://github.com/airbnb/react-native-maps/blob/master/docs/marker.md
+    //       ios - centerOffset: By default, the center point of an annotation view is placed at the coordinate point of the associated annotation.
+    //       android - anchor: manually center
+    const coordinate = {
+      longitude: geometry.coordinates[0],
+      latitude: geometry.coordinates[1]
+    }
+
+    let onPress = null
+    let selected = null
+    if (properties.point_count === 1 || !properties.point_count) {
+      const business = businessList.find(b =>
+        b.address && b.address.location
+        && (b.address.location.latitude === coordinate.latitude)
+        && (b.address.location.longitude === coordinate.longitude))
+      if (business) {
+        onPress = () => selectBusiness(business.id)
+        selected = business.id === selectedBusinessId
+      }
+    }
+
+    return <MapMarker key={coordinate.latitude.toString()+coordinate.longitude.toString()}
+        selected={selected}
+        coordinate={coordinate}
+        onPress={onPress}
+        pointCount={properties.point_count}/>
   }
-
-  const selected = properties.selected
-
-  return <MapMarker key={index} selected={selected} coordinate={coordinate} />
-}
 
 const renderBusinessMarker = (business, isSelected, onPress) => {
   return <MapMarker key={business.id}
@@ -124,10 +135,10 @@ class BackgroundMap extends React.Component {
         this.populateSupercluster()
       }
       this.setState({ loading: false })
-    }, platform.isIOS() ? 1500 : 500)
+    }, 1500)
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillUpdate(nextProps) {
     if (nextProps.forceRegion !== this.props.forceRegion) {
       this.forceRegion = merge(nextProps.forceRegion)
       this.currentRegion = merge(nextProps.forceRegion)
@@ -140,8 +151,7 @@ class BackgroundMap extends React.Component {
   componentDidUpdate(lastProps) {
     if (lastProps.businessList !== this.props.businessList) {
       this.populateSupercluster()
-    }
-    else if (lastProps.forceRegion !== this.props.forceRegion
+    } else if (lastProps.forceRegion !== this.props.forceRegion
         || lastProps.selectedBusinessId !== this.props.selectedBusinessId) {
       this.updateMarkers()
     }
@@ -172,14 +182,14 @@ class BackgroundMap extends React.Component {
 
   updateMarkers(props = this.props) {
     if (props.businessList) {
-      if (this.currentRegion.longitudeDelta > 0.01) {
+      if (this.currentRegion.longitudeDelta > 0.008) {
         const clusteredMarkers = this.supercluster.getClusters([
-          this.currentRegion.longitude - this.currentRegion.longitudeDelta,
-          this.currentRegion.latitude - this.currentRegion.latitudeDelta,
-          this.currentRegion.longitude + this.currentRegion.longitudeDelta,
-          this.currentRegion.latitude + this.currentRegion.latitudeDelta,
+          this.currentRegion.longitude - this.currentRegion.longitudeDelta * 0.6,
+          this.currentRegion.latitude - this.currentRegion.latitudeDelta * 0.6,
+          this.currentRegion.longitude + this.currentRegion.longitudeDelta * 0.6,
+          this.currentRegion.latitude + this.currentRegion.latitudeDelta * 0.6,
         ], this.getZoomLevel())
-        this.setState({ markerArray: clusteredMarkers.map(renderClusteredMarker) })
+        this.setState({ markerArray: clusteredMarkers.map(renderClusteredMarker(props)) })
       } else {
         this.setState({
           markerArray: props.businessList.filter(shouldBeDisplayed(this.currentRegion))
@@ -229,8 +239,7 @@ class BackgroundMap extends React.Component {
 const mapStateToProps = (state) => ({
   selectedBusinessId: state.business.selectedBusinessId,
   businessList: state.business.businessList,
-  forceRegion: state.business.forceRegion,
-  mapViewport: state.business.mapViewport
+  forceRegion: state.business.forceRegion
 })
 
 const mapDispatchToProps = (dispatch) =>

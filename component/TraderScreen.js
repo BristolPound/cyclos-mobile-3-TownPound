@@ -9,6 +9,7 @@ import BusinessDetails from './businessDetails/BusinessDetails'
 import { sectionHeight } from './SendMoney'
 import { resetForm } from '../store/reducer/sendMoney'
 import { goToLocation } from '../store/reducer/navigation'
+import merge from '../util/merge'
 
 const TraderScreen = (props) =>
   <View style={{flex: 1}}>
@@ -21,20 +22,30 @@ const TraderScreen = (props) =>
 
 // Currently we pass in returned renderHeader as we delegate to a listView.
 // One alternative would be to encapsulate this and use `props.children` instead.
-const renderHeader = ({trader, hideModal, resetForm, goToLocation, modalOpen}) => () =>
-  <View style={{flex: 1}}>
-    <ProfileHeader
-      name={trader.display}
-      username={trader.shortDisplay}
-      image={trader.image}
-      category={trader.category}
-      address={trader.address}
-      onPressClose={() => {hideModal(); resetForm()}}
-      isModal={true}
-      showMap={modalOpen}
-      goToLocation={() => goToLocation(trader.address.location)}/>
-      <BusinessDetails business={trader} goToLocation={goToLocation}/>
-  </View>
+const renderHeader = ({trader, hideModal, resetForm, goToLocation, modalOpen}) => () => {
+  let goToTraderLocation
+  if (trader.address && trader.address.location) {
+    goToTraderLocation = () =>
+      goToLocation(merge(trader.address.location, { latitudeDelta: 0.006, longitudeDelta: 0.006 }))
+  }
+  return (
+    <View style={{flex: 1}}>
+      <ProfileHeader
+        name={trader.display}
+        username={trader.shortDisplay}
+        image={trader.image}
+        category={trader.category}
+        address={trader.address}
+        onPressClose={() => {hideModal(); resetForm()}}
+        isModal={true}
+        showMap={modalOpen}
+        goToLocation={goToTraderLocation}/>
+        <BusinessDetails business={trader} goToLocation={goToTraderLocation}/>
+    </View>
+  )
+}
+
+
 
 const getTransactionsForSelectedBusiness = (state) => {
   return state.transaction.transactions.filter(transaction => {

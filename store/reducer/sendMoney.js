@@ -57,6 +57,9 @@ const transactionComplete = (success, message, amount, timestamp, transactionNum
 
 export const sendTransaction = () =>
   (dispatch, getState) => {
+    if (getState().sendMoney.loading) {
+      return
+    }
     dispatch(setLoading())
     const { payee, amount } = getState().sendMoney
     makePayment({
@@ -122,7 +125,7 @@ const reducer = (state = initialState, action) => {
           state = merge(state, {
             inputPage: Page.Ready
           })
-        }        
+        }
       }
       break
     case 'navigation/SHOW_MODAL':
@@ -138,7 +141,8 @@ const reducer = (state = initialState, action) => {
         message: action.message,
         amount: '',
         timestamp: action.timestamp,
-        inputPage: Page.PaymentComplete
+        inputPage: Page.PaymentComplete,
+        loading: false
       })
       break
   }
