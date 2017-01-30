@@ -1,7 +1,7 @@
 import { get, getPages } from './api'
 import merge from '../util/merge'
 
-const PAGE_SIZE = 100
+const PAGE_SIZE = 50
 
 export const getAccountBalance = (dispatch) =>
   get('self/accounts', {
