@@ -25,8 +25,8 @@ export default class TransactionList extends Component {
       // If the user has been logged out due to attempting a payment when their token has expired
       if (nextProps.listData.length === 0) {
         // intentionally duplicated, otherwise won't work on iOS
-        this.listViewRef.scrollTo({ y: 0 })
-        this.listViewRef.scrollTo({ y: 0 })
+        this.listViewRef.scrollTo({ y: 0, animated: false })
+        this.listViewRef.scrollTo({ y: 0, animated: false })
       }
     }
   }
