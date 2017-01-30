@@ -64,8 +64,9 @@ class SpendingTab extends React.Component {
           ref={this.props.registerSpendingList}
           style={{ backgroundColor: color.offWhite }}
           tabLabel='Transactions'
-          pageSize={10}
+          decelerationRate='fast' 
           renderSeparator={renderSeparator}
+          initialListSize={15}
           enableEmptySections={true}
           renderRow={transaction => renderRow(transaction, props.openDetailsModal, props.businessList)}
           dataSource={dataSource}
