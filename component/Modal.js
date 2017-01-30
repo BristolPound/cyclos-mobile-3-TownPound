@@ -4,6 +4,8 @@ import animateTo from '../util/animateTo'
 import merge from '../util/merge'
 import { screenHeight } from '../util/ScreenSizes'
 
+const modalSlideTime = 300
+
 const style = {
   left: 0,
   right: 0,
@@ -25,11 +27,11 @@ class Modal extends React.Component {
   componentDidUpdate(lastProps) {
     if (this.props.visible && !lastProps.visible) {
       this.setState({ active: true })
-      animateTo(this.state.top, 0, 300)
+      animateTo(this.state.top, 0, modalSlideTime, undefined, this.props.modalOpened)
       BackAndroid.addEventListener('hardwareBackPress', this.onBackButtonPressBound)
     }
     if (!this.props.visible && lastProps.visible) {
-      animateTo(this.state.top, screenHeight, 300, undefined, () => this.setState({ active: false }))
+      animateTo(this.state.top, screenHeight, modalSlideTime, undefined, () => this.setState({ active: false }))
       BackAndroid.removeEventListener('hardwareBackPress', this.onBackButtonPressBound)
     }
   }
