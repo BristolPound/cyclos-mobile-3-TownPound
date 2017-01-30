@@ -43,10 +43,6 @@ const processResponse = (dispatch, expectedResponse = 200) => (response) => {
 
 export const get = (url, params, dispatch) => {
   const apiMethod = BASE_URL + url + (params ? '?' + querystring(params) : '')
-  if (__DEV__) {
-    console.log(apiMethod)
-  }
-
   return fetch(apiMethod, {headers: httpHeaders(params.requiresAuthorisation)})
     // if the API request was successful, dispatch a message that indicates we have good API connectivity
     .then(processResponse(dispatch))
