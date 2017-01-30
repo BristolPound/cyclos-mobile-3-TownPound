@@ -24,9 +24,6 @@ export const updateStatus = (message, severity = ERROR_SEVERITY.MILD, err) => ({
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'statusMessage/UPDATE_STATUS':
-      if (action.err) {
-        console.error(action.err)
-      }
       state = {
         message: action.message,
         backgroundColor: action.severity
