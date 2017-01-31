@@ -132,11 +132,15 @@ class SendMoney extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.businessId !== prevProps.businessId) {
+    if (this.props.payeeId !== prevProps.payeeId) {
       this.props.updateAmount('')
       this.props.updatePage(Page.Ready)
     } else if (prevProps.loading && !this.props.loading && this.props.inputPage === 2) {
       this.nextPage()
+    } else if (prevProps.inputPage === Page.MakingPayment
+      && this.props.inputPage === Page.PaymentComplete
+      && !this.props.success) {
+      setTimeout(() => this.props.inputPage === Page.PaymentComplete && this.nextPage(), 1800)
     }
   }
 
@@ -167,13 +171,13 @@ class SendMoney extends React.Component {
           case Page.Ready: // Initial state, ready to begin
             inputProps = {
               buttonText: 'Send Payment',
-              onButtonPress: () => { this.props.updatePayee(this.props.trader.shortDisplay); this.nextPage() },
+              onButtonPress: () => { this.nextPage() },
               accessibilityLabel: 'Ready',
             }
             break
           case Page.EnterAmount: // provide amount
             inputProps = {
-              buttonText: 'Pay ' + this.props.trader.display,
+              buttonText: 'Pay ' + this.props.payee.display,
               onButtonPress: () => { this.props.sendTransaction(); this.nextPage() },
               input: {
                 keyboardType: 'numeric',
@@ -217,8 +221,9 @@ const mapDispatchToProps = (dispatch) =>
 
 const mapStateToProps = (state) => ({
   ...state.sendMoney,
-  businessId: state.business.traderScreenBusinessId,
-  trader: state.business.businessList.find(b => b.id === state.business.traderScreenBusinessId) || {},
+  payee: state.business.businessList.find(b => b.id === state.sendMoney.payeeId)
+    || state.person.personList.find(p => p.id === state.sendMoney.payeeId)
+    || {},
   balance: state.account.balance,
   loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
   connection: state.networkConnection.status

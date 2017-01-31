@@ -14,7 +14,6 @@ import MapMarker from './MapMarker'
 
 const MAP_PAN_DEBOUNCE_TIME = 600
 
-
 class BackgroundMap extends React.Component {
   onRegionChangeComplete = () => {}
   onRegionChange = () => {}
@@ -25,7 +24,7 @@ class BackgroundMap extends React.Component {
     this.forceRegion = merge(props.forceRegion)
     this.currentRegion = merge(props.forceRegion)
     this.supercluster = supercluster({})
-    this.mapRef = null;
+    this.mapRef = null
   }
 
   componentDidMount() {
@@ -111,7 +110,7 @@ class BackgroundMap extends React.Component {
 
   zoomToCluster = (coordinate) => {
     const region = {
-      longitude: coordinate.longitude, 
+      longitude: coordinate.longitude,
       latitude: coordinate.latitude,
       longitudeDelta: this.currentRegion.longitudeDelta * 0.5,
       latitudeDelta: this.currentRegion.latitudeDelta * 0.5
@@ -121,10 +120,6 @@ class BackgroundMap extends React.Component {
 
   renderClusteredMarker = ({ selectBusiness, businessList, selectedBusinessId }) =>
     ({ geometry, properties }) => {
-      // we have to separate out the behaviour by platform for Image placing:
-      //     https://github.com/airbnb/react-native-maps/blob/master/docs/marker.md
-      //       ios - centerOffset: By default, the center point of an annotation view is placed at the coordinate point of the associated annotation.
-      //       android - anchor: manually center
       const coordinate = {
         longitude: geometry.coordinates[0],
         latitude: geometry.coordinates[1]

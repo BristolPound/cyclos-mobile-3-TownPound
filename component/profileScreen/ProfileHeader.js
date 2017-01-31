@@ -5,7 +5,7 @@ import DefaultText from '../DefaultText'
 import ProfileImage from '../profileImage/ProfileImage'
 import styles from './ProfileStyle'
 import merge from '../../util/merge'
-import { MapMarker } from '../searchTab/BackgroundMap'
+import MapMarker from '../searchTab/MapMarker'
 
 import  { CloseButton } from '../common/CloseButton'
 
