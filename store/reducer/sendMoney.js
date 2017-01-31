@@ -68,9 +68,8 @@ export const sendTransaction = () =>
         amount: amount
       }, dispatch)
       .then((result) => {
-
         dispatch(loadMoreTransactions())
-        dispatch(transactionComplete(true, 'Transaction complete', amount, moment().format('MMMM Do YYYY, h:mm:ss a'), result.transactionNumber))
+        dispatch(transactionComplete(true, 'Transaction complete', amount, moment(result.date).format('MMMM Do YYYY, h:mm:ss a'), result.transactionNumber))
       })
       .catch(err => {
         if (err.type === UNAUTHORIZED_ACCESS) {
