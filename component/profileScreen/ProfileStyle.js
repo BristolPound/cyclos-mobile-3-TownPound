@@ -54,7 +54,9 @@ const styles = {
     rowContainer: {
       flexDirection: 'row',
       justifyContent: 'center',
-      height: 50
+      height: 50,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: colors.gray5,
     },
     leftColumn: {
       width: screenWidth / 3,
@@ -97,10 +99,6 @@ const styles = {
       alignSelf: 'center',
       paddingRight: listMargin
     },
-    separator: {
-      ...border(['top', 'right', 'bottom', 'left'], colors.gray5, StyleSheet.hairlineWidth),
-      marginLeft: listMargin
-    }
   },
   footer: {
     ...border(['top'], colors.gray5, StyleSheet.hairlineWidth),
