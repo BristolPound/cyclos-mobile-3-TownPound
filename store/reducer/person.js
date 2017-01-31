@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import merge from '../../util/merge'
 import { addContact } from '../../api/contacts'
-import { unknownError } from './statusMessage'
+import { ERROR_SEVERITY, unknownError, updateStatus } from './statusMessage'
 import { addFailedAction } from './networkConnection'
 import { UNEXPECTED_DATA } from '../../api/apiError'
 import { getPersonProfile } from '../../api/users'
@@ -30,12 +30,10 @@ export const loadPersonProfile = (personId) => (dispatch) => {
         })
         .catch((err) => dispatch(unknownError(err)))
     })
-    // if this request fails, the modal trader screen will continue to show a spinner
-    // but will be closeable
     .catch(err => {
       dispatch(addFailedAction(loadPersonProfile(personId)))
       if (err.type === UNEXPECTED_DATA) {
-        dispatch(updateStatus('Account no longer exists', ERROR_SEVERITY.SEVERE))
+        dispatch(updateStatus('Profile data not found', ERROR_SEVERITY.SEVERE))
       } else {
         dispatch(unknownError(err))
       }

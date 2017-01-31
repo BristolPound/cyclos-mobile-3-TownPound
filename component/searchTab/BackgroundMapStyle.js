@@ -1,10 +1,11 @@
 import { horizontalAbsolutePosition } from '../../util/StyleUtils'
+import { Dimensions } from 'react-native'
 
 const style = {
   mapContainer: {
     ...horizontalAbsolutePosition(0, 0),
     top: -80,
-    bottom: -80,
+    height: Dimensions.get('window').height + 120,
   },
   map: {
     ...horizontalAbsolutePosition(0, 0),

@@ -4,6 +4,7 @@ import { selectAndLoadBusiness } from './business'
 import { selectAndLoadPerson } from './person'
 import { LOGGED_OUT, LOGGED_IN } from './login'
 import { updateMapViewportAndSelectClosestTrader, updateSearchMode, moveMap } from './business'
+import { updatePayee } from './sendMoney'
 
 export const modalState = {
   none: 'none',
@@ -26,9 +27,7 @@ const initialState = {
   stateInitialised: false,
   modalVisible: false,
   modalOpen: false,
-  message: undefined,
-  amount: undefined,
-  timestamp: undefined
+  confirmationOpen: false,
 }
 
 export const navigateToTab = (tabIndex) =>
@@ -38,7 +37,7 @@ export const navigateToTab = (tabIndex) =>
 
     const { spendingListRef } = getState().transaction
     spendingListRef && spendingListRef.scrollTo({ y: 0 })
-    
+
     dispatch ({
       type: 'navigation/NAVIGATE_TO_TAB',
       tabIndex
@@ -84,12 +83,14 @@ export const openTraderModal = businessId =>
   (dispatch) => {
     dispatch(selectAndLoadBusiness(businessId))
     dispatch(showModal(modalState.traderScreen))
+    dispatch(updatePayee(businessId))
   }
 
 export const openPersonModal = personId =>
-  dispatch => {
+  (dispatch) => {
     dispatch(selectAndLoadPerson(personId))
     dispatch(showModal(modalState.personScreen))
+    dispatch(updatePayee(personId))
   }
 
 export const showModal = (modalState) => ({
@@ -147,15 +148,10 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'sendMoney/TRANSACTION_COMPLETE':
-      if (action.success) {
-        state = merge(state, {
-          message: action.message,
-          amount: action.amount,
-          timestamp: action.timestamp,
-          transactionNumber: action.transactionNumber,
-          overlayVisible: false
-        })
-      }
+      state = merge(state, {
+        overlayVisible: false,
+        confirmationOpen: true,
+      })
       break
     case 'login/LOGIN_IN_PROGRESS':
       state = merge(state, {
@@ -174,9 +170,7 @@ const reducer = (state = initialState, action) => {
       break
     case 'navigation/CLOSE_CONFIRMATION':
       state = merge(state, {
-          message: undefined,
-          amount: undefined,
-          timestamp: undefined
+          confirmationOpen: false
       })
       break
     case 'navigation/MODAL_OPENED':

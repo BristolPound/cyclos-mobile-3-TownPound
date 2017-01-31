@@ -10,7 +10,7 @@ import DefaultText from './DefaultText'
 
 const PaymentConfirmation = (props) => {
 
-    const priceComponents = Math.abs(props.amount).toFixed(2).split('.')
+    const priceComponents = Math.abs(props.amountPaid).toFixed(2).split('.')
     const priceBeforeDecimal = !isNaN(priceComponents[0]) ? priceComponents[0] : '-'
     const priceAfterDecimal = !isNaN(priceComponents[1]) ? priceComponents[1] : '--'
 
@@ -19,10 +19,10 @@ const PaymentConfirmation = (props) => {
       ? <View style={style.container}>
         	<ScrollView contentContainerStyle={style.innerContainer}>
             <ProfileHeader
-              name={props.trader.display}
-              username={props.trader.shortDisplay}
-              image={props.trader.image}
-              category={props.trader.category}
+              name={props.payee.display}
+              username={props.payee.shortDisplay}
+              image={props.payee.image}
+              category={props.payee.category}
               onPressClose={() => {props.closeConfirmation() && props.updatePage(0)}}
               isModal={true}
               paymentComplete={true} />
@@ -77,11 +77,13 @@ const renderSectionHeader = () =>
   </View>
 
 const mapStateToProps = (state) => ({
-	trader: state.business.businessList.find(b => b.id === state.business.traderScreenBusinessId) || {},
-	message: state.navigation.message,
-	amount: state.navigation.amount,
-  timestamp: state.navigation.timestamp,
-  transactionNumber: state.navigation.transactionNumber
+	payee: state.business.businessList.find(b => b.id === state.sendMoney.payeeId)
+    || state.person.personList.find(p => p.id === state.sendMoney.payeeId)
+    || {},
+	message: state.sendMoney.message,
+	amountPaid: state.sendMoney.amountPaid,
+  timestamp: state.sendMoney.timestamp,
+  transactionNumber: state.sendMoney.transactionNumber
 })
 
 const mapDispatchToProps = (dispatch) =>

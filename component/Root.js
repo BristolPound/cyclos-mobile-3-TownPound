@@ -3,7 +3,7 @@ import Tabs from './Tabs'
 import { View, StatusBar } from 'react-native'
 import ReturningLogin from './login/ReturningLogin'
 import Onboarding from './login/Onboarding'
-import { mainComponent, modalState } from '../store/reducer/navigation'
+import { mainComponent } from '../store/reducer/navigation'
 import { connect } from 'react-redux'
 import Login from './login/Login'
 import LoginOverlay from './login/LoginOverlay'
@@ -38,17 +38,15 @@ const Root = (props) => {
           barStyle={props.mainComponent === mainComponent.returningLogin ? 'light-content' : 'dark-content'}/>
       {bodyComponent}
       <LoginOverlay/>
-      { (props.modalState === modalState.traderScreen && props.inputPage !== undefined) ? <SendMoney /> : undefined }
+      {props.modalOpen ? <SendMoney /> : undefined}
       <Login hideUsernameInput={props.mainComponent === mainComponent.returningLogin}/>
       <StatusMessage/>
-      
     </View>
   )
 }
 
 const mapStateToProps = (state) => ({
-    ...state.navigation,
-    inputPage: state.sendMoney.inputPage
+    ...state.navigation
 })
 
 export default connect(mapStateToProps)(Root)

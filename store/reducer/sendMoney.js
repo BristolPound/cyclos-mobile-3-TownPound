@@ -7,13 +7,15 @@ import { UNEXPECTED_ERROR, UNAUTHORIZED_ACCESS } from '../../api/apiError'
 import { logout } from './login'
 
 const initialState = {
-  payee: '',
+  payeeId: '',
   amount: '',
+  amountPaid: '',
   loading: false,
   success: undefined,
   message: '',
   timestamp: undefined,
-  inputPage: undefined
+  inputPage: 0,
+  transactionNumber: -1,
 }
 
 const Page = {
@@ -27,9 +29,9 @@ export const resetForm = () => ({
   type: 'sendMoney/RESET_FORM'
 })
 
-export const updatePayee = (payee) => ({
+export const updatePayee = (payeeId) => ({
   type: 'sendMoney/UPDATE_PAYEE',
-  payee
+  payeeId
 })
 
 export const updatePage = (page) => ({
@@ -46,11 +48,11 @@ const setLoading = () => ({
   type: 'sendMoney/SET_LOADING'
 })
 
-const transactionComplete = (success, message, amount, timestamp, transactionNumber) => ({
+const transactionComplete = (success, message, amountPaid, timestamp, transactionNumber) => ({
   type: 'sendMoney/TRANSACTION_COMPLETE',
   success,
   message,
-  amount,
+  amountPaid,
   timestamp,
   transactionNumber
 })
@@ -61,9 +63,9 @@ export const sendTransaction = () =>
       return
     }
     dispatch(setLoading())
-    const { payee, amount } = getState().sendMoney
+    const { payeeId, amount } = getState().sendMoney
     makePayment({
-        subject: payee,
+        subject: payeeId,
         description: 'Test description',
         amount: amount
       }, dispatch)
@@ -100,7 +102,7 @@ const reducer = (state = initialState, action) => {
       break
     case 'sendMoney/UPDATE_PAYEE':
       state = merge(state, {
-        payee: action.payee
+        payeeId: action.payeeId
       })
       break
     case 'sendMoney/UPDATE_AMOUNT':
@@ -118,6 +120,18 @@ const reducer = (state = initialState, action) => {
         inputPage: action.page
       })
       break
+    case 'sendMoney/TRANSACTION_COMPLETE':
+      state = merge(state, {
+        success: action.success,
+        message: action.message,
+        amountPaid: action.amountPaid,
+        amount: '',
+        timestamp: action.timestamp,
+        inputPage: Page.PaymentComplete,
+        loading: false,
+        transactionNumber: action.transactionNumber
+      })
+      break
     case 'navigation/OVERLAY_VISIBLE':
       if (action.value === false) {
         if ( state.inputPage === Page.EnterAmount && state.amount == '' ) {
@@ -130,19 +144,9 @@ const reducer = (state = initialState, action) => {
     case 'navigation/SHOW_MODAL':
       if (action.modalState === 'traderScreen') {
         state = merge(state, {
-            inputPage: Page.Ready
-          })
+          inputPage: Page.Ready
+        })
       }
-      break
-    case 'sendMoney/TRANSACTION_COMPLETE':
-      state = merge(initialState, {
-        success: action.success,
-        message: action.message,
-        amount: '',
-        timestamp: action.timestamp,
-        inputPage: Page.PaymentComplete,
-        loading: false
-      })
       break
   }
   return state

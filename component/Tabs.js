@@ -57,7 +57,7 @@ const Tabs = (props) =>
         // view upwards. In this instance we want to hide the tab bar
         renderTabBar={() => props.dialogOpen ? <View style={style.hiddenTabBar}/> : <TabBar/>}
         tabBarPosition='bottom'
-        initialPage={props.navigation.tabIndex}
+        initialPage={props.tabIndex}
         tabBarActiveTextColor={color.bristolBlue}
         style={style.tabs}
         tabBarBackgroundColor={color.lightGray}
@@ -85,10 +85,10 @@ const Tabs = (props) =>
               lineTwo='your account details'/> }
       </WithNetworkConnection>
     </ScrollableTabView>
-    <Modal visible={props.modalVisible} hideModal={!props.message && props.hideModal} modalOpened={props.modalOpened}>
+    <Modal visible={props.modalVisible} hideModal={!props.confirmationOpen && props.hideModal} modalOpened={props.modalOpened}>
       {componentForModalState(props.modalState)}
     </Modal>
-    <Modal visible={!!props.message} hideModal={props.closeConfirmation}>
+    <Modal visible={props.confirmationOpen} hideModal={props.closeConfirmation}>
       <PaymentConfirmation />
     </Modal>
   </View>
@@ -97,14 +97,14 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators({ ...actions, openLoginForm }, dispatch)
 
 const mapStateToProps = (state) => ({
-  navigation: state.navigation,
+  tabIndex: state.navigation.tabIndex,
   modalState: state.navigation.modalState,
   modalVisible: state.navigation.modalVisible,
   loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
   status: state.status,
   dialogOpen: state.login.loginFormOpen,
   online: state.networkConnection.status,
-  message: state.navigation.message,
+  confirmationOpen: state.navigation.confirmationOpen,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tabs)
