@@ -2,112 +2,17 @@ import React from 'react'
 import MapView from 'react-native-maps'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { View, Image } from 'react-native'
+import { View } from 'react-native'
 import _ from 'lodash'
 import supercluster from 'supercluster'
-
-import DefaultText, { MultilineText } from '../DefaultText'
+import { MultilineText } from '../DefaultText'
 import * as actions from '../../store/reducer/business'
-import platform from '../../util/Platforms'
-import { horizontalAbsolutePosition } from '../../util/StyleUtils'
 import { shouldBeDisplayed } from '../../util/business'
 import merge from '../../util/merge'
+import style from './BackgroundMapStyle'
+import MapMarker from './MapMarker'
 
 const MAP_PAN_DEBOUNCE_TIME = 600
-
-const markerImage = require('./assets/Marker_alt.png')
-
-const selectedMarkerImage = require('./assets/selected_trader.png')
-
-const clusterImage = require('./assets/Android_marker.png')
-
-const style = {
-  mapContainer: {
-    ...horizontalAbsolutePosition(0, 0),
-    top: -80,
-    bottom: -80,
-  },
-  map: {
-    ...horizontalAbsolutePosition(0, 0),
-    top: 0,
-    bottom: 0,
-  },
-  loadingOverlay: {
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'white'
-  },
-  warningContainer: {
-    backgroundColor: 'red',
-    height: 320,
-    ...horizontalAbsolutePosition(0, 0),
-    flex: 1,
-    alignItems: 'center',
-    paddingTop: 100,
-    top: 0
-  }
-}
-
-export const MapMarker = ({ coordinate, selected, onPress, pointCount }) => {
-  if (pointCount) {
-    const width = pointCount > 99 ? 34 : 24
-    return <MapView.Marker
-        coordinate={coordinate}
-        anchor={platform.isIOS() ? null : { x: 0.5, y: 0.5 }}>
-      <View style={{ alignItems: 'center', width }}>
-        <Image source={clusterImage} style={{ position: 'absolute', left: (width - 18) / 2 }}/>
-        <DefaultText style={platform.isIOS() ? { bottom: 1 } : {}}>{pointCount}</DefaultText>
-      </View>
-    </MapView.Marker>
-  }
-
-  const marker = selected ? selectedMarkerImage : markerImage
-  return <MapView.Marker
-      coordinate={coordinate}
-      onPress={onPress}
-      anchor={platform.isIOS() ? null : { x: 0.5, y: 0.5 }}
-      image={marker}/>
-}
-
-const renderClusteredMarker = ({ selectBusiness, businessList, selectedBusinessId }) =>
-  ({ geometry, properties }) => {
-    // we have to separate out the behaviour by platform for Image placing:
-    //     https://github.com/airbnb/react-native-maps/blob/master/docs/marker.md
-    //       ios - centerOffset: By default, the center point of an annotation view is placed at the coordinate point of the associated annotation.
-    //       android - anchor: manually center
-    const coordinate = {
-      longitude: geometry.coordinates[0],
-      latitude: geometry.coordinates[1]
-    }
-
-    let onPress = null
-    let selected = null
-    if (properties.point_count === 1 || !properties.point_count) {
-      const business = businessList.find(b =>
-        b.address && b.address.location
-        && (b.address.location.latitude === coordinate.latitude)
-        && (b.address.location.longitude === coordinate.longitude))
-      if (business) {
-        onPress = () => selectBusiness(business.id)
-        selected = business.id === selectedBusinessId
-      }
-    }
-
-    return <MapMarker key={coordinate.latitude.toString()+coordinate.longitude.toString()}
-        selected={selected}
-        coordinate={coordinate}
-        onPress={onPress}
-        pointCount={properties.point_count}/>
-  }
-
-const renderBusinessMarker = (business, isSelected, onPress) => {
-  return <MapMarker key={business.id}
-      coordinate={business.address.location}
-      selected={isSelected}
-      onPress={onPress} />
-}
 
 
 class BackgroundMap extends React.Component {
@@ -120,6 +25,7 @@ class BackgroundMap extends React.Component {
     this.forceRegion = merge(props.forceRegion)
     this.currentRegion = merge(props.forceRegion)
     this.supercluster = supercluster({})
+    this.mapRef = null;
   }
 
   componentDidMount() {
@@ -189,11 +95,11 @@ class BackgroundMap extends React.Component {
           this.currentRegion.longitude + this.currentRegion.longitudeDelta * 0.6,
           this.currentRegion.latitude + this.currentRegion.latitudeDelta * 0.6,
         ], this.getZoomLevel())
-        this.setState({ markerArray: clusteredMarkers.map(renderClusteredMarker(props)) })
+        this.setState({ markerArray: clusteredMarkers.map(this.renderClusteredMarker(props)) })
       } else {
         this.setState({
           markerArray: props.businessList.filter(shouldBeDisplayed(this.currentRegion))
-            .map((b) => renderBusinessMarker(b, this.isSelected(b), () => props.selectBusiness(b.id)))
+            .map((b) => this.renderBusinessMarker(b, this.isSelected(b), () => props.selectBusiness(b.id)))
           })
       }
     }
@@ -201,6 +107,56 @@ class BackgroundMap extends React.Component {
 
   isSelected(business) {
     return business.id === this.props.selectedBusinessId
+  }
+
+  zoomToCluster = (coordinate) => {
+    const region = {
+      longitude: coordinate.longitude, 
+      latitude: coordinate.latitude,
+      longitudeDelta: this.currentRegion.longitudeDelta * 0.5,
+      latitudeDelta: this.currentRegion.latitudeDelta * 0.5
+    }
+    this.mapRef.animateToRegion(region, 300)
+  }
+
+  renderClusteredMarker = ({ selectBusiness, businessList, selectedBusinessId }) =>
+    ({ geometry, properties }) => {
+      // we have to separate out the behaviour by platform for Image placing:
+      //     https://github.com/airbnb/react-native-maps/blob/master/docs/marker.md
+      //       ios - centerOffset: By default, the center point of an annotation view is placed at the coordinate point of the associated annotation.
+      //       android - anchor: manually center
+      const coordinate = {
+        longitude: geometry.coordinates[0],
+        latitude: geometry.coordinates[1]
+      }
+
+      let onPress = null
+      let selected = null
+      if (properties.point_count === 1 || !properties.point_count) {
+        const business = businessList.find(b =>
+          b.address && b.address.location
+          && (b.address.location.latitude === coordinate.latitude)
+          && (b.address.location.longitude === coordinate.longitude))
+        if (business) {
+          onPress = () => selectBusiness(business.id)
+          selected = business.id === selectedBusinessId
+        }
+      } else if (properties.point_count > 1 ) {
+        onPress = () => this.zoomToCluster(coordinate)
+      }
+
+      return <MapMarker key={coordinate.latitude.toString()+coordinate.longitude.toString()}
+          selected={selected}
+          coordinate={coordinate}
+          onPress={onPress}
+          pointCount={properties.point_count}/>
+    }
+
+  renderBusinessMarker = (business, isSelected, onPress) => {
+    return <MapMarker key={business.id}
+        coordinate={business.address.location}
+        selected={isSelected}
+        onPress={onPress} />
   }
 
   render() {
@@ -215,6 +171,7 @@ class BackgroundMap extends React.Component {
           </View>}
         <MapView style={style.map}
             region={this.forceRegion}
+            ref={(ref) => { this.mapRef = ref }}
             showsPointsOfInterest={false}
             showsUserLocation={true}
             showsCompass={false}
