@@ -50,7 +50,7 @@ const WithNetworkConnection = (props) =>
     <NetworkConnection/>
   </View>
 
-const Tabs = (props) =>
+const Tabs = (props) => 
   <View style={style.flex}>
     <ScrollableTabView
         // On Android devices, when the keyboard is visible it pushes the entire

@@ -9,7 +9,7 @@ import MapMarker from '../searchTab/MapMarker'
 
 import  { CloseButton } from '../common/CloseButton'
 
-const closeButton = require('./../common/assets/Close_Blue.png')
+const closeButton = require('./../common/assets/Close.png')
 const expandIcon = require('./assets/Expand.png')
 
 const screenWidth = Dimensions.get('window').width,
