@@ -19,19 +19,18 @@ export const calculateMonthlyTotalSpent = (sortedTransactions) => {
     : new Date()
 
   const allMonths = monthRange(lastTransactionDate, new Date())
+
   const totals = allMonths.map(month => ({
     month,
     total: 0
   }))
-
   sortedTransactions.forEach(transaction => {
     const transactionDate = new Date(transaction.date)
     const total = totals.find(total => isSameMonth(total.month, transactionDate))
     // Only interested in money spent, not received - hence Math.min
     total.total += Math.min(Number(transaction.amount), 0)
   })
-
-  return totals
+  return _.takeRight(totals, 12)
 }
 
 export const groupTransactionsByDate = (transactions, formatString='mmmm dS, yyyy', toUpper=false) => {
