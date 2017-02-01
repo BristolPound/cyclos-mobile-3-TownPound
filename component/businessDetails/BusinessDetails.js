@@ -1,7 +1,7 @@
 import React from 'react'
 import Communications from 'react-native-communications'
 import HTMLView from 'react-native-htmlview'
-import { View, Linking, Image, TouchableOpacity } from 'react-native'
+import { View, Linking, Image, TouchableOpacity, Text } from 'react-native'
 import { MultilineText } from '../DefaultText'
 import addresses from '../../util/addresses'
 import styles from './BusinessDetailsStyle'
@@ -26,6 +26,19 @@ const renderFields = (fields) =>
       ))}
     </View>
   : null
+
+function renderExpander(expandDetailsFn) {
+  return <View style={{paddingTop: 12}}>
+            <View style={styles.separator}/>
+            <TouchableOpacity
+              onPress={expandDetailsFn}
+              accessiblityLabel='View Full Details'>
+              <View>
+                <Text style={styles.minorButtonText}>VIEW DETAILS</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+}
 
 function getFields(business, goToLocation) {
   const fields = [],
@@ -54,7 +67,7 @@ function getFields(business, goToLocation) {
 function renderDescription(description) {
   return (
     description
-      ? <View style={{paddingTop: 12, paddingBottom: 12}}>
+      ? <View style={{ paddingTop: 12 }}>
           <View style={styles.separator}/>
           <View style={styles.description} accessibilityLabel='Business Description'>
             <HTMLView value={description} onLinkPress={url => Linking.openURL(url)}/>
@@ -65,11 +78,42 @@ function renderDescription(description) {
 }
 
 class BusinessDetails extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { isExpanded: props.isExpanded }
+  }
+
+  renderExpandedDetails(fields, description) {
+    let expanded = null
+    if (this.state.isExpanded) {
+      const expandedFields = (fields.length > 2) ?
+        fields.slice(2) : []
+      expanded =
+        <View style={{marginBottom: 18}}>
+          {renderFields(expandedFields)}
+          {renderDescription(description)}
+        </View>
+    } else if (fields.length > 2 || description) {
+      // there are details that could be expanded.
+      expanded = renderExpander(() => this.expandDetails())
+    }
+    // else no details to expand.
+    return expanded
+  }
+
+  expandDetails() {
+    this.setState({isExpanded: true})
+  }
+
   render() {
     const fields = getFields(this.props.business, this.props.goToLocation)
+    const expanded = this.renderExpandedDetails(fields, this.props.business.description)
+    if (fields.length > 2) {
+      fields.length = 2
+    }
     return <View style={fields.length > 1 ? styles.moreDetails : styles.addressOnly}>
         {renderFields(fields)}
-        {renderDescription(this.props.business.description)}
+        {expanded}
     </View>
   }
 }
