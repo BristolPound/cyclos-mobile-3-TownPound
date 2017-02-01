@@ -79,8 +79,10 @@ class ScrollingExpandPanel extends React.Component {
 
   // apply smooth transition when list size changes
   componentWillReceiveProps(nextProps) {
-    const targetLocation = nextProps.topOffset[this.getPosition()]
-    animateTo(this.state.currentOuterTopOffset, targetLocation, 200)
+    if (nextProps.expandedHeight !== this.props.expandedHeight) {
+      const targetLocation = nextProps.topOffset[this.getPosition()]
+      animateTo(this.state.currentOuterTopOffset, targetLocation, 200)
+    }
   }
 
   getPosition() {
@@ -183,7 +185,8 @@ class ScrollingExpandPanel extends React.Component {
         if (this.state.currentOuterTopOffset._value <= offset && this.positionAtTouchStart > i
           || this.state.currentOuterTopOffset._value >= offset && this.positionAtTouchStart < i) {
             this.positionAtTouchStart = i
-      }
+            this.props.onPositionChange && this.props.onPositionChange(i)
+        }
       }
 
       const currentOuterTopOffset = this.getCurrentOuterTopOffset(currentTouchY)
@@ -243,16 +246,18 @@ class ScrollingExpandPanel extends React.Component {
         0,
         Math.abs(this.state.currentInnerTopOffset._value / this.velocity),
         Easing.linear,
-        () => this.animatePositionTo(1)
+        () => this.animatePositionTo(1, () => this.props.onPositionChange && this.props.onPositionChange(1))
       )
     }
   }
 
-  animatePositionTo(index) {
+  animatePositionTo(index, callback) {
     animateTo(
       this.state.currentOuterTopOffset,
       this.props.topOffset[index],
-      Math.abs(this.state.currentOuterTopOffset._value - this.props.topOffset[index])
+      Math.abs(this.state.currentOuterTopOffset._value - this.props.topOffset[index]),
+      undefined,
+      callback
     )
   }
 
@@ -273,7 +278,8 @@ class ScrollingExpandPanel extends React.Component {
 
     } else { // slide back to expanded or collapsed position
       const endPosition = this.state.currentOuterTopOffset._value + this.getMomentumTravel()
-      this.animatePositionTo(this.positionAfterMove(endPosition))
+      const positionAfterMove = this.positionAfterMove(endPosition)
+      this.animatePositionTo(positionAfterMove, () => this.props.onPositionChange && this.props.onPositionChange(positionAfterMove))
       }
 
     // cleanup

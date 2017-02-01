@@ -2,7 +2,7 @@ import _ from 'lodash'
 import merge from './merge'
 import haversine from 'haversine'
 
-const BUSINESS_LIST_MAX_LENGTH = 35
+const BUSINESS_LIST_MAX_LENGTH = 50
 
 export const addColorCodes = (list) => {
     const newList = list.map(b => merge(b))
