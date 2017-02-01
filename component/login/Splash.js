@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TouchableHighlight, Animated,  Easing } from 'react-native'
+import { View, TouchableHighlight, Animated,  Easing, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 import DefaultText from '../DefaultText'
 import colors from '../../util/colors'
@@ -8,6 +8,9 @@ import { bindActionCreators } from 'redux'
 import * as actions from '../../store/reducer/login'
 import PLATFORM from '../../util/Platforms'
 import style from './SplashStyle'
+
+const background = require('../../assets/background.png')
+const screenWidth = Dimensions.get('window').width
 
 class Splash  extends React.Component {
   constructor() {
@@ -32,17 +35,19 @@ class Splash  extends React.Component {
   }
 
   animateBackground() {
+    // background image is 2028px wide
+    const slideDistance = 2028 - screenWidth
+
     const animateBackgroundTo = toValue =>
       Animated.timing(this.state.backgroundOffset, {
         toValue,
-        duration: 240000,
+        duration: 75 * slideDistance,
         easing: Easing.linear
       })
 
     // create a looping animation for the background
     Animated.sequence([
-      // background image is 7900px wide. Assuming the widest screem is <1080 (6 plus)
-      animateBackgroundTo(-(7900 - 1080)),
+      animateBackgroundTo(-slideDistance),
       animateBackgroundTo(0)
     ]).start(event => {
       if (event.finished) {
@@ -61,7 +66,7 @@ class Splash  extends React.Component {
             ]
           })}
           resizeMode='cover'
-          source={require('../../assets/background.jpg')}/>
+          source={background}/>
         { this.state.showButtons
           ? <View style={style.bottomContainer}>
               { this.props.renderWelcomeMessage(this.props) }
