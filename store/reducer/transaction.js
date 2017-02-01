@@ -134,7 +134,11 @@ const reducer = (state = initialState, action) => {
       const mergedTransactions = action.keepOldTransactions
         ? _.uniqBy([...state.transactions, ...action.transactions], 'transactionNumber')
         : action.transactions
-      const coloredSortedTransactions = addColorCodes(sortTransactions(mergedTransactions))
+      const sortedTransactions = sortTransactions(mergedTransactions)
+      if (sortedTransactions.length > 500) {
+        sortedTransactions.length = 500
+      }
+      const coloredSortedTransactions = addColorCodes(sortedTransactions)
       const monthlyTotalSpent = calculateMonthlyTotalSpent(coloredSortedTransactions)
       const selectedMonthIndex = lastIndex(monthlyTotalSpent)
       state = merge(state, {
