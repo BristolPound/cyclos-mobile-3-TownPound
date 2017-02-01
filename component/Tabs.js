@@ -60,6 +60,7 @@ const Tabs = (props) =>
         initialPage={props.tabIndex}
         tabBarActiveTextColor={color.bristolBlue}
         style={style.tabs}
+        page={props.tabIndex}
         tabBarBackgroundColor={color.lightGray}
         scrollWithoutAnimation={true}
         locked={true}
