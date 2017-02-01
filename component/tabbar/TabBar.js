@@ -32,7 +32,7 @@ const TABS = [
     )
 ]
 
-const TabBar = (props) =>
+const TabBar = (props) => 
   <View style={style.tabBar}>
     {TABS.map((tab, index) =>
       <View style={style.centerChildren} key={index}>
@@ -41,7 +41,7 @@ const TabBar = (props) =>
             onPress={() => props.goToPage(index)}
             onLongPress={() => props.showModal(modalState.developerOptions)}
             accessibilityLabel={tab.label}>
-          <Image source={props.activeTab === index ? tab.active : tab.inactive}/>
+          <Image source={props.tabIndex === index ? tab.active : tab.inactive}/>
         </TouchableOpacity>
         {index !== TABS.length - 1 ? <View style={style.separator}/> : undefined}
       </View>
@@ -71,11 +71,11 @@ const TabBar = (props) =>
   </View>
 
 
-
 const mapStateToProps = (state) => ({
   loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
   balance: state.account.balance,
-  connection: state.networkConnection.status
+  connection: state.networkConnection.status,
+  tabIndex: state.navigation.tabIndex
 })
 
 const mapDispatchToProps = (dispatch) =>
