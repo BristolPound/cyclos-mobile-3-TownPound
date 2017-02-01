@@ -18,6 +18,8 @@ const BUSINESS_LIST_GAP_PLACEHOLDER = { pressable: false }
 
 const EXPANDED_LIST_TOP_OFFSET = SEARCH_BAR_HEIGHT + SEARCH_BAR_MARGIN
 
+const listCroppedLength = Math.ceil(Dimensions.get('window').height / ROW_HEIGHT)
+
 const ComponentForItem = item => {
     if (item === BUSINESS_LIST_GAP_PLACEHOLDER) {
         return <View style={{ height: 10 }}/>
@@ -31,10 +33,11 @@ const ComponentForItem = item => {
 class SearchTab extends React.Component {
   constructor(props) {
     super()
-    this.componentListArray = this.createComponentListArray(props)
+    this.state = { componentListArray: this.createComponentListArray(props).slice(0, listCroppedLength) }
+    this.listPosition = 1
   }
 
-  createComponentListArray(props) {
+  createComponentListArray(props = this.props) {
     const makePressable = (itemProps) => ({...itemProps, pressable: true})
     if (props.selectedBusiness) {
       return [
@@ -54,7 +57,7 @@ class SearchTab extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.selectedBusiness !== this.props.selectedBusiness
         || nextProps.closestBusinesses !== this.props.closestBusinesses) {
-      this.componentListArray = this.createComponentListArray(nextProps)
+      this.state.componentListArray = this.createComponentListArray(nextProps).slice(0, listCroppedLength)
     }
   }
 
@@ -67,6 +70,13 @@ class SearchTab extends React.Component {
       this.refs.search.refs.textInput.focus()
       !this.props.searchMode && this.props.updateSearchMode(true)
     }
+  }
+
+  onPositionChange(position) {
+    if (position === 0 && this.listPosition !== 0) {
+      this.setState({ componentListArray: this.createComponentListArray() })
+    }
+    this.listPosition = position
   }
 
   render() {
@@ -101,12 +111,13 @@ class SearchTab extends React.Component {
             onMove={() => componentList && componentList.handleRelease(true)}
             childrenHeight={childrenHeight + BUSINESS_LIST_SELECTED_GAP}
             startPosition={1}
+            onPositionChange={(position) => this.onPositionChange(position)}
             outOfBoundsPress={(pageX) => this.searchBarPressed(pageX)}>
             <ComponentList
                 ref='componentList'
-                items={this.componentListArray}
+                items={this.state.componentListArray}
                 componentForItem={ComponentForItem}
-                onPressItem={index => this.componentListArray[index].id && openTraderModal(this.componentListArray[index].id)} />
+                onPressItem={index => this.state.componentListArray[index].id && openTraderModal(this.state.componentListArray[index].id)} />
         </ScrollingExpandPanel>}
       </View>
     )
