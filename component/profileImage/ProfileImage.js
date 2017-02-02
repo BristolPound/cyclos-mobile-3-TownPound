@@ -3,7 +3,7 @@ import { Image, View } from 'react-native'
 
 const layer = (src, style) => {
   if (src) {
-    return <Image style={{flex: 1, position: 'absolute', ...style}} source={src} resizeMode='stretch'/>
+    return <Image style={{flex: 1, position: 'absolute', ...style}} source={src} resizeMode='cover'/>
   }
 }
 
