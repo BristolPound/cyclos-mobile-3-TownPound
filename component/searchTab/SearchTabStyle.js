@@ -1,5 +1,6 @@
 import { Dimensions } from 'react-native'
 
+import platform from '../../util/Platforms'
 import color from '../../util/colors'
 import commonStyle from '../style'
 import { dimensions, margin, padding, horizontalAbsolutePosition } from '../../util/StyleUtils'
@@ -20,7 +21,8 @@ const styles = {
   searchTab: {
     expandPanel: {
       ...horizontalAbsolutePosition(MARGIN_SIZE, MARGIN_SIZE),
-      zIndex: 100
+      // zIndex is needed for overflow: hidden on android, but breaks shadow on iOS
+      zIndex: platform.isIOS() ? undefined : 100
     },
     searchBar: {
       ...margin(SEARCH_BAR_MARGIN, MARGIN_SIZE, 0, MARGIN_SIZE),
@@ -28,7 +30,7 @@ const styles = {
       ...commonStyle.shadow,
       backgroundColor: color.white,
       flexDirection: 'row',
-      borderRadius: 2
+      borderRadius: 2,
     },
     nearbyButton: {
       width: NEARBY_WIDTH,
