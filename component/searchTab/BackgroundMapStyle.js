@@ -25,7 +25,7 @@ const style = {
     ...horizontalAbsolutePosition(0, 0),
     flex: 1,
     alignItems: 'center',
-    paddingTop: 100,
+    paddingTop: 200,
     top: 0
   }
 }
