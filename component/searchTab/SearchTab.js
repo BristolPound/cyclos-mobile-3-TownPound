@@ -100,8 +100,6 @@ class SearchTab extends React.Component {
     return (
       <View style={{flex: 1}}>
         <BackgroundMap/>
-        { searchMode && <Overlay overlayVisible={true} onPress={exitSearchMode}/> }
-        <Search ref='search' {...this.props} outOfBoundsPress={(pageX) => this.searchBarPressed(pageX)}/>
         {!searchMode && <ScrollingExpandPanel ref={this.props.registerBusinessList}
             style={styles.searchTab.expandPanel}
             topOffset={this.calculateOffset([ expandedHeight, collapsedHeight, closedHeight ])}
@@ -119,6 +117,8 @@ class SearchTab extends React.Component {
                 componentForItem={ComponentForItem}
                 onPressItem={index => this.state.componentListArray[index].id && openTraderModal(this.state.componentListArray[index].id)} />
         </ScrollingExpandPanel>}
+        {searchMode && <Overlay overlayVisible={true} onPress={exitSearchMode}/>}
+        <Search ref='search' {...this.props} outOfBoundsPress={(pageX) => this.searchBarPressed(pageX)}/>
       </View>
     )
   }
