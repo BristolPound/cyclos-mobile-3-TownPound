@@ -93,8 +93,7 @@ export default class Search extends React.Component {
     nearbyButtonPressed() {
       if (this.nearbyButtonEnabled()) {
         const { latitude, longitude } = this.props.geolocationStatus
-        this.props.updateMapViewport({ latitude, longitude })
-        this.props.moveMap()
+        this.props.moveMap({ latitude, longitude })
       }
     }
 
