@@ -17,7 +17,7 @@ const MapViewport = {
     longitudeDelta: 0.006
 }
 
-const Business = {
+const initialState = {
   businessList: [],
   businessListTimestamp: null,
   selectedBusinessId: undefined,
@@ -40,10 +40,6 @@ export const registerBusinessList = (ref) => ({
   ref
 })
 
-export const moveMap = () => ({
-  type: 'business/MOVE_MAP'
-})
-
 export const businessProfileReceived = (businessProfile) => ({
   type: 'business/BUSINESS_PROFILE_RECEIVED',
   businessProfile
@@ -54,8 +50,8 @@ export const updateMapViewport = (viewport) => ({
   viewport
 })
 
-export const updateMapViewportAndSelectClosestTrader = (viewport) => ({
-  type: 'business/UPDATE_MAP_VIEWPORT_AND_SELECT_CLOSEST_TRADER',
+export const moveMap = (viewport) => ({
+  type: 'business/MOVE_MAP',
   viewport
 })
 
@@ -84,13 +80,17 @@ export const geolocationSuccess = (location) => ({
   location
 })
 
+export const selectClosestBusiness = () => ({
+  type: 'business/SELECT_CLOSEST_BUSINESS'
+})
+
 export const geolocationChanged = (coords, dispatch) => {
     const { latitude, longitude } = coords
     dispatch(geolocationSuccess(coords))
     //furthest business is around 70km from Bristol centre
     if (haversine(DEFAULT_COORDINATES, coords) < 75) {
-        dispatch(updateMapViewportAndSelectClosestTrader({ latitude, longitude }))
-        dispatch(moveMap())
+        dispatch(moveMap({ latitude, longitude }))
+        dispatch(selectClosestBusiness())
     }
 }
 
@@ -141,11 +141,20 @@ export const loadBusinessList = (force = false) => (dispatch, getState) => {
     }
   }
 
-const reducer = (state = Business, action) => {
+// We want the map center higher than center of screen when map is panned
+const mapCenterModifier = 1 / 10
+const centerViewportHigher = (viewport) =>
+  merge(viewport, { latitude: viewport.latitude + viewport.latitudeDelta * mapCenterModifier })
+// When moving the map, give it a center with lower latitude so that the
+// chosen location appears higher on the screen
+const centerViewportLower = (viewport) =>
+  merge(viewport, { latitude: viewport.latitude - viewport.latitudeDelta * mapCenterModifier })
+
+const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'business/BUSINESS_LIST_RECEIVED':
       const offsetBusinesses = offsetOverlappingBusinesses(action.businessList).map(business => merge(business, {colorCode: 0}))
-      let closestBusinesses = getClosestBusinesses(action.businessList, state.mapViewport)
+      let closestBusinesses = getClosestBusinesses(action.businessList, centerViewportHigher(state.mapViewport))
       state = merge(state, {
         closestBusinesses,
         businessList: offsetBusinesses,
@@ -186,29 +195,34 @@ const reducer = (state = Business, action) => {
       let newViewport = merge(state.mapViewport, action.viewport) // action.viewport might only be partial (no deltas)
 
       // closestBusinesses is declared in the first switch case so we cannot define it here. Blame javascript!
-      closestBusinesses = getClosestBusinesses(state.businessList, newViewport)
+      closestBusinesses = getClosestBusinesses(state.businessList, centerViewportHigher(newViewport))
       state = merge(state, {
         mapViewport: newViewport,
         closestBusinesses
       })
       break
 
-    case 'business/UPDATE_MAP_VIEWPORT_AND_SELECT_CLOSEST_TRADER':
+    case 'business/MOVE_MAP':
       // newViewport is declared in UPDATE_MAP_VIEWPORT case
       newViewport = merge(state.mapViewport, action.viewport) // action.viewport might only be partial (no deltas)
 
       // Since we wish to update the selected trader, allow the closest to be at the top of the list
       closestBusinesses = getClosestBusinesses(state.businessList, newViewport)
 
-      let newSelectedId = state.selectedBusinessId
-      // If there is at least one business on the list, make the first business the new selected business
-      if (closestBusinesses.length) {
-        newSelectedId = closestBusinesses[0].id
-      }
-
       state = merge(state, {
         closestBusinesses,
-        mapViewport: newViewport,
+        mapViewport: centerViewportLower(newViewport),
+        forceRegion: centerViewportLower(newViewport),
+      })
+      break
+
+    case 'business/SELECT_CLOSEST_BUSINESS':
+      let newSelectedId = state.selectedBusinessId
+      // If there is at least one business on the list, make the first business the new selected business
+      if (state.closestBusinesses.length) {
+        newSelectedId = state.closestBusinesses[0].id
+      }
+      state = merge(state, {
         selectedBusinessId: newSelectedId
       })
       break
@@ -244,10 +258,6 @@ const reducer = (state = Business, action) => {
 
     case 'business/GEOLOCATION_SUCCESS':
       state = merge(state, { geolocationStatus: action.location })
-      break
-
-    case 'business/MOVE_MAP':
-      state = merge(state, { forceRegion: state.mapViewport })
       break
 
     case 'business/REGISTER_BUSINESS_LIST':
