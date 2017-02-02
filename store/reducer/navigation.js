@@ -3,7 +3,7 @@ import merge from '../../util/merge'
 import { selectAndLoadBusiness } from './business'
 import { selectAndLoadPerson } from './person'
 import { LOGGED_OUT, LOGGED_IN } from './login'
-import { updateMapViewportAndSelectClosestTrader, updateSearchMode, moveMap } from './business'
+import { moveMap, updateSearchMode, selectClosestBusiness } from './business'
 import { updatePayee } from './sendMoney'
 
 export const modalState = {
@@ -105,9 +105,9 @@ export const hideModal = () => ({
 export const goToLocation = (location) =>
   (dispatch) => {
     dispatch(updateSearchMode(false))
-    dispatch(updateMapViewportAndSelectClosestTrader(location))
+    dispatch(moveMap(location))
+    dispatch(selectClosestBusiness())
     dispatch(navigateToTab(0))
-    dispatch(moveMap())
     dispatch(hideModal())
   }
 
