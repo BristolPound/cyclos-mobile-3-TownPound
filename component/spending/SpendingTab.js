@@ -62,9 +62,9 @@ class SpendingTab extends React.Component {
     } else if (dataSource.getRowCount()) {
       bodyComponent = <ListView
           ref={this.props.registerSpendingList}
-          style={{ backgroundColor: color.offWhite }}
+          style={{ backgroundColor: color.offWhite, marginTop: 106 }}
           tabLabel='Transactions'
-          decelerationRate='fast' 
+          decelerationRate='fast'
           renderSeparator={renderSeparator}
           initialListSize={15}
           enableEmptySections={true}
@@ -80,7 +80,7 @@ class SpendingTab extends React.Component {
           removeClippedSubviews={false}/>
     } else {
       bodyComponent =
-        <TouchableOpacity style={{flex: 1}}onPress={() => !props.refreshing && props.selectedMonthIndex === 0 ? props.loadMoreTransactions() : undefined}>
+        <TouchableOpacity style={styles.noTransactions.outerContainer} onPress={() => !props.refreshing && props.selectedMonthIndex === 0 ? props.loadMoreTransactions() : undefined}>
           <View style={styles.noTransactions.container}>
             <MultilineText style={styles.noTransactions.text}>You have made no transactions this month</MultilineText>
             {props.selectedMonthIndex === 0 ? <DefaultText style={{ ...styles.noTransactions.text, marginTop: 20 }}>Tap to refresh</DefaultText> : undefined}
@@ -90,10 +90,10 @@ class SpendingTab extends React.Component {
 
     return (
       <View style={{flex: 1}}>
+        {bodyComponent}
         <View style={styles.header.carouselContainer}>
           <SpendingHeader />
         </View>
-        {bodyComponent}
       </View>
     )
   }
