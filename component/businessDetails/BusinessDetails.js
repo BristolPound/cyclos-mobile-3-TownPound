@@ -70,7 +70,7 @@ function renderDescription(description) {
       ? <View style={{ paddingTop: 12 }}>
           <View style={styles.separator}/>
           <View style={styles.description} accessibilityLabel='Business Description'>
-            <HTMLView value={description} onLinkPress={url => Linking.openURL(url)}/>
+            <HTMLView value={description.replace(/\\n/g, '')} onLinkPress={url => Linking.openURL(url)}/>
           </View>
         </View>
       : <View style={{ height: 12 }} />
