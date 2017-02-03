@@ -1,6 +1,7 @@
 import haversine from 'haversine'
 import _ from 'lodash'
 import moment from 'moment'
+import { Dimensions } from 'react-native'
 import merge from '../../util/merge'
 import { getClosestBusinesses, offsetOverlappingBusinesses } from '../../util/business'
 import { addFailedAction } from './networkConnection'
@@ -11,11 +12,39 @@ import { hideModal } from './navigation'
 
 const DEFAULT_COORDINATES = { latitude: 51.454513, longitude:  -2.58791 }
 
+// 1 pixel right adds the same to longitude as 1.69246890879 pixels up adds to latitude
+// when the map is centred at the default coordinates
+const longitudePerLatitude = 1.69246890879
+
+// Map sticks up above and below the visible area because we don't want the buttons and logo
+export const mapOverflow = 70
+
+const { height, width } = Dimensions.get('window')
+export const mapHeight = height + 95
+const mapWidth = width
+
 const MapViewport = {
     ...DEFAULT_COORDINATES,
-    latitudeDelta: 0.006,
-    longitudeDelta: 0.006
+    longitudeDelta: 0.006,
+    latitudeDelta: 0.006 * mapHeight / (mapWidth * longitudePerLatitude),
 }
+
+// We want the center for sorting businesses higher than the actual centre of map.
+// 1/15 of mapHeight higher than center of map, which is 22.5px higher than center of screen.
+// So in total around 60 - 70 px higher than screen centre
+const mapCenterModifier = 1 / 15
+const centerViewportHigher = (viewport) =>
+  merge(viewport, { latitude: viewport.latitude + viewport.latitudeDelta * mapCenterModifier })
+// When moving the map, give it a center with lower latitude so that the
+// chosen location appears higher on the screen
+const centerViewportLower = (viewport) =>
+  merge(viewport, { latitude: viewport.latitude - viewport.latitudeDelta * mapCenterModifier })
+
+// returns relevant part of viewport for business list
+const businessArea = (viewport) =>
+  merge(viewport, {
+    latitudeDelta: viewport.latitudeDelta * (height / (height + mapOverflow * 2) - 2 * mapCenterModifier)
+  })
 
 const initialState = {
   businessList: [],
@@ -141,20 +170,11 @@ export const loadBusinessList = (force = false) => (dispatch, getState) => {
     }
   }
 
-// We want the map center higher than center of screen when map is panned
-const mapCenterModifier = 1 / 10
-const centerViewportHigher = (viewport) =>
-  merge(viewport, { latitude: viewport.latitude + viewport.latitudeDelta * mapCenterModifier })
-// When moving the map, give it a center with lower latitude so that the
-// chosen location appears higher on the screen
-const centerViewportLower = (viewport) =>
-  merge(viewport, { latitude: viewport.latitude - viewport.latitudeDelta * mapCenterModifier })
-
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'business/BUSINESS_LIST_RECEIVED':
       const offsetBusinesses = offsetOverlappingBusinesses(action.businessList).map(business => merge(business, {colorCode: 0}))
-      let closestBusinesses = getClosestBusinesses(action.businessList, centerViewportHigher(state.mapViewport))
+      let closestBusinesses = getClosestBusinesses(action.businessList, businessArea(centerViewportHigher(state.mapViewport)))
       state = merge(state, {
         closestBusinesses,
         businessList: offsetBusinesses,
@@ -193,9 +213,8 @@ const reducer = (state = initialState, action) => {
 
     case 'business/UPDATE_MAP_VIEWPORT':
       let newViewport = merge(state.mapViewport, action.viewport) // action.viewport might only be partial (no deltas)
-
       // closestBusinesses is declared in the first switch case so we cannot define it here. Blame javascript!
-      closestBusinesses = getClosestBusinesses(state.businessList, centerViewportHigher(newViewport))
+      closestBusinesses = getClosestBusinesses(state.businessList, businessArea(centerViewportHigher(newViewport)))
       state = merge(state, {
         mapViewport: newViewport,
         closestBusinesses
@@ -207,7 +226,7 @@ const reducer = (state = initialState, action) => {
       newViewport = merge(state.mapViewport, action.viewport) // action.viewport might only be partial (no deltas)
 
       // Since we wish to update the selected trader, allow the closest to be at the top of the list
-      closestBusinesses = getClosestBusinesses(state.businessList, newViewport)
+      closestBusinesses = getClosestBusinesses(state.businessList, businessArea(newViewport))
 
       state = merge(state, {
         closestBusinesses,
