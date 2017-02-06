@@ -73,25 +73,19 @@ const Tabs = (props) =>
       <WithNetworkConnection tabLabel='Spending'>
         { props.loggedIn
           ? <SpendingTab/>
-          : ( props.dialogOpen && PLATFORM.isAndroid()
-              ? undefined
-              : <LoginToView
-                  image={emptyStateImage.spending}
-                  lineOne='Log in to view'
-                  lineTwo='your spending history' /> 
-            )
+          : <LoginToView
+              image={emptyStateImage.spending}
+              lineOne='Log in to view'
+              lineTwo='your spending history' /> 
         }
       </WithNetworkConnection>
       <WithNetworkConnection tabLabel='Account'>
         { props.loggedIn
           ? <Account/>
-          : ( props.dialogOpen && PLATFORM.isAndroid()
-              ? undefined
-              : <LoginToView
+          : <LoginToView
                   image={emptyStateImage.account}
                   lineOne='Log in to view'
                   lineTwo='your account details' /> 
-            )
         }
       </WithNetworkConnection>
     </ScrollableTabView>
