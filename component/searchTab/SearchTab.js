@@ -6,7 +6,7 @@ import BackgroundMap from './BackgroundMap'
 import ComponentList from './ComponentList'
 import BusinessListItem, { SelectedBusiness } from './BusinessListItem'
 import ScrollingExpandPanel from './ScrollingExpandPanel'
-import styles, { SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN, NEARBY_WIDTH, maxExpandedHeight } from './SearchTabStyle'
+import styles, { SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN, maxExpandedHeight } from './SearchTabStyle'
 import { ROW_HEIGHT, BUSINESS_LIST_SELECTED_GAP} from './BusinessListStyle'
 import * as actions from '../../store/reducer/business'
 import { Overlay } from '../common/Overlay'
@@ -60,17 +60,6 @@ class SearchTab extends React.Component {
     }
   }
 
-  searchBarPressed(pageX) {
-    if (pageX < SEARCH_BAR_MARGIN + NEARBY_WIDTH) {
-      this.refs.search.nearbyButtonPressed()
-    } else if (this.props.searchMode && pageX > Dimensions.get('window').width - SEARCH_BAR_MARGIN - SEARCH_BAR_HEIGHT) {
-      this.refs.search.closeButtonPressed()
-    } else {
-      this.refs.search.refs.textInput.focus()
-      !this.props.searchMode && this.props.updateSearchMode(true)
-    }
-  }
-
   onPositionChange(position) {
     if (position === 0 && this.listPosition !== 0) {
       this.setState({ componentListArray: this.createComponentListArray() })
@@ -79,7 +68,7 @@ class SearchTab extends React.Component {
   }
 
   render() {
-    const { closestBusinesses, openTraderModal, selectedBusiness, searchMode } = this.props
+    const { closestBusinesses, openTraderModal, selectedBusiness, searchMode, updateSearchMode } = this.props
     const { componentList } = this.refs
 
     const noOfCloseBusinesses = closestBusinesses.length,
@@ -92,13 +81,9 @@ class SearchTab extends React.Component {
       this.props.selectedBusiness
     )
 
-    const exitSearchMode = () => {
-      this.refs.search.closeButtonPressed()
-    }
-
     return (
       <View style={{flex: 1}}>
-        <BackgroundMap/>
+        <BackgroundMap />
         {!searchMode && <ScrollingExpandPanel ref={this.props.registerBusinessList}
             style={styles.searchTab.expandPanel}
             topOffset={this.calculateOffset([ expandedHeight, collapsedHeight, closedHeight ])}
@@ -108,16 +93,15 @@ class SearchTab extends React.Component {
             onMove={() => componentList && componentList.handleRelease(true)}
             childrenHeight={childrenHeight + BUSINESS_LIST_SELECTED_GAP}
             startPosition={1}
-            onPositionChange={(position) => this.onPositionChange(position)}
-            outOfBoundsPress={(pageX) => this.searchBarPressed(pageX)}>
+            onPositionChange={(position) => this.onPositionChange(position)}>
             <ComponentList
                 ref='componentList'
                 items={this.state.componentListArray}
                 componentForItem={ComponentForItem}
                 onPressItem={index => this.state.componentListArray[index].id && openTraderModal(this.state.componentListArray[index].id)} />
         </ScrollingExpandPanel>}
-        {searchMode && <Overlay overlayVisible={true} onPress={exitSearchMode}/>}
-        <Search ref='search' {...this.props} outOfBoundsPress={(pageX) => this.searchBarPressed(pageX)}/>
+        {searchMode && <Overlay overlayVisible={true} onPress={() => updateSearchMode(false)} />}
+        <Search {...this.props} />
       </View>
     )
   }

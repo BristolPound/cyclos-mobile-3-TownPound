@@ -114,7 +114,7 @@ export default class Search extends React.Component {
 
     render() {
       const { componentListArray, input } = this.state
-      const { searchMode, updateSearchMode, outOfBoundsPress } = this.props
+      const { searchMode, updateSearchMode } = this.props
 
       const childrenHeight = componentListArray.length * ROW_HEIGHT
 
@@ -130,8 +130,7 @@ export default class Search extends React.Component {
                                         childrenHeight={childrenHeight}
                                         startPosition={0}
                                         onPressRelease={hasMoved => componentList && componentList.handleRelease(hasMoved)}
-                                        onPressStart={location => componentList && componentList.highlightItem(location)}
-                                        outOfBoundsPress={outOfBoundsPress}>
+                                        onPressStart={location => componentList && componentList.highlightItem(location)}>
                       <ComponentList
                           ref='componentList'
                           items={componentListArray}
