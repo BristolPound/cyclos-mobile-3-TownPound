@@ -66,3 +66,7 @@ export const offsetOverlappingBusinesses = (businesses) => {
     })
     return businesses
 }
+
+export const isIncorrectLocation = (location) => {
+    return _.inRange(location.longitude, -0.01, 0.01) && _.inRange(location.latitude, -0.01, 0.01)
+  }
