@@ -31,6 +31,7 @@ const styles = {
       backgroundColor: color.white,
       flexDirection: 'row',
       borderRadius: 2,
+      zIndex: platform.isIOS() ? undefined : 200
     },
     nearbyButton: {
       width: NEARBY_WIDTH,
