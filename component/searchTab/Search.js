@@ -114,7 +114,7 @@ export default class Search extends React.Component {
 
     render() {
       const { componentListArray, input } = this.state
-      const { searchMode, updateSearchMode, outOfBoundsPress } = this.props
+      const { searchMode, updateSearchMode } = this.props
 
       const childrenHeight = componentListArray.length * ROW_HEIGHT
 
@@ -122,6 +122,22 @@ export default class Search extends React.Component {
 
       return (
         <View>
+          { searchMode && (
+                  <ScrollingExpandPanel style={expandPanel}
+                                        ref='ExpandPanel'
+                                        topOffset={[ SEARCH_BAR_HEIGHT + SEARCH_BAR_MARGIN ]}
+                                        expandedHeight={maxExpandedHeight}
+                                        childrenHeight={childrenHeight}
+                                        startPosition={0}
+                                        onPressRelease={hasMoved => componentList && componentList.handleRelease(hasMoved)}
+                                        onPressStart={location => componentList && componentList.highlightItem(location)}>
+                      <ComponentList
+                          ref='componentList'
+                          items={componentListArray}
+                          componentForItem={ComponentForItem}
+                          onPressItem={index => componentListArray[index].id && this._businessListOnClick(componentListArray[index].id)} />
+                  </ScrollingExpandPanel>
+          )}
           <View style={searchBar}>
             <TouchableOpacity style={nearbyButton}
                 onPress={() => this.nearbyButtonPressed()}>
@@ -140,23 +156,6 @@ export default class Search extends React.Component {
             { searchMode &&
                 <CloseButton onPress={() => this.props.updateSearchMode(false)} closeButtonType={CLOSE_BUTTON} style={closeButton} size={SEARCH_BAR_HEIGHT}/> }
           </View>
-          { searchMode && (
-                  <ScrollingExpandPanel style={expandPanel}
-                                        ref='ExpandPanel'
-                                        topOffset={[ SEARCH_BAR_HEIGHT + SEARCH_BAR_MARGIN ]}
-                                        expandedHeight={maxExpandedHeight}
-                                        childrenHeight={childrenHeight}
-                                        startPosition={0}
-                                        onPressRelease={hasMoved => componentList && componentList.handleRelease(hasMoved)}
-                                        onPressStart={location => componentList && componentList.highlightItem(location)}
-                                        outOfBoundsPress={outOfBoundsPress}>
-                      <ComponentList
-                          ref='componentList'
-                          items={componentListArray}
-                          componentForItem={ComponentForItem}
-                          onPressItem={index => componentListArray[index].id && this._businessListOnClick(componentListArray[index].id)} />
-                  </ScrollingExpandPanel>
-          )}
         </View>
       )
     }
