@@ -41,13 +41,13 @@ export default class Search extends React.Component {
       if (nextProps.allBusinesses !== this.props.allBusinesses) {
         let changedCount = 0
         nextProps.allBusinesses.forEach((business, index) => {
-          if (business.id !== this.props.allBusinesses[index].id) {
+          if (!this.props.allBusinesses[index] || this.props.allBusinesses[index].id !== business.id ) {
             changedCount++
           }
         })
         // If the change was due to dodgy data, not just because the details were loaded for a business
         if (changedCount > 1) {
-          this.setState({ componentListArray: this.updateResults(nextProps.allBusinesses) })
+          this.updateResults(nextProps.allBusinesses)
         }
       }
       if (!nextProps.searchMode && this.props.searchMode) {

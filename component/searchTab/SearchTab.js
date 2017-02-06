@@ -9,7 +9,6 @@ import ScrollingExpandPanel from './ScrollingExpandPanel'
 import styles, { SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN, NEARBY_WIDTH, maxExpandedHeight } from './SearchTabStyle'
 import { ROW_HEIGHT, BUSINESS_LIST_SELECTED_GAP} from './BusinessListStyle'
 import * as actions from '../../store/reducer/business'
-import { openTraderModal } from '../../store/reducer/navigation'
 import { Overlay } from '../common/Overlay'
 import Search from './Search'
 import calculatePanelHeight from '../../util/calculatePanelHeight'
@@ -133,6 +132,6 @@ const mapStateToProps = (state) => ({
   geolocationStatus: state.business.geolocationStatus
 })
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ openTraderModal, ...actions }, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({ ...actions }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchTab)

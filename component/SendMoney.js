@@ -221,9 +221,7 @@ const mapDispatchToProps = (dispatch) =>
 
 const mapStateToProps = (state) => ({
   ...state.sendMoney,
-  payee: state.business.businessList.find(b => b.id === state.sendMoney.payeeId)
-    || state.person.personList.find(p => p.id === state.sendMoney.payeeId)
-    || {},
+  payee: state.business.businessList.find(b => b.id === state.sendMoney.payeeId) || state.person.selectedPerson || {},
   balance: state.account.balance,
   loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
   connection: state.networkConnection.status
