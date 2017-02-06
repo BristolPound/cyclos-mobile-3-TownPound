@@ -9,6 +9,8 @@ import BusinessDetails from './businessDetails/BusinessDetails'
 import { sectionHeight } from './SendMoney'
 import { resetForm } from '../store/reducer/sendMoney'
 import { goToLocation } from '../store/reducer/navigation'
+import { isIncorrectLocation } from '../util/business'
+
 import merge from '../util/merge'
 
 const TraderScreen = (props) =>
@@ -24,7 +26,7 @@ const TraderScreen = (props) =>
 // One alternative would be to encapsulate this and use `props.children` instead.
 const renderHeader = ({trader, hideModal, resetForm, goToLocation, modalOpen}) => () => {
   let goToTraderLocation
-  if (trader.address && trader.address.location) {
+  if (trader.address && trader.address.location && !isIncorrectLocation(trader.address.location)) {
     goToTraderLocation = () =>
       goToLocation(merge(trader.address.location, { latitudeDelta: 0.006, longitudeDelta: 0.006 }))
   }

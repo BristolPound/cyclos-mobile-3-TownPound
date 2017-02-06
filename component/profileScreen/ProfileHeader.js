@@ -6,7 +6,7 @@ import ProfileImage from '../profileImage/ProfileImage'
 import styles from './ProfileStyle'
 import merge from '../../util/merge'
 import MapMarker from '../searchTab/MapMarker'
-
+import { isIncorrectLocation } from '../../util/business'
 import  { CloseButton } from '../common/CloseButton'
 
 const closeButton = require('./../common/assets/Close.png')
@@ -51,7 +51,7 @@ const getMapRegion = (location) => ({
 })
 
 const renderBackground = (props) => {
-  if (props.address && props.address.location) {
+  if (props.address && props.address.location && !isIncorrectLocation(props.address.location)) {
     return (
       props.showMap
       ? <MapView style={styles.header.backgroundImage}
