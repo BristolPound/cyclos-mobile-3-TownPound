@@ -54,9 +54,17 @@ class SearchTab extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.selectedBusiness !== this.props.selectedBusiness
-        || nextProps.closestBusinesses !== this.props.closestBusinesses) {
-      this.state.componentListArray = this.createComponentListArray(nextProps).slice(0, listCroppedLength)
+    let mapMoved = false
+    nextProps.closestBusinesses.forEach((b, index) => {
+      if (!this.props.closestBusinesses[index] || b.id !== this.props.closestBusinesses[index].id) {
+        mapMoved = true
+      }
+    })
+    if (nextProps.selectedBusiness !== this.props.selectedBusiness || mapMoved) {
+      const componentListArray = this.createComponentListArray(nextProps)
+      this.state.componentListArray = this.listPosition
+        ? componentListArray.slice(0, listCroppedLength)
+        : componentListArray
     }
   }
 
