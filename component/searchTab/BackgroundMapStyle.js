@@ -1,11 +1,11 @@
 import { horizontalAbsolutePosition } from '../../util/StyleUtils'
-import { Dimensions } from 'react-native'
+import { mapHeight, mapOverflow } from '../../store/reducer/business'
 
 const style = {
   mapContainer: {
     ...horizontalAbsolutePosition(0, 0),
-    top: -80,
-    height: Dimensions.get('window').height + 120,
+    top: -1 * mapOverflow,
+    height: mapHeight,
   },
   map: {
     ...horizontalAbsolutePosition(0, 0),
@@ -25,7 +25,7 @@ const style = {
     ...horizontalAbsolutePosition(0, 0),
     flex: 1,
     alignItems: 'center',
-    paddingTop: 100,
+    paddingTop: 200,
     top: 0
   }
 }

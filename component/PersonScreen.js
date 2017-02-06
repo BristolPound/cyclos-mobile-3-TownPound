@@ -6,8 +6,8 @@ import * as actions from '../store/reducer/navigation'
 import ProfileHeader from './profileScreen/ProfileHeader'
 import TransactionList from './profileScreen/TransactionList'
 import { resetForm } from '../store/reducer/sendMoney'
-import BusinessDetails from './businessDetails/BusinessDetails'
 import { sectionHeight } from './SendMoney'
+import categories from '../util/categories'
 
 const PersonScreen = (props) =>
   <View style={{flex: 1}}>
@@ -21,26 +21,25 @@ const PersonScreen = (props) =>
 const renderHeader = ({ person, hideModal, resetForm }) => () =>
     <View style={{flex: 1}}>
       <ProfileHeader
-        name={person.name}
-        username={person.username}
+        name={person.display}
+        username={person.shortDisplay}
         image={person.image}
-        category={person.category}
+        category={categories.person}
         onPressClose={() => {hideModal(); resetForm()}}
         isModal={true} />
-        <BusinessDetails business={person}/>
     </View>
 
 
 // filter the transaction list to contain only those relating to this person
 const getTransactionsForSelectedPerson = (state) => {
   return state.transaction.transactions.filter(transaction => {
-    return transaction.relatedAccount.kind === 'user' && transaction.relatedAccount.user.id === state.person.selectedPersonId
+    return transaction.relatedAccount.kind === 'user' && transaction.relatedAccount.user.id === state.person.selectedPerson.id
   })
 }
 
 
 const mapStateToProps = (state) => ({
-  person: state.person.personList.find(p => p.id === state.person.selectedPersonId) || {},
+  person: state.person.selectedPerson,
   transactions: getTransactionsForSelectedPerson(state)
 })
 

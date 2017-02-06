@@ -9,7 +9,6 @@ import ScrollingExpandPanel from './ScrollingExpandPanel'
 import styles, { SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN, NEARBY_WIDTH, maxExpandedHeight } from './SearchTabStyle'
 import { ROW_HEIGHT, BUSINESS_LIST_SELECTED_GAP} from './BusinessListStyle'
 import * as actions from '../../store/reducer/business'
-import { openTraderModal } from '../../store/reducer/navigation'
 import { Overlay } from '../common/Overlay'
 import Search from './Search'
 import calculatePanelHeight from '../../util/calculatePanelHeight'
@@ -100,8 +99,6 @@ class SearchTab extends React.Component {
     return (
       <View style={{flex: 1}}>
         <BackgroundMap/>
-        { searchMode && <Overlay overlayVisible={true} onPress={exitSearchMode}/> }
-        <Search ref='search' {...this.props} outOfBoundsPress={(pageX) => this.searchBarPressed(pageX)}/>
         {!searchMode && <ScrollingExpandPanel ref={this.props.registerBusinessList}
             style={styles.searchTab.expandPanel}
             topOffset={this.calculateOffset([ expandedHeight, collapsedHeight, closedHeight ])}
@@ -119,6 +116,8 @@ class SearchTab extends React.Component {
                 componentForItem={ComponentForItem}
                 onPressItem={index => this.state.componentListArray[index].id && openTraderModal(this.state.componentListArray[index].id)} />
         </ScrollingExpandPanel>}
+        {searchMode && <Overlay overlayVisible={true} onPress={exitSearchMode}/>}
+        <Search ref='search' {...this.props} outOfBoundsPress={(pageX) => this.searchBarPressed(pageX)}/>
       </View>
     )
   }
@@ -133,6 +132,6 @@ const mapStateToProps = (state) => ({
   geolocationStatus: state.business.geolocationStatus
 })
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ openTraderModal, ...actions }, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({ ...actions }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchTab)

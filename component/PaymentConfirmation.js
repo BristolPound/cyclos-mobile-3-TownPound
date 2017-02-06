@@ -7,6 +7,7 @@ import { updatePage } from '../store/reducer/sendMoney'
 import style from './PaymentConfirmationStyle'
 import ProfileHeader from './profileScreen/ProfileHeader'
 import DefaultText from './DefaultText'
+import categories from '../util/categories'
 
 const PaymentConfirmation = (props) => {
 
@@ -22,7 +23,7 @@ const PaymentConfirmation = (props) => {
               name={props.payee.display}
               username={props.payee.shortDisplay}
               image={props.payee.image}
-              category={props.payee.category}
+              category={props.category}
               onPressClose={() => {props.closeConfirmation() && props.updatePage(0)}}
               isModal={true}
               paymentComplete={true} />
@@ -76,15 +77,26 @@ const renderSectionHeader = () =>
     </DefaultText>
   </View>
 
-const mapStateToProps = (state) => ({
-	payee: state.business.businessList.find(b => b.id === state.sendMoney.payeeId)
-    || state.person.personList.find(p => p.id === state.sendMoney.payeeId)
-    || {},
-	message: state.sendMoney.message,
-	amountPaid: state.sendMoney.amountPaid,
-  timestamp: state.sendMoney.timestamp,
-  transactionNumber: state.sendMoney.transactionNumber
-})
+const mapStateToProps = (state) => {
+  const businessPayee = state.business.businessList.find(b => b.id === state.sendMoney.payeeId)
+  let category
+  let payee = {}
+  if (businessPayee) {
+    category = categories.shop
+    payee = businessPayee
+  } else if (state.person.selectedPerson) {
+    category = categories.person
+    payee = state.person.selectedPerson
+  }
+  return {
+    payee,
+    category,
+    message: state.sendMoney.message,
+    amountPaid: state.sendMoney.amountPaid,
+    timestamp: state.sendMoney.timestamp,
+    transactionNumber: state.sendMoney.transactionNumber
+  }
+}
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators({ closeConfirmation, updatePage }, dispatch)

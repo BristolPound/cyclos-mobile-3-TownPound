@@ -1,14 +1,20 @@
 import React from 'react'
-import { View, Image } from 'react-native'
+import { View, Image, Dimensions } from 'react-native'
 import color from '../../util/colors'
 import DefaultText from '../DefaultText'
 
+const screenWidth = Dimensions.get('window').width,
+  screenHeight = Dimensions.get('window').height
+  
 const styles = {
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: color.offWhite
+    backgroundColor: color.offWhite,
+    width: screenWidth,
+    height: screenHeight,
+    position: 'absolute'
   },
   text: {
     color: color.gray4,
@@ -19,6 +25,7 @@ const styles = {
     marginBottom: 20
   }
 }
+
 
 export const emptyStateImage = {
   spending: 'spending',

@@ -2,6 +2,8 @@ import color from '../../util/colors'
 import commonStyle from '../style'
 import { dimensions, margin, border } from '../../util/StyleUtils'
 import { baselineDeltaForFonts } from '../DefaultText'
+import { Dimensions } from 'react-native'
+import { TAB_BAR_HEIGHT } from '../tabbar/TabBarStyle'
 
 const IMAGE_SIZE = 42
 const IMAGE_MARGIN = 14
@@ -60,6 +62,11 @@ const styles = {
         text: {
             color: color.gray3,
             textAlign: 'center'
+        },
+        outerContainer: {
+          flex: 1,
+          marginTop: 106,
+          height: Dimensions.get('window').height - 106 - TAB_BAR_HEIGHT
         }
     },
     sectionHeader: commonStyle.sectionHeader,
@@ -67,7 +74,8 @@ const styles = {
         carouselContainer: {
             ...commonStyle.minorShadow,
             backgroundColor: color.white,
-            height: 106
+            height: 106,
+            position: 'absolute',
         },
         monthlyOption: {
             fontFamily: commonStyle.font.museo500,
