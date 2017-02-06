@@ -1,7 +1,7 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { View, TextInput, TouchableOpacity, Dimensions, Animated, Image } from 'react-native'
+import { View, TextInput, TouchableOpacity, Dimensions, Animated, Image, Clipboard } from 'react-native'
 import KeyboardComponent from './KeyboardComponent'
 import * as actions from '../store/reducer/sendMoney'
 import { openLoginForm, LOGIN_STATUSES } from '../store/reducer/login'
@@ -20,6 +20,7 @@ const Page = {
   PaymentComplete: 3,
 }
 
+const tempClipboardString = ''
 const { width } = Dimensions.get('window')
 export const sectionHeight = 68
 
@@ -123,11 +124,24 @@ class SendMoney extends React.Component {
     super()
   }
 
+  setClipboardContent = async () => {
+    try {
+      tempClipboardString = await Clipboard.getString()
+    } catch (e) {
+      console.log(e)
+    } finally {
+      Clipboard.setString('')
+    }
+  }
+
   nextPage() {
     const nextPage = (this.props.inputPage + 1) % Object.keys(Page).length
     this.props.updatePage(nextPage)
     if (nextPage === Page.EnterAmount) {
+      this.setClipboardContent()
       this.props.setOverlayOpen(true)
+    } else if (nextPage === Page.MakingPayment) {
+      Clipboard.setString(tempClipboardString)
     }
   }
 
