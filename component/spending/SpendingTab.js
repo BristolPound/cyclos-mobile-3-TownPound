@@ -33,7 +33,7 @@ const getTransactionImage = (user, businessList) => {
 
 const renderRow = (transaction, openDetailsModal, businessList) =>
   <TouchableHighlight
-      onPress={() => transaction.relatedAccount.user && openDetailsModal(transaction.relatedAccount.user.id)}
+      onPress={() => transaction.relatedAccount.user && openDetailsModal(transaction.relatedAccount.user)}
       underlayColor={color.transparent}
       key={transaction.transactionNumber}>
     <View style={styles.row.container}>

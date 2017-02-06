@@ -8,7 +8,8 @@ import { addFailedAction } from './networkConnection'
 import { getBusinesses, getBusinessProfile } from '../../api/users'
 import { UNEXPECTED_DATA } from '../../api/apiError'
 import { ERROR_SEVERITY, unknownError, updateStatus } from './statusMessage'
-import { hideModal } from './navigation'
+import { showModal, modalState } from './navigation'
+import { updatePayee } from './sendMoney'
 
 const DEFAULT_COORDINATES = { latitude: 51.454513, longitude:  -2.58791 }
 
@@ -129,13 +130,13 @@ export const geolocationFailed = () => ({
 
 export const loadBusinessProfile = (businessId) => (dispatch) => {
   getBusinessProfile(businessId, dispatch)
-    .then(businessProfile => dispatch(businessProfileReceived(businessProfile)))
-    // if this request fails, the modal trader screen will continue to show a spinner
-    // but will be closeable
+    .then(businessProfile => {
+      dispatch(businessProfileReceived(businessProfile))
+      dispatch(showModal(modalState.traderScreen))
+      dispatch(updatePayee(businessId))
+    })
     .catch(err => {
-      dispatch(addFailedAction(loadBusinessProfile(businessId)))
       if (err.type === UNEXPECTED_DATA) {
-        dispatch(hideModal())
         dispatch(updateStatus('Business no longer exists', ERROR_SEVERITY.SEVERE))
         dispatch(loadBusinessList(true))
       } else {
@@ -144,13 +145,16 @@ export const loadBusinessProfile = (businessId) => (dispatch) => {
     })
 }
 
-export const selectAndLoadBusiness = (businessId) => (dispatch, getState) => {
+export const openTraderModal = (businessId) => (dispatch, getState) => {
   dispatch(selectBusinessForModal(businessId))
   // check to see whether we actually need to load the profile
   const businessList = getState().business.businessList
   const business = businessList.find(b => b.id === businessId)
   if (!business.profilePopulated && getState().networkConnection.status) {
     dispatch(loadBusinessProfile(businessId))
+  } else {
+    dispatch(showModal(modalState.traderScreen))
+    dispatch(updatePayee(businessId))
   }
 }
 
