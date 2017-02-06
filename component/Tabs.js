@@ -19,6 +19,7 @@ import color from '../util/colors'
 import { LOGIN_STATUSES } from '../store/reducer/login'
 import Modal from './Modal'
 import PaymentConfirmation from './PaymentConfirmation'
+import PLATFORM from '../util/Platforms'
 
 const style = {
   tabs: {
@@ -55,7 +56,7 @@ const Tabs = (props) =>
     <ScrollableTabView
         // On Android devices, when the keyboard is visible it pushes the entire
         // view upwards. In this instance we want to hide the tab bar
-        renderTabBar={() => props.dialogOpen ? <View style={style.hiddenTabBar}/> : <TabBar/>}
+        renderTabBar={() => (props.dialogOpen && props.modalVisible) ? <View style={style.hiddenTabBar}/> : <TabBar/>}
         tabBarPosition='bottom'
         initialPage={props.tabIndex}
         tabBarActiveTextColor={color.bristolBlue}
@@ -75,15 +76,17 @@ const Tabs = (props) =>
           : <LoginToView
               image={emptyStateImage.spending}
               lineOne='Log in to view'
-              lineTwo='your spending history'/> }
+              lineTwo='your spending history' /> 
+        }
       </WithNetworkConnection>
       <WithNetworkConnection tabLabel='Account'>
         { props.loggedIn
           ? <Account/>
           : <LoginToView
-              image={emptyStateImage.account}
-              lineOne='Log in to view'
-              lineTwo='your account details'/> }
+                  image={emptyStateImage.account}
+                  lineOne='Log in to view'
+                  lineTwo='your account details' /> 
+        }
       </WithNetworkConnection>
     </ScrollableTabView>
     <Modal visible={props.modalVisible} hideModal={!props.confirmationOpen && props.hideModal} modalOpened={props.modalOpened}>

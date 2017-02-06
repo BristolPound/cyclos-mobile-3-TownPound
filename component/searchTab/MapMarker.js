@@ -6,34 +6,34 @@ import DefaultText from '../DefaultText'
 
 const markerImage = require('./assets/Marker_alt.png')
 const selectedMarkerImage = require('./assets/selected_trader.png')
-const clusterImage18 = require('./assets/Cluster_18.png')
-const clusterImage22 = require('./assets/Cluster_22.png')
-const clusterImage26 = require('./assets/Cluster_26.png')
+const clusterOver4 = require('./assets/over4.png')
+const clusterOver9 = require('./assets/over9.png')
+const clusterOver99 = require('./assets/over99.png')
+
+const getClusterImage = (pointCount) => {
+  return pointCount > 99 
+    ? clusterOver99 
+    : ( pointCount > 9 
+        ? clusterOver9 
+        : clusterOver4
+      ) 
+}
 
 const MapMarker = ({ coordinate, selected, onPress, pointCount }) => {
   if (pointCount) {
-    const width = pointCount > 99 ? 34 : 24
-    let clusterImage = clusterImage18
-    let bottom = 0
-    let imageleftOffset = (width - 18) / 2
-    if (pointCount > 9) {
-      clusterImage = clusterImage22
-      imageleftOffset = (width - 22) / 2
-      bottom = -2
-    }
-    if (pointCount > 99) {
-      clusterImage = clusterImage26
-      imageleftOffset = (width - 26) / 2
-      bottom = -4
-    }
+    const marginTop = pointCount > 99 ? 4 : 1
+    const marginRight = pointCount < 10 ? 2 : 1
     return <Marker
         coordinate={coordinate}
         onPress={onPress}
         anchor={platform.isIOS() ? null : { x: 0.5, y: 0.5 }}>
-      <View style={{ alignItems: 'center', width }}>
-        <Image source={clusterImage} style={{ position: 'absolute', left: imageleftOffset }}/>
-        <DefaultText style={{ bottom, color: 'white', fontSize: 14 }}>{pointCount}</DefaultText>
-      </View>
+        <Image 
+          source={getClusterImage(pointCount)}
+          style={{ alignItems: 'flex-end', justifyContent: 'flex-start' }}>
+          <DefaultText style={{ color: 'white', fontSize: 14, marginRight, marginTop }}>
+            {pointCount}
+          </DefaultText>
+        </Image>
     </Marker>
   }
 

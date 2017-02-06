@@ -1,5 +1,6 @@
 import React from 'react'
 import { Image, View } from 'react-native'
+import categories from '../../util/categories'
 
 const layer = (src, style) => {
   if (src) {
@@ -18,10 +19,9 @@ const border = {
   offWhite: require('./assets/BorderOffWhite.png'),
 }
 
-const categoryImage = {
-  shop: require('./assets/shop.png'),
-  person: require('./assets/person.png'),
-}
+const categoryImage = { }
+categoryImage[categories.shop] = require('./assets/shop.png')
+categoryImage[categories.person] = require('./assets/person.png')
 
 const CustomImage = ({image, style, borderColor}) => {
   return (

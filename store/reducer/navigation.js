@@ -1,10 +1,10 @@
 import _ from 'lodash'
 import merge from '../../util/merge'
-import { selectAndLoadBusiness } from './business'
-import { selectAndLoadPerson } from './person'
+import { openTraderModal } from './business'
 import { LOGGED_OUT, LOGGED_IN } from './login'
-import { updateMapViewportAndSelectClosestTrader, updateSearchMode, moveMap } from './business'
+import { moveMap, updateSearchMode, selectClosestBusiness } from './business'
 import { updatePayee } from './sendMoney'
+import { selectPerson } from './person'
 
 export const modalState = {
   none: 'none',
@@ -66,37 +66,25 @@ export const closeConfirmation = () => ({
   type: 'navigation/CLOSE_CONFIRMATION'
 })
 
-export const openDetailsModal = id =>
-  (dispatch, getState) => {
-    // it is not possible to determine whether an id related to a trader (i.e. a BP user)
-    // or a contact from the transaction. As a result we have to look up the id in the business
-    // list in order to determine the type
-    if (_.some(getState().business.businessList, b => b.id === id)) {
-      dispatch(openTraderModal(id))
-    } else {
-      // Open Person screen
-      dispatch(openPersonModal(id))
-    }
-  }
-
-export const openTraderModal = businessId =>
-  (dispatch) => {
-    dispatch(selectAndLoadBusiness(businessId))
-    dispatch(showModal(modalState.traderScreen))
-    dispatch(updatePayee(businessId))
-  }
-
-export const openPersonModal = personId =>
-  (dispatch) => {
-    dispatch(selectAndLoadPerson(personId))
-    dispatch(showModal(modalState.personScreen))
-    dispatch(updatePayee(personId))
-  }
-
 export const showModal = (modalState) => ({
   type: 'navigation/SHOW_MODAL',
   modalState
 })
+
+export const openDetailsModal = (user) =>
+  (dispatch, getState) => {
+    // it is not possible to determine whether an id related to a trader (i.e. a BP user)
+    // or a contact from the transaction. As a result we have to look up the id in the business
+    // list in order to determine the type
+    if (_.some(getState().business.businessList, b => b.id === user.id)) {
+      dispatch(openTraderModal(user.id))
+    } else {
+      // Open Person screen
+      dispatch(selectPerson(user))
+      dispatch(showModal(modalState.personScreen))
+      dispatch(updatePayee(user.id))
+    }
+  }
 
 export const hideModal = () => ({
   type: 'navigation/HIDE_MODAL',
@@ -105,9 +93,9 @@ export const hideModal = () => ({
 export const goToLocation = (location) =>
   (dispatch) => {
     dispatch(updateSearchMode(false))
-    dispatch(updateMapViewportAndSelectClosestTrader(location))
+    dispatch(moveMap(location))
+    dispatch(selectClosestBusiness())
     dispatch(navigateToTab(0))
-    dispatch(moveMap())
     dispatch(hideModal())
   }
 
