@@ -19,6 +19,7 @@ import color from '../util/colors'
 import { LOGIN_STATUSES } from '../store/reducer/login'
 import Modal from './Modal'
 import PaymentConfirmation from './PaymentConfirmation'
+import PLATFORM from '../util/Platforms'
 
 const style = {
   tabs: {
@@ -72,18 +73,26 @@ const Tabs = (props) =>
       <WithNetworkConnection tabLabel='Spending'>
         { props.loggedIn
           ? <SpendingTab/>
-          : <LoginToView
-              image={emptyStateImage.spending}
-              lineOne='Log in to view'
-              lineTwo='your spending history'/> }
+          : ( props.dialogOpen && PLATFORM.isAndroid()
+              ? undefined
+              : <LoginToView
+                  image={emptyStateImage.spending}
+                  lineOne='Log in to view'
+                  lineTwo='your spending history' /> 
+            )
+        }
       </WithNetworkConnection>
       <WithNetworkConnection tabLabel='Account'>
         { props.loggedIn
           ? <Account/>
-          : <LoginToView
-              image={emptyStateImage.account}
-              lineOne='Log in to view'
-              lineTwo='your account details'/> }
+          : ( props.dialogOpen && PLATFORM.isAndroid()
+              ? undefined
+              : <LoginToView
+                  image={emptyStateImage.account}
+                  lineOne='Log in to view'
+                  lineTwo='your account details' /> 
+            )
+        }
       </WithNetworkConnection>
     </ScrollableTabView>
     <Modal visible={props.modalVisible} hideModal={!props.confirmationOpen && props.hideModal} modalOpened={props.modalOpened}>
