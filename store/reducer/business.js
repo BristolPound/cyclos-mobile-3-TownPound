@@ -219,6 +219,7 @@ const reducer = (state = initialState, action) => {
       let newViewport = merge(state.mapViewport, action.viewport) // action.viewport might only be partial (no deltas)
       // closestBusinesses is declared in the first switch case so we cannot define it here. Blame javascript!
       closestBusinesses = getClosestBusinesses(state.businessList, businessArea(centerViewportHigher(newViewport)))
+      state.businessListRef && state.businessListRef.scrollAndSlideTo(1)
       state = merge(state, {
         mapViewport: newViewport,
         closestBusinesses

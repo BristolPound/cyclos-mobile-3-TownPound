@@ -11,10 +11,13 @@ const DRAG_DISTANCE_TO_EXPAND = 1/3
 // At 1, there is no momentum at all.
 // Between these values, momentum is calculated as a combination of the last value calculated and the current speed of the finge
 // Maybe INERTIA should be 0, i.e. not exist. Feel free to remove
-const INERTIA = 1/2
+const INERTIA = 2/3
 
 // FRICTION determines how long the momentum will continue
 const FRICTION = 0.003
+
+// Velocity for automatic animations (px/ms)
+const DEFAULT_VELOCITY = 0.4
 
 class ScrollingExpandPanel extends React.Component {
   constructor(props) {
@@ -209,39 +212,48 @@ class ScrollingExpandPanel extends React.Component {
     return this.velocity * this.getDecelerationTime() / 2
   }
 
-  // Handle momentum for scrolling.
-  handleScrollMomentumRelease() {
-    const finalInnerTopOffset_unbounded = this.state.currentInnerTopOffset._value + this.getMomentumTravel()
-    const finalInnerTopOffset_bounded = _.clamp(finalInnerTopOffset_unbounded, -1 * this.calculateMaxScrollDistance(this.props), 0)
-    const remainder = finalInnerTopOffset_unbounded - finalInnerTopOffset_bounded
-    const newPosition = this.positionAfterMove(this.state.currentOuterTopOffset._value + remainder)
-    if (!newPosition) {
-      animateTo(
-        this.state.currentInnerTopOffset,
-        finalInnerTopOffset_bounded,
-        (finalInnerTopOffset_bounded - this.state.currentInnerTopOffset._value) / this.velocity
-      )
-    } else {
-      // TODO: This is still an approximation to the correct easing! Perhaps it would be better
-      // to allow currentInnerTopOffset to become positive here, then reset everything once the animation
-      // is complete. That way we would not have to use 'piecewise' easing
-      animateTo(
-        this.state.currentInnerTopOffset,
-        0,
-        Math.abs(this.state.currentInnerTopOffset._value / this.velocity),
-        Easing.linear,
-        () => this.animatePositionTo(1, () => this.props.onPositionChange && this.props.onPositionChange(1))
-      )
-    }
-  }
-
-  animatePositionTo(index, callback) {
+  slideTo(index) {
+    const velocity = this.velocity || DEFAULT_VELOCITY
     animateTo(
       this.state.currentOuterTopOffset,
       this.props.topOffset[index],
-      Math.abs(this.state.currentOuterTopOffset._value - this.props.topOffset[index]),
+      Math.abs((this.state.currentOuterTopOffset._value - this.props.topOffset[index]) / (2 * velocity)),
       undefined,
-      callback
+      () => this.props.onPositionChange && this.positionAtTouchStart !== index
+        && this.props.onPositionChange(index)
+    )
+  }
+
+  scrollTo(innerTopOffset) {
+    const velocity = this.velocity || DEFAULT_VELOCITY
+    animateTo(
+      this.state.currentInnerTopOffset,
+      innerTopOffset,
+      Math.abs((this.state.currentInnerTopOffset._value - innerTopOffset) / (2 * velocity))
+    )
+  }
+
+  scrollAndSlideTo(position, innerTopOffset = 0) {
+    // TODO: This is still an approximation to the correct easing! Perhaps it would be better
+    // to allow currentInnerTopOffset to become positive here, then reset everything once the animation
+    // is complete. That way we would not have to use 'piecewise' easing
+    const velocity = this.velocity || DEFAULT_VELOCITY
+    animateTo(
+      this.state.currentInnerTopOffset,
+      innerTopOffset,
+      Math.abs((this.state.currentInnerTopOffset._value - innerTopOffset) / velocity),
+      Easing.linear,
+      () => this.slideTo(position)
+    )
+  }
+
+  slideAndScrollTo(innerTopOffset) {
+    animateTo(
+      this.state.currentOuterTopOffset,
+      this.props.topOffset[0],
+      (this.props.topOffset[0] - this.state.currentOuterTopOffset._value) / this.velocity,
+      innerTopOffset ? Easing.linear : undefined,
+      () => this.scrollTo(innerTopOffset)
     )
   }
 
@@ -252,15 +264,19 @@ class ScrollingExpandPanel extends React.Component {
       this.velocity = 0
     }
 
-    // If scrolling, apply momentum to scroll
+    const finalTopOffset = this.state.currentInnerTopOffset._value + this.state.currentOuterTopOffset._value + this.getMomentumTravel()
+    const relativeFinalTopOffset = finalTopOffset - this.props.topOffset[0]
+    const finalInnerTopOffset = _.clamp(relativeFinalTopOffset, -1 * this.calculateMaxScrollDistance(this.props), 0)
+    const remainder = relativeFinalTopOffset - finalInnerTopOffset
+    const newPosition = this.positionAfterMove(remainder + this.props.topOffset[0])
     if (this.state.currentInnerTopOffset._value) {
-      this.handleScrollMomentumRelease()
-
-    } else { // slide back to expanded or collapsed position
-      const endPosition = this.state.currentOuterTopOffset._value + this.getMomentumTravel()
-      const positionAfterMove = this.positionAfterMove(endPosition)
-      this.animatePositionTo(positionAfterMove, () => this.props.onPositionChange && this.props.onPositionChange(positionAfterMove))
-      }
+      this.scrollAndSlideTo(newPosition, finalInnerTopOffset)
+    } else if (finalInnerTopOffset < -100
+      || (finalInnerTopOffset && finalInnerTopOffset === -1 * this.calculateMaxScrollDistance(this.props))) {
+      this.slideAndScrollTo(finalInnerTopOffset)
+    } else {
+      this.slideTo(newPosition)
+    }
 
     // cleanup
     this.resetVariablesToStationary()
