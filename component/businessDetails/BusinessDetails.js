@@ -48,7 +48,7 @@ function getFields(business, goToLocation) {
   //    access point*, special offer*, address, opening times*, phone number, email address
   // Note: access point and special offer aren't supported yet.
     business.address && fields.push(
-      businessDetail('addressField', require('./assets/Address.png'), addresses.toString(business.address), () => goToLocation(business.address.location))
+      businessDetail('addressField', require('./assets/Address.png'), addresses.toString(business.address), () => { goToLocation && goToLocation(business.address.location) })
     )
 
     business.businessphone && fields.push(
