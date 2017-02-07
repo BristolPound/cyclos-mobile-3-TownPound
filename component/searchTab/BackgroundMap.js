@@ -7,7 +7,7 @@ import _ from 'lodash'
 import supercluster from 'supercluster'
 import { MultilineText } from '../DefaultText'
 import * as actions from '../../store/reducer/business'
-import { shouldBeDisplayed } from '../../util/business'
+import { shouldBeDisplayed, isIncorrectLocation } from '../../util/business'
 import merge from '../../util/merge'
 import style from './BackgroundMapStyle'
 import MapMarker from './MapMarker'
@@ -140,11 +140,13 @@ class BackgroundMap extends React.Component {
         onPress = () => this.zoomToCluster(coordinate)
       }
 
-      return <MapMarker key={coordinate.latitude.toString()+coordinate.longitude.toString()}
-          selected={selected}
-          coordinate={coordinate}
-          onPress={onPress}
-          pointCount={properties.point_count}/>
+      return isIncorrectLocation(coordinate) 
+              ? undefined
+              : <MapMarker key={coordinate.latitude.toString()+coordinate.longitude.toString()}
+                  selected={selected}
+                  coordinate={coordinate}
+                  onPress={onPress}
+                  pointCount={properties.point_count}/>
     }
 
   renderBusinessMarker = (business, isSelected, onPress) => {

@@ -20,7 +20,7 @@ const Page = {
   PaymentComplete: 3,
 }
 
-const tempClipboardString = ''
+let tempClipboardString = ''
 const { width } = Dimensions.get('window')
 export const sectionHeight = 68
 
