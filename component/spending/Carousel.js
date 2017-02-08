@@ -1,7 +1,7 @@
 import React from 'react'
 import { Animated, PanResponder, View } from 'react-native'
-import animateTo from '../../util/animateTo'
 import _ from 'lodash'
+import animateTo from '../../util/animateTo'
 
 class Carousel extends React.Component {
   constructor(props) {

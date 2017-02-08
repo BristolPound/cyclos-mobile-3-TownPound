@@ -6,7 +6,7 @@ import haversine from 'haversine'
 import DefaultText from '../DefaultText'
 import BusinessListItem from './BusinessListItem'
 import { CloseButton } from '../common/CloseButton'
-import ScrollingExpandPanel from './ScrollingExpandPanel'
+import DraggableList from './DraggableList'
 import ComponentList from './ComponentList'
 
 import colors from '../../util/colors'
@@ -123,20 +123,20 @@ export default class Search extends React.Component {
       return (
         <View>
           { searchMode && (
-                  <ScrollingExpandPanel style={expandPanel}
+                  <DraggableList style={expandPanel}
                                         ref='ExpandPanel'
                                         topOffset={[ SEARCH_BAR_HEIGHT + SEARCH_BAR_MARGIN ]}
                                         expandedHeight={maxExpandedHeight}
                                         childrenHeight={childrenHeight}
                                         startPosition={0}
-                                        onPressRelease={hasMoved => componentList && componentList.handleRelease(hasMoved)}
-                                        onPressStart={location => componentList && componentList.highlightItem(location)}>
+                                        onTouchEnd={hasMoved => componentList && componentList.handleRelease(hasMoved)}
+                                        onTouchStart={location => componentList && componentList.highlightItem(location)}>
                       <ComponentList
                           ref='componentList'
                           items={componentListArray}
                           componentForItem={ComponentForItem}
                           onPressItem={index => componentListArray[index].id && this._businessListOnClick(componentListArray[index].id)} />
-                  </ScrollingExpandPanel>
+                  </DraggableList>
           )}
           <View style={searchBar}>
             <TouchableOpacity style={nearbyButton}
