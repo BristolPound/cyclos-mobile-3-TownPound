@@ -36,8 +36,9 @@ const TraderScreen = (props) => {
             address={props.trader.address}
             onPressClose={() => {props.hideModal(); resetForm()}}
             isModal={true}
-            showMap={props.modalOpen} />
-        <BusinessDetails business={props.trader} />
+            showMap={props.modalOpen}
+            goToLocation={() => goToTraderLocation()}/>
+        <BusinessDetails business={props.trader} goToLocation={() => goToTraderLocation()}/>
         <DefaultText></DefaultText> 
         <TransactionList
           listData={props.transactions} />

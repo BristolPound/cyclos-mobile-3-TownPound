@@ -5,10 +5,6 @@ import { View, Linking, Image, TouchableOpacity, Text } from 'react-native'
 import { MultilineText } from '../DefaultText'
 import addresses from '../../util/addresses'
 import styles from './BusinessDetailsStyle'
-import merge from '../../util/merge'
-import { goToLocation } from '../../store/reducer/navigation'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 
 const Field = ({icon, text, accessibilityLabel, onPress}) =>
   <View style={styles.field}>
@@ -44,8 +40,7 @@ const renderExpander = (expandDetailsFn) =>
   </View>
 
 const renderDescription = (description) => {
-  return (
-    description
+  description
       ? <View style={{ paddingTop: 12 }}>
           <View style={styles.separator}/>
           <View style={styles.description} accessibilityLabel='Business Description'>
@@ -53,11 +48,12 @@ const renderDescription = (description) => {
           </View>
         </View>
       : <View style={{ height: 12 }} />
-    )
 }
+  
 
 
-function getFields(business) {
+
+function getFields(business, goToLocation) {
   const fields = [],
       businessDetail = (key, icon, text, onPress) => ({ key, icon, text, onPress })
 
@@ -65,7 +61,7 @@ function getFields(business) {
   //    access point*, special offer*, address, opening times*, phone number, email address
   // Note: access point and special offer aren't supported yet.
     business.address && fields.push(
-      businessDetail('addressField', require('./assets/Address.png'), addresses.toString(business.address), () => goToLocation(merge(business.address.location, { latitudeDelta: 0.006, longitudeDelta: 0.006 })))
+      businessDetail('addressField', require('./assets/Address.png'), addresses.toString(business.address), goToLocation )
     )
 
     business.businessphone && fields.push(
@@ -80,12 +76,10 @@ function getFields(business) {
 }
 
 const renderExpandedDetails = (expandedFields, description) => {
-  return (
-      <View>
-        {renderFields(expandedFields)}
-        {renderDescription(description)}
-      </View>
-    )
+  <View>
+    {renderFields(expandedFields)}
+    {renderDescription(description)}
+  </View>
 }
 
 
@@ -100,7 +94,7 @@ class BusinessDetails extends React.Component {
   }
 
   render() {
-    const fields = getFields(this.props.business)
+    const fields = getFields(this.props.business, this.props.goToLocation)
     let expandedFields = []
 
     if(fields.length > 2) {
@@ -123,7 +117,4 @@ class BusinessDetails extends React.Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ goToLocation }, dispatch)
-
-export default connect(mapDispatchToProps)(BusinessDetails)
+export default BusinessDetails
