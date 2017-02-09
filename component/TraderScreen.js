@@ -10,6 +10,7 @@ import { sectionHeight } from './SendMoney'
 import { resetForm } from '../store/reducer/sendMoney'
 import { goToLocation } from '../store/reducer/navigation'
 import { isIncorrectLocation } from '../util/business'
+import DefaultText, { MultilineText } from './DefaultText'
 
 import merge from '../util/merge'
 
@@ -38,6 +39,7 @@ const TraderScreen = (props) => {
             showMap={props.modalOpen}
             goToLocation={goToTraderLocation}/>
         <BusinessDetails business={props.trader} goToLocation={goToTraderLocation}/>
+        <DefaultText></DefaultText>
         <TransactionList
           listData={props.transactions} />
         </ScrollView>
