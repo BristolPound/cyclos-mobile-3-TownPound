@@ -5,6 +5,10 @@ import { View, Linking, Image, TouchableOpacity, Text } from 'react-native'
 import { MultilineText } from '../DefaultText'
 import addresses from '../../util/addresses'
 import styles from './BusinessDetailsStyle'
+import merge from '../../util/merge'
+import { goToLocation } from '../../store/reducer/navigation'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 
 const Field = ({icon, text, accessibilityLabel, onPress}) =>
   <View style={styles.field}>
@@ -53,7 +57,7 @@ const renderDescription = (description) => {
 }
 
 
-function getFields(business, goToLocation) {
+function getFields(business) {
   const fields = [],
       businessDetail = (key, icon, text, onPress) => ({ key, icon, text, onPress })
 
@@ -61,7 +65,7 @@ function getFields(business, goToLocation) {
   //    access point*, special offer*, address, opening times*, phone number, email address
   // Note: access point and special offer aren't supported yet.
     business.address && fields.push(
-      businessDetail('addressField', require('./assets/Address.png'), addresses.toString(business.address), () => { goToLocation && goToLocation(business.address.location) })
+      businessDetail('addressField', require('./assets/Address.png'), addresses.toString(business.address), () => goToLocation(merge(business.address.location, { latitudeDelta: 0.006, longitudeDelta: 0.006 })))
     )
 
     business.businessphone && fields.push(
@@ -96,7 +100,7 @@ class BusinessDetails extends React.Component {
   }
 
   render() {
-    const fields = getFields(this.props.business, this.props.goToLocation)
+    const fields = getFields(this.props.business)
     let expandedFields = []
 
     if(fields.length > 2) {
@@ -119,4 +123,7 @@ class BusinessDetails extends React.Component {
   }
 }
 
-export default BusinessDetails
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators({ goToLocation }, dispatch)
+
+export default connect(mapDispatchToProps)(BusinessDetails)

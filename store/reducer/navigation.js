@@ -32,6 +32,7 @@ const initialState = {
 
 export const navigateToTab = (tabIndex) =>
   (dispatch, getState) => {
+    console.log('navigating')
     const { businessListRef } = getState().business
     businessListRef && businessListRef.resetToInitalState()
 
