@@ -15,17 +15,15 @@ const Field = ({icon, text, accessibilityLabel, onPress}) =>
   </View>
 
 const renderFields = (fields) =>
-  (fields.length > 0)
-  ? <View>
-      {fields.map((field) => (
-        // 'key' is magic so isn't passed down into the method.
-        // Hence define a duplicate accessibilityLabel.
-        field
-          ? <Field {...field} accessibilityLabel={field.key}/>
-          : null
-      ))}
-    </View>
-  : null
+  <View>
+    {fields.map((field) => (
+      // 'key' is magic so isn't passed down into the method.
+      // Hence define a duplicate accessibilityLabel.
+      field
+        ? <Field {...field} accessibilityLabel={field.key}/>
+        : null
+    ))}
+  </View>
 
 function renderExpander(expandDetailsFn) {
   return <View style={{paddingTop: 12}}>
@@ -73,7 +71,7 @@ function renderDescription(description) {
             <HTMLView value={description.replace(/\\n/g, '')} onLinkPress={url => Linking.openURL(url)}/>
           </View>
         </View>
-      : <View style={{ height: 12 }} />
+      : null
   )
 }
 
