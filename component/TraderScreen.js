@@ -10,10 +10,11 @@ import { sectionHeight } from './SendMoney'
 import { resetForm } from '../store/reducer/sendMoney'
 import { goToLocation } from '../store/reducer/navigation'
 import { isIncorrectLocation } from '../util/business'
-import DefaultText, { MultilineText } from './DefaultText'
+import DefaultText from './DefaultText'
 
 import merge from '../util/merge'
 
+// empty defaultText is needed so the transaction list doesn't disappear on expand details
 const TraderScreen = (props) => {
   let goToTraderLocation
   if (props.trader.address && props.trader.address.location && !isIncorrectLocation(props.trader.address.location)) {
@@ -23,7 +24,6 @@ const TraderScreen = (props) => {
       goToLocation(region)
     }
   }
-  console.log(goToTraderLocation)
   return (
     <View style={{flex: 1}}>
       <View style={{maxHeight: Dimensions.get('window').height - sectionHeight}}>
@@ -36,10 +36,9 @@ const TraderScreen = (props) => {
             address={props.trader.address}
             onPressClose={() => {props.hideModal(); resetForm()}}
             isModal={true}
-            showMap={props.modalOpen}
-            goToLocation={goToTraderLocation}/>
-        <BusinessDetails business={props.trader} goToLocation={goToTraderLocation}/>
-        <DefaultText></DefaultText>
+            showMap={props.modalOpen} />
+        <BusinessDetails business={props.trader} />
+        <DefaultText></DefaultText> 
         <TransactionList
           listData={props.transactions} />
         </ScrollView>
