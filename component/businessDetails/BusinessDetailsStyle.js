@@ -5,6 +5,7 @@ import colors from '../../util/colors'
 
 const styles = {
   description: {
+    flex: 1,
     ...margin(18, 24, 0, 24)
   },
   separator: {
@@ -14,18 +15,16 @@ const styles = {
     ...margin(18, 24, 0, 24),
     flexDirection: 'row',
     paddingTop: 1,
-    backgroundColor: colors.white,
+    backgroundColor: colors.transparent,
   },
   image: {
     ...dimensions(18, 20),
     marginRight: 16
   },
   item: {
-    flexDirection: 'column',
-    flex: 1
+    flexDirection: 'column'
   },
   text: {
-    flex: 1,
     fontSize: 16,
     color: colors.gray,
     flexWrap: 'wrap'

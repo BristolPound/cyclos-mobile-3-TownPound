@@ -36,8 +36,6 @@ const renderButtonBar = (props) => {
   return (
     <View style={styles.header.buttonBar}>
       {renderCloseButton(props.onPressClose)}
-      {renderCloseButton(props.onPressClose)}
-      {props.address && props.address.location && renderExpandButton(props.goToLocation)}
       {props.address && props.address.location && renderExpandButton(props.goToLocation)}
     </View>
   )
@@ -77,6 +75,7 @@ const renderBackground = (props) => {
 }
 
 const ProfileHeader = (props) => {
+
   const getSubtitleStyle = () => {
     return props.paymentComplete ? styles.header.subtitle : merge(styles.header.subtitle, {marginBottom: 46})
   }

@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { View, Dimensions } from 'react-native'
+import { View, Dimensions, ScrollView } from 'react-native'
 import * as actions from '../store/reducer/navigation'
 import TransactionList from './profileScreen/TransactionList'
 import ProfileHeader from './profileScreen/ProfileHeader'
@@ -13,41 +13,38 @@ import { isIncorrectLocation } from '../util/business'
 
 import merge from '../util/merge'
 
-const TraderScreen = (props) =>
-  <View style={{flex: 1}}>
-    <View style={{flex: 1, maxHeight: Dimensions.get('window').height - sectionHeight}}>
-    <TransactionList
-      renderHeader={renderHeader(props)}
-      listData={props.transactions} />
-    </View>
-  </View>
-
-// Currently we pass in returned renderHeader as we delegate to a listView.
-// One alternative would be to encapsulate this and use `props.children` instead.
-const renderHeader = ({trader, hideModal, resetForm, goToLocation, modalOpen}) => () => {
+const TraderScreen = (props) => {
   let goToTraderLocation
-  if (trader.address && trader.address.location && !isIncorrectLocation(trader.address.location)) {
-    goToTraderLocation = () =>
-      goToLocation(merge(trader.address.location, { latitudeDelta: 0.006, longitudeDelta: 0.006 }))
+  if (props.trader.address && props.trader.address.location && !isIncorrectLocation(props.trader.address.location)) {
+    goToTraderLocation = () => {
+      const region = merge(props.trader.address.location, { latitudeDelta: 0.006, longitudeDelta: 0.006 })
+      console.log(region)
+      goToLocation(region)
+    }
   }
+  console.log(goToTraderLocation)
   return (
     <View style={{flex: 1}}>
-      <ProfileHeader
-        name={trader.display}
-        username={trader.shortDisplay}
-        image={trader.image}
-        category={trader.category}
-        address={trader.address}
-        onPressClose={() => {hideModal(); resetForm()}}
-        isModal={true}
-        showMap={modalOpen}
-        goToLocation={goToTraderLocation}/>
-        <BusinessDetails business={trader} goToLocation={goToTraderLocation}/>
+      <View style={{maxHeight: Dimensions.get('window').height - sectionHeight}}>
+      <ScrollView>
+        <ProfileHeader
+            name={props.trader.display}
+            username={props.trader.shortDisplay}
+            image={props.trader.image}
+            category={props.trader.category}
+            address={props.trader.address}
+            onPressClose={() => {props.hideModal(); resetForm()}}
+            isModal={true}
+            showMap={props.modalOpen}
+            goToLocation={goToTraderLocation}/>
+        <BusinessDetails business={props.trader} goToLocation={goToTraderLocation}/>
+        <TransactionList
+          listData={props.transactions} />
+        </ScrollView>
+      </View>
     </View>
   )
 }
-
-
 
 const getTransactionsForSelectedBusiness = (state) => {
   return state.transaction.transactions.filter(transaction => {

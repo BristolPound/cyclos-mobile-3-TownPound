@@ -29,15 +29,12 @@ export default class TransactionList extends Component {
 
   render() {
     return (
-      <ListView
-        ref={(ref) => this.listViewRef = ref}
-        renderHeader={this.props.renderHeader}
-        dataSource={this.state.dataSource}
-        renderRow={this.props.renderRow || TransactionItem}
-        renderSectionHeader={renderSectionHeader}
-        removeClippedSubviews={false}
-        initialListSize={12}
-        decelerationRate='fast' />
+        <ListView
+          ref={(ref) => this.listViewRef = ref}
+          dataSource={this.state.dataSource}
+          renderRow={this.props.renderRow || TransactionItem}
+          renderSectionHeader={renderSectionHeader}
+          removeClippedSubviews={false} />
     )
   }
 }
