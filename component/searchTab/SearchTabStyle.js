@@ -3,7 +3,7 @@ import { Dimensions } from 'react-native'
 import platform from '../../util/Platforms'
 import color from '../../util/colors'
 import commonStyle from '../style'
-import { dimensions, margin, padding, horizontalAbsolutePosition } from '../../util/StyleUtils'
+import { dimensions, margin, padding } from '../../util/StyleUtils'
 import { isScreenSmall, screenHeight } from '../../util/ScreenSizes'
 import { TAB_BAR_HEIGHT } from '../tabbar/TabBarStyle'
 
@@ -20,9 +20,8 @@ export const maxCollapsedHeight = 45/100 * screenHeight - TAB_BAR_HEIGHT
 const styles = {
   searchTab: {
     expandPanel: {
-      ...horizontalAbsolutePosition(MARGIN_SIZE, MARGIN_SIZE),
-      // zIndex is needed for overflow: hidden on android, but breaks shadow on iOS
-      zIndex: platform.isIOS() ? undefined : 100
+      left: MARGIN_SIZE,
+      right: MARGIN_SIZE,
     },
     searchBar: {
       ...margin(SEARCH_BAR_MARGIN, MARGIN_SIZE, 0, MARGIN_SIZE),
