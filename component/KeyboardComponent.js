@@ -13,6 +13,8 @@ import animateTo from '../util/animateTo'
  *  * React design philosophy is to favour composition over inheritance.  Alternative solutions include a separate
  *  resizing component to sit below the component we wish to continue to display.
  */
+
+ // For some reason works for login but not for SendMoney
 class KeyboardComponent extends React.Component {
   constructor() {
     super()
@@ -37,15 +39,12 @@ class KeyboardComponent extends React.Component {
   }
 
   keyboardDidShow(e) {
-    animateTo(this.state.keyboardHeight, e.endCoordinates.height, 300)
+    animateTo(this.state.keyboardHeight, e.endCoordinates.height, 300, undefined, () => this.props.setOverlayOpen && this.props.setOverlayOpen(true))
     this.keyboardOpen = true
   }
 
   keyboardDidHide() {
-    if (this.keyboardOpen) {
-      animateTo(this.state.keyboardHeight, 0, 300)
-      this.keyboardOpen = false
-    }
+    // Do nothing as this is too slow to trigger anyway
   }
 }
 

@@ -12,6 +12,7 @@ import { setOverlayOpen } from '../store/reducer/navigation'
 import { dimensions, border } from '../util/StyleUtils'
 import commonStyle from './style'
 import Price from './Price'
+import animateTo from '../util/animateTo'
 
 const Page = {
   Ready: 0,
@@ -80,10 +81,9 @@ class InputComponent extends KeyboardComponent {
     return this.getButtonColor() === color.offWhite ? 'black' : 'white'
   }
 
-  // To fix issue #636
   componentWillReceiveProps(nextProps) {
-    if (nextProps.accessibilityLabel === 'Payment complete') {
-      this.keyboardDidHide()
+    if (nextProps.accessibilityLabel !== 'Enter Amount') {
+      animateTo(this.state.keyboardHeight, 0, 50)
     }
   }
 
@@ -96,7 +96,7 @@ class InputComponent extends KeyboardComponent {
       </DefaultText>
     </View>
 
-    return <Animated.View style={{backgroundColor: 'white', bottom: input ? this.state.keyboardHeight : 0}} accessibilityLabel={accessibilityLabel}>
+    return <Animated.View style={{backgroundColor: 'white', bottom: this.state.keyboardHeight}} accessibilityLabel={accessibilityLabel}>
 
       {accessibilityLabel === 'Payment complete'
         ? button
@@ -139,7 +139,6 @@ class SendMoney extends React.Component {
     this.props.updatePage(nextPage)
     if (nextPage === Page.EnterAmount) {
       this.setClipboardContent()
-      this.props.setOverlayOpen(true)
     } else if (nextPage === Page.MakingPayment) {
       Clipboard.setString(tempClipboardString)
     }
@@ -226,7 +225,7 @@ class SendMoney extends React.Component {
       }
     }
 
-    return <InputComponent {...inputProps} />
+    return <InputComponent {...inputProps} setOverlayOpen={this.props.setOverlayOpen} />
   }
 }
 
