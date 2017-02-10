@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Dimensions } from 'react-native'
+import { View, Dimensions, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from '../store/reducer/navigation'
@@ -12,6 +12,7 @@ import categories from '../util/categories'
 const PersonScreen = (props) =>
   <View style={{flex: 1}}>
     <View style={{flex: 1, maxHeight: Dimensions.get('window').height - sectionHeight}}>
+    <ScrollView>
       <ProfileHeader
         name={props.person.display}
         username={props.person.shortDisplay}
@@ -21,6 +22,7 @@ const PersonScreen = (props) =>
         isModal={true} />
       <TransactionList
         listData={props.transactions} />
+      </ScrollView>
     </View>
   </View>
 
