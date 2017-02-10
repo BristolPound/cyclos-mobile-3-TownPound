@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Dimensions } from 'react-native'
+import { View, Dimensions, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from '../store/reducer/navigation'
@@ -12,22 +12,19 @@ import categories from '../util/categories'
 const PersonScreen = (props) =>
   <View style={{flex: 1}}>
     <View style={{flex: 1, maxHeight: Dimensions.get('window').height - sectionHeight}}>
+    <ScrollView>
+      <ProfileHeader
+        name={props.person.display}
+        username={props.person.shortDisplay}
+        image={props.person.image}
+        category={categories.person}
+        onPressClose={() => {props.hideModal(); props.resetForm()}}
+        isModal={true} />
       <TransactionList
-        renderHeader={renderHeader(props)}
         listData={props.transactions} />
+      </ScrollView>
     </View>
   </View>
-
-const renderHeader = ({ person, hideModal, resetForm }) => () =>
-    <View style={{flex: 1}}>
-      <ProfileHeader
-        name={person.display}
-        username={person.shortDisplay}
-        image={person.image}
-        category={categories.person}
-        onPressClose={() => {hideModal(); resetForm()}}
-        isModal={true} />
-    </View>
 
 
 // filter the transaction list to contain only those relating to this person

@@ -25,20 +25,35 @@ const renderFields = (fields) =>
     ))}
   </View>
 
-function renderExpander(expandDetailsFn) {
-  return <View style={{paddingTop: 12}}>
-            <View style={styles.separator}/>
-            <TouchableOpacity
-              onPress={expandDetailsFn}
-              accessiblityLabel='View Full Details'>
-              <View>
-                <Text style={styles.minorButtonText}>VIEW DETAILS</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-}
+const renderExpander = (expandDetailsFn) => 
+  <View style={{paddingTop: 12}}>
+    <View style={styles.separator}/>
+    <TouchableOpacity
+      onPress={expandDetailsFn}
+      accessiblityLabel='View Full Details'>
+      <View>
+        <Text style={styles.minorButtonText}>VIEW DETAILS</Text>
+      </View>
+    </TouchableOpacity>
+  </View>
 
-function getFields(business, goToLocation) {
+const renderDescription = (description) => {
+  return (
+    description
+      ? <View style={{ paddingTop: 12 }}>
+          <View style={styles.separator}/>
+          <View style={styles.description} accessibilityLabel='Business Description'>
+            <HTMLView value={description.replace(/\\n/g, '')} onLinkPress={url => Linking.openURL(url)} />
+          </View>
+        </View>
+      : null
+    )
+}
+  
+
+
+
+function getFields(business, goToTraderLocation) {
   const fields = [],
       businessDetail = (key, icon, text, onPress) => ({ key, icon, text, onPress })
 
@@ -46,7 +61,7 @@ function getFields(business, goToLocation) {
   //    access point*, special offer*, address, opening times*, phone number, email address
   // Note: access point and special offer aren't supported yet.
     business.address && fields.push(
-      businessDetail('addressField', require('./assets/Address.png'), addresses.toString(business.address), () => { goToLocation && goToLocation(business.address.location) })
+      businessDetail('addressField', require('./assets/Address.png'), addresses.toString(business.address), goToTraderLocation )
     )
 
     business.businessphone && fields.push(
@@ -60,20 +75,15 @@ function getFields(business, goToLocation) {
   return fields
 }
 
-// In theory the explicit onLinkPress is unnecessary, but the default onLinkPress handling fails with
-// 'this._validateURL is not a function'
-function renderDescription(description) {
+const renderExpandedDetails = (expandedFields, description) => {
   return (
-    description
-      ? <View style={{ paddingTop: 12 }}>
-          <View style={styles.separator}/>
-          <View style={styles.description} accessibilityLabel='Business Description'>
-            <HTMLView value={description.replace(/\\n/g, '')} onLinkPress={url => Linking.openURL(url)}/>
-          </View>
-        </View>
-      : null
-  )
+      <View>
+        {renderFields(expandedFields)}
+        {renderDescription(description)}
+      </View>
+    )
 }
+
 
 class BusinessDetails extends React.Component {
   constructor(props) {
@@ -81,38 +91,31 @@ class BusinessDetails extends React.Component {
     this.state = { isExpanded: props.isExpanded }
   }
 
-  renderExpandedDetails(fields, description) {
-    let expanded = null
-    if (this.state.isExpanded) {
-      const expandedFields = (fields.length > 2) ?
-        fields.slice(2) : []
-      expanded =
-        <View style={{marginBottom: 18}}>
-          {renderFields(expandedFields)}
-          {renderDescription(description)}
-        </View>
-    } else if (fields.length > 2 || description) {
-      // there are details that could be expanded.
-      expanded = renderExpander(() => this.expandDetails())
-    }
-    // else no details to expand.
-    return expanded
-  }
-
   expandDetails() {
     this.setState({isExpanded: true})
   }
 
   render() {
-    const fields = getFields(this.props.business, this.props.goToLocation)
-    const expanded = this.renderExpandedDetails(fields, this.props.business.description)
-    if (fields.length > 2) {
+    const fields = getFields(this.props.business, this.props.goToTraderLocation)
+    let expandedFields = []
+
+    if(fields.length > 2) {
+      expandedFields = fields.slice(2)
       fields.length = 2
     }
-    return <View style={fields.length > 1 ? styles.moreDetails : styles.addressOnly}>
+
+    return (
+      <View style={fields.length > 1 ? styles.moreDetails : styles.addressOnly}>
         {renderFields(fields)}
-        {expanded}
-    </View>
+        {this.state.isExpanded 
+          ? renderExpandedDetails(expandedFields, this.props.business.description)
+          : ((fields.length > 2 || this.props.business.description)
+              ? renderExpander(() => this.expandDetails())
+              : undefined
+            )
+        }
+      </View>
+    )
   }
 }
 
