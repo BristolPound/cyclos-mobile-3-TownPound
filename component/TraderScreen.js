@@ -24,7 +24,6 @@ const TraderScreen = (props) => {
     }
   }
   return (
-    <View style={{flex: 1}}>
       <View style={{maxHeight: Dimensions.get('window').height - sectionHeight}}>
       <ScrollView>
         <ProfileHeader
@@ -33,17 +32,16 @@ const TraderScreen = (props) => {
             image={props.trader.image}
             category={props.trader.category}
             address={props.trader.address}
-            onPressClose={() => {props.hideModal(); resetForm()}}
+            onPressClose={() => {props.hideModal(); props.resetForm()}}
             isModal={true}
             showMap={props.modalOpen}
             goToLocation={() => goToTraderLocation()}/>
         <BusinessDetails business={props.trader} goToLocation={() => goToTraderLocation()}/>
-        <DefaultText></DefaultText> 
+        <DefaultText style={{height: 0}}></DefaultText> 
         <TransactionList
           listData={props.transactions} />
         </ScrollView>
       </View>
-    </View>
   )
 }
 
