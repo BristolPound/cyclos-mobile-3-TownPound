@@ -75,22 +75,22 @@ export const sendTransaction = () =>
       })
       .catch(err => {
         if (err.type === UNAUTHORIZED_ACCESS) {
-            dispatch(transactionComplete(false, 'Session expired', 0, null))
+            dispatch(transactionComplete(false, 'Session expired', 0, null, null))
             dispatch(logout())
         } else if (err.type === UNEXPECTED_ERROR) {
           err.response.json()
             .then(json => {
               if (json && json.code === 'dailyAmountExceeded') {
-                dispatch(transactionComplete(false, 'Daily amount has been exceeded.', 0, null))
+                dispatch(transactionComplete(false, 'Daily amount has been exceeded.', 0, null, null))
               } else if (json && json.code === 'insufficientBalance') {
-                dispatch(transactionComplete(false, 'Insufficient balance.', 0, null))
+                dispatch(transactionComplete(false, 'Insufficient balance.', 0, null, null))
               } else {
-                dispatch(transactionComplete(false, 'Error on sending transaction.', 0, null))
+                dispatch(transactionComplete(false, 'Error on sending transaction.', 0, null, null))
               }
             })
-            .catch(() => dispatch(transactionComplete(false, 'Error on sending transaction.', 0, null)))
+            .catch(() => dispatch(transactionComplete(false, 'Error on sending transaction.', 0, null, null)))
         } else {
-          dispatch(transactionComplete(false, 'Error on sending transaction.'))
+          dispatch(transactionComplete(false, 'Error on sending transaction.', 0, null, null))
         }
       })
   }

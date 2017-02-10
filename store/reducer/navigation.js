@@ -138,7 +138,7 @@ const reducer = (state = initialState, action) => {
     case 'sendMoney/TRANSACTION_COMPLETE':
       state = merge(state, {
         overlayVisible: false,
-        confirmationOpen: true,
+        confirmationOpen: action.success,
       })
       break
     case 'login/LOGIN_IN_PROGRESS':
