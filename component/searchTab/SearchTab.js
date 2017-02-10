@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux'
 import BackgroundMap from './BackgroundMap'
 import ComponentList from './ComponentList'
 import BusinessListItem, { SelectedBusiness } from './BusinessListItem'
-import ScrollingExpandPanel from './ScrollingExpandPanel'
+import DraggableList from './DraggableList'
 import styles, { SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN, maxExpandedHeight } from './SearchTabStyle'
 import { ROW_HEIGHT, BUSINESS_LIST_SELECTED_GAP} from './BusinessListStyle'
 import * as actions from '../../store/reducer/business'
@@ -92,12 +92,12 @@ class SearchTab extends React.Component {
     return (
       <View style={{flex: 1}}>
         <BackgroundMap />
-        {!searchMode && <ScrollingExpandPanel ref={this.props.registerBusinessList}
+        {!searchMode && <DraggableList ref={this.props.registerBusinessList}
             style={styles.searchTab.expandPanel}
             topOffset={this.calculateOffset([ expandedHeight, collapsedHeight, closedHeight ])}
             expandedHeight={expandedHeight}
-            onPressRelease={hasMoved => componentList && componentList.handleRelease(hasMoved)}
-            onPressStart={location => componentList && componentList.highlightItem(location)}
+            onTouchEnd={hasMoved => componentList && componentList.handleRelease(hasMoved)}
+            onTouchStart={location => componentList && componentList.highlightItem(location)}
             onMove={() => componentList && componentList.handleRelease(true)}
             childrenHeight={childrenHeight + BUSINESS_LIST_SELECTED_GAP}
             startPosition={1}
@@ -107,7 +107,7 @@ class SearchTab extends React.Component {
                 items={this.state.componentListArray}
                 componentForItem={ComponentForItem}
                 onPressItem={index => this.state.componentListArray[index].id && openTraderModal(this.state.componentListArray[index].id)} />
-        </ScrollingExpandPanel>}
+        </DraggableList>}
         {searchMode && <Overlay overlayVisible={true} onPress={() => updateSearchMode(false)} />}
         <Search {...this.props} />
       </View>

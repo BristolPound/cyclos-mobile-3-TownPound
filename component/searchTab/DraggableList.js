@@ -1,5 +1,5 @@
 import React from 'react'
-import { Animated, Easing } from 'react-native'
+import { Animated, Easing, Platform } from 'react-native'
 import _ from 'lodash'
 import animateTo from '../../util/animateTo'
 
@@ -19,7 +19,7 @@ const FRICTION = 0.003
 // Velocity for automatic animations (px/ms)
 const DEFAULT_VELOCITY = 0.4
 
-class ScrollingExpandPanel extends React.Component {
+class DraggableList extends React.Component {
   constructor(props) {
     super()
     this.resetToInitalState(props)
@@ -79,7 +79,11 @@ class ScrollingExpandPanel extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.expandedHeight !== this.props.expandedHeight) {
       const targetLocation = nextProps.topOffset[this.getPosition()]
-      animateTo(this.state.currentOuterTopOffset, targetLocation, 200)
+      animateTo(
+        this.state.currentOuterTopOffset,
+        targetLocation,
+        Math.abs(targetLocation - this.state.currentOuterTopOffset._value) * 2 / DEFAULT_VELOCITY
+      )
     }
   }
 
@@ -87,7 +91,7 @@ class ScrollingExpandPanel extends React.Component {
     for (let i = 0; i < this.props.topOffset.length - 1; i++) {
       if (this.state.currentOuterTopOffset._value < (this.props.topOffset[i] + this.props.topOffset[i+1]) / 2) {
         return i
-  }
+      }
     }
     return this.props.topOffset.length - 1
   }
@@ -100,7 +104,7 @@ class ScrollingExpandPanel extends React.Component {
 
     this.positionAtTouchStart = this.getPosition()
 
-    this.props.onPressStart && this.props.onPressStart(this.startTouchY - this.innerTopOffsetAtTouchStart - this.outerTopOffsetAtTouchStart)
+    this.props.onTouchStart && this.props.onTouchStart(this.startTouchY - this.innerTopOffsetAtTouchStart - this.outerTopOffsetAtTouchStart)
 
     // if there is an ongoing animation, stop it
     this.setState({
@@ -212,6 +216,12 @@ class ScrollingExpandPanel extends React.Component {
     return this.velocity * this.getDecelerationTime() / 2
   }
 
+  updatePosition(index) {
+    if (index !== this.positionAtTouchStart && this.props.onPositionChange) {
+      this.props.onPositionChange(index)
+    }
+  }
+
   slideTo(index) {
     const velocity = this.velocity || DEFAULT_VELOCITY
     animateTo(
@@ -219,8 +229,7 @@ class ScrollingExpandPanel extends React.Component {
       this.props.topOffset[index],
       Math.abs((this.state.currentOuterTopOffset._value - this.props.topOffset[index]) / (2 * velocity)),
       undefined,
-      () => this.props.onPositionChange && this.positionAtTouchStart !== index
-        && this.props.onPositionChange(index)
+      () => this.updatePosition(index)
     )
   }
 
@@ -253,12 +262,15 @@ class ScrollingExpandPanel extends React.Component {
       this.props.topOffset[0],
       (this.props.topOffset[0] - this.state.currentOuterTopOffset._value) / this.velocity,
       innerTopOffset ? Easing.linear : undefined,
-      () => this.scrollTo(innerTopOffset)
+      () => {
+        this.updatePosition(0)
+        this.scrollTo(innerTopOffset)
+      }
     )
   }
 
   responderRelease() {
-    this.props.onPressRelease && this.props.onPressRelease(this.hasMoved)
+    this.props.onTouchEnd && this.props.onTouchEnd(this.hasMoved)
 
     if (Date.now() - this.timeAtLastPosition > 150) {
       this.velocity = 0
@@ -287,6 +299,9 @@ class ScrollingExpandPanel extends React.Component {
       <Animated.View style={{
             top: this.state.currentOuterTopOffset,
             overflow: 'hidden',
+            position: 'absolute',
+            // zIndex is needed for overflow: hidden on android, but breaks shadow on iOS
+            zIndex: Platform.OS === 'ios' ? undefined : 100,
             ...this.props.style
           }}
           onStartShouldSetResponder={() => true}
@@ -302,4 +317,4 @@ class ScrollingExpandPanel extends React.Component {
   }
 }
 
-export default ScrollingExpandPanel
+export default DraggableList
