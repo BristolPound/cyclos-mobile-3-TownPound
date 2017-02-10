@@ -23,7 +23,7 @@ class BackgroundMap extends React.Component {
     this.state = ({ loading: true, markerArray: [] })
     this.forceRegion = merge(props.forceRegion)
     this.currentRegion = merge(props.forceRegion)
-    this.supercluster = supercluster({})
+    this.supercluster = supercluster({ radius: 60 })
     this.mapRef = null
   }
 
@@ -140,7 +140,7 @@ class BackgroundMap extends React.Component {
         onPress = () => this.zoomToCluster(coordinate)
       }
 
-      return isIncorrectLocation(coordinate) 
+      return isIncorrectLocation(coordinate)
               ? undefined
               : <MapMarker key={coordinate.latitude.toString()+coordinate.longitude.toString()}
                   selected={selected}
