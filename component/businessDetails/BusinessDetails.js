@@ -40,7 +40,8 @@ const renderExpander = (expandDetailsFn) =>
   </View>
 
 const renderDescription = (description) => {
-  description
+  return (
+    description
       ? <View style={{ paddingTop: 12 }}>
           <View style={styles.separator}/>
           <View style={styles.description} accessibilityLabel='Business Description'>
@@ -48,6 +49,7 @@ const renderDescription = (description) => {
           </View>
         </View>
       : <View style={{ height: 12 }} />
+    )
 }
   
 
@@ -76,10 +78,12 @@ function getFields(business, goToLocation) {
 }
 
 const renderExpandedDetails = (expandedFields, description) => {
-  <View>
-    {renderFields(expandedFields)}
-    {renderDescription(description)}
-  </View>
+  return (
+      <View>
+        {renderFields(expandedFields)}
+        {renderDescription(description)}
+      </View>
+    )
 }
 
 
