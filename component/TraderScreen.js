@@ -20,8 +20,7 @@ const TraderScreen = (props) => {
   if (props.trader.address && props.trader.address.location && !isIncorrectLocation(props.trader.address.location)) {
     goToTraderLocation = () => {
       const region = merge(props.trader.address.location, { latitudeDelta: 0.006, longitudeDelta: 0.006 })
-      console.log(region)
-      goToLocation(region)
+      props.goToLocation(region)
     }
   }
   return (
