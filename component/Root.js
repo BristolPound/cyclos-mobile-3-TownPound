@@ -38,7 +38,7 @@ const Root = (props) => {
           barStyle={props.mainComponent === mainComponent.returningLogin ? 'light-content' : 'dark-content'}/>
       {bodyComponent}
       <LoginOverlay/>
-      {props.modalOpen ? <SendMoney /> : undefined}
+      {props.modalOpen && !props.loginFormOpen ? <SendMoney /> : undefined}
       <Login hideUsernameInput={props.mainComponent === mainComponent.returningLogin}/>
       <StatusMessage/>
     </View>
@@ -46,7 +46,8 @@ const Root = (props) => {
 }
 
 const mapStateToProps = (state) => ({
-    ...state.navigation
+    ...state.navigation,
+    loginFormOpen: state.login.loginFormOpen,
 })
 
 export default connect(mapStateToProps)(Root)
