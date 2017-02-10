@@ -16,8 +16,7 @@ const PaymentConfirmation = (props) => {
     const priceAfterDecimal = !isNaN(priceComponents[1]) ? priceComponents[1] : '--'
 
     return (
-      props.message
-      ? <View style={style.container}>
+      <View style={style.container}>
         	<ScrollView contentContainerStyle={style.innerContainer}>
             <ProfileHeader
               name={props.payee.display}
@@ -31,7 +30,6 @@ const PaymentConfirmation = (props) => {
             {renderDetails(props.transactionNumber, props.timestamp)}
           </ScrollView>
         </View>
-      : null
     )
 }
 
