@@ -134,11 +134,9 @@ const reducer = (state = initialState, action) => {
       break
     case 'navigation/OVERLAY_VISIBLE':
       if (action.value === false) {
-        if ( state.inputPage === Page.EnterAmount && state.amount == '' ) {
-          state = merge(state, {
-            inputPage: Page.Ready
-          })
-        }
+        state = merge(state, {
+          inputPage: Page.Ready
+        })
       }
       break
     case 'navigation/SHOW_MODAL':
