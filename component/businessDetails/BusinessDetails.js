@@ -53,7 +53,7 @@ const renderDescription = (description) => {
 
 
 
-function getFields(business, goToLocation) {
+function getFields(business, goToTraderLocation) {
   const fields = [],
       businessDetail = (key, icon, text, onPress) => ({ key, icon, text, onPress })
 
@@ -61,7 +61,7 @@ function getFields(business, goToLocation) {
   //    access point*, special offer*, address, opening times*, phone number, email address
   // Note: access point and special offer aren't supported yet.
     business.address && fields.push(
-      businessDetail('addressField', require('./assets/Address.png'), addresses.toString(business.address), goToLocation )
+      businessDetail('addressField', require('./assets/Address.png'), addresses.toString(business.address), goToTraderLocation )
     )
 
     business.businessphone && fields.push(
@@ -96,7 +96,7 @@ class BusinessDetails extends React.Component {
   }
 
   render() {
-    const fields = getFields(this.props.business, this.props.goToLocation)
+    const fields = getFields(this.props.business, this.props.goToTraderLocation)
     let expandedFields = []
 
     if(fields.length > 2) {

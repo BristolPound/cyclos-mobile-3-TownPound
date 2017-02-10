@@ -18,11 +18,11 @@ const screenWidth = Dimensions.get('window').width,
 const renderCloseButton = (onPress) =>
   <CloseButton style={styles.header.closeButton} onPress={onPress} closeButtonType={closeButton} size={70}/>
 
-const renderExpandButton = (goToLocation) => {
-  if (!goToLocation) {
+const renderExpandButton = (goToTraderLocation) => {
+  if (!goToTraderLocation) {
     return undefined
   }
-  return <TouchableOpacity onPress={goToLocation} style={styles.header.expandButton}>
+  return <TouchableOpacity onPress={goToTraderLocation} style={styles.header.expandButton}>
     <Image source={expandIcon} style={styles.header.expandIcon}/>
   </TouchableOpacity>
 }
@@ -36,7 +36,7 @@ const renderButtonBar = (props) => {
   return (
     <View style={styles.header.buttonBar}>
       {renderCloseButton(props.onPressClose)}
-      {props.address && props.address.location && renderExpandButton(props.goToLocation)}
+      {props.address && props.address.location && renderExpandButton(props.goToTraderLocation)}
     </View>
   )
 }
@@ -61,7 +61,7 @@ const renderBackground = (props) => {
             pitchEnabled={false}
             scrollEnabled={false}
             zoomEnabled={false}
-            onPress={props.goToLocation}>
+            onPress={props.goToTraderLocation}>
           <MapMarker key='marker' coordinate={props.address.location} selected={true} />
         </MapView>
       : <View style={styles.header.backgroundImage} />

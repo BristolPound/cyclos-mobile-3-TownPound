@@ -34,7 +34,9 @@ export default class TransactionList extends Component {
           dataSource={this.state.dataSource}
           renderRow={this.props.renderRow || TransactionItem}
           renderSectionHeader={renderSectionHeader}
-          removeClippedSubviews={false} />
+          removeClippedSubviews={false}     
+         initialListSize={12}    
+         decelerationRate='fast'/>
     )
   }
 }
