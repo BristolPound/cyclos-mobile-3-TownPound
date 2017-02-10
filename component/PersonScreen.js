@@ -18,7 +18,7 @@ const PersonScreen = (props) =>
         username={props.person.shortDisplay}
         image={props.person.image}
         category={categories.person}
-        onPressClose={() => {props.hideModal(); resetForm()}}
+        onPressClose={() => {props.hideModal(); props.resetForm()}}
         isModal={true} />
       <TransactionList
         listData={props.transactions} />
