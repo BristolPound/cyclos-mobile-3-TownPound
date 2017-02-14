@@ -9,6 +9,7 @@ import { openLoginForm } from '../../store/reducer/login'
 import { showModal, modalState } from '../../store/reducer/navigation'
 import { LOGIN_STATUSES } from '../../store/reducer/login'
 import style from './TabBarStyle'
+import Config from 'react-native-config'
 
 // NOTE - The image URLs must be known statically
 // see: https://facebook.github.io/react-native/docs/images.html
@@ -32,6 +33,8 @@ const TABS = [
     )
 ]
 
+const isDevMode = Config.FLAVOUR === 'dev'
+
 const TabBar = (props) => 
   <View style={style.tabBar}>
     {TABS.map((tab, index) =>
@@ -39,7 +42,7 @@ const TabBar = (props) =>
         <TouchableOpacity
             style={style.iconContainer}
             onPress={() => props.goToPage(index)}
-            onLongPress={() => props.showModal(modalState.developerOptions)}
+            onLongPress={() => {isDevMode && props.showModal(modalState.developerOptions)}}
             accessibilityLabel={tab.label}>
           <Image source={props.tabIndex === index ? tab.active : tab.inactive}/>
         </TouchableOpacity>
