@@ -19,7 +19,6 @@ import color from '../util/colors'
 import { LOGIN_STATUSES } from '../store/reducer/login'
 import Modal from './Modal'
 import PaymentConfirmation from './PaymentConfirmation'
-import PLATFORM from '../util/Platforms'
 
 const style = {
   tabs: {
