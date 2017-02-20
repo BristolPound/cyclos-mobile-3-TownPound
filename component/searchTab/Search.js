@@ -105,7 +105,7 @@ export default class Search extends React.Component {
       }
       const coloredList = addColorCodes(list)
       const makePressable = (itemProps) => ({...itemProps, pressable: true})
-      const array = [ `${matches} TRADER MATCHES`, ...coloredList.map(makePressable) ]
+      const array = this.state.input == null ? [ ...coloredList.map(makePressable) ] : [ `${matches} TRADER MATCHES`, ...coloredList.map(makePressable) ]
       if (cropped) {
         array.push(`${matches - MAX_LIST_LENGTH} ADDITIONAL RESULTS NOT DISPLAYED`)
       }
