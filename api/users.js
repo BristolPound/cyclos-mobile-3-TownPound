@@ -31,7 +31,7 @@ export const getBusinesses = (dispatch) =>
       return results.map(business => merge(business, {
         display: business.display || business.name,
         shortDisplay: parseShortDisplay(business.shortDisplay || business.username),
-        category: 'shop', // hardcoded pending database set up of categories.
+        category: 'shop' // hardcoded pending database set up of categories.
       }))
     }
     return []

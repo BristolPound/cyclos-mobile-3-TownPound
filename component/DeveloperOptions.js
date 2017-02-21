@@ -38,7 +38,7 @@ const style = {
     },
     action: {
       fontSize: ACTION_FONT_SIZE
-    },
+    }
   }
 }
 
@@ -92,40 +92,40 @@ const DeveloperOptions = props => {
 
   const infoRows = {
     'App State': [
-      { label: 'Businesses: ', value: props.store.businessCount, accessibilityLabel: 'Business Count',},
-      { label: 'Business List Timestamp: ', value: `${props.store.businessTimestamp}`, accessibilityLabel: 'Business Timestamp',},
-      { label: 'Transactions: ', value: props.store.transactionCount, accessibilityLabel: 'Transaction Count',},
-      { label: 'Server: ', value: props.store.server, accessibilityLabel: 'Server',},
-    ],
+      { label: 'Businesses: ', value: props.store.businessCount, accessibilityLabel: 'Business Count'},
+      { label: 'Business List Timestamp: ', value: `${props.store.businessTimestamp}`, accessibilityLabel: 'Business Timestamp'},
+      { label: 'Transactions: ', value: props.store.transactionCount, accessibilityLabel: 'Transaction Count'},
+      { label: 'Server: ', value: props.store.server, accessibilityLabel: 'Server'}
+    ]
   }
   const actionRows = {
     'Developer Actions': [{
         text: 'Clear All Business Data',
         onPress: () => props.resetBusinesses(),
-        accessibilityLabel: 'Clear Businesses',
+        accessibilityLabel: 'Clear Businesses'
       },
       {
         text: 'Load Business Data',
         onPress: () => props.loadBusinessList(),
-        accessibilityLabel: 'Load Businesses',
+        accessibilityLabel: 'Load Businesses'
       },
       {
         text: 'Clear All Transaction Data',
         onPress: () => props.resetTransactions(),
         disabled: props.loadingTransactions,
-        accessibilityLabel: 'Clear Transactions',
+        accessibilityLabel: 'Clear Transactions'
       },
       {
         text: 'Load Transaction Data',
         onPress: () => props.loadTransactions(),
         disabled: props.loadingTransactions || !props.loggedIn,
-        accessibilityLabel: 'Load Transactions',
+        accessibilityLabel: 'Load Transactions'
       },
       {
         text: 'Switch Server To ' +
           (props.store.server === SERVER.STAGE ? 'Dev' : 'Stage'),
         onPress: () => props.selectServer(props.store.server === SERVER.STAGE ? 'DEV' : 'STAGE'),
-        accessibilityLabel: 'Switch Server',
+        accessibilityLabel: 'Switch Server'
       },
       {
         text: 'Corrupt session token',

@@ -57,7 +57,7 @@ export const getPages = (config) => {
   let {pageSize, url, params, dispatch, successCriteria, pageNo = 0} = config
   params = merge(params, { page: pageNo })
 
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     get(url, params, dispatch)
       .then(results => {
         if (results.length < pageSize || successCriteria === undefined || successCriteria(results, pageNo)) {

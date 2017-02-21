@@ -25,11 +25,11 @@ const style = {
 }
 
 class DefaultText extends Component {
-  setNativeProps(nativeProps) {
+  setNativeProps (nativeProps) {
     this._root.setNativeProps(nativeProps)
   }
 
-  render(){
+  render () {
     const newStyle = merge(style, this.props.style)
     const defaultProps = {
       numberOfLines: 1,
@@ -46,11 +46,11 @@ class DefaultText extends Component {
 }
 
 export class MultilineText extends Component {
-  setNativeProps(nativeProps) {
+  setNativeProps (nativeProps) {
     this._root.setNativeProps(nativeProps)
   }
 
-  render() {
+  render () {
     const newStyle = merge(style, this.props.style)
     return (
       <Text {...this.props}
@@ -67,7 +67,7 @@ export const HyperlinkText = ({text, link, style}) =>
     onPress={() => Linking.openURL(link)}>
     <DefaultText style={{
       textDecorationLine: 'underline',
-      ...style,
+      ...style
     }}>
       {text}
     </DefaultText>

@@ -12,7 +12,7 @@ const style = {
 		height: Dimensions.get('window').height - sectionHeight
   },
 	innerContainer: {
-		justifyContent: 'space-between',
+		justifyContent: 'space-between'
   },
 	buttonContainer: {
       height: sectionHeight,
