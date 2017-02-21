@@ -96,7 +96,7 @@ class InputComponent extends KeyboardComponent {
       </DefaultText>
     </View>
 
-    return <Animated.View style={{backgroundColor: 'white', bottom: this.state.keyboardHeight}} accessibilityLabel={accessibilityLabel}>
+    return <Animated.View style={{backgroundColor: 'white', bottom: accessibilityLabel !== 'Enter Amount' ? 0 : this.state.keyboardHeight }} accessibilityLabel={accessibilityLabel}>
 
       {accessibilityLabel === 'Payment complete'
         ? button
