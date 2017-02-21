@@ -24,7 +24,7 @@ const Root = (props) => {
     bodyComponent = <ReturningLogin />
   } else if (props.mainComponent === mainComponent.onboarding) {
     bodyComponent = <Onboarding />
-  } else if (props.mainComponent === mainComponent.tabs){
+  } else if (props.mainComponent === mainComponent.tabs) {
     bodyComponent = <Tabs />
   } else {
     throw new Error('Invalid navigation state')
@@ -47,7 +47,7 @@ const Root = (props) => {
 
 const mapStateToProps = (state) => ({
     ...state.navigation,
-    loginFormOpen: state.login.loginFormOpen,
+    loginFormOpen: state.login.loginFormOpen
 })
 
 export default connect(mapStateToProps)(Root)

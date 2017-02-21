@@ -50,7 +50,7 @@ const WithNetworkConnection = (props) =>
     <NetworkConnection/>
   </View>
 
-const Tabs = (props) => 
+const Tabs = (props) =>
   <View style={style.flex}>
     <ScrollableTabView
         // On Android devices, when the keyboard is visible it pushes the entire
@@ -75,7 +75,7 @@ const Tabs = (props) =>
           : <LoginToView
               image={emptyStateImage.spending}
               lineOne='Log in to view'
-              lineTwo='your spending history' /> 
+              lineTwo='your spending history' />
         }
       </WithNetworkConnection>
       <WithNetworkConnection tabLabel='Account'>
@@ -84,7 +84,7 @@ const Tabs = (props) =>
           : <LoginToView
                   image={emptyStateImage.account}
                   lineOne='Log in to view'
-                  lineTwo='your account details' /> 
+                  lineTwo='your account details' />
         }
       </WithNetworkConnection>
     </ScrollableTabView>
@@ -107,7 +107,7 @@ const mapStateToProps = (state) => ({
   status: state.status,
   dialogOpen: state.login.loginFormOpen,
   online: state.networkConnection.status,
-  confirmationOpen: state.navigation.confirmationOpen,
+  confirmationOpen: state.navigation.confirmationOpen
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tabs)
