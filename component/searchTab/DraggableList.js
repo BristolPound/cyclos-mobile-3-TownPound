@@ -294,7 +294,17 @@ class DraggableList extends React.Component {
     this.resetVariablesToStationary()
   }
 
+  resetPosition(props) {
+    this.setState({
+      currentOuterTopOffset: new Animated.Value(props.topOffset[props.startPosition]),
+      currentInnerTopOffset: new Animated.Value(0),
+    })
+  }
+
   render() {
+    if (!this.state.currentOuterTopOffset._value) {
+      this.resetPosition(this.props)
+    }
     return (
       <Animated.View style={{
             top: this.state.currentOuterTopOffset,
