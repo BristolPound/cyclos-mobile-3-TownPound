@@ -23,7 +23,7 @@ const Price = ({prefix, price, color, size, style, center}) => {
   return (
     <View style={merge(style, {justifyContent: alignSelf, flexDirection: 'row'})}>
       <DefaultText style={{
-          fontFamily: commonStyle.font.museo500,
+          fontFamily: commonStyle.font.museo300,
           fontSize: smallFontSize,
           alignSelf,
           marginBottom: marginBottom,
@@ -31,14 +31,14 @@ const Price = ({prefix, price, color, size, style, center}) => {
         {prefix}
       </DefaultText>
       <DefaultText style={{
-          fontFamily: commonStyle.font.museo500,
+          fontFamily: commonStyle.font.museo300,
           fontSize: size,
           alignSelf,
           color}}>
         {priceBeforeDecimal}
       </DefaultText>
       <DefaultText style={{
-          fontFamily: commonStyle.font.museo300,
+          fontFamily: commonStyle.font.museo100,
           fontSize: smallFontSize,
           alignSelf: 'flex-end',
           marginBottom: marginBottom,
