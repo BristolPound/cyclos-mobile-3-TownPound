@@ -23,7 +23,7 @@ const style = {
     backgroundColor: '#e2e3e6'
   },
   amountContainer: {
-    width: 142,
+    width: 148,
     backgroundColor: '#f4f4f4',
     flexDirection: 'row',
     justifyContent: 'flex-end'
