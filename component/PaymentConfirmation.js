@@ -57,8 +57,8 @@ const renderDetails = (transactionNumber, timestamp) =>
     {renderRow('Reference:', transactionNumber, true)}
     <View style={style.separator} />
     <View style={style.detailsInnerContainer}>
-      {renderRow('Date:', getDateOrTime(timestamp, 0), false)}
-      {renderRow('Time:', getDateOrTime(timestamp, 1), false)}
+      {timestamp && renderRow('Date:', getDateOrTime(timestamp, 0), false)}
+      {timestamp && renderRow('Time:', getDateOrTime(timestamp, 1), false)}
     </View>
   </View>
 
