@@ -19,6 +19,10 @@ const styles = {
     fontSize: 24,
     textAlign: 'center'
   },
+  loginAttemptLeftText: {
+    fontSize: 18,
+    fontStyle: 'italic'
+  },
   input: {
     height: 68,
     fontSize: 20,

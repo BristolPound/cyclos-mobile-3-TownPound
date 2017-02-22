@@ -51,11 +51,12 @@ class Login extends KeyboardComponent {
 
   render() {
     let loginButtonText = 'Log in'
+    let attemptsLeft = ''
     const { hideUsernameInput, failedAttempts } = this.props
     const failuresForUsername = failedAttempts.find(attempt => attempt.username === this.state.username)
     if (failuresForUsername) {
       const remainingAttempts = 3 - failuresForUsername.noOfFails
-      loginButtonText += ` (${remainingAttempts} attempt${remainingAttempts === 1 ? '' : 's'} remaining)`
+      attemptsLeft = ` (${remainingAttempts} attempt${remainingAttempts === 1 ? '' : 's'} remaining)`
     }
     const loginView = (
       <Animated.View style={merge(styles.outerContainer, { bottom: this.state.keyboardHeight })}>
@@ -65,6 +66,12 @@ class Login extends KeyboardComponent {
               onPress={() => detailsValid(this.state.username, this.state.password) && this.login()}>
             <DefaultText style={{ ...styles.loginButtonText, color: detailsValid(this.state.username, this.state.password) ? 'white' : 'black' }}>
               {loginButtonText}
+              {failuresForUsername ? 
+                <DefaultText style={{ ...styles.loginAttemptLeftText, color: detailsValid(this.state.username, this.state.password) ? 'white' : 'black' }}>
+                  {attemptsLeft}
+                </DefaultText>
+                : undefined
+              }
             </DefaultText>
           </TouchableOpacity>
           <TextInput style={styles.input}
