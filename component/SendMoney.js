@@ -17,8 +17,9 @@ import animateTo from '../util/animateTo'
 const Page = {
   Ready: 0,
   EnterAmount: 1,
-  MakingPayment: 2,
-  PaymentComplete: 3
+  ConfirmAmount: 2,
+  MakingPayment: 3,
+  PaymentComplete: 4
 }
 
 let tempClipboardString = ''
@@ -88,7 +89,7 @@ class InputComponent extends KeyboardComponent {
   }
 
   render () {
-    let { onButtonPress, buttonText, input, invalidInput, accessibilityLabel, balance } = this.props
+    let { onButtonPress, buttonText, input, invalidInput, accessibilityLabel, balance, amount, onChangeAmount } = this.props
 
     const button = <View style={merge(styles.button, { backgroundColor: this.getButtonColor() })}>
       <DefaultText style={{fontSize: 24, color: this.getButtonTextColor(), textAlign: 'center', width: Dimensions.get('window').width - 20}}>
@@ -113,6 +114,14 @@ class InputComponent extends KeyboardComponent {
             <BalanceMessage balance={balance}/>
           </View>
         : undefined}
+      {amount
+        ? <TouchableOpacity onPress={onChangeAmount} style={merge(styles.button, { backgroundColor: color.offWhite })}>
+            <DefaultText style={{fontSize: 24, color: 'black', textAlign: 'center', width: Dimensions.get('window').width - 20}}>
+              {amount}
+            </DefaultText>
+          </TouchableOpacity>
+          : undefined
+      }
 
     </Animated.View>
   }
@@ -143,11 +152,15 @@ class SendMoney extends React.Component {
     }
   }
 
+  prevPage () {
+    this.props.updatePage(Page.EnterAmount)
+  }
+
   componentDidUpdate (prevProps) {
     if (this.props.payeeId !== prevProps.payeeId) {
       this.props.updateAmount('')
       this.props.updatePage(Page.Ready)
-    } else if (prevProps.loading && !this.props.loading && this.props.inputPage === 2) {
+    } else if (prevProps.loading && !this.props.loading && this.props.inputPage === Page.MakingPayment) {
       this.nextPage()
     } else if (prevProps.inputPage === Page.MakingPayment
       && this.props.inputPage === Page.PaymentComplete
@@ -190,7 +203,7 @@ class SendMoney extends React.Component {
           case Page.EnterAmount: // provide amount
             inputProps = {
               buttonText: 'Pay ' + this.props.payee.display,
-              onButtonPress: () => { this.props.sendTransaction(); this.nextPage() },
+              onButtonPress: () => { this.nextPage() },
               input: {
                 keyboardType: 'numeric',
                 value: this.props.amount,
@@ -200,6 +213,15 @@ class SendMoney extends React.Component {
               invalidInput: this.isInputInvalid(),
               accessibilityLabel: 'Enter Amount',
               balance: this.props.balance
+            }
+            break
+          case Page.ConfirmAmount: // provide amount
+            inputProps = {
+              buttonText: 'Confirm',
+              onButtonPress: () => { this.props.sendTransaction(); this.nextPage() },
+              amount: this.props.amount,
+              onChangeAmount: () => { this.prevPage() },
+              accessibilityLabel: 'Confirm Amount'
             }
             break
           case Page.MakingPayment: // in progress
