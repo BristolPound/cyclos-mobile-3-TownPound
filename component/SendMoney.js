@@ -184,6 +184,10 @@ class SendMoney extends React.Component {
   render () {
     let inputProps
 
+    if (this.props.resetClipboard) {
+      Clipboard.setString(tempClipboardString)
+    }
+
     if (this.props.connection) {
       if (this.props.inputPage === Page.PaymentComplete) {
         inputProps = {
