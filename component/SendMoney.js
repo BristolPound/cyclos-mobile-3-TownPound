@@ -144,7 +144,6 @@ class SendMoney extends React.Component {
 
   nextPage () {
     const nextPage = (this.props.inputPage + 1) % Object.keys(Page).length
-    console.log(nextPage)
     this.props.updatePage(nextPage)
     if (nextPage === Page.EnterAmount) {
       this.setClipboardContent()
