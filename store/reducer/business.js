@@ -24,7 +24,7 @@ const { height, width } = Dimensions.get('window')
 export const mapHeight = height + 95
 const mapWidth = width
 
-const MapViewport = {
+export const MapViewport = {
     ...DEFAULT_COORDINATES,
     longitudeDelta: 0.006,
     latitudeDelta: 0.006 * mapHeight / (mapWidth * longitudePerLatitude),

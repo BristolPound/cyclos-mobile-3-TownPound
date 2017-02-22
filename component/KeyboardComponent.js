@@ -16,13 +16,13 @@ import animateTo from '../util/animateTo'
 
  // For some reason works for login but not for SendMoney
 class KeyboardComponent extends React.Component {
-  constructor() {
+  constructor () {
     super()
     this.keyboardOpen = false
     this.state = { keyboardHeight: new Animated.Value(0) }
   }
 
-  componentWillMount() {
+  componentWillMount () {
     // On iOS the keyboard is overlaid on top of the content,
     // while on android everything is moved up to make space
     if (PLATFORM.isIOS()) {
@@ -31,19 +31,19 @@ class KeyboardComponent extends React.Component {
     }
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     if (PLATFORM.isIOS()) {
       this.keyboardShowListener.remove()
       this.keyboardHideListener.remove()
     }
   }
 
-  keyboardDidShow(e) {
+  keyboardDidShow (e) {
     animateTo(this.state.keyboardHeight, e.endCoordinates.height, 300, undefined, () => this.props.setOverlayOpen && this.props.setOverlayOpen(true))
     this.keyboardOpen = true
   }
 
-  keyboardDidHide() {
+  keyboardDidHide () {
     // Do nothing as this is too slow to trigger anyway
   }
 }

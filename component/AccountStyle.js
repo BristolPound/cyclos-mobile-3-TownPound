@@ -44,7 +44,7 @@ const styles = {
   },
   gradient: {
     ...StyleSheet.absoluteFillObject
-  },
+  }
 }
 
 export default styles
