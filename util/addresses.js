@@ -9,7 +9,7 @@
  *   https://bristol.cyclos.org/bristolpoundsandbox03/api#!/Addresses/viewAddress
  */
 
-function addressToString(address) {
+function addressToString (address) {
   return [address.addressLine1, address.addressLine2, address.zip]
     .filter(a => a)
     .join(', ')

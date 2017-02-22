@@ -9,5 +9,5 @@ export default {
     IOS: PLATFORM_IOS,
     ANDROID: PLATFORM_ANDROID,
     isIOS: isIOS,
-    isAndroid: isAndroid,
+    isAndroid: isAndroid
 }

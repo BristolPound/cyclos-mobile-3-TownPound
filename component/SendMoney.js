@@ -18,7 +18,7 @@ const Page = {
   Ready: 0,
   EnterAmount: 1,
   MakingPayment: 2,
-  PaymentComplete: 3,
+  PaymentComplete: 3
 }
 
 let tempClipboardString = ''
@@ -30,7 +30,7 @@ const styles = {
     height: sectionHeight,
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'row',
+    flexDirection: 'row'
   },
   textInput: {
     ...dimensions(width, sectionHeight),
@@ -42,7 +42,7 @@ const styles = {
     backgroundColor: color.offWhite,
     height: 46,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   priceContainer: {
     flex: 1,
@@ -70,24 +70,24 @@ const BalanceMessage = ({ balance }) => {
 }
 
 class InputComponent extends KeyboardComponent {
-  getButtonColor() {
+  getButtonColor () {
     if (this.props.invalidInput) {
       return color.offWhite
     }
     return color.bristolBlue
   }
 
-  getButtonTextColor() {
+  getButtonTextColor () {
     return this.getButtonColor() === color.offWhite ? 'black' : 'white'
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps (nextProps) {
     if (nextProps.accessibilityLabel !== 'Enter Amount') {
       animateTo(this.state.keyboardHeight, 0, 50)
     }
   }
 
-  render() {
+  render () {
     let { onButtonPress, buttonText, input, invalidInput, accessibilityLabel, balance } = this.props
 
     const button = <View style={merge(styles.button, { backgroundColor: this.getButtonColor() })}>
@@ -120,7 +120,7 @@ class InputComponent extends KeyboardComponent {
 
 class SendMoney extends React.Component {
 
-  constructor() {
+  constructor () {
     super()
   }
 
@@ -128,13 +128,12 @@ class SendMoney extends React.Component {
     try {
       tempClipboardString = await Clipboard.getString()
     } catch (e) {
-      console.log(e)
     } finally {
       Clipboard.setString('')
     }
   }
 
-  nextPage() {
+  nextPage () {
     const nextPage = (this.props.inputPage + 1) % Object.keys(Page).length
     this.props.updatePage(nextPage)
     if (nextPage === Page.EnterAmount) {
@@ -144,7 +143,7 @@ class SendMoney extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate (prevProps) {
     if (this.props.payeeId !== prevProps.payeeId) {
       this.props.updateAmount('')
       this.props.updatePage(Page.Ready)
@@ -157,7 +156,7 @@ class SendMoney extends React.Component {
     }
   }
 
-  isInputInvalid() {
+  isInputInvalid () {
     const { amount } = this.props
     return (
       isNaN(Number(this.props.amount))
@@ -169,7 +168,7 @@ class SendMoney extends React.Component {
     )
   }
 
-  render() {
+  render () {
     let inputProps
 
     if (this.props.connection) {
@@ -180,12 +179,12 @@ class SendMoney extends React.Component {
           accessibilityLabel: 'Payment complete'
         }
       } else if (this.props.loggedIn) {
-        switch (this.props.inputPage){
+        switch (this.props.inputPage) {
           case Page.Ready: // Initial state, ready to begin
             inputProps = {
               buttonText: 'Send Payment',
               onButtonPress: () => { this.nextPage() },
-              accessibilityLabel: 'Ready',
+              accessibilityLabel: 'Ready'
             }
             break
           case Page.EnterAmount: // provide amount
@@ -196,7 +195,7 @@ class SendMoney extends React.Component {
                 keyboardType: 'numeric',
                 value: this.props.amount,
                 placeholder: 'Amount',
-                onChangeText: amt => this.props.updateAmount(amt),
+                onChangeText: amt => this.props.updateAmount(amt)
               },
               invalidInput: this.isInputInvalid(),
               accessibilityLabel: 'Enter Amount',
@@ -207,7 +206,7 @@ class SendMoney extends React.Component {
             inputProps = {
               buttonText: 'Making Payment',
               loading: true,
-              accessibilityLabel: 'Making Payment',
+              accessibilityLabel: 'Making Payment'
             }
             break
         }
@@ -215,13 +214,13 @@ class SendMoney extends React.Component {
         inputProps = {
           buttonText: 'Log in to make payment',
           onButtonPress: () => this.props.openLoginForm(true),
-          accessibilityLabel: 'Log in to make payment',
+          accessibilityLabel: 'Log in to make payment'
         }
       }
     } else {
       inputProps = {
         buttonText: 'No internet connection',
-        accessibilityLabel: 'No internet connection',
+        accessibilityLabel: 'No internet connection'
       }
     }
 

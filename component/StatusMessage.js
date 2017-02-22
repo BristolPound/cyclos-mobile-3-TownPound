@@ -17,11 +17,11 @@ const style = {
     ...commonStyle.shadow,
     alignItems: 'center',
     justifyContent: 'center'
-  },
+  }
 }
 
 class StatusMessage extends React.Component {
-  constructor() {
+  constructor () {
     super()
     this.state = {
       bottom: new Animated.Value(-sectionHeight),
@@ -30,7 +30,7 @@ class StatusMessage extends React.Component {
     }
   }
 
-  scheduleSlideOut() {
+  scheduleSlideOut () {
     this.timeout = setTimeout(() => animateTo(this.state.bottom, -sectionHeight, 300, undefined, () => {
       this.setState({ height: 0 })
       this.props.updateStatus('')
@@ -38,7 +38,7 @@ class StatusMessage extends React.Component {
     }), 1600)
   }
 
-  componentDidUpdate(lastProps) {
+  componentDidUpdate (lastProps) {
     if (this.props.message && !lastProps.message) {
       const height = this.props.modalVisible ? sectionHeight : TAB_BAR_HEIGHT
       const fontSize = this.props.modalVisible ? 24 : 18
@@ -51,7 +51,7 @@ class StatusMessage extends React.Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <Animated.View style={
           merge(style.container, {

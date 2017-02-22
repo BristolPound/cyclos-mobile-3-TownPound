@@ -14,7 +14,7 @@ const style = {
     shadowOffset: {
       ...dimensions(0)
     },
-    elevation: 10,
+    elevation: 10
   },
   minorShadow: {
     shadowColor: 'black',
@@ -23,7 +23,7 @@ const style = {
     shadowOffset: {
       ...dimensions(0)
     },
-    elevation: 5,
+    elevation: 5
   },
   font: {
     museo700,
@@ -37,15 +37,15 @@ const style = {
       height: 34,
       backgroundColor: color.offWhite,
       flexDirection: 'row',
-      alignItems: 'center',
+      alignItems: 'center'
     },
     text: {
       fontFamily: museo700,
       fontSize: 14,
       color: color.gray3,
       marginLeft: 14
-    },
-  },
+    }
+  }
 }
 
 export default style

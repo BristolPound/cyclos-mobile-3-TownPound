@@ -11,20 +11,20 @@ const style = {
   right: 0,
   bottom: 0,
   position: 'absolute',
-  backgroundColor: 'white',
+  backgroundColor: 'white'
 }
 
 class Modal extends React.Component {
-  constructor() {
+  constructor () {
     super()
     this.state = { top: new Animated.Value(screenHeight), active: false }
     this.onBackButtonPressBound = this.onBackButtonPress.bind(this)
   }
-  onBackButtonPress() {
+  onBackButtonPress () {
     this.props.hideModal && this.props.hideModal()
     return true
   }
-  componentDidUpdate(lastProps) {
+  componentDidUpdate (lastProps) {
     if (this.props.visible && !lastProps.visible) {
       this.setState({ active: true })
       animateTo(this.state.top, 0, modalSlideTime, undefined, this.props.modalOpened)
@@ -35,7 +35,7 @@ class Modal extends React.Component {
       BackAndroid.removeEventListener('hardwareBackPress', this.onBackButtonPressBound)
     }
   }
-  render() {
+  render () {
     return (
       <Animated.View style={merge(style, { top: this.state.top })}>
         {this.state.active && this.props.children}

@@ -37,7 +37,7 @@ const TraderScreen = (props) => {
             showMap={props.modalOpen}
             goToTraderLocation={() => goToTraderLocation()}/>
         <BusinessDetails business={props.trader} goToTraderLocation={() => goToTraderLocation()}/>
-        <DefaultText style={{height: 0}}></DefaultText> 
+        <DefaultText style={{height: 0}}></DefaultText>
         <TransactionList
           listData={props.transactions} />
         </ScrollView>
