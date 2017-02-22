@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Dimensions } from 'react-native'
+import { View, Dimensions, TouchableHighlight } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Carousel from './Carousel'
@@ -14,7 +14,7 @@ const CAROUSEL_ITEM_WIDTH = Dimensions.get('window').width / 3
 
 export const toMonthString = month => isSameMonth(month, new Date()) ? 'This Month' : format(month, 'MMMM')
 
-const MonthOption = ({ monthTotal, isSelected, highlight }) => {
+const MonthOption = ({ monthTotal, isSelected, highlight, onPress }) => {
   const basicPriceStyle = (color, size) => ({ color, size })
   const priceProps = isSelected ? basicPriceStyle(color.bristolBlue, 32) : basicPriceStyle(color.bristolBlue2, 28)
 
@@ -22,15 +22,17 @@ const MonthOption = ({ monthTotal, isSelected, highlight }) => {
   const textStyle = isSelected ? basicTextStyle(color.gray, 4) : basicTextStyle(color.gray2, 2)
 
   return (
-    <View style={{ width: CAROUSEL_ITEM_WIDTH, backgroundColor: highlight ? color.offWhite : color.white }}>
-      <DefaultText style={{...styles.header.monthlyOption, ...textStyle}}>
-        {toMonthString(monthTotal.month).toUpperCase()}
-      </DefaultText>
-      <Price
-          {...priceProps}
-          price={monthTotal.total}
-          center={true} />
-    </View>
+    <TouchableHighlight onPress={onPress}>
+      <View style={{ width: CAROUSEL_ITEM_WIDTH, backgroundColor: highlight ? color.offWhite : color.white }} >
+        <DefaultText style={{...styles.header.monthlyOption, ...textStyle}}>
+          {toMonthString(monthTotal.month).toUpperCase()}
+        </DefaultText>
+        <Price
+            {...priceProps}
+            price={monthTotal.total}
+            center={true} />
+      </View>
+    </TouchableHighlight>
   )
 }
 
@@ -55,7 +57,6 @@ class SpendingHeader extends React.Component {
           containerWidth={Dimensions.get('window').width}
           pageIndex={props.selectedMonthIndex}
           onPageChange={(index) => this.onPageChange(index)}
-          onPress={(index) =>this.onPageChange(index)}
           onTouchStart={(index) => this.onTouchStart(index)}
           onMove={() => this.setState({ highlightIndex: -1 })}>
           {props.monthlyTotalSpent.map((monthTotal, index) =>
@@ -63,7 +64,8 @@ class SpendingHeader extends React.Component {
                 key={index}
                 monthTotal={monthTotal}
                 isSelected={props.selectedMonthIndex === index}
-                highlight={state.highlightIndex === index}/>
+                highlight={state.highlightIndex === index}
+                onPress={() => this.onPageChange(index)}/>
           )}
       </Carousel>
     )
