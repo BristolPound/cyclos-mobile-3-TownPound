@@ -21,8 +21,9 @@ const initialState = {
 const Page = {
   Ready: 0,
   EnterAmount: 1,
-  MakingPayment: 2,
-  PaymentComplete: 3,
+  ConfirmAmount: 2,
+  MakingPayment: 3,
+  PaymentComplete: 4
 }
 
 export const resetForm = () => ({
