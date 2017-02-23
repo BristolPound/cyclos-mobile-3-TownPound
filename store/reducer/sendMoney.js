@@ -16,6 +16,7 @@ const initialState = {
   timestamp: undefined,
   inputPage: 0,
   transactionNumber: -1,
+  resetClipboard: false
 }
 
 const Page = {
@@ -118,7 +119,8 @@ const reducer = (state = initialState, action) => {
       break
     case 'sendMoney/UPDATE_PAGE':
       state = merge(state, {
-        inputPage: action.page
+        inputPage: action.page,
+        resetClipboard: false
       })
       break
     case 'sendMoney/TRANSACTION_COMPLETE':
@@ -136,7 +138,8 @@ const reducer = (state = initialState, action) => {
     case 'navigation/OVERLAY_VISIBLE':
       if (action.value === false) {
         state = merge(state, {
-          inputPage: Page.Ready
+          inputPage: Page.Ready,
+          resetClipboard: true
         })
       }
       break
