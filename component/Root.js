@@ -39,7 +39,7 @@ const Root = (props) => {
       {bodyComponent}
       <LoginOverlay/>
       {props.modalOpen && !props.loginFormOpen ? <SendMoney /> : undefined}
-      <Login hideUsernameInput={props.mainComponent === mainComponent.returningLogin}/>
+      <Login/>
       <StatusMessage/>
     </View>
   )
