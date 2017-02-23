@@ -185,7 +185,6 @@ class DraggableList extends React.Component {
 
       const currentOuterTopOffset = this.getCurrentOuterTopOffset(currentTouchY)
       const currentInnerTopOffset = -1 * this.getCurrentScroll(currentTouchY)
-
       this.lastTouchY = currentTouchY
 
       this.setState({
@@ -269,19 +268,18 @@ class DraggableList extends React.Component {
     )
   }
 
-  responderRelease() {
+  responderRelease() {    
     this.props.onTouchEnd && this.props.onTouchEnd(this.hasMoved)
 
     if (Date.now() - this.timeAtLastPosition > 150) {
       this.velocity = 0
     }
-
     const finalTopOffset = this.state.currentInnerTopOffset._value + this.state.currentOuterTopOffset._value + this.getMomentumTravel()
     const relativeFinalTopOffset = finalTopOffset - this.props.topOffset[0]
     const finalInnerTopOffset = _.clamp(relativeFinalTopOffset, -1 * this.calculateMaxScrollDistance(this.props), 0)
     const remainder = relativeFinalTopOffset - finalInnerTopOffset
     const newPosition = this.positionAfterMove(remainder + this.props.topOffset[0])
-    if (this.state.currentInnerTopOffset._value) {
+    if (this.state.currentInnerTopOffset._value || newPosition === 2) { // 2- collapsed position -> fixes user not being able to collapse with 2 or less traders
       this.scrollAndSlideTo(newPosition, finalInnerTopOffset)
     } else if (finalInnerTopOffset < -100
       || (finalInnerTopOffset && finalInnerTopOffset === -1 * this.calculateMaxScrollDistance(this.props))) {
@@ -302,6 +300,7 @@ class DraggableList extends React.Component {
   }
 
   render() {
+    // fixes list going behind the search bar when value is NaN
     if (!this.state.currentOuterTopOffset._value) {
       this.resetPosition(this.props)
     }
