@@ -52,7 +52,7 @@ class Login extends KeyboardComponent {
   render() {
     let loginButtonText = 'Log in'
     let attemptsLeft = ''
-    const { hideUsernameInput, failedAttempts } = this.props
+    const { failedAttempts } = this.props
     const failuresForUsername = failedAttempts.find(attempt => attempt.username === this.state.username)
     if (failuresForUsername) {
       const remainingAttempts = 3 - failuresForUsername.noOfFails
@@ -76,7 +76,7 @@ class Login extends KeyboardComponent {
           </TouchableOpacity>
           <TextInput style={styles.input}
               accessibilityLabel={'Input Username'}
-              autoFocus={!hideUsernameInput}
+              autoFocus={!this.props.loggedInUsername}
               onChangeText={(text) => this.usernameUpdated(text)}
               onSubmitEditing={this.selectPasswordField.bind(this)}
               placeholder={'Username'}
@@ -89,7 +89,7 @@ class Login extends KeyboardComponent {
           <TextInput style={styles.input}
               ref={(ref) => this.passwordInputRef = ref}
               accessibilityLabel={'Input Password'}
-              autoFocus={hideUsernameInput}
+              autoFocus={this.props.loggedInUsername}
               onChangeText={(text) => this.passwordUpdated(text)}
               onSubmitEditing={() => this.login()}
               placeholder={'Password'}
