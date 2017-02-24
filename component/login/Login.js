@@ -76,7 +76,7 @@ class Login extends KeyboardComponent {
           </TouchableOpacity>
           <TextInput style={styles.input}
               accessibilityLabel={'Input Username'}
-              autoFocus={!this.props.loggedInUsername}
+              autoFocus={this.props.loggedInUsername === ''}
               onChangeText={(text) => this.usernameUpdated(text)}
               onSubmitEditing={this.selectPasswordField.bind(this)}
               placeholder={'Username'}
@@ -89,7 +89,7 @@ class Login extends KeyboardComponent {
           <TextInput style={styles.input}
               ref={(ref) => this.passwordInputRef = ref}
               accessibilityLabel={'Input Password'}
-              autoFocus={this.props.loggedInUsername}
+              autoFocus={this.props.loggedInUsername !== ''}
               onChangeText={(text) => this.passwordUpdated(text)}
               onSubmitEditing={() => this.login()}
               placeholder={'Password'}
