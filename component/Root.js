@@ -9,7 +9,7 @@ import Login from './login/Login'
 import LoginOverlay from './login/LoginOverlay'
 import StatusMessage from './StatusMessage'
 import color from '../util/colors'
-import SendMoney from './SendMoney'
+import SendMoney from './sendMoney/SendMoney'
 
 const Root = (props) => {
   // The app is rendered before the state has been loaded via redux-persist. This state property allows

@@ -8,8 +8,7 @@ import merge from '../util/merge'
 import commonStyle from './style'
 import { updateStatus } from '../store/reducer/statusMessage'
 import animateTo from '../util/animateTo'
-import { horizontalAbsolutePosition } from '../util/StyleUtils'
-import { sectionHeight } from './SendMoney'
+import { horizontalAbsolutePosition, sectionHeight } from '../util/StyleUtils'
 
 const style = {
   container: {

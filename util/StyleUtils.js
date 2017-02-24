@@ -23,6 +23,8 @@ export const border = (position, color, width) => {
     return border
 }
 
+export const sectionHeight = 68
+
 export const horizontalAbsolutePosition = (right, left) => ({ position: 'absolute', right, left })
 
 export const verticalAbsolutePosition = (top, bottom) => ({ position: 'absolute', top, bottom })

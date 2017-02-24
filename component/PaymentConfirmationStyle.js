@@ -2,9 +2,8 @@ import colors from '../util/colors'
 import commonStyle from './style'
 import { Dimensions } from 'react-native'
 import { baselineDeltaForFonts } from './DefaultText'
-import { border } from '../util/StyleUtils'
+import { border, sectionHeight } from '../util/StyleUtils'
 import { isScreenSmall } from '../util/ScreenSizes'
-import { sectionHeight } from './SendMoney'
 
 const style = {
   container: {

@@ -26,8 +26,8 @@ class KeyboardComponent extends React.Component {
     // On iOS the keyboard is overlaid on top of the content,
     // while on android everything is moved up to make space
     if (PLATFORM.isIOS()) {
-      this.keyboardShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow.bind(this))
-      this.keyboardHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide.bind(this))
+      this.keyboardShowListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
+      this.keyboardHideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
     }
   }
 
@@ -38,12 +38,12 @@ class KeyboardComponent extends React.Component {
     }
   }
 
-  keyboardDidShow (e) {
+  keyboardWillShow (e) {
     animateTo(this.state.keyboardHeight, e.endCoordinates.height, 300, undefined, () => this.props.setOverlayOpen && this.props.setOverlayOpen(true))
     this.keyboardOpen = true
   }
 
-  keyboardDidHide () {
+  keyboardWillHide () {
     // Do nothing as this is too slow to trigger anyway
   }
 }
