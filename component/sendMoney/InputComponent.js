@@ -103,9 +103,13 @@ class InputComponent extends KeyboardComponent {
             
           {amount
             ? <TouchableOpacity onPress={onChangeAmount} style={merge(styles.button, { backgroundColor: color.offWhite })}>
-                <DefaultText style={{fontSize: 24, color: 'black', textAlign: 'center', width: Dimensions.get('window').width - 20}}>
-                  {amount}
-                </DefaultText>
+                <View style={{flexDirection: 'row', alignItems: 'center', backgroundColor: color.transparent}}>
+                  <Image source={require('./tabbar/assets/balance_symbol.png')}/>
+                  <Price prefix=''
+                      price={amount}
+                      size={24}
+                      color={'black'}/>
+                </View>
               </TouchableOpacity>
               : undefined
           }
