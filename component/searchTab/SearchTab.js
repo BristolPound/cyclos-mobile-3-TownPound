@@ -19,21 +19,23 @@ const EXPANDED_LIST_TOP_OFFSET = SEARCH_BAR_HEIGHT + SEARCH_BAR_MARGIN
 
 const listCroppedLength = Math.ceil(Dimensions.get('window').height / ROW_HEIGHT)
 
-const ComponentForItem = item => {
-    if (item === BUSINESS_LIST_GAP_PLACEHOLDER) {
-        return <View style={{ height: 10 }}/>
-    }
-    if (item.isSelected) {
-        return <SelectedBusiness business={item}/>
-    }
-    return <BusinessListItem business={item} />
-}
+
 
 class SearchTab extends React.Component {
   constructor(props) {
     super()
     this.state = { componentListArray: this.createComponentListArray(props).slice(0, listCroppedLength) }
     this.listPosition = 1
+  }
+
+  ComponentForItem(item, deselect) {
+      if (item === BUSINESS_LIST_GAP_PLACEHOLDER) {
+          return <View style={{ height: 10 }}/>
+      }
+      if (item.isSelected) {
+          return <SelectedBusiness business={item} deselect={deselect}/>
+      }
+      return <BusinessListItem business={item} />
   }
 
   createComponentListArray(props = this.props) {
@@ -105,7 +107,8 @@ class SearchTab extends React.Component {
             <ComponentList
                 ref='componentList'
                 items={this.state.componentListArray}
-                componentForItem={ComponentForItem}
+                componentForItem={this.ComponentForItem}
+                deselect={() => this.props.selectBusiness(undefined)}
                 onPressItem={index => this.state.componentListArray[index].id && openTraderModal(this.state.componentListArray[index].id)} />
         </DraggableList>}
         {searchMode && <Overlay overlayVisible={true} onPress={() => updateSearchMode(false)} />}

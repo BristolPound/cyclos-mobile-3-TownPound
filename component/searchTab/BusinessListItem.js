@@ -4,6 +4,10 @@ import DefaultText from '../DefaultText'
 import ProfileImage from '../profileImage/ProfileImage'
 import styles from './BusinessListStyle'
 import merge from '../../util/merge'
+import { SEARCH_BAR_HEIGHT } from './SearchTabStyle'
+import { CloseButton } from '../common/CloseButton'
+
+const CLOSE_BUTTON = require('../common/assets/Close.png')
 
 class BusinessListItem extends React.Component {
   shouldComponentUpdate(nextProps) {
@@ -15,7 +19,7 @@ class BusinessListItem extends React.Component {
   }
 
   render() {
-    const { container, contents, status, statusSelected, title, verticalStack } = styles.listItem
+    const { container, contents, status, statusSelected, title, verticalStack, closeButton } = styles.listItem
     const { image, category, display, shortDisplay, colorCode } = this.props.business
     const statusStyle = merge(status, this.props.isSelected ? statusSelected : {})
 
@@ -29,6 +33,8 @@ class BusinessListItem extends React.Component {
                   <DefaultText style={styles.listItem.shortDisplay}>{shortDisplay}</DefaultText>
               </View>
           </View>
+          {this.props.isSelected && <CloseButton onPress={this.props.deselect} closeButtonType={CLOSE_BUTTON} style={closeButton} size={SEARCH_BAR_HEIGHT}/>
+          }
       </View>
     )
   }
