@@ -1,5 +1,4 @@
 import React from 'react'
-import { sectionHeight, dimensions, border } from '../../util/StyleUtils'
 import animateTo from '../../util/animateTo'
 import Price from '../Price'
 import commonStyle from '../style'
@@ -7,38 +6,8 @@ import color from '../../util/colors'
 import DefaultText from '../DefaultText'
 import merge from '../../util/merge'
 import KeyboardComponent from '../KeyboardComponent'
-import { View, TextInput, TouchableOpacity, Dimensions, Animated, Image } from 'react-native'
-
-const { width } = Dimensions.get('window')
-
-const styles = {
-  button: {
-    height: sectionHeight,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row'
-  },
-  textInput: {
-    ...dimensions(width, sectionHeight),
-    padding: 10,
-    textAlign: 'center'
-  },
-  balanceContainer: {
-    ...border(['bottom'], color.gray5, 1),
-    backgroundColor: color.offWhite,
-    height: 46,
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  priceContainer: {
-    flex: 1,
-    right: 14,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: color.transparent,
-    justifyContent: 'flex-end'
-  }
-}
+import { View, TextInput, TouchableOpacity, Animated, Image } from 'react-native'
+import styles from './InputComponentStyle'
 
 const BalanceMessage = ({ balance }) => {
   return (
@@ -74,10 +43,20 @@ class InputComponent extends KeyboardComponent {
   }
 
   render () {
-    let { onButtonPress, buttonText, input, invalidInput, accessibilityLabel, balance, amount, onChangeAmount } = this.props
+    let { 
+      onButtonPress, 
+      buttonText, 
+      input, 
+      invalidInput, 
+      accessibilityLabel, 
+      balance, 
+      amount, 
+      onChangeAmount, 
+      payee 
+    } = this.props
 
     const button = <View style={merge(styles.button, { backgroundColor: this.getButtonColor() })}>
-      <DefaultText style={{fontSize: 24, color: this.getButtonTextColor(), textAlign: 'center', width: Dimensions.get('window').width - 20}}>
+      <DefaultText style={merge(styles.buttonText, { color: this.getButtonTextColor() })}>
         {buttonText}
       </DefaultText>
     </View>
@@ -102,13 +81,20 @@ class InputComponent extends KeyboardComponent {
             : undefined}
             
           {amount
-            ? <TouchableOpacity onPress={onChangeAmount} style={merge(styles.button, { backgroundColor: color.offWhite })}>
-                <View style={{flexDirection: 'row', alignItems: 'center', backgroundColor: color.transparent}}>
-                  <Image source={require('../tabbar/assets/balance_symbol.png')}/>
-                  <Price prefix=''
-                      price={amount}
-                      size={24}
-                      color={'black'}/>
+            ? <TouchableOpacity onPress={onChangeAmount}>
+                <View style={styles.confirmContainer}>
+                  <View style={styles.confirmPayeeContainer}>
+                    <DefaultText style={styles.confirmPayeeText}>
+                      {payee}
+                    </DefaultText>
+                  </View>
+                  <View style={styles.confirmAmountContainer}>
+                    <Image source={require('../tabbar/assets/balance_symbol.png')}/>
+                    <Price prefix=''
+                        price={amount}
+                        size={24}
+                        color={'black'}/>
+                  </View>
                 </View>
               </TouchableOpacity>
               : undefined
