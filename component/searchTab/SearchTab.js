@@ -19,7 +19,15 @@ const EXPANDED_LIST_TOP_OFFSET = SEARCH_BAR_HEIGHT + SEARCH_BAR_MARGIN
 
 const listCroppedLength = Math.ceil(Dimensions.get('window').height / ROW_HEIGHT)
 
-
+const ComponentForItem = (item, deselect) => {
+    if (item === BUSINESS_LIST_GAP_PLACEHOLDER) {
+        return <View style={{ height: 10 }}/>
+    }
+    if (item.isSelected) {
+        return <SelectedBusiness business={item} deselect={deselect}/>
+    }
+    return <BusinessListItem business={item} />
+}
 
 class SearchTab extends React.Component {
   constructor(props) {
@@ -28,15 +36,6 @@ class SearchTab extends React.Component {
     this.listPosition = 1
   }
 
-  ComponentForItem(item, deselect) {
-      if (item === BUSINESS_LIST_GAP_PLACEHOLDER) {
-          return <View style={{ height: 10 }}/>
-      }
-      if (item.isSelected) {
-          return <SelectedBusiness business={item} deselect={deselect}/>
-      }
-      return <BusinessListItem business={item} />
-  }
 
   createComponentListArray(props = this.props) {
     const makePressable = (itemProps) => ({...itemProps, pressable: true})
@@ -107,7 +106,7 @@ class SearchTab extends React.Component {
             <ComponentList
                 ref='componentList'
                 items={this.state.componentListArray}
-                componentForItem={this.ComponentForItem}
+                componentForItem={ComponentForItem}
                 deselect={() => this.props.selectBusiness(undefined)}
                 onPressItem={index => this.state.componentListArray[index].id && openTraderModal(this.state.componentListArray[index].id)} />
         </DraggableList>}
