@@ -114,6 +114,7 @@ class SendMoney extends React.Component {
               buttonText: 'Confirm',
               onButtonPress: () => { this.props.sendTransaction(); this.nextPage() },
               amount: this.props.amount,
+              payee: this.props.payee.display,
               onChangeAmount: () => { this.prevPage() },
               accessibilityLabel: 'Confirm Amount'
             }
