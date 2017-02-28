@@ -1,5 +1,5 @@
 import React from 'react'
-import { Keyboard, Animated } from 'react-native'
+import { Keyboard, Animated, AppState } from 'react-native'
 import PLATFORM from '../util/Platforms'
 import animateTo from '../util/animateTo'
 
@@ -39,8 +39,10 @@ class KeyboardComponent extends React.Component {
   }
 
   keyboardWillShow (e) {
-    animateTo(this.state.keyboardHeight, e.endCoordinates.height, 300, undefined, () => this.props.setOverlayOpen && this.props.setOverlayOpen(true))
-    this.keyboardOpen = true
+    if (AppState.currentState === 'active') {
+      animateTo(this.state.keyboardHeight, e.endCoordinates.height, 300, undefined, () => this.props.setOverlayOpen && this.props.setOverlayOpen(true))
+      this.keyboardOpen = true
+    }
   }
 
   keyboardWillHide () {
