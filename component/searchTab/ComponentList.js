@@ -50,7 +50,7 @@ class ComponentList extends React.Component {
             <View style={{ backgroundColor: containerBackgroundColor, overflow: 'hidden', zIndex: 100 }}
                 onLayout={(event) => this.captureChildLayout(event, index)}
                 key={item.id || index}>
-              {this.props.componentForItem(item)}
+              {this.props.componentForItem(item, this.props.deselect)}
             </View>
           )
         })}
