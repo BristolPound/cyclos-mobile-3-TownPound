@@ -64,6 +64,11 @@ const styles = {
       fontSize: 14,
       color: color.gray3,
       marginBottom: 6
+    },
+    closeButton: {
+      alignSelf: 'center',
+      borderLeftWidth: 1,
+      borderLeftColor: color.gray5
     }
   },
 }
