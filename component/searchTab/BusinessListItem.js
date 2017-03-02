@@ -33,7 +33,7 @@ class BusinessListItem extends React.Component {
                   <DefaultText style={styles.listItem.shortDisplay}>{shortDisplay}</DefaultText>
               </View>
           </View>
-          {this.props.isSelected && <CloseButton onPress={this.props.deselect} closeButtonType={CLOSE_BUTTON} style={closeButton} size={SEARCH_BAR_HEIGHT}/>
+          {this.props.isSelected && <CloseButton onPress={this.props.deselect} closeButtonType={CLOSE_BUTTON} style={closeButton} size={SEARCH_BAR_HEIGHT+10}/>
           }
       </View>
     )
