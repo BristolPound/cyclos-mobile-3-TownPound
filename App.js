@@ -2,7 +2,7 @@ import React from 'react'
 import { createStore, applyMiddleware, compose } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
-import devTools from 'remote-redux-devtools'
+import devTools, { composeWithDevTools } from 'remote-redux-devtools'
 import { persistStore, autoRehydrate, createTransform } from 'redux-persist'
 import { AsyncStorage } from 'react-native'
 import _ from 'lodash'
@@ -19,11 +19,11 @@ class App extends React.Component {
       applyMiddleware(thunk),
       autoRehydrate()
     ]
-    if (__DEV__) {
-      enhancers.push(devTools())
-    }
 
-    this.store = createStore(reducer, compose(...enhancers))
+    this.store = 
+      (__DEV__) 
+        ? createStore(reducer, composeWithDevTools(...enhancers)) 
+        : createStore(reducer, compose(...enhancers))
 
     persistStore(this.store, {
       whitelist: ['business', 'transaction', 'developerOptions', 'login'],
@@ -52,10 +52,6 @@ class App extends React.Component {
       // perform our initialisation logic after the store has re-hydrated
       initialise(this.store)
     })
-
-    if (__DEV__) {
-      devTools.updateStore(this.store)
-    }
   }
 
   render() {
