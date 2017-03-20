@@ -15,6 +15,5 @@ function addressToString (address) {
     .join(', ')
 }
 
-export default {
-  toString: addressToString
-}
+export default addressToString
+

@@ -59,7 +59,7 @@ const Account = (props) => {
       <ProfileHeader
         name={props.details.display}
         username={props.details.shortDisplay}
-        image={props.details.image}
+        image={props.details.image.url}
         category='person'/>
       <ListView
         style={styles.detailsList}

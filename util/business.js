@@ -1,12 +1,11 @@
 import _ from 'lodash'
-import merge from './merge'
 import haversine from 'haversine'
 
 const BUSINESS_LIST_MAX_LENGTH = 50
 
 export const addColorCodes = (list) => {
-    const newList = list.map(b => merge(b))
-    newList.forEach((component, index, newList) => {
+    const newList = list
+    _.each(newList, (component, index, newList) => {
         const compareColorCodes = (distance) =>
             index >= distance && component.colorCode === newList[index - distance].colorCode
         do {
@@ -16,7 +15,7 @@ export const addColorCodes = (list) => {
     return newList
 }
 
-const orderBusinessList = (viewport) => (business) => business.address ? haversine(viewport, business.address.location) : Number.MAX_VALUE
+const orderBusinessList = (viewport) => (business) => businessHasAddress(business) ? haversine(viewport, getBusinessLocation(business)) : Number.MAX_VALUE
 
 const isLocationWithinViewport = (location, viewport) => {
     const isCoordinateWithinViewport = (locationCoord, viewportCoord, delta) =>
@@ -26,15 +25,13 @@ const isLocationWithinViewport = (location, viewport) => {
         &&  isCoordinateWithinViewport(location.longitude, viewport.longitude, viewport.longitudeDelta)
 }
 
-export const shouldBeDisplayed = (viewport) => (business) =>
-    business.address && isLocationWithinViewport(business.address.location, viewport)
+export const shouldBeDisplayed = (viewport) => (business) => businessHasAddress(business) && isLocationWithinViewport(getBusinessLocation(business), viewport)
 
 const businessAtLocation = (location) => (business) => {
-    const { address } = business
     let atLocation = false
 
-    if (address && address.location) {
-        const { latitude, longitude } = address.location
+    if (businessHasAddress(business)) {
+        const { latitude, longitude } = getBusinessLocation(business)
         atLocation = (latitude === location.latitude) && (longitude === location.longitude)
     }
 
@@ -42,8 +39,8 @@ const businessAtLocation = (location) => (business) => {
 }
 
 export const getClosestBusinesses = (list, viewport) => {
-    const visibleBusinesses = list.filter(shouldBeDisplayed(viewport))
-    if (visibleBusinesses.length > BUSINESS_LIST_MAX_LENGTH) {
+    const visibleBusinesses = _.filter(list, shouldBeDisplayed(viewport))
+    if (_.size(visibleBusinesses) > BUSINESS_LIST_MAX_LENGTH) {
       return []
     }
     const closestBusinesses = _.sortBy(
@@ -54,15 +51,21 @@ export const getClosestBusinesses = (list, viewport) => {
 }
 
 export const offsetOverlappingBusinesses = (businesses) => {
-    businesses.forEach((business, index)=> {
-        const { address } = business
-        if (address && address.location) {
-            const previousBusinesses = businesses.slice(0, index)
-            while (previousBusinesses.find(businessAtLocation(address.location))) {
-                address.location.longitude -= 0.00004
-                address.location.latitude += 0.00002
+    var index = 0
+    _.each(businesses, (business)=> {
+        const { addresses } = business.fields
+        if (businessHasAddress(business)) {
+            var id = _.values(addresses.value)[0].id
+            addresses.value[id].location.longitude = parseFloat(addresses.value[id].location.longitude)
+            addresses.value[id].location.latitude = parseFloat(addresses.value[id].location.latitude)
+            const previousBusinesses = (_.values(businesses)).slice(0, index)
+            while (previousBusinesses.find(businessAtLocation(getBusinessLocation(business)))) {
+                addresses.value[id].location.longitude -= 0.00002
+                addresses.value[id].location.latitude += 0.00001
             }
         }
+        index++
+        business.colorCode = 0
     })
     return businesses
 }
@@ -70,3 +73,19 @@ export const offsetOverlappingBusinesses = (businesses) => {
 export const isIncorrectLocation = (location) => {
     return _.inRange(location.longitude, -0.01, 0.01) && _.inRange(location.latitude, -0.01, 0.01)
   }
+
+export const businessHasAddress = (business) => business.fields.addresses && _.size(business.fields.addresses.value) > 0
+
+export const getBusinessLocation = (business) => _.values(business.fields.addresses.value)[0].location
+
+export const getBusinessName = (business) => _.size(business.fields.addresses.value) > 0 ? _.values(business.fields.addresses.value)[0].name : ''
+
+export const getBusinessImage = (business) => business.fields.image.value
+    ? business.fields.image.field.options.baseUrl + business.fields.image.value.name
+    : undefined
+
+export const getBusinessAddress = (business) => _.values(business.fields.addresses.value)[0]
+
+export const getBusinessLatitude = (business) => _.values(business.fields.addresses.value)[0].location.latitude
+
+export const getBusinessLongitude = (business) => _.values(business.fields.addresses.value)[0].location.longitude

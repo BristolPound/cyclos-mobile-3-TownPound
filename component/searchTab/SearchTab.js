@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, Dimensions } from 'react-native'
+import _ from 'lodash'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import BackgroundMap from './BackgroundMap'
@@ -38,10 +39,13 @@ class SearchTab extends React.Component {
 
 
   createComponentListArray(props = this.props) {
-    const makePressable = (itemProps) => ({...itemProps, pressable: true})
+    const makePressable = (itemProps) => {
+      itemProps.pressable = true
+      return itemProps
+    }
     if (props.selectedBusiness) {
       return [
-        { ...makePressable(props.selectedBusiness), isSelected: true },
+        _.extend({isSelected: true}, makePressable(props.selectedBusiness)),
         BUSINESS_LIST_GAP_PLACEHOLDER,
         ...props.closestBusinesses.map(makePressable)
       ]
@@ -119,7 +123,7 @@ class SearchTab extends React.Component {
 
 const mapStateToProps = (state) => ({
   closestBusinesses: state.business.closestBusinesses.filter(b => b.id !== state.business.selectedBusinessId),
-  selectedBusiness: state.business.businessList.find(b => b.id === state.business.selectedBusinessId),
+  selectedBusiness: state.business.businessList[state.business.selectedBusinessId],
   allBusinesses: state.business.businessList,
   searchMode: state.business.searchMode,
   mapViewport: state.business.mapViewport,

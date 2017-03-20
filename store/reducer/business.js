@@ -5,7 +5,7 @@ import { Dimensions } from 'react-native'
 import merge from '../../util/merge'
 import { getClosestBusinesses, offsetOverlappingBusinesses } from '../../util/business'
 import { addFailedAction } from './networkConnection'
-import { getBusinesses, getBusinessProfile } from '../../api/users'
+import { getBusinesses } from '../../api/users'
 import { UNEXPECTED_DATA } from '../../api/apiError'
 import { ERROR_SEVERITY, unknownError, updateStatus } from './statusMessage'
 import { showModal, modalState } from './navigation'
@@ -70,11 +70,6 @@ export const registerBusinessList = (ref) => ({
   ref
 })
 
-export const businessProfileReceived = (businessProfile) => ({
-  type: 'business/BUSINESS_PROFILE_RECEIVED',
-  businessProfile
-})
-
 export const updateMapViewport = (viewport) => ({
   type: 'business/UPDATE_MAP_VIEWPORT',
   viewport
@@ -128,41 +123,20 @@ export const geolocationFailed = () => ({
   type: 'business/GEOLOCATION_FAILED'
 })
 
-export const loadBusinessProfile = (businessId) => (dispatch) => {
-  getBusinessProfile(businessId, dispatch)
-    .then(businessProfile => {
-      dispatch(businessProfileReceived(businessProfile))
-      dispatch(showModal(modalState.traderScreen))
-      dispatch(updatePayee(businessId))
-    })
-    .catch(err => {
-      if (err.type === UNEXPECTED_DATA) {
-        dispatch(updateStatus('Business no longer exists', ERROR_SEVERITY.SEVERE))
-        dispatch(loadBusinessList(true))
-      } else {
-        dispatch(unknownError(err))
-      }
-    })
-}
-
 export const openTraderModal = (businessId) => (dispatch, getState) => {
   dispatch(selectBusinessForModal(businessId))
-  // check to see whether we actually need to load the profile
-  const businessList = getState().business.businessList
-  const business = businessList.find(b => b.id === businessId)
-  if (!business.profilePopulated && getState().networkConnection.status) {
-    dispatch(loadBusinessProfile(businessId))
-  } else {
-    dispatch(showModal(modalState.traderScreen))
-    dispatch(updatePayee(businessId))
-  }
+  dispatch(showModal(modalState.traderScreen))
+  dispatch(updatePayee(businessId))
 }
 
 export const loadBusinessList = (force = false) => (dispatch, getState) => {
     const persistedDate = getState().business.businessListTimestamp
-    if (Date.now() - persistedDate > moment.duration(2, 'days') || force) {
-      getBusinesses(dispatch)
-        .then(businesses => dispatch(businessListReceived(businesses)))
+    //ToDo: to load data every time! When api has changed make a call to check whether something changed since last time the data was pulled
+    if (true || Date.now() - persistedDate > moment.duration(2, 'days') || force) {
+      getBusinesses()
+        .then((businesses) => {
+          dispatch(businessListReceived(businesses))
+        })
         // if this request fails, the business list may not be populated. In this case, when
         // connection status changes to be connected, the list is re-fetched
         .catch((err) => {
@@ -177,41 +151,12 @@ export const loadBusinessList = (force = false) => (dispatch, getState) => {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'business/BUSINESS_LIST_RECEIVED':
-      const offsetBusinesses = offsetOverlappingBusinesses(action.businessList).map(business => merge(business, {colorCode: 0}))
+      const offsetBusinesses = offsetOverlappingBusinesses(action.businessList)
       let closestBusinesses = getClosestBusinesses(action.businessList, businessArea(centerViewportHigher(state.mapViewport)))
       state = merge(state, {
         closestBusinesses,
         businessList: offsetBusinesses,
         businessListTimestamp: new Date()
-      })
-      break
-
-    case 'business/BUSINESS_PROFILE_RECEIVED':
-      const index  = _.findIndex(state.businessList, {id: action.businessProfile.id})
-
-      let additionalFields = {}
-      if (action.businessProfile.customValues) {
-        additionalFields = _.fromPairs(
-          _.map(action.businessProfile.customValues, fieldEntry => [
-            fieldEntry.field.internalName,
-            fieldEntry.stringValue
-          ])// shape: list of 2-element lists ([[name, value],[name1, value1], ...])
-        ) // turns into object from key-value pairs ({name:value, name1:value1})
-      }
-
-      const updatedBusiness = merge(
-        state.businessList[index],
-        {profilePopulated: true},
-        action.businessProfile,
-        additionalFields
-      )
-      const newBusinessList = [
-        ..._.slice(state.businessList, 0, index),
-        updatedBusiness,
-        ..._.slice(state.businessList, index + 1)
-      ]
-      state = merge(state, {
-        businessList: newBusinessList
       })
       break
 

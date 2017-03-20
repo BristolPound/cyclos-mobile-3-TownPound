@@ -7,7 +7,7 @@ import _ from 'lodash'
 import supercluster from 'supercluster'
 import { MultilineText } from '../DefaultText'
 import * as actions from '../../store/reducer/business'
-import { shouldBeDisplayed, isIncorrectLocation } from '../../util/business'
+import { shouldBeDisplayed, isIncorrectLocation, getBusinessLocation, getBusinessLatitude, getBusinessLongitude, businessHasAddress } from '../../util/business'
 import merge from '../../util/merge'
 import style from './BackgroundMapStyle'
 import MapMarker from './MapMarker'
@@ -63,12 +63,12 @@ class BackgroundMap extends React.Component {
   }
 
   populateSupercluster() {
-    this.supercluster.load(this.props.businessList.filter(b => b.address)
+    this.supercluster.load(_.filter(this.props.businessList, b => businessHasAddress(b))
       .map((b) => ({
         geometry: {
           coordinates: [
-            b.address.location.longitude,
-            b.address.location.latitude
+            getBusinessLongitude(b),
+            getBusinessLatitude(b)
           ]
         },
         properties: {},
@@ -86,22 +86,13 @@ class BackgroundMap extends React.Component {
   }
 
   updateMarkers(props = this.props) {
-    if (props.businessList) {
-      if (this.currentRegion.longitudeDelta > 0.008) {
-        const clusteredMarkers = this.supercluster.getClusters([
-          this.currentRegion.longitude - this.currentRegion.longitudeDelta * 0.6,
-          this.currentRegion.latitude - this.currentRegion.latitudeDelta * 0.6,
-          this.currentRegion.longitude + this.currentRegion.longitudeDelta * 0.6,
-          this.currentRegion.latitude + this.currentRegion.latitudeDelta * 0.6,
-        ], this.getZoomLevel())
-        this.setState({ markerArray: clusteredMarkers.map(this.renderClusteredMarker(props)) })
-      } else {
-        this.setState({
-          markerArray: props.businessList.filter(shouldBeDisplayed(this.currentRegion))
-            .map((b) => this.renderBusinessMarker(b, this.isSelected(b), () => props.selectBusiness(b.id)))
-          })
-      }
-    }
+    const clusteredMarkers = this.supercluster.getClusters([
+      this.currentRegion.longitude - this.currentRegion.longitudeDelta * 0.5,
+      this.currentRegion.latitude - this.currentRegion.latitudeDelta * 0.5,
+      this.currentRegion.longitude + this.currentRegion.longitudeDelta * 0.5,
+      this.currentRegion.latitude + this.currentRegion.latitudeDelta * 0.5,
+    ], this.getZoomLevel())
+    this.setState({ markerArray: clusteredMarkers.map(this.renderClusteredMarker(props)) })
   }
 
   isSelected(business) {
@@ -118,8 +109,8 @@ class BackgroundMap extends React.Component {
     this.mapRef.animateToRegion(region, 300)
   }
 
-  renderClusteredMarker = ({ selectBusiness, businessList, selectedBusinessId }) =>
-    ({ geometry, properties }) => {
+  renderClusteredMarker = ({ selectBusiness, selectedBusinessId }) =>
+    ({ geometry, properties, id }) => {
       const coordinate = {
         longitude: geometry.coordinates[0],
         latitude: geometry.coordinates[1]
@@ -127,15 +118,9 @@ class BackgroundMap extends React.Component {
 
       let onPress = null
       let selected = null
-      if (properties.point_count === 1 || !properties.point_count) {
-        const business = businessList.find(b =>
-          b.address && b.address.location
-          && (b.address.location.latitude === coordinate.latitude)
-          && (b.address.location.longitude === coordinate.longitude))
-        if (business) {
-          onPress = () => selectBusiness(business.id)
-          selected = business.id === selectedBusinessId
-        }
+      if ( id && (properties.point_count === 1 || !properties.point_count) ) {
+          onPress = () => selectBusiness(id)
+          selected = id === selectedBusinessId
       } else if (properties.point_count > 1 ) {
         onPress = () => this.zoomToCluster(coordinate)
       }
@@ -148,13 +133,6 @@ class BackgroundMap extends React.Component {
                   onPress={onPress}
                   pointCount={properties.point_count}/>
     }
-
-  renderBusinessMarker = (business, isSelected, onPress) => {
-    return <MapMarker key={business.id}
-        coordinate={business.address.location}
-        selected={isSelected}
-        onPress={onPress} />
-  }
 
   render() {
     return (
