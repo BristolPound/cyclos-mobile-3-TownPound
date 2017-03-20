@@ -58,7 +58,6 @@ function getFields(business, goToTraderLocation) {
   const fields = [],
       businessDetail = (key, icon, text, onPress) => ({ key, icon, text, onPress })
 
-      console.log(business)
   // Order of display should be:
   //    access point*, special offer*, address, opening times*, phone number, email address
   // Note: access point and special offer aren't supported yet.
