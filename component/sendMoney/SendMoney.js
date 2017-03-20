@@ -6,6 +6,7 @@ import * as actions from '../../store/reducer/sendMoney'
 import { openLoginForm, LOGIN_STATUSES } from '../../store/reducer/login'
 import { setOverlayOpen } from '../../store/reducer/navigation'
 import InputComponent from './InputComponent'
+import { getBusinessName } from '../../util/business'
 
 const Page = {
   Ready: 0,
@@ -96,7 +97,7 @@ class SendMoney extends React.Component {
             break
           case Page.EnterAmount: // provide amount
             inputProps = {
-              buttonText: 'Pay ' + this.props.payee.display,
+              buttonText: 'Pay ' + (this.props.payee.display || getBusinessName(this.props.payee)),
               onButtonPress: () => { this.nextPage() },
               input: {
                 keyboardType: 'numeric',
@@ -114,7 +115,7 @@ class SendMoney extends React.Component {
               buttonText: 'Confirm',
               onButtonPress: () => { this.props.sendTransaction(); this.nextPage() },
               amount: this.props.amount,
-              payee: this.props.payee.display,
+              payee: this.props.payee.display || getBusinessName(this.props.payee),
               onChangeAmount: () => { this.prevPage() },
               accessibilityLabel: 'Confirm Amount'
             }
@@ -150,7 +151,7 @@ const mapDispatchToProps = (dispatch) =>
 
 const mapStateToProps = (state) => ({
   ...state.sendMoney,
-  payee: state.business.businessList.find(b => b.id === state.sendMoney.payeeId) || state.person.selectedPerson || {},
+  payee: state.business.businessList[state.sendMoney.payeeId] || state.person.selectedPerson || {},
   balance: state.account.balance,
   loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
   connection: state.networkConnection.status

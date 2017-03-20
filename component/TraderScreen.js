@@ -9,29 +9,32 @@ import BusinessDetails from './businessDetails/BusinessDetails'
 import { sectionHeight } from '../util/StyleUtils'
 import { resetForm } from '../store/reducer/sendMoney'
 import { goToLocation } from '../store/reducer/navigation'
-import { isIncorrectLocation } from '../util/business'
+import { isIncorrectLocation, getBusinessName, getBusinessImage, businessHasAddress, getBusinessLocation, getBusinessAddress } from '../util/business'
 import DefaultText from './DefaultText'
+import categories from '../util/categories'
 
 import merge from '../util/merge'
 
 // empty defaultText is needed so the transaction list doesn't disappear on expand details
 const TraderScreen = (props) => {
   let goToTraderLocation
-  if (props.trader.address && props.trader.address.location && !isIncorrectLocation(props.trader.address.location)) {
+  let location = businessHasAddress(props.trader) ? getBusinessLocation(props.trader) : undefined
+  if (location && !isIncorrectLocation(location)) {
     goToTraderLocation = () => {
-      const region = merge(props.trader.address.location, { latitudeDelta: 0.006, longitudeDelta: 0.006 })
+      const region = merge(location, { latitudeDelta: 0.006, longitudeDelta: 0.006 })
       props.goToLocation(region)
     }
   }
+
   return (
       <View style={{maxHeight: Dimensions.get('window').height - sectionHeight}}>
       <ScrollView>
         <ProfileHeader
-            name={props.trader.display}
-            username={props.trader.shortDisplay}
-            image={props.trader.image}
-            category={props.trader.category}
-            address={props.trader.address}
+            name={getBusinessName(props.trader)}
+            username={props.trader.fields.username.value}
+            image={getBusinessImage(props.trader)}
+            category={categories.shop}
+            address={getBusinessAddress(props.trader)}
             onPressClose={() => {props.hideModal(); props.resetForm()}}
             isModal={true}
             showMap={props.modalOpen}
@@ -53,7 +56,7 @@ const getTransactionsForSelectedBusiness = (state) => {
 
 // Redux Setup
 const mapStateToProps = (state) => ({
-    trader: state.business.businessList.find(b => b.id === state.business.traderScreenBusinessId) || {},
+    trader: state.business.businessList[state.business.traderScreenBusinessId] || {},
     transactions: getTransactionsForSelectedBusiness(state),
     modalOpen: state.navigation.modalOpen
 })

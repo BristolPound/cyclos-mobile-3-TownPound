@@ -8,6 +8,7 @@ import SpendingHeader from './SpendingHeader'
 import DefaultText, { MultilineText } from '../DefaultText'
 import Price from '../Price'
 import color from '../../util/colors'
+import { getBusinessImage } from '../../util/business'
 import * as actions from '../../store/reducer/transaction'
 import { openDetailsModal, navigateToTransactionTab } from '../../store/reducer/navigation'
 import styles from './spendingStyle'
@@ -24,9 +25,10 @@ const renderSectionHeader = (sectionData, sectionID) =>
 
 const getTransactionImage = (user, businessList) => {
   if (user) {
-    const userDetails = businessList.find(business => business.id === user.id)
-    if (userDetails && userDetails.image) {
-      return { uri: userDetails.image.url }
+    const userDetails = businessList[user.id]
+    image = userDetails ? getBusinessImage(userDetails) : undefined
+    if (image) {
+      return { uri: image }
     }
   }
 }

@@ -86,7 +86,7 @@ const ProfileHeader = (props) => {
       {renderButtonBar(props)}
       <View style={{ alignItems: 'center' }}>
         <ProfileImage
-          image={props.image && {uri: props.image.url}}
+          image={props.image && {uri: props.image}}
           style={styles.header.businessLogo}
           category={props.category}
           colorCode={0} />

@@ -76,7 +76,7 @@ export const openDetailsModal = (user) =>
     // it is not possible to determine whether an id related to a trader (i.e. a BP user)
     // or a contact from the transaction. As a result we have to look up the id in the business
     // list in order to determine the type
-    if (_.some(getState().business.businessList, b => b.id === user.id)) {
+    if (getState().business.businessList[user.id]) {
       dispatch(openTraderModal(user.id))
     } else {
       // Open Person screen
