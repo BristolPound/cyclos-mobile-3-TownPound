@@ -5,7 +5,7 @@ import haversine from 'haversine'
 
 import DefaultText from '../DefaultText'
 import BusinessListItem from './BusinessListItem'
-import { CloseButton } from '../common/CloseButton'
+import { Button } from '../common/Button'
 import DraggableList from './DraggableList'
 import ComponentList from './ComponentList'
 
@@ -19,6 +19,8 @@ import { ROW_HEIGHT } from './BusinessListStyle'
 const { searchBar, textInput, searchHeaderText, closeButton, expandPanel, nearbyButton } = searchTabStyle.searchTab
 
 const CLOSE_BUTTON = require('../common/assets/Close.png')
+const FILTER_BUTTON = require('./assets/filters.png')
+const FILTER_DISABLED_BUTTON = require('./assets/filters_disabled.png')
 const NEARBY_BLUE = require('./assets/nearby_blue.png')
 const NEARBY_GREY = require('./assets/nearby_grey.png')
 
@@ -114,6 +116,30 @@ export default class Search extends React.Component {
 
       const { componentList } = this.refs
 
+      let button
+      if (tabMode===tabModes.search) {
+        button = <Button 
+                    onPress={() => this.props.updateTabMode(tabModes.default)} 
+                    buttonType={CLOSE_BUTTON} 
+                    style={closeButton} 
+                    size={SEARCH_BAR_HEIGHT}
+                /> 
+      } else if (tabMode===tabModes.default) {
+        button = <Button 
+                    onPress={() => this.props.updateTabMode(tabModes.filter)} 
+                    buttonType={FILTER_DISABLED_BUTTON} 
+                    style={closeButton} 
+                    size={SEARCH_BAR_HEIGHT}
+                /> 
+      } else if (tabMode===tabModes.filter) {
+        button = <Button 
+                    onPress={() => this.props.updateTabMode(tabModes.default)} 
+                    buttonType={FILTER_BUTTON} 
+                    style={closeButton} 
+                    size={SEARCH_BAR_HEIGHT}
+                /> 
+      }
+
       return (
         <View>
           { tabMode === tabModes.search && (
@@ -147,8 +173,7 @@ export default class Search extends React.Component {
                        style={textInput}
                        value={input}
                        underlineColorAndroid={colors.transparent}/>
-            { tabMode===tabModes.search &&
-                <CloseButton onPress={() => this.props.updateTabMode(tabModes.default)} closeButtonType={CLOSE_BUTTON} style={closeButton} size={SEARCH_BAR_HEIGHT}/> }
+          {button}
           </View>
         </View>
       )
