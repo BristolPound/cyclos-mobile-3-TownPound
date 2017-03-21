@@ -30,6 +30,12 @@ export const MapViewport = {
     latitudeDelta: 0.006 * mapHeight / (mapWidth * longitudePerLatitude),
 }
 
+export const tabModes = {
+  default: 'default',
+  filter: 'filter',
+  serach: 'search'
+}
+
 // We want the center for sorting businesses higher than the actual centre of map.
 // 1/15 of mapHeight higher than center of map, which is 22.5px higher than center of screen.
 // So in total around 60 - 70 px higher than screen centre
@@ -54,7 +60,7 @@ const initialState = {
   closestBusinesses: [],
   mapViewport: MapViewport,
   forceRegion: MapViewport,
-  searchMode: false,
+  tabMode: tabModes.default,
   traderScreenBusinessId: undefined,
   geolocationStatus: null,
   businessListRef: null,
@@ -80,8 +86,8 @@ export const moveMap = (viewport) => ({
   viewport
 })
 
-export const updateSearchMode = (mode) => ({
-    type: 'business/UPDATE_SEARCH_MODE',
+export const updateTabMode = (mode) => ({
+    type: 'business/UPDATE_TAB_MODE',
     mode
 })
 
@@ -218,8 +224,8 @@ const reducer = (state = initialState, action) => {
       })
       break
 
-    case 'business/UPDATE_SEARCH_MODE':
-      state = merge(state, { searchMode: action.mode })
+    case 'business/UPDATE_TAB_MODE':
+      state = merge(state, { tabMode: action.mode })
       break
 
     case 'business/GEOLOCATION_FAILED':
@@ -235,7 +241,7 @@ const reducer = (state = initialState, action) => {
       break
 
     case 'navigation/NAVIGATE_TO_TAB':
-      state = merge(state, { searchMode: false })
+      state = merge(state, { tabMode: tabModes.default })
   }
   return state
 }
