@@ -9,6 +9,8 @@ import { CloseButton } from '../common/CloseButton'
 import DraggableList from './DraggableList'
 import ComponentList from './ComponentList'
 
+import { tabModes } from '../../store/reducer/business'
+
 import colors from '../../util/colors'
 import { addColorCodes, getBusinessName } from '../../util/business'
 import searchTabStyle, { maxExpandedHeight, SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN } from './SearchTabStyle'
@@ -38,7 +40,7 @@ export default class Search extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-      if (!nextProps.searchMode && this.props.searchMode) {
+      if (nextProps.tabMode !== tabModes.search && this.props.tabMode === tabModes.search) {
         this.refs.textInput.blur()
         this.setState({ searchTerms: [], input: null, componentListArray: [] })
       }
@@ -55,8 +57,9 @@ export default class Search extends React.Component {
         return match
       }
       this.refs.ExpandPanel && this.refs.ExpandPanel.resetToInitalState()
+      console.log(allBusinesses)
       const filteredBusinessList = this.state.searchTerms.length
-      ? _.filter(allBusinesses, business => termsMatch(getBusinessName(business)) || termsMatch(business.fields.username.value))
+      ? _.filter(allBusinesses, business => termsMatch(getBusinessName(business)) || termsMatch(business.fields.username.value) || _.some(business.fields.businesscategory.value, (c) => termsMatch(c) ))
       : []
       const componentListArray = this.createComponentListArray(filteredBusinessList)
       this.setState({ componentListArray })
@@ -105,7 +108,7 @@ export default class Search extends React.Component {
 
     render() {
       const { componentListArray, input } = this.state
-      const { searchMode, updateSearchMode } = this.props
+      const { tabMode, updateTabMode } = this.props
 
       const childrenHeight = componentListArray.length * ROW_HEIGHT
 
@@ -113,7 +116,7 @@ export default class Search extends React.Component {
 
       return (
         <View>
-          { searchMode && (
+          { tabMode === tabModes.search && (
                   <DraggableList style={expandPanel}
                                         ref='ExpandPanel'
                                         topOffset={[ SEARCH_BAR_HEIGHT + SEARCH_BAR_MARGIN ]}
@@ -136,7 +139,7 @@ export default class Search extends React.Component {
             </TouchableOpacity>
             <TextInput accessibilityLabel='Search'
                        ref='textInput'
-                       onFocus={() => !searchMode && updateSearchMode(true)}
+                       onFocus={() => tabMode!==tabModes.search && updateTabMode(tabModes.search)}
                        onChangeText={(text) => this._onChangeText(text)}
                        placeholder={'Search Trader'}
                        placeholderTextColor={colors.gray4}
@@ -144,8 +147,8 @@ export default class Search extends React.Component {
                        style={textInput}
                        value={input}
                        underlineColorAndroid={colors.transparent}/>
-            { searchMode &&
-                <CloseButton onPress={() => this.props.updateSearchMode(false)} closeButtonType={CLOSE_BUTTON} style={closeButton} size={SEARCH_BAR_HEIGHT}/> }
+            { tabMode===tabModes.search &&
+                <CloseButton onPress={() => this.props.updateTabMode(tabModes.default)} closeButtonType={CLOSE_BUTTON} style={closeButton} size={SEARCH_BAR_HEIGHT}/> }
           </View>
         </View>
       )
