@@ -36,6 +36,41 @@ export const tabModes = {
   serach: 'search'
 }
 
+export const allFilters = [
+  {
+    label: 'foodanddrink',
+    text: "Food And Drink"
+  },
+  {
+    label: 'foryourbusiness',
+    text: "For your business"
+  },
+  {
+    label: 'foryourhome',
+    text: "For your home"
+  },
+  {
+    label: 'gettingaround',
+    text: "Getting around"
+  },
+  {
+    label: 'goingout',
+    text: "Going out"
+  },
+  {
+    label: 'lookingafteryou',
+    text: "Looking after you"
+  },
+  {
+    label: 'shopping',
+    text: "Shopping"
+  },
+  {
+    label: 'visitingbristol',
+    text: "Visiting Bristol"
+  }
+]
+
 // We want the center for sorting businesses higher than the actual centre of map.
 // 1/15 of mapHeight higher than center of map, which is 22.5px higher than center of screen.
 // So in total around 60 - 70 px higher than screen centre
@@ -58,6 +93,7 @@ const initialState = {
   businessListTimestamp: null,
   selectedBusinessId: undefined,
   closestBusinesses: [],
+  activeFilters: [],
   mapViewport: MapViewport,
   forceRegion: MapViewport,
   tabMode: tabModes.default,

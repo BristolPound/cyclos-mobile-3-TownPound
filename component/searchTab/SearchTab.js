@@ -115,7 +115,7 @@ class SearchTab extends React.Component {
                 deselect={() => this.props.selectBusiness(undefined)}
                 onPressItem={index => this.state.componentListArray[index].id && openTraderModal(this.state.componentListArray[index].id)} />
         </DraggableList>}
-        {tabMode === tabModes.search && <Overlay overlayVisible={true} onPress={() => updateTabMode(tabModes.default)} />}
+        {tabMode!==tabModes.default && <Overlay overlayVisible={true} onPress={() => updateTabMode(tabModes.default)} />}
         <Search {...this.props} />
       </View>
     )
@@ -125,6 +125,7 @@ class SearchTab extends React.Component {
 const mapStateToProps = (state) => ({
   closestBusinesses: state.business.closestBusinesses.filter(b => b.id !== state.business.selectedBusinessId),
   selectedBusiness: state.business.businessList[state.business.selectedBusinessId],
+  activeFilters: state.business.activeFilters,
   allBusinesses: state.business.businessList,
   tabMode: state.business.tabMode,
   mapViewport: state.business.mapViewport,
