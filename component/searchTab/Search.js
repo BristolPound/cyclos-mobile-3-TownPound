@@ -8,6 +8,7 @@ import BusinessListItem from './BusinessListItem'
 import { Button } from '../common/Button'
 import DraggableList from './DraggableList'
 import ComponentList from './ComponentList'
+import FiltersComponent from './FiltersComponent'
 
 import { tabModes } from '../../store/reducer/business'
 
@@ -61,7 +62,7 @@ export default class Search extends React.Component {
       this.refs.ExpandPanel && this.refs.ExpandPanel.resetToInitalState()
       console.log(allBusinesses)
       const filteredBusinessList = this.state.searchTerms.length
-      ? _.filter(allBusinesses, business => termsMatch(getBusinessName(business)) || termsMatch(business.fields.username.value) || _.some(business.fields.businesscategory.value, (c) => termsMatch(c) ))
+      ? _.filter(allBusinesses, business => termsMatch(getBusinessName(business)) || termsMatch(business.fields.username.value))
       : []
       const componentListArray = this.createComponentListArray(filteredBusinessList)
       this.setState({ componentListArray })
@@ -118,39 +119,39 @@ export default class Search extends React.Component {
 
       let button
       if (tabMode===tabModes.search) {
-        button = <Button 
-                    onPress={() => this.props.updateTabMode(tabModes.default)} 
-                    buttonType={CLOSE_BUTTON} 
-                    style={closeButton} 
+        button = <Button
+                    onPress={() => this.props.updateTabMode(tabModes.default)}
+                    buttonType={CLOSE_BUTTON}
+                    style={closeButton}
                     size={SEARCH_BAR_HEIGHT}
-                /> 
+                />
       } else if (tabMode===tabModes.default) {
-        button = <Button 
-                    onPress={() => this.props.updateTabMode(tabModes.filter)} 
-                    buttonType={FILTER_DISABLED_BUTTON} 
-                    style={closeButton} 
+        button = <Button
+                    onPress={() => this.props.updateTabMode(tabModes.filter)}
+                    buttonType={FILTER_DISABLED_BUTTON}
+                    style={closeButton}
                     size={SEARCH_BAR_HEIGHT}
-                /> 
+                />
       } else if (tabMode===tabModes.filter) {
-        button = <Button 
-                    onPress={() => this.props.updateTabMode(tabModes.default)} 
-                    buttonType={FILTER_BUTTON} 
-                    style={closeButton} 
+        button = <Button
+                    onPress={() => this.props.updateTabMode(tabModes.default)}
+                    buttonType={FILTER_BUTTON}
+                    style={closeButton}
                     size={SEARCH_BAR_HEIGHT}
-                /> 
+                />
       }
 
       return (
         <View>
           { tabMode === tabModes.search && (
                   <DraggableList style={expandPanel}
-                                        ref='ExpandPanel'
-                                        topOffset={[ SEARCH_BAR_HEIGHT + SEARCH_BAR_MARGIN ]}
-                                        expandedHeight={maxExpandedHeight}
-                                        childrenHeight={childrenHeight}
-                                        startPosition={0}
-                                        onTouchEnd={hasMoved => componentList && componentList.handleRelease(hasMoved)}
-                                        onTouchStart={location => componentList && componentList.highlightItem(location)}>
+                    ref='ExpandPanel'
+                    topOffset={[ SEARCH_BAR_HEIGHT + SEARCH_BAR_MARGIN ]}
+                    expandedHeight={maxExpandedHeight}
+                    childrenHeight={childrenHeight}
+                    startPosition={0}
+                    onTouchEnd={hasMoved => componentList && componentList.handleRelease(hasMoved)}
+                    onTouchStart={location => componentList && componentList.highlightItem(location)}>
                       <ComponentList
                           ref='componentList'
                           items={componentListArray}
@@ -158,6 +159,7 @@ export default class Search extends React.Component {
                           onPressItem={index => componentListArray[index].id && this._businessListOnClick(componentListArray[index].id)} />
                   </DraggableList>
           )}
+          {tabMode === tabModes.filter && <FiltersComponent {...this.props} />}
           <View style={searchBar}>
             <TouchableOpacity style={nearbyButton}
                 onPress={() => this.nearbyButtonPressed()}>
