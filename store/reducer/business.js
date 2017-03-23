@@ -136,6 +136,18 @@ const selectBusinessForModal = (id) => ({
   id
 })
 
+export const addFilter = (value) => (dispatch) =>
+  dispatch({
+      type: 'business/ADD_FILTER',
+      value
+  })
+
+export const removeFilter = (value) => (dispatch) =>
+  dispatch({
+      type: 'business/REMOVE_FILTER',
+      value
+  })
+
 export const selectBusiness = (businessId) => (dispatch) =>
   dispatch({
       type: 'business/SELECTED_BUSINESS',
@@ -257,6 +269,22 @@ const reducer = (state = initialState, action) => {
     case 'business/SET_TRADER_SCREEN_ID':
       state = merge(state, {
         traderScreenBusinessId: action.id,
+      })
+      break
+
+    case 'business/ADD_FILTER':
+      let activeFiltersTemp = state.activeFilters
+      activeFiltersTemp.push(action.value)
+      state = merge(state, {
+        activeFilters: activeFiltersTemp
+      })
+      break
+
+    case 'business/REMOVE_FILTER':
+      activeFiltersTemp = state.activeFilters
+      _.pull(activeFiltersTemp, action.value)
+      state = merge(state, {
+        activeFilters: activeFiltersTemp
       })
       break
 

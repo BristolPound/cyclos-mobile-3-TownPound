@@ -120,21 +120,21 @@ export default class Search extends React.Component {
       let button
       if (tabMode===tabModes.search) {
         button = <Button
-                    onPress={() => this.props.updateTabMode(tabModes.default)}
+                    onPress={() => updateTabMode(tabModes.default)}
                     buttonType={CLOSE_BUTTON}
                     style={closeButton}
                     size={SEARCH_BAR_HEIGHT}
                 />
       } else if (tabMode===tabModes.default) {
         button = <Button
-                    onPress={() => this.props.updateTabMode(tabModes.filter)}
+                    onPress={() => updateTabMode(tabModes.filter)}
                     buttonType={FILTER_DISABLED_BUTTON}
                     style={closeButton}
                     size={SEARCH_BAR_HEIGHT}
                 />
       } else if (tabMode===tabModes.filter) {
         button = <Button
-                    onPress={() => this.props.updateTabMode(tabModes.default)}
+                    onPress={() => updateTabMode(tabModes.default)}
                     buttonType={FILTER_BUTTON}
                     style={closeButton}
                     size={SEARCH_BAR_HEIGHT}
@@ -150,6 +150,7 @@ export default class Search extends React.Component {
                     expandedHeight={maxExpandedHeight}
                     childrenHeight={childrenHeight}
                     startPosition={0}
+                    dontMove={true}
                     onTouchEnd={hasMoved => componentList && componentList.handleRelease(hasMoved)}
                     onTouchStart={location => componentList && componentList.highlightItem(location)}>
                       <ComponentList
@@ -159,7 +160,12 @@ export default class Search extends React.Component {
                           onPressItem={index => componentListArray[index].id && this._businessListOnClick(componentListArray[index].id)} />
                   </DraggableList>
           )}
-          {tabMode === tabModes.filter && <FiltersComponent {...this.props} />}
+          { tabMode === tabModes.filter &&
+                  <FiltersComponent
+                    activeFilters={this.props.activeFilters}
+                    removeFilter={this.props.removeFilter}
+                    addFilter={this.props.addFilter}
+                  />}
           <View style={searchBar}>
             <TouchableOpacity style={nearbyButton}
                 onPress={() => this.nearbyButtonPressed()}>
