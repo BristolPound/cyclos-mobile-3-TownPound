@@ -3,7 +3,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import { Dimensions } from 'react-native'
 import merge from '../../util/merge'
-import { getClosestBusinesses, offsetOverlappingBusinesses } from '../../util/business'
+import { getClosestBusinesses, offsetOverlappingBusinesses, getBusinessesByFilter, getBusinessesByExclusiveFilter } from '../../util/business'
 import { addFailedAction } from './networkConnection'
 import { getBusinesses } from '../../api/users'
 import { UNEXPECTED_DATA } from '../../api/apiError'
@@ -94,6 +94,7 @@ const initialState = {
   selectedBusinessId: undefined,
   closestBusinesses: [],
   activeFilters: [],
+  filteredBusinesses: [],
   mapViewport: MapViewport,
   forceRegion: MapViewport,
   tabMode: tabModes.default,
@@ -273,18 +274,22 @@ const reducer = (state = initialState, action) => {
       break
 
     case 'business/ADD_FILTER':
-      let activeFiltersTemp = state.activeFilters
-      activeFiltersTemp.push(action.value)
+      let newActiveFilters = state.activeFilters
+      newActiveFilters.push(action.value)
+      let newFilteredBusinesses = _.union(getBusinessesByFilter(state.businessList, action.value), state.filteredBusinesses)
       state = merge(state, {
-        activeFilters: activeFiltersTemp
+        activeFilters: newActiveFilters,
+        filteredBusinesses: newFilteredBusinesses
       })
       break
 
     case 'business/REMOVE_FILTER':
-      activeFiltersTemp = state.activeFilters
-      _.pull(activeFiltersTemp, action.value)
+      newActiveFilters = state.activeFilters
+      _.pull(newActiveFilters, action.value)
+      newFilteredBusinesses = _.difference(state.filteredBusinesses, getBusinessesByExclusiveFilter(state.businessList, newActiveFilters, action.value))
       state = merge(state, {
-        activeFilters: activeFiltersTemp
+        activeFilters: newActiveFilters,
+        filteredBusinesses: newFilteredBusinesses
       })
       break
 

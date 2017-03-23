@@ -70,6 +70,18 @@ export const offsetOverlappingBusinesses = (businesses) => {
     return businesses
 }
 
+const hasCategory = (category) => (business) => business.fields.businesscategory && business.fields.businesscategory.value.includes(category)
+
+const hasExclusiveCategory = (activeFilters, category) => (business) => business.fields.businesscategory && business.fields.businesscategory.value.includes(category) && _.every(activeFilters, (filter) => !business.fields.businesscategory.value.includes(filter))
+
+export const getBusinessesByFilter = (businesses, category) => {
+    return _.filter(businesses, hasCategory(category))
+}
+
+export const getBusinessesByExclusiveFilter = (businesses, activeFilters, category) => {
+    return _.filter(businesses, hasExclusiveCategory(activeFilters, category))
+}
+
 export const isIncorrectLocation = (location) => {
     return _.inRange(location.longitude, -0.01, 0.01) && _.inRange(location.latitude, -0.01, 0.01)
   }
