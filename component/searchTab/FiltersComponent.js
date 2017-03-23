@@ -56,7 +56,7 @@ const ComponentForItem = (item) => {
               <ProfileImage image={images[item.label]} style={styles.listItem.image} category={'shop'} borderColor='offWhite'/>
               <View style={{ marginLeft: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1, marginRight: 10 }}>
                   <DefaultText style={{ fontSize: isScreenSmall ? 16 : 18}}>{item.text}</DefaultText>
-                  {<DefaultText style={{ fontSize: isScreenSmall ? 16 : 18}}>a</DefaultText>}
+                  {item.filterActive && <DefaultText style={{ fontSize: isScreenSmall ? 16 : 18}}>a</DefaultText>}
               </View>
           </View>
       </View>
@@ -69,20 +69,24 @@ export default class FiltersComponent extends React.Component {
       this.state = { componentListArray: this.createComponentListArray(allFilters) }
     }
 
-    updateResults = () => {
+    componentWillReceiveProps(nextProps) {
       this.refs.FilterPanel && this.refs.FilterPanel.resetToInitalState()
       const componentListArray = this.createComponentListArray(allFilters)
       this.setState({ componentListArray })
     }
 
-    debouncedUpdate = _.debounce(() => this.updateResults(), 800)
-
-    _filtersListOnClick(id) {
+    _filtersListOnClick(filter) {
+      if (filter.filterActive) {
+        this.props.removeFilter(filter.label)
+      } else {
+        this.props.addFilter(filter.label)
+      }
     }
 
     createComponentListArray(list) {
       const makePressable = (itemProps) => {
         itemProps.pressable = true
+        itemProps.filterActive = this.props.activeFilters.includes(itemProps.label)
         return itemProps
       }
       return [ `FILTERED BY `, ...list.map(makePressable) ]
@@ -103,13 +107,14 @@ export default class FiltersComponent extends React.Component {
             expandedHeight={maxExpandedHeight}
             childrenHeight={childrenHeight}
             startPosition={0}
+            dontMove={true}
             onTouchEnd={hasMoved => componentList && componentList.handleRelease(hasMoved)}
             onTouchStart={location => componentList && componentList.highlightItem(location)}>
               <ComponentList
                   ref='componentList'
                   items={componentListArray}
                   componentForItem={ComponentForItem}
-                  onPressItem={index => componentListArray[index] && this._filtersListOnClick(componentListArray[index].label)} />
+                  onPressItem={index => componentListArray[index] && this._filtersListOnClick(componentListArray[index])} />
           </DraggableList>
       )
     }
