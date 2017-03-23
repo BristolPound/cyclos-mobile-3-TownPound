@@ -34,7 +34,7 @@ const getTransactionImage = (user, businessList) => {
 }
 
 const renderRow = (transaction, openDetailsModal, businessList) =>
-  <TouchableHighlight
+    <TouchableHighlight
       onPress={() => transaction.relatedAccount.user && openDetailsModal(transaction.relatedAccount.user)}
       underlayColor={color.transparent}
       key={transaction.transactionNumber}>
@@ -42,7 +42,7 @@ const renderRow = (transaction, openDetailsModal, businessList) =>
       <ProfileImage
         image={getTransactionImage(transaction.relatedAccount.user, businessList)}
         style={styles.row.image}
-        category='shop'
+        category={businessList[transaction.relatedAccount.user.id] ? 'shop' : 'person'}
         colorCode={transaction.colorCode}/>
       <View style={styles.row.textContainer}>
         <DefaultText style={styles.row.text}>
