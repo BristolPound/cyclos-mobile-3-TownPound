@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TextInput, TouchableOpacity, Image } from 'react-native'
+import { View, TextInput, TouchableHighlight, Image, ScrollView, Platform } from 'react-native'
 import _ from 'lodash'
 import haversine from 'haversine'
 
@@ -43,15 +43,14 @@ const { searchHeaderText, closeButton, expandPanel, nearbyButton } = searchTabSt
 
 const { container, contents, status } = styles.listItem
 
-const ComponentForItem = (item) => {
+const ComponentForItem = (item, onPress) => {
   if (typeof item === 'string') {
     return  <DefaultText style={searchHeaderText}>
                 { item }
             </DefaultText>
   }
    return (
-    <View style={container} ref="filterListItem">
-          <View style={status}/>
+    <TouchableHighlight style={container} ref="filterListItem" onPress={onPress} underlayColor={colors.offWhite}>
           <View style={contents}>
               <ProfileImage image={images[item.label]} style={styles.listItem.image} category={'shop'} borderColor='offWhite'/>
               <View style={{ marginLeft: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1, marginRight: 10 }}>
@@ -59,8 +58,7 @@ const ComponentForItem = (item) => {
                   {item.filterActive && <DefaultText style={{ fontSize: isScreenSmall ? 16 : 18}}>a</DefaultText>}
               </View>
           </View>
-      </View>
-    )
+    </TouchableHighlight>)
 }
 
 export default class FiltersComponent extends React.Component {
@@ -84,12 +82,12 @@ export default class FiltersComponent extends React.Component {
     }
 
     createComponentListArray(list) {
-      const makePressable = (itemProps) => {
+      const setFilterState = (itemProps) => {
         itemProps.pressable = true
         itemProps.filterActive = this.props.activeFilters.includes(itemProps.label)
         return itemProps
       }
-      return [ `FILTERED BY `, ...list.map(makePressable) ]
+      return [ `FILTERED BY `, ...list.map(setFilterState) ]
     }
 
     render() {
@@ -101,21 +99,27 @@ export default class FiltersComponent extends React.Component {
       const { componentList } = this.refs
 
       return (
-          <DraggableList style={expandPanel}
-            ref='FilterPanel'
-            topOffset={[ SEARCH_BAR_HEIGHT + SEARCH_BAR_MARGIN ]}
-            expandedHeight={maxExpandedHeight}
-            childrenHeight={childrenHeight}
-            startPosition={0}
-            dontMove={true}
-            onTouchEnd={hasMoved => componentList && componentList.handleRelease(hasMoved)}
-            onTouchStart={location => componentList && componentList.highlightItem(location)}>
-              <ComponentList
-                  ref='componentList'
-                  items={componentListArray}
-                  componentForItem={ComponentForItem}
-                  onPressItem={index => componentListArray[index] && this._filtersListOnClick(componentListArray[index])} />
-          </DraggableList>
+          <ScrollView
+            style={{
+              top: SEARCH_BAR_HEIGHT + SEARCH_BAR_MARGIN,
+              overflow: 'hidden',
+              position: 'absolute',
+              // zIndex is needed for overflow: hidden on android, but breaks shadow on iOS
+              zIndex: Platform.OS === 'ios' ? undefined : 100,
+              ...expandPanel}} >
+              {componentListArray.map((item, index) => {
+                let containerBackgroundColor = item.pressable ? 'white' : 'transparent'
+                return (
+                  //zIndex is required for overflow to work on android
+                  <View style={{ backgroundColor: containerBackgroundColor, overflow: 'hidden', zIndex: 100 }}
+                      key={item.id || index}>
+                    {ComponentForItem(item, () => this._filtersListOnClick(item))}
+                  </View>
+                )
+              }
+
+              )}
+          </ScrollView>
       )
     }
 }
