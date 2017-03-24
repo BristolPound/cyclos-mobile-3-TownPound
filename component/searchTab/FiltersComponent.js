@@ -10,10 +10,11 @@ import DraggableList from './DraggableList'
 import ComponentList from './ComponentList'
 import ProfileImage from '../profileImage/ProfileImage'
 import { isScreenSmall } from '../../util/ScreenSizes'
+import merge from '../../util/merge'
 
 import { tabModes, allFilters } from '../../store/reducer/business'
 import styles from './BusinessListStyle'
-
+import { dimensions, margin } from '../../util/StyleUtils'
 import colors from '../../util/colors'
 import { addColorCodes, getBusinessName } from '../../util/business'
 import searchTabStyle, { maxExpandedHeight, SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN } from './SearchTabStyle'
@@ -27,6 +28,8 @@ const foryourbusiness = require('./assets/foryourbusiness.png')
 const foryourhome = require('./assets/foryourhome.png')
 const gettingaround = require('./assets/gettingaround.png')
 const lookingafteryou = require('./assets/lookingafteryou.png')
+
+const TICK = require('./assets/Tick.png')
 
 const images = {
   foodanddrink,
@@ -55,7 +58,7 @@ const ComponentForItem = (item, onPress) => {
               <ProfileImage image={images[item.label]} style={styles.listItem.image} category={'shop'} borderColor='offWhite'/>
               <View style={{ marginLeft: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1, marginRight: 10 }}>
                   <DefaultText style={{ fontSize: isScreenSmall ? 16 : 18}}>{item.text}</DefaultText>
-                  {item.filterActive && <DefaultText style={{ fontSize: isScreenSmall ? 16 : 18}}>a</DefaultText>}
+                  {item.filterActive && <Image style={merge(...dimensions(18), margin((24 - 18) / 2))} source={TICK} />}
               </View>
           </View>
     </TouchableHighlight>)
