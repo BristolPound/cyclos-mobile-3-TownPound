@@ -276,20 +276,20 @@ const reducer = (state = initialState, action) => {
     case 'business/ADD_FILTER':
       let newActiveFilters = state.activeFilters
       newActiveFilters.push(action.value)
-      let newFilteredBusinesses = _.union(getBusinessesByFilter(state.businessList, action.value), state.filteredBusinesses)
+      // let newFilteredBusinesses = _.union(getBusinessesByFilter(state.businessList, action.value), state.filteredBusinesses)
       state = merge(state, {
         activeFilters: newActiveFilters,
-        filteredBusinesses: newFilteredBusinesses
+        // filteredBusinesses: newFilteredBusinesses
       })
       break
 
     case 'business/REMOVE_FILTER':
       newActiveFilters = state.activeFilters
       _.pull(newActiveFilters, action.value)
-      newFilteredBusinesses = _.difference(state.filteredBusinesses, getBusinessesByExclusiveFilter(state.businessList, newActiveFilters, action.value))
+      // newFilteredBusinesses = _.difference(state.filteredBusinesses, getBusinessesByExclusiveFilter(state.businessList, newActiveFilters, action.value))
       state = merge(state, {
         activeFilters: newActiveFilters,
-        filteredBusinesses: newFilteredBusinesses
+        // filteredBusinesses: newFilteredBusinesses
       })
       break
 
