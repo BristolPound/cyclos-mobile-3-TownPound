@@ -4,7 +4,7 @@ import HTMLView from 'react-native-htmlview'
 import { View, Linking, Image, TouchableOpacity, Text } from 'react-native'
 import { MultilineText } from '../DefaultText'
 import addressToString from '../../util/addresses'
-import { businessHasAddress, getBusinessAddress } from '../../util/business'
+import { businessHasAddress, getBusinessAddress, getBusinessName } from '../../util/business'
 import styles from './BusinessDetailsStyle'
 
 const Field = ({icon, text, accessibilityLabel, onPress}) =>
@@ -71,6 +71,22 @@ function getFields(business, goToTraderLocation) {
 
     business.fields.businessemail && fields.push(
       businessDetail('emailField', require('./assets/Email.png'), business.fields.businessemail.value, () => Communications.email([business.fields.businessemail.value], null, null, null, null))
+    )
+
+    business.fields.facebook && fields.push(
+      businessDetail('facebookField', require('./assets/Facebook.png'), getBusinessName(business), () => Communications.web(business.fields.facebook.value))
+    )
+
+    business.fields.businesswebsite && fields.push(
+          businessDetail('websiteField', require('./assets/Website.png'), business.fields.businesswebsite.value, () => Communications.web(business.fields.businesswebsite.value))
+    )
+
+    business.fields.twitter && fields.push(
+          businessDetail('twitterField', require('./assets/Twitter.png'), business.fields.twitter.value.split("@").join(""), () => Communications.web("https://www.twitter.com/" + business.fields.twitter.value.split("@").join("")))
+    )
+
+    business.fields.linkedin && fields.push(
+          businessDetail('linkedinField', require('./assets/Linkedin.png'), getBusinessName(business), () => Communications.web(business.fields.linkedin.value))
     )
 
   return fields
