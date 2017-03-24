@@ -21,7 +21,7 @@ const TransactionItem = (transaction) => {
       </View>
       <View style={styles.list.midColumnOuter}>
         <View style={styles.list.midColumnInner}>
-          <DefaultText style={styles.list.timeText}>{format(transaction.date, 'hh:mm')}</DefaultText>
+          <DefaultText style={styles.list.timeText}>{format(transaction.date, 'HH:mm:ss')}</DefaultText>
           <DefaultText style={styles.list.idText}>{transaction.transactionNumber}</DefaultText>
         </View>
       </View>
