@@ -86,7 +86,7 @@ export const isIncorrectLocation = (location) => {
     return _.inRange(location.longitude, -0.01, 0.01) && _.inRange(location.latitude, -0.01, 0.01)
   }
 
-export const businessHasAddress = (business) => business.fields.addresses && _.size(business.fields.addresses.value) > 0
+export const businessHasAddress = (business) => business.fields.addresses && _.size(business.fields.addresses.value) > 0 && _.values(business.fields.addresses.value)[0].location
 
 export const getBusinessLocation = (business) => _.values(business.fields.addresses.value)[0].location
 
