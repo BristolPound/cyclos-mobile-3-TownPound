@@ -1,25 +1,11 @@
 import React from 'react'
-import { View, TextInput, TouchableHighlight, Image, ScrollView, Platform } from 'react-native'
-import _ from 'lodash'
-import haversine from 'haversine'
-
+import { View, Image } from 'react-native'
 import DefaultText from '../DefaultText'
-import BusinessListItem from './BusinessListItem'
-import { Button } from '../common/Button'
-import DraggableList from './DraggableList'
-import ComponentList from './ComponentList'
 import ProfileImage from '../profileImage/ProfileImage'
-import { isScreenSmall } from '../../util/ScreenSizes'
-import merge from '../../util/merge'
 import FixedScrollableList from './FixedScrollableList'
-
-import { tabModes, allFilters } from '../../store/reducer/business'
+import { allFilters } from '../../store/reducer/business'
 import styles from './BusinessListStyle'
-import { dimensions, margin } from '../../util/StyleUtils'
-import colors from '../../util/colors'
-import { addColorCodes, getBusinessName } from '../../util/business'
-import searchTabStyle, { maxExpandedHeight, SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN } from './SearchTabStyle'
-import { ROW_HEIGHT } from './BusinessListStyle'
+import searchTabStyle from './SearchTabStyle'
 
 const foodanddrink = require('./assets/foodanddrink.png')
 const goingout = require('./assets/goingout.png')
@@ -43,9 +29,7 @@ const images = {
   lookingafteryou
 }
 
-const { searchHeaderText, closeButton, expandPanel, nearbyButton, fixedScrollableListContainer } = searchTabStyle.searchTab
-
-const { container, contents, status } = styles.listItem
+const { searchHeaderText, fixedScrollableListContainer } = searchTabStyle.searchTab
 
 const ComponentForItem = (item, onPress) => {
   if (typeof item === 'string') {
@@ -54,14 +38,19 @@ const ComponentForItem = (item, onPress) => {
             </DefaultText>
   }
    return (
-          <View style={contents}>
-              <ProfileImage image={images[item.label]} style={styles.listItem.image} category={'shop'} borderColor='offWhite'/>
-              <View style={{ marginLeft: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1, marginRight: 10 }}>
-                  <DefaultText style={{ fontSize: isScreenSmall ? 16 : 18}}>{item.text}</DefaultText>
-                  {item.filterActive && <Image style={merge(...dimensions(18), margin((24 - 18) / 2))} source={TICK} />}
+          <View style={styles.listItem.contents}>
+              <ProfileImage image={images[item.label]}
+                  style={styles.listItem.image}
+                  category={'shop'}
+                  borderColor='offWhite'/>
+              <View style={styles.filterItem.filterContainer}>
+                  <DefaultText style={styles.filterItem.filterText}>
+                      {item.text}
+                  </DefaultText>
+                  {item.filterActive
+                    && <Image style={styles.filterItem.filterTick} source={TICK} />}
               </View>
-          </View>
-    )
+          </View> )
 }
 
 export default class FiltersComponent extends React.Component {
@@ -71,7 +60,6 @@ export default class FiltersComponent extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-      this.refs.FilterPanel && this.refs.FilterPanel.resetToInitalState()
       const componentListArray = this.createComponentListArray(allFilters)
       this.setState({ componentListArray })
     }
@@ -94,17 +82,10 @@ export default class FiltersComponent extends React.Component {
     }
 
     render() {
-      const { componentListArray } = this.state
-      const { activeFilters } = this.props
-
-      const childrenHeight = componentListArray.length * ROW_HEIGHT
-
-      const { componentList } = this.refs
-
       return (
           <FixedScrollableList
               style={fixedScrollableListContainer}
-              items={componentListArray}
+              items={this.state.componentListArray}
               componentForItem={ComponentForItem}
               onPress={(item) => this._filtersListOnClick(item)}>
           </FixedScrollableList>

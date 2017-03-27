@@ -1,6 +1,6 @@
 import color from '../../util/colors'
 import { isScreenSmall } from '../../util/ScreenSizes'
-import { dimensions, padding, border } from '../../util/StyleUtils'
+import { dimensions, padding, border, margin } from '../../util/StyleUtils'
 
 export const ROW_HEIGHT = isScreenSmall ? 50 : 60
 const CONTENT_PADDING = isScreenSmall ? 4 : 8
@@ -71,6 +71,23 @@ const styles = {
       borderLeftColor: color.gray5
     }
   },
+  filterItem: {
+    filterContainer: {
+      marginLeft: 10,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      flex: 1,
+      marginRight: 10
+    },
+    filterText: {
+      fontSize: isScreenSmall ? 16 : 18
+    },
+    filterTick: {
+      ...dimensions(18),
+      ...margin(3)
+    },
+  }
 }
 
 export default styles
