@@ -75,9 +75,10 @@ export default class Search extends React.Component {
       this.debouncedUpdate()
     }
 
-    _businessListOnClick(id) {
+    _businessListOnClick(item) {
+      console.log(item)
       this.refs.textInput.blur()
-      this.props.openTraderModal(id)
+      this.props.openTraderModal(item.id)
     }
 
     nearbyButtonEnabled() {
@@ -148,7 +149,7 @@ export default class Search extends React.Component {
                     style={fixedScrollableListContainer}
                     items={componentListArray}
                     componentForItem={ComponentForItem}
-                    onPress={(id) => this._businessListOnClick(id)}>
+                    onPress={(item) => this._businessListOnClick(item)}>
                 </FixedScrollableList>
           )}
           { tabMode === tabModes.filter &&
