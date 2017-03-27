@@ -17,7 +17,7 @@ import { addColorCodes, getBusinessName } from '../../util/business'
 import searchTabStyle, { maxExpandedHeight, SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN } from './SearchTabStyle'
 import { ROW_HEIGHT } from './BusinessListStyle'
 
-const { searchBar, textInput, searchHeaderText, closeButton, expandPanel, nearbyButton, fixedScrollableListContainer } = searchTabStyle.searchTab
+const { searchBar, textInput, searchHeaderText, closeButton, nearbyButton, fixedScrollableListContainer } = searchTabStyle.searchTab
 
 const CLOSE_BUTTON = require('../common/assets/Close.png')
 const FILTER_BUTTON = require('./assets/filters.png')
@@ -59,8 +59,6 @@ export default class Search extends React.Component {
         })
         return match
       }
-      this.refs.ExpandPanel && this.refs.ExpandPanel.resetToInitalState()
-      console.log(allBusinesses)
       const filteredBusinessList = this.state.searchTerms.length
       ? _.filter(allBusinesses, business => termsMatch(getBusinessName(business)) || termsMatch(business.fields.username.value))
       : []
@@ -113,50 +111,41 @@ export default class Search extends React.Component {
       const { componentListArray, input } = this.state
       const { tabMode, updateTabMode } = this.props
 
-      const childrenHeight = componentListArray.length * ROW_HEIGHT
-
-      const { componentList } = this.refs
-
       let button
+      let modeComponent
       if (tabMode===tabModes.search) {
         button = <Button
                     onPress={() => updateTabMode(tabModes.default)}
                     buttonType={CLOSE_BUTTON}
                     style={closeButton}
-                    size={SEARCH_BAR_HEIGHT}
-                />
+                    size={SEARCH_BAR_HEIGHT}/>
+        modeComponent = <FixedScrollableList
+                    style={fixedScrollableListContainer}
+                    items={componentListArray}
+                    componentForItem={ComponentForItem}
+                    onPress={(item) => this._businessListOnClick(item)}/>
       } else if (tabMode===tabModes.default) {
         button = <Button
                     onPress={() => updateTabMode(tabModes.filter)}
                     buttonType={FILTER_DISABLED_BUTTON}
                     style={closeButton}
-                    size={SEARCH_BAR_HEIGHT}
-                />
+                    size={SEARCH_BAR_HEIGHT}/>
+        modeComponent = undefined
       } else if (tabMode===tabModes.filter) {
         button = <Button
                     onPress={() => updateTabMode(tabModes.default)}
                     buttonType={FILTER_BUTTON}
                     style={closeButton}
-                    size={SEARCH_BAR_HEIGHT}
-                />
+                    size={SEARCH_BAR_HEIGHT}/>
+        modeComponent = <FiltersComponent
+                    activeFilters={this.props.activeFilters}
+                    removeFilter={this.props.removeFilter}
+                    addFilter={this.props.addFilter}/>
       }
 
       return (
         <View>
-          { tabMode === tabModes.search && (
-                <FixedScrollableList
-                    style={fixedScrollableListContainer}
-                    items={componentListArray}
-                    componentForItem={ComponentForItem}
-                    onPress={(item) => this._businessListOnClick(item)}>
-                </FixedScrollableList>
-          )}
-          { tabMode === tabModes.filter &&
-                  <FiltersComponent
-                    activeFilters={this.props.activeFilters}
-                    removeFilter={this.props.removeFilter}
-                    addFilter={this.props.addFilter}
-                  />}
+          {modeComponent}
           <View style={searchBar}>
             <TouchableOpacity style={nearbyButton}
                 onPress={() => this.nearbyButtonPressed()}>
