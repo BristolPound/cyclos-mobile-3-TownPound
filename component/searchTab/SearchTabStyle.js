@@ -60,6 +60,17 @@ const styles = {
     },
     hide: {
       height: 0
+    },
+    fixedScrollableListContainer: {
+      left: MARGIN_SIZE,
+      right: MARGIN_SIZE,
+      flex: 1,
+      maxHeight: maxExpandedHeight,
+      top: SEARCH_BAR_HEIGHT + SEARCH_BAR_MARGIN,
+      overflow: 'hidden',
+      position: 'absolute',
+      // zIndex is needed for overflow: hidden on android, but breaks shadow on iOS
+      zIndex: platform.isIOS() ? undefined : 100
     }
   }
 }
