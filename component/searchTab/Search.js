@@ -11,13 +11,13 @@ import ComponentList from './ComponentList'
 import FiltersComponent from './FiltersComponent'
 
 import { tabModes } from '../../store/reducer/business'
-
+import FixedScrollableList from './FixedScrollableList'
 import colors from '../../util/colors'
 import { addColorCodes, getBusinessName } from '../../util/business'
 import searchTabStyle, { maxExpandedHeight, SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN } from './SearchTabStyle'
 import { ROW_HEIGHT } from './BusinessListStyle'
 
-const { searchBar, textInput, searchHeaderText, closeButton, expandPanel, nearbyButton } = searchTabStyle.searchTab
+const { searchBar, textInput, searchHeaderText, closeButton, expandPanel, nearbyButton, fixedScrollableListContainer } = searchTabStyle.searchTab
 
 const CLOSE_BUTTON = require('../common/assets/Close.png')
 const FILTER_BUTTON = require('./assets/filters.png')
@@ -144,21 +144,12 @@ export default class Search extends React.Component {
       return (
         <View>
           { tabMode === tabModes.search && (
-                  <DraggableList style={expandPanel}
-                    ref='ExpandPanel'
-                    topOffset={[ SEARCH_BAR_HEIGHT + SEARCH_BAR_MARGIN ]}
-                    expandedHeight={maxExpandedHeight}
-                    childrenHeight={childrenHeight}
-                    startPosition={0}
-                    dontMove={true}
-                    onTouchEnd={hasMoved => componentList && componentList.handleRelease(hasMoved)}
-                    onTouchStart={location => componentList && componentList.highlightItem(location)}>
-                      <ComponentList
-                          ref='componentList'
-                          items={componentListArray}
-                          componentForItem={ComponentForItem}
-                          onPressItem={index => componentListArray[index].id && this._businessListOnClick(componentListArray[index].id)} />
-                  </DraggableList>
+                <FixedScrollableList
+                    style={fixedScrollableListContainer}
+                    items={componentListArray}
+                    componentForItem={ComponentForItem}
+                    onPress={(id) => this._businessListOnClick(id)}>
+                </FixedScrollableList>
           )}
           { tabMode === tabModes.filter &&
                   <FiltersComponent
