@@ -9,7 +9,7 @@ import BusinessDetails from './businessDetails/BusinessDetails'
 import { sectionHeight } from '../util/StyleUtils'
 import { resetForm } from '../store/reducer/sendMoney'
 import { goToLocation } from '../store/reducer/navigation'
-import { isIncorrectLocation, getBusinessName, getBusinessImage, businessHasAddress, getBusinessLocation, getBusinessAddress } from '../util/business'
+import { isIncorrectLocation, getBusinessImage } from '../util/business'
 import DefaultText from './DefaultText'
 import categories from '../util/categories'
 
@@ -18,7 +18,7 @@ import merge from '../util/merge'
 // empty defaultText is needed so the transaction list doesn't disappear on expand details
 const TraderScreen = (props) => {
   let goToTraderLocation
-  let location = businessHasAddress(props.trader) ? getBusinessLocation(props.trader) : undefined
+  let location = props.trader.address.location ? props.trader.address.location : undefined
   if (location && !isIncorrectLocation(location)) {
     goToTraderLocation = () => {
       const region = merge(location, { latitudeDelta: 0.006, longitudeDelta: 0.006 })
@@ -30,11 +30,11 @@ const TraderScreen = (props) => {
       <View style={{maxHeight: Dimensions.get('window').height - sectionHeight}}>
       <ScrollView>
         <ProfileHeader
-            name={getBusinessName(props.trader)}
+            name={props.trader.name || ""}
             username={props.trader.fields.username.value}
             image={getBusinessImage(props.trader)}
             category={categories.shop}
-            address={getBusinessAddress(props.trader)}
+            address={props.trader.address}
             onPressClose={() => {props.hideModal(); props.resetForm()}}
             isModal={true}
             showMap={props.modalOpen}
