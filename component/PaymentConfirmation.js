@@ -8,7 +8,7 @@ import style from './PaymentConfirmationStyle'
 import ProfileHeader from './profileScreen/ProfileHeader'
 import DefaultText from './DefaultText'
 import categories from '../util/categories'
-import { getBusinessName, getBusinessImage } from '../util/business'
+import { getBusinessImage } from '../util/business'
 
 const PaymentConfirmation = (props) => {
 
@@ -20,7 +20,7 @@ const PaymentConfirmation = (props) => {
       <View style={style.container}>
         	<ScrollView contentContainerStyle={style.innerContainer}>
             <ProfileHeader
-              name={getBusinessName(props.payee)}
+              name={props.payee.name || ""}
               username={props.payee.fields.username.value}
               image={getBusinessImage(props.payee)}
               category={props.category}
