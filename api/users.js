@@ -14,9 +14,7 @@ const parseShortDisplay = fullDisplay =>
 
 export const getBusinesses = () =>
 	directoryAPI.staticDirectory()
-	.then(data => {
-    return data.directory
-  })
+	.then(data => data.directory)
 
 export const getAccountDetails = (dispatch) =>
   get('users/self', {
