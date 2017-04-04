@@ -13,7 +13,7 @@ import FiltersComponent from './FiltersComponent'
 import { tabModes } from '../../store/reducer/business'
 import FixedScrollableList from './FixedScrollableList'
 import colors from '../../util/colors'
-import { addColorCodes, getBusinessName } from '../../util/business'
+import { addColorCodes } from '../../util/business'
 import searchTabStyle, { maxExpandedHeight, SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN } from './SearchTabStyle'
 import { ROW_HEIGHT } from './BusinessListStyle'
 
@@ -60,7 +60,7 @@ export default class Search extends React.Component {
         return match
       }
       const filteredBusinessList = this.state.searchTerms.length
-      ? _.filter(allBusinesses, business => termsMatch(getBusinessName(business)) || termsMatch(business.fields.username.value))
+      ? _.filter(allBusinesses, business => termsMatch(business.name) || termsMatch(business.fields.username))
       : []
       const componentListArray = this.createComponentListArray(filteredBusinessList)
       this.setState({ componentListArray })
