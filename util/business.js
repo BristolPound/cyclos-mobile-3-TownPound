@@ -25,7 +25,7 @@ const isLocationWithinViewport = (location, viewport) => {
         &&  isCoordinateWithinViewport(location.longitude, viewport.longitude, viewport.longitudeDelta)
 }
 
-export const shouldBeDisplayed = (viewport) => (business) => business.address && business.address.location && isLocationWithinViewport(business.address.location, viewport)
+export const shouldBeDisplayed = (viewport) => (business) => business.address.location && isLocationWithinViewport(business.address.location, viewport)
 
 const businessAtLocation = (location) => (business) => {
     let atLocation = false
@@ -65,6 +65,7 @@ export const offsetOverlappingBusinesses = (businesses) => {
         index++
         business.colorCode = 0
     })
+    console.log(businesses)
     return businesses
 }
 
