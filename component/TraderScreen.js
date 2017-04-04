@@ -31,7 +31,7 @@ const TraderScreen = (props) => {
       <ScrollView>
         <ProfileHeader
             name={props.trader.name || ""}
-            username={props.trader.fields.username.value}
+            username={props.trader.fields.username}
             image={props.trader.image.url}
             category={categories.shop}
             address={props.trader.address}
