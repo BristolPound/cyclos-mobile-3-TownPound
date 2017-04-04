@@ -33,7 +33,7 @@ class BusinessListItem extends React.Component {
               <ProfileImage image={image ? {uri: image} : undefined} style={styles.listItem.image} category={'shop'} borderColor='offWhite' colorCode={colorCode}/>
               <View style={verticalStack}>
                   <DefaultText style={title}>{this.props.business.name}</DefaultText>
-                  <DefaultText style={styles.listItem.shortDisplay}>{username.value}</DefaultText>
+                  <DefaultText style={styles.listItem.shortDisplay}>{username}</DefaultText>
               </View>
           </View>
           {this.props.isSelected && <CloseButton onPress={this.props.deselect} closeButtonType={CLOSE_BUTTON} style={closeButton} size={SEARCH_BAR_HEIGHT+10}/>
