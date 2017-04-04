@@ -65,7 +65,6 @@ export const offsetOverlappingBusinesses = (businesses) => {
         index++
         business.colorCode = 0
     })
-    console.log(businesses)
     return businesses
 }
 
@@ -73,6 +72,3 @@ export const isIncorrectLocation = (location) => {
     return _.inRange(location.longitude, -0.01, 0.01) && _.inRange(location.latitude, -0.01, 0.01)
   }
 
-export const getBusinessImage = (business) => business.image
-    ? business.fields.image.field.options.baseUrl + business.image.name
-    : undefined

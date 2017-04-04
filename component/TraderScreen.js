@@ -9,7 +9,7 @@ import BusinessDetails from './businessDetails/BusinessDetails'
 import { sectionHeight } from '../util/StyleUtils'
 import { resetForm } from '../store/reducer/sendMoney'
 import { goToLocation } from '../store/reducer/navigation'
-import { isIncorrectLocation, getBusinessImage } from '../util/business'
+import { isIncorrectLocation } from '../util/business'
 import DefaultText from './DefaultText'
 import categories from '../util/categories'
 
@@ -32,7 +32,7 @@ const TraderScreen = (props) => {
         <ProfileHeader
             name={props.trader.name || ""}
             username={props.trader.fields.username.value}
-            image={getBusinessImage(props.trader)}
+            image={props.trader.image.url}
             category={categories.shop}
             address={props.trader.address}
             onPressClose={() => {props.hideModal(); props.resetForm()}}
