@@ -4,7 +4,6 @@ import HTMLView from 'react-native-htmlview'
 import { View, Linking, Image, TouchableOpacity, Text } from 'react-native'
 import { MultilineText } from '../DefaultText'
 import addressToString from '../../util/addresses'
-import { businessHasAddress, getBusinessAddress, getBusinessName } from '../../util/business'
 import styles from './BusinessDetailsStyle'
 
 const Field = ({icon, text, accessibilityLabel, onPress}) =>
@@ -26,7 +25,7 @@ const renderFields = (fields) =>
     ))}
   </View>
 
-const renderExpander = (expandDetailsFn) => 
+const renderExpander = (expandDetailsFn) =>
   <View style={{paddingTop: 12}}>
     <View style={styles.separator}/>
     <TouchableOpacity
@@ -50,7 +49,7 @@ const renderDescription = (description) => {
       : null
     )
 }
-  
+
 
 
 
@@ -61,32 +60,32 @@ function getFields(business, goToTraderLocation) {
   // Order of display should be:
   //    access point*, special offer*, address, opening times*, phone number, email address
   // Note: access point and special offer aren't supported yet.
-    businessHasAddress(business) && fields.push(
-      businessDetail('addressField', require('./assets/Address.png'), addressToString(getBusinessAddress(business)), goToTraderLocation )
+    business.address.location && fields.push(
+      businessDetail('addressField', require('./assets/Address.png'), addressToString(business.address), goToTraderLocation )
     )
 
     business.fields.businessphone && fields.push(
-      businessDetail('phoneField', require('./assets/Phone.png'), business.fields.businessphone.value, () => Communications.phonecall(business.fields.businessphone.value, true))
+      businessDetail('phoneField', require('./assets/Phone.png'), business.fields.businessphone, () => Communications.phonecall(business.fields.businessphone, true))
     )
 
     business.fields.businessemail && fields.push(
-      businessDetail('emailField', require('./assets/Email.png'), business.fields.businessemail.value, () => Communications.email([business.fields.businessemail.value], null, null, null, null))
+      businessDetail('emailField', require('./assets/Email.png'), business.fields.businessemail, () => Communications.email([business.fields.businessemail], null, null, null, null))
     )
 
     business.fields.facebook && fields.push(
-      businessDetail('facebookField', require('./assets/Facebook.png'), getBusinessName(business), () => Communications.web(business.fields.facebook.value))
+      businessDetail('facebookField', require('./assets/Facebook.png'), business.name, () => Communications.web(business.fields.facebook))
     )
 
     business.fields.businesswebsite && fields.push(
-          businessDetail('websiteField', require('./assets/Website.png'), business.fields.businesswebsite.value, () => Communications.web(business.fields.businesswebsite.value))
+          businessDetail('websiteField', require('./assets/Website.png'), business.fields.businesswebsite, () => Communications.web(business.fields.businesswebsite))
     )
 
     business.fields.twitter && fields.push(
-          businessDetail('twitterField', require('./assets/Twitter.png'), business.fields.twitter.value.split("@").join(""), () => Communications.web("https://www.twitter.com/" + business.fields.twitter.value.split("@").join("")))
+          businessDetail('twitterField', require('./assets/Twitter.png'), business.fields.twitter.split("@").join(""), () => Communications.web("https://www.twitter.com/" + business.fields.twitter.split("@").join("")))
     )
 
     business.fields.linkedin && fields.push(
-          businessDetail('linkedinField', require('./assets/Linkedin.png'), getBusinessName(business), () => Communications.web(business.fields.linkedin.value))
+          businessDetail('linkedinField', require('./assets/Linkedin.png'), business.name, () => Communications.web(business.fields.linkedin))
     )
 
   return fields
@@ -96,7 +95,7 @@ const renderExpandedDetails = (expandedFields, description) => {
   return (
       <View>
         {renderFields(expandedFields)}
-        {description ? renderDescription(description.value) : undefined}
+        {description ? renderDescription(description) : undefined}
       </View>
     )
 }
@@ -124,7 +123,7 @@ class BusinessDetails extends React.Component {
     return (
       <View style={fields.length > 1 ? styles.moreDetails : styles.addressOnly}>
         {renderFields(fields)}
-        {this.state.isExpanded 
+        {this.state.isExpanded
           ? renderExpandedDetails(expandedFields, this.props.business.fields.description)
           : ((expandedFields.length > 0 || this.props.business.fields.description)
               ? renderExpander(() => this.expandDetails())
