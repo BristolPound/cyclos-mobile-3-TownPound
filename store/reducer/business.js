@@ -207,7 +207,8 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'business/BUSINESS_LIST_RECEIVED':
       const offsetBusinesses = offsetOverlappingBusinesses(action.businessList)
-      let closestBusinesses = getClosestBusinesses(action.businessList, businessArea(centerViewportHigher(state.mapViewport)))
+      const businesses = action.businessList
+      let closestBusinesses = getClosestBusinesses(businesses, businessArea(centerViewportHigher(state.mapViewport)))
       state = merge(state, {
         closestBusinesses,
         businessList: offsetBusinesses,
@@ -218,7 +219,8 @@ const reducer = (state = initialState, action) => {
     case 'business/UPDATE_MAP_VIEWPORT':
       let newViewport = merge(state.mapViewport, action.viewport) // action.viewport might only be partial (no deltas)
       // closestBusinesses is declared in the first switch case so we cannot define it here. Blame javascript!
-      closestBusinesses = getClosestBusinesses(state.businessList, businessArea(centerViewportHigher(newViewport)))
+      businesses = state.filteredBusinesses.length > 0 ? state.filteredBusinesses : state.businessList
+      closestBusinesses = getClosestBusinesses(businesses, businessArea(centerViewportHigher(newViewport)))
       // state.businessListRef && state.businessListRef.scrollAndSlideTo(1)
       // ^ resets the list to position 1 (even if the list was closed)
       state = merge(state, {
@@ -232,7 +234,8 @@ const reducer = (state = initialState, action) => {
       newViewport = merge(state.mapViewport, action.viewport) // action.viewport might only be partial (no deltas)
 
       // Since we wish to update the selected trader, allow the closest to be at the top of the list
-      closestBusinesses = getClosestBusinesses(state.businessList, businessArea(newViewport))
+      businesses = state.filteredBusinesses.length > 0 ? state.filteredBusinesses : state.businessList
+      closestBusinesses = getClosestBusinesses(businesses, businessArea(newViewport))
 
       state = merge(state, {
         closestBusinesses,
@@ -276,20 +279,25 @@ const reducer = (state = initialState, action) => {
     case 'business/ADD_FILTER':
       let newActiveFilters = state.activeFilters
       newActiveFilters.push(action.value)
-      // let newFilteredBusinesses = _.union(getBusinessesByFilter(state.businessList, action.value), state.filteredBusinesses)
+      let newFilteredBusinesses = _.union(getBusinessesByFilter(state.businessList, action.value), state.filteredBusinesses)
+      closestBusinesses = getClosestBusinesses(newFilteredBusinesses, businessArea(state.mapViewport))
       state = merge(state, {
+        closestBusinesses,
         activeFilters: newActiveFilters,
-        // filteredBusinesses: newFilteredBusinesses
+        filteredBusinesses: newFilteredBusinesses
       })
       break
 
     case 'business/REMOVE_FILTER':
       newActiveFilters = state.activeFilters
       _.pull(newActiveFilters, action.value)
-      // newFilteredBusinesses = _.difference(state.filteredBusinesses, getBusinessesByExclusiveFilter(state.businessList, newActiveFilters, action.value))
+      newFilteredBusinesses = _.difference(state.filteredBusinesses, getBusinessesByExclusiveFilter(state.businessList, newActiveFilters, action.value))
+      businesses = state.filteredBusinesses.length > 0 ? state.filteredBusinesses : state.businessList
+      closestBusinesses = getClosestBusinesses(businesses, businessArea(state.mapViewport))
       state = merge(state, {
+        closestBusinesses,
         activeFilters: newActiveFilters,
-        // filteredBusinesses: newFilteredBusinesses
+        filteredBusinesses: newFilteredBusinesses
       })
       break
 

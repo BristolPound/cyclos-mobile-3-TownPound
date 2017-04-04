@@ -68,9 +68,9 @@ export const offsetOverlappingBusinesses = (businesses) => {
     return businesses
 }
 
-const hasCategory = (category) => (business) => business.fields.businesscategory && business.fields.businesscategory.value.includes(category)
+const hasCategory = (category) => (business) => business.mainCategories.includes(category)
 
-const hasExclusiveCategory = (activeFilters, category) => (business) => business.fields.businesscategory && business.fields.businesscategory.value.includes(category) && _.every(activeFilters, (filter) => !business.fields.businesscategory.value.includes(filter))
+const hasExclusiveCategory = (activeFilters, category) => (business) => business.mainCategories.includes(category) && _.every(activeFilters, (filter) => !business.mainCategories.includes(filter))
 
 export const getBusinessesByFilter = (businesses, category) => {
     return _.filter(businesses, hasCategory(category))

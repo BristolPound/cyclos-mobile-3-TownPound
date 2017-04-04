@@ -126,7 +126,7 @@ const mapStateToProps = (state) => ({
   closestBusinesses: state.business.closestBusinesses.filter(b => b.id !== state.business.selectedBusinessId),
   activeFilters: state.business.activeFilters,
   selectedBusiness: state.business.selectedBusinessId ? state.business.businessList[state.business.selectedBusinessId] : undefined,
-  allBusinesses: state.business.businessList,
+  allBusinesses: state.business.filteredBusinesses.length > 0 ? state.business.filteredBusinesses : state.business.businessList,
   tabMode: state.business.tabMode,
   mapViewport: state.business.mapViewport,
   geolocationStatus: state.business.geolocationStatus
