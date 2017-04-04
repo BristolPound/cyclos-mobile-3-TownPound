@@ -8,7 +8,6 @@ import SpendingHeader from './SpendingHeader'
 import DefaultText, { MultilineText } from '../DefaultText'
 import Price from '../Price'
 import color from '../../util/colors'
-import { getBusinessImage } from '../../util/business'
 import * as actions from '../../store/reducer/transaction'
 import { openDetailsModal, navigateToTransactionTab } from '../../store/reducer/navigation'
 import styles from './spendingStyle'
@@ -26,7 +25,7 @@ const renderSectionHeader = (sectionData, sectionID) =>
 const getTransactionImage = (user, businessList) => {
   if (user) {
     const userDetails = businessList[user.id]
-    image = userDetails ? getBusinessImage(userDetails) : undefined
+    image = userDetails ? userDetails.image.url : undefined
     if (image) {
       return { uri: image }
     }
@@ -34,7 +33,7 @@ const getTransactionImage = (user, businessList) => {
 }
 
 const renderRow = (transaction, openDetailsModal, businessList) =>
-  <TouchableHighlight
+    <TouchableHighlight
       onPress={() => transaction.relatedAccount.user && openDetailsModal(transaction.relatedAccount.user)}
       underlayColor={color.transparent}
       key={transaction.transactionNumber}>
@@ -42,7 +41,7 @@ const renderRow = (transaction, openDetailsModal, businessList) =>
       <ProfileImage
         image={getTransactionImage(transaction.relatedAccount.user, businessList)}
         style={styles.row.image}
-        category='shop'
+        category={businessList[transaction.relatedAccount.user.id] ? 'shop' : 'person'}
         colorCode={transaction.colorCode}/>
       <View style={styles.row.textContainer}>
         <DefaultText style={styles.row.text}>
