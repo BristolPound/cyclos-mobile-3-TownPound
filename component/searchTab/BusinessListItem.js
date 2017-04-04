@@ -6,7 +6,6 @@ import styles from './BusinessListStyle'
 import merge from '../../util/merge'
 import { SEARCH_BAR_HEIGHT } from './SearchTabStyle'
 import { CloseButton } from '../common/CloseButton'
-import { getBusinessImage } from '../../util/business'
 
 const CLOSE_BUTTON = require('../common/assets/Close.png')
 
@@ -25,7 +24,7 @@ class BusinessListItem extends React.Component {
     const { businesscategory, username } = this.props.business.fields
     const statusStyle = merge(status, this.props.isSelected ? statusSelected : {})
 
-    var image = getBusinessImage(this.props.business)
+    var image = this.props.business.image.url
 
     return (
       <View style={container} ref="businessListItem">
