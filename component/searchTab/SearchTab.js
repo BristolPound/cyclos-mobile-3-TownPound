@@ -44,10 +44,8 @@ class SearchTab extends React.Component {
       return itemProps
     }
     if (props.selectedBusiness) {
-      var temp = makePressable(props.selectedBusiness)
-      temp.isSelected = true
       return [
-        {temp},
+        _.extend({isSelected: true}, makePressable(props.selectedBusiness)),
         BUSINESS_LIST_GAP_PLACEHOLDER,
         ...props.closestBusinesses.map(makePressable)
       ]
