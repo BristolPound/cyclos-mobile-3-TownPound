@@ -7,7 +7,7 @@ import _ from 'lodash'
 import supercluster from 'supercluster'
 import { MultilineText } from '../DefaultText'
 import * as actions from '../../store/reducer/business'
-import { shouldBeDisplayed, isIncorrectLocation, getBusinessLocation, getBusinessLatitude, getBusinessLongitude, businessHasAddress } from '../../util/business'
+import { shouldBeDisplayed, isIncorrectLocation } from '../../util/business'
 import merge from '../../util/merge'
 import style from './BackgroundMapStyle'
 import MapMarker from './MapMarker'
@@ -63,12 +63,12 @@ class BackgroundMap extends React.Component {
   }
 
   populateSupercluster() {
-    this.supercluster.load(_.filter(this.props.businessList, b => businessHasAddress(b))
+    this.supercluster.load(_.filter(this.props.businessList, b => b.address.location)
       .map((b) => ({
         geometry: {
           coordinates: [
-            getBusinessLongitude(b),
-            getBusinessLatitude(b)
+            b.address.location.longitude,
+            b.address.location.latitude
           ]
         },
         properties: {},

@@ -6,7 +6,6 @@ import * as actions from '../../store/reducer/sendMoney'
 import { openLoginForm, LOGIN_STATUSES } from '../../store/reducer/login'
 import { setOverlayOpen } from '../../store/reducer/navigation'
 import InputComponent from './InputComponent'
-import { getBusinessName } from '../../util/business'
 
 const Page = {
   Ready: 0,
@@ -97,7 +96,7 @@ class SendMoney extends React.Component {
             break
           case Page.EnterAmount: // provide amount
             inputProps = {
-              buttonText: 'Pay ' + (this.props.payee.display || getBusinessName(this.props.payee)),
+              buttonText: 'Pay ' + (this.props.payee.display || this.props.payee.name || ""),
               onButtonPress: () => { this.nextPage() },
               input: {
                 keyboardType: 'numeric',
@@ -115,7 +114,7 @@ class SendMoney extends React.Component {
               buttonText: 'Confirm',
               onButtonPress: () => { this.props.sendTransaction(); this.nextPage() },
               amount: this.props.amount,
-              payee: this.props.payee.display || getBusinessName(this.props.payee),
+              payee: this.props.payee.display || this.props.payee.name || "",
               onChangeAmount: () => { this.prevPage() },
               accessibilityLabel: 'Confirm Amount'
             }

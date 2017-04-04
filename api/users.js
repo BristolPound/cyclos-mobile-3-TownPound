@@ -13,7 +13,7 @@ const parseShortDisplay = fullDisplay =>
   fullDisplay.includes('(') ? fullDisplay.substring(fullDisplay.indexOf('(') + 1, fullDisplay.indexOf(')')) : fullDisplay
 
 export const getBusinesses = () =>
-	directoryAPI.directory()
+	directoryAPI.staticDirectory()
 	.then(data => data.directory)
 
 export const getAccountDetails = (dispatch) =>

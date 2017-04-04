@@ -6,7 +6,7 @@ import styles from './BusinessListStyle'
 import merge from '../../util/merge'
 import { SEARCH_BAR_HEIGHT } from './SearchTabStyle'
 import { Button } from '../common/Button'
-import { getBusinessName, getBusinessImage } from '../../util/business'
+
 
 const CLOSE_BUTTON = require('../common/assets/Close.png')
 
@@ -25,8 +25,7 @@ class BusinessListItem extends React.Component {
     const { businesscategory, username } = this.props.business.fields
     const statusStyle = merge(status, this.props.isSelected ? statusSelected : {})
 
-    var name = getBusinessName(this.props.business)
-    var image = getBusinessImage(this.props.business)
+    var image = this.props.business.image.url
 
     return (
       <View style={container} ref="businessListItem">
@@ -34,8 +33,8 @@ class BusinessListItem extends React.Component {
           <View style={contents}>
               <ProfileImage image={image ? {uri: image} : undefined} style={styles.listItem.image} category={'shop'} borderColor='offWhite' colorCode={colorCode}/>
               <View style={verticalStack}>
-                  <DefaultText style={title}>{name}</DefaultText>
-                  <DefaultText style={styles.listItem.shortDisplay}>{username.value}</DefaultText>
+                  <DefaultText style={title}>{this.props.business.name}</DefaultText>
+                  <DefaultText style={styles.listItem.shortDisplay}>{username}</DefaultText>
               </View>
           </View>
           {this.props.isSelected && <Button onPress={this.props.deselect} buttonType={CLOSE_BUTTON} style={closeButton} size={SEARCH_BAR_HEIGHT+10}/>
@@ -46,7 +45,9 @@ class BusinessListItem extends React.Component {
 }
 
 
-export const SelectedBusiness = (props) =>
-  <BusinessListItem {...{ ...props, isSelected: true }}/>
+export const SelectedBusiness = (props) => {
+  return <BusinessListItem {...{ ...props, isSelected: true }}/>
+}
+
 
 export default BusinessListItem
