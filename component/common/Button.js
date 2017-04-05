@@ -10,10 +10,10 @@ const style = {
   }
 }
 
-export const CloseButton = props => {
+export const Button = props => {
     return (
         <TouchableOpacity style={merge(dimensions(props.size), props.style)} onPress={props.onPress}>
-            <Image style={merge(style.closeIcon, margin((props.size - 18) / 2))} source={props.closeButtonType} />
+            <Image style={merge(style.closeIcon, margin((props.size - 18) / 2))} source={props.buttonType} />
         </TouchableOpacity>
     )
 }
