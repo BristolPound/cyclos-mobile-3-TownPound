@@ -7,7 +7,7 @@ import styles from './ProfileStyle'
 import merge from '../../util/merge'
 import MapMarker from '../searchTab/MapMarker'
 import { isIncorrectLocation } from '../../util/business'
-import  { CloseButton } from '../common/CloseButton'
+import  { Button } from '../common/Button'
 
 const closeButton = require('./../common/assets/Close.png')
 const expandIcon = require('./assets/Expand.png')
@@ -16,7 +16,7 @@ const screenWidth = Dimensions.get('window').width,
   screenHeight = Dimensions.get('window').height
 
 const renderCloseButton = (onPress) =>
-  <CloseButton style={styles.header.closeButton} onPress={onPress} closeButtonType={closeButton} size={70}/>
+  <Button style={styles.header.closeButton} onPress={onPress} buttonType={closeButton} size={70}/>
 
 const renderExpandButton = (goToTraderLocation) => {
   if (!goToTraderLocation) {

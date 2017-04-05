@@ -10,6 +10,7 @@ import DraggableList from './DraggableList'
 import styles, { SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN, maxExpandedHeight } from './SearchTabStyle'
 import { ROW_HEIGHT, BUSINESS_LIST_SELECTED_GAP} from './BusinessListStyle'
 import * as actions from '../../store/reducer/business'
+import { tabModes } from '../../store/reducer/business'
 import { Overlay } from '../common/Overlay'
 import Search from './Search'
 import calculatePanelHeight from '../../util/calculatePanelHeight'
@@ -81,7 +82,7 @@ class SearchTab extends React.Component {
   }
 
   render() {
-    const { closestBusinesses, openTraderModal, selectedBusiness, searchMode, updateSearchMode } = this.props
+    const { closestBusinesses, openTraderModal, selectedBusiness, tabMode, updateTabMode } = this.props
     const { componentList } = this.refs
 
     const noOfCloseBusinesses = closestBusinesses.length,
@@ -97,7 +98,7 @@ class SearchTab extends React.Component {
     return (
       <View style={{flex: 1}}>
         <BackgroundMap />
-        {!searchMode && <DraggableList ref={this.props.registerBusinessList}
+        {tabMode === tabModes.default && <DraggableList ref={this.props.registerBusinessList}
             style={styles.searchTab.expandPanel}
             topOffset={this.calculateOffset([ expandedHeight, collapsedHeight, closedHeight ])}
             expandedHeight={expandedHeight}
@@ -114,7 +115,7 @@ class SearchTab extends React.Component {
                 deselect={() => this.props.selectBusiness(undefined)}
                 onPressItem={index => this.state.componentListArray[index].id && openTraderModal(this.state.componentListArray[index].id)} />
         </DraggableList>}
-        {searchMode && <Overlay overlayVisible={true} onPress={() => updateSearchMode(false)} />}
+        {tabMode!==tabModes.default && <Overlay overlayVisible={true} onPress={() => updateTabMode(tabModes.default)} />}
         <Search {...this.props} />
       </View>
     )
@@ -123,9 +124,10 @@ class SearchTab extends React.Component {
 
 const mapStateToProps = (state) => ({
   closestBusinesses: state.business.closestBusinesses.filter(b => b.id !== state.business.selectedBusinessId),
+  activeFilters: state.business.activeFilters,
   selectedBusiness: state.business.selectedBusinessId ? state.business.businessList[state.business.selectedBusinessId] : undefined,
-  allBusinesses: state.business.businessList,
-  searchMode: state.business.searchMode,
+  allBusinesses: state.business.filteredBusinesses.length > 0 ? state.business.filteredBusinesses : state.business.businessList,
+  tabMode: state.business.tabMode,
   mapViewport: state.business.mapViewport,
   geolocationStatus: state.business.geolocationStatus
 })

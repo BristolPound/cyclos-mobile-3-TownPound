@@ -170,7 +170,7 @@ class BackgroundMap extends React.Component {
 
 const mapStateToProps = (state) => ({
   selectedBusinessId: state.business.selectedBusinessId,
-  businessList: state.business.businessList,
+  businessList: state.business.filteredBusinesses.length > 0 ? state.business.filteredBusinesses : state.business.businessList,
   forceRegion: state.business.forceRegion
 })
 

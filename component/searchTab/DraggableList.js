@@ -185,7 +185,7 @@ class DraggableList extends React.Component {
 
       const currentOuterTopOffset = this.getCurrentOuterTopOffset(currentTouchY)
       const currentInnerTopOffset = -1 * this.getCurrentScroll(currentTouchY)
-      
+
       this.lastTouchY = currentTouchY
 
       this.setState({
@@ -275,7 +275,7 @@ class DraggableList extends React.Component {
     if (Date.now() - this.timeAtLastPosition > 150) {
       this.velocity = 0
     }
-    
+
     const finalTopOffset = this.state.currentInnerTopOffset._value + this.state.currentOuterTopOffset._value + this.getMomentumTravel()
     const relativeFinalTopOffset = finalTopOffset - this.props.topOffset[0]
     const finalInnerTopOffset = _.clamp(relativeFinalTopOffset, -1 * this.calculateMaxScrollDistance(this.props), 0)

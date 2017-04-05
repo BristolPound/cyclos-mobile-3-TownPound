@@ -3,7 +3,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import { Dimensions } from 'react-native'
 import merge from '../../util/merge'
-import { getClosestBusinesses, offsetOverlappingBusinesses } from '../../util/business'
+import { getClosestBusinesses, offsetOverlappingBusinesses, getBusinessesByFilter, getBusinessesByExclusiveFilter } from '../../util/business'
 import { addFailedAction } from './networkConnection'
 import { getBusinesses } from '../../api/users'
 import { UNEXPECTED_DATA } from '../../api/apiError'
@@ -30,6 +30,47 @@ export const MapViewport = {
     latitudeDelta: 0.006 * mapHeight / (mapWidth * longitudePerLatitude),
 }
 
+export const tabModes = {
+  default: 'default',
+  filter: 'filter',
+  serach: 'search'
+}
+
+export const allFilters = [
+  {
+    label: 'foodanddrink',
+    text: "Food And Drink"
+  },
+  {
+    label: 'foryourbusiness',
+    text: "For your business"
+  },
+  {
+    label: 'foryourhome',
+    text: "For your home"
+  },
+  {
+    label: 'gettingaround',
+    text: "Getting around"
+  },
+  {
+    label: 'goingout',
+    text: "Going out"
+  },
+  {
+    label: 'lookingafteryou',
+    text: "Looking after you"
+  },
+  {
+    label: 'shopping',
+    text: "Shopping"
+  },
+  {
+    label: 'visitingbristol',
+    text: "Visiting Bristol"
+  }
+]
+
 // We want the center for sorting businesses higher than the actual centre of map.
 // 1/15 of mapHeight higher than center of map, which is 22.5px higher than center of screen.
 // So in total around 60 - 70 px higher than screen centre
@@ -52,9 +93,11 @@ const initialState = {
   businessListTimestamp: null,
   selectedBusinessId: undefined,
   closestBusinesses: [],
+  activeFilters: [],
+  filteredBusinesses: [],
   mapViewport: MapViewport,
   forceRegion: MapViewport,
-  searchMode: false,
+  tabMode: tabModes.default,
   traderScreenBusinessId: undefined,
   geolocationStatus: null,
   businessListRef: null,
@@ -80,8 +123,8 @@ export const moveMap = (viewport) => ({
   viewport
 })
 
-export const updateSearchMode = (mode) => ({
-    type: 'business/UPDATE_SEARCH_MODE',
+export const updateTabMode = (mode) => ({
+    type: 'business/UPDATE_TAB_MODE',
     mode
 })
 
@@ -93,6 +136,18 @@ const selectBusinessForModal = (id) => ({
   type: 'business/SET_TRADER_SCREEN_ID',
   id
 })
+
+export const addFilter = (value) => (dispatch) =>
+  dispatch({
+      type: 'business/ADD_FILTER',
+      value
+  })
+
+export const removeFilter = (value) => (dispatch) =>
+  dispatch({
+      type: 'business/REMOVE_FILTER',
+      value
+  })
 
 export const selectBusiness = (businessId) => (dispatch) =>
   dispatch({
@@ -152,7 +207,8 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'business/BUSINESS_LIST_RECEIVED':
       const offsetBusinesses = offsetOverlappingBusinesses(action.businessList)
-      let closestBusinesses = getClosestBusinesses(action.businessList, businessArea(centerViewportHigher(state.mapViewport)))
+      const businesses = action.businessList
+      let closestBusinesses = getClosestBusinesses(businesses, businessArea(centerViewportHigher(state.mapViewport)))
       state = merge(state, {
         closestBusinesses,
         businessList: offsetBusinesses,
@@ -163,7 +219,8 @@ const reducer = (state = initialState, action) => {
     case 'business/UPDATE_MAP_VIEWPORT':
       let newViewport = merge(state.mapViewport, action.viewport) // action.viewport might only be partial (no deltas)
       // closestBusinesses is declared in the first switch case so we cannot define it here. Blame javascript!
-      closestBusinesses = getClosestBusinesses(state.businessList, businessArea(centerViewportHigher(newViewport)))
+      businesses = state.filteredBusinesses.length > 0 ? state.filteredBusinesses : state.businessList
+      closestBusinesses = getClosestBusinesses(businesses, businessArea(centerViewportHigher(newViewport)))
       // state.businessListRef && state.businessListRef.scrollAndSlideTo(1)
       // ^ resets the list to position 1 (even if the list was closed)
       state = merge(state, {
@@ -177,7 +234,8 @@ const reducer = (state = initialState, action) => {
       newViewport = merge(state.mapViewport, action.viewport) // action.viewport might only be partial (no deltas)
 
       // Since we wish to update the selected trader, allow the closest to be at the top of the list
-      closestBusinesses = getClosestBusinesses(state.businessList, businessArea(newViewport))
+      businesses = state.filteredBusinesses.length > 0 ? state.filteredBusinesses : state.businessList
+      closestBusinesses = getClosestBusinesses(businesses, businessArea(newViewport))
 
       state = merge(state, {
         closestBusinesses,
@@ -218,8 +276,33 @@ const reducer = (state = initialState, action) => {
       })
       break
 
-    case 'business/UPDATE_SEARCH_MODE':
-      state = merge(state, { searchMode: action.mode })
+    case 'business/ADD_FILTER':
+      let newActiveFilters = state.activeFilters
+      newActiveFilters.push(action.value)
+      let newFilteredBusinesses = _.union(getBusinessesByFilter(state.businessList, action.value), state.filteredBusinesses)
+      closestBusinesses = getClosestBusinesses(newFilteredBusinesses, businessArea(state.mapViewport))
+      state = merge(state, {
+        closestBusinesses,
+        activeFilters: newActiveFilters,
+        filteredBusinesses: newFilteredBusinesses
+      })
+      break
+
+    case 'business/REMOVE_FILTER':
+      newActiveFilters = state.activeFilters
+      _.pull(newActiveFilters, action.value)
+      newFilteredBusinesses = _.difference(state.filteredBusinesses, getBusinessesByExclusiveFilter(state.businessList, newActiveFilters, action.value))
+      businesses = state.filteredBusinesses.length > 0 ? state.filteredBusinesses : state.businessList
+      closestBusinesses = getClosestBusinesses(businesses, businessArea(state.mapViewport))
+      state = merge(state, {
+        closestBusinesses,
+        activeFilters: newActiveFilters,
+        filteredBusinesses: newFilteredBusinesses
+      })
+      break
+
+    case 'business/UPDATE_TAB_MODE':
+      state = merge(state, { tabMode: action.mode })
       break
 
     case 'business/GEOLOCATION_FAILED':
@@ -235,7 +318,7 @@ const reducer = (state = initialState, action) => {
       break
 
     case 'navigation/NAVIGATE_TO_TAB':
-      state = merge(state, { searchMode: false })
+      state = merge(state, { tabMode: tabModes.default })
   }
   return state
 }

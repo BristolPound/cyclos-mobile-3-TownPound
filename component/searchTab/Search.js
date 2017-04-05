@@ -5,19 +5,23 @@ import haversine from 'haversine'
 
 import DefaultText from '../DefaultText'
 import BusinessListItem from './BusinessListItem'
-import { CloseButton } from '../common/CloseButton'
+import { Button } from '../common/Button'
 import DraggableList from './DraggableList'
 import ComponentList from './ComponentList'
-import FixedScrollableList from './FixedScrollableList'
+import FiltersComponent from './FiltersComponent'
 
+import { tabModes } from '../../store/reducer/business'
+import FixedScrollableList from './FixedScrollableList'
 import colors from '../../util/colors'
 import { addColorCodes } from '../../util/business'
 import searchTabStyle, { maxExpandedHeight, SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN } from './SearchTabStyle'
 import { ROW_HEIGHT } from './BusinessListStyle'
 
-const { searchBar, textInput, searchHeaderText, closeButton, expandPanel, nearbyButton, fixedScrollableListContainer } = searchTabStyle.searchTab
+const { searchBar, textInput, searchHeaderText, closeButton, nearbyButton, fixedScrollableListContainer } = searchTabStyle.searchTab
 
 const CLOSE_BUTTON = require('../common/assets/Close.png')
+const FILTER_BUTTON = require('./assets/filters.png')
+const FILTER_DISABLED_BUTTON = require('./assets/filters_disabled.png')
 const NEARBY_BLUE = require('./assets/nearby_blue.png')
 const NEARBY_GREY = require('./assets/nearby_grey.png')
 
@@ -39,7 +43,7 @@ export default class Search extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-      if (!nextProps.searchMode && this.props.searchMode) {
+      if (nextProps.tabMode !== tabModes.search && this.props.tabMode === tabModes.search) {
         this.refs.textInput.blur()
         this.setState({ searchTerms: [], input: null, componentListArray: [] })
       }
@@ -55,7 +59,6 @@ export default class Search extends React.Component {
         })
         return match
       }
-      this.refs.ExpandPanel && this.refs.ExpandPanel.resetToInitalState()
       const filteredBusinessList = this.state.searchTerms.length
       ? _.filter(allBusinesses, business => termsMatch(business.name) || termsMatch(business.fields.username) || (business.fields.description && termsMatch(business.fields.description)))
       : []
@@ -70,9 +73,9 @@ export default class Search extends React.Component {
       this.debouncedUpdate()
     }
 
-    _businessListOnClick(id) {
+    _businessListOnClick(item) {
       this.refs.textInput.blur()
-      this.props.openTraderModal(id)
+      this.props.openTraderModal(item.id)
     }
 
     nearbyButtonEnabled() {
@@ -106,22 +109,43 @@ export default class Search extends React.Component {
 
     render() {
       const { componentListArray, input } = this.state
-      const { searchMode, updateSearchMode } = this.props
+      const { tabMode, updateTabMode } = this.props
 
-      const childrenHeight = componentListArray.length * ROW_HEIGHT
-
-      const { componentList } = this.refs
-
-      return (
-        <View>
-          { searchMode && (
-                <FixedScrollableList
+      let button
+      let modeComponent
+      if (tabMode===tabModes.search) {
+        button = <Button
+                    onPress={() => updateTabMode(tabModes.default)}
+                    buttonType={CLOSE_BUTTON}
+                    style={closeButton}
+                    size={SEARCH_BAR_HEIGHT}/>
+        modeComponent = <FixedScrollableList
                     style={fixedScrollableListContainer}
                     items={componentListArray}
                     componentForItem={ComponentForItem}
-                    onPress={(id) => this._businessListOnClick(id)}>
-                </FixedScrollableList>
-          )}
+                    onPress={(item) => this._businessListOnClick(item)}/>
+      } else if (tabMode===tabModes.default) {
+        button = <Button
+                    onPress={() => updateTabMode(tabModes.filter)}
+                    buttonType={FILTER_DISABLED_BUTTON}
+                    style={closeButton}
+                    size={SEARCH_BAR_HEIGHT}/>
+        modeComponent = undefined
+      } else if (tabMode===tabModes.filter) {
+        button = <Button
+                    onPress={() => updateTabMode(tabModes.default)}
+                    buttonType={FILTER_BUTTON}
+                    style={closeButton}
+                    size={SEARCH_BAR_HEIGHT}/>
+        modeComponent = <FiltersComponent
+                    activeFilters={this.props.activeFilters}
+                    removeFilter={this.props.removeFilter}
+                    addFilter={this.props.addFilter}/>
+      }
+
+      return (
+        <View>
+          {modeComponent}
           <View style={searchBar}>
             <TouchableOpacity style={nearbyButton}
                 onPress={() => this.nearbyButtonPressed()}>
@@ -129,7 +153,7 @@ export default class Search extends React.Component {
             </TouchableOpacity>
             <TextInput accessibilityLabel='Search'
                        ref='textInput'
-                       onFocus={() => !searchMode && updateSearchMode(true)}
+                       onFocus={() => tabMode!==tabModes.search && updateTabMode(tabModes.search)}
                        onChangeText={(text) => this._onChangeText(text)}
                        placeholder={'Search Trader'}
                        placeholderTextColor={colors.gray4}
@@ -137,8 +161,7 @@ export default class Search extends React.Component {
                        style={textInput}
                        value={input}
                        underlineColorAndroid={colors.transparent}/>
-            { searchMode &&
-                <CloseButton onPress={() => this.props.updateSearchMode(false)} closeButtonType={CLOSE_BUTTON} style={closeButton} size={SEARCH_BAR_HEIGHT}/> }
+          {button}
           </View>
         </View>
       )

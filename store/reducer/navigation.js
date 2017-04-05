@@ -2,7 +2,7 @@ import _ from 'lodash'
 import merge from '../../util/merge'
 import { openTraderModal } from './business'
 import { LOGGED_OUT, LOGGED_IN } from './login'
-import { moveMap, updateSearchMode, selectClosestBusiness } from './business'
+import { moveMap, selectClosestBusiness } from './business'
 import { updatePayee } from './sendMoney'
 import { selectPerson } from './person'
 
@@ -92,7 +92,6 @@ export const hideModal = () => ({
 
 export const goToLocation = (location) =>
   (dispatch) => {
-    dispatch(updateSearchMode(false))
     dispatch(moveMap(location))
     dispatch(selectClosestBusiness())
     dispatch(navigateToTab(0))
