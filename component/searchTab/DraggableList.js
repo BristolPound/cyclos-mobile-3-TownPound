@@ -294,6 +294,13 @@ class DraggableList extends React.Component {
     this.resetVariablesToStationary()
   }
 
+  componentWillUpdate(nextProps, nextState) {
+    // fixes list going behind the search bar when value is NaN
+    if (!nextState.currentOuterTopOffset._value) {
+      this.resetPosition(nextProps)
+    }
+  }
+
   resetPosition(props) {
     this.setState({
       currentOuterTopOffset: new Animated.Value(props.topOffset[props.startPosition]),
@@ -302,10 +309,7 @@ class DraggableList extends React.Component {
   }
 
   render() {
-    // fixes list going behind the search bar when value is NaN
-    if (!this.state.currentOuterTopOffset._value) {
-      this.resetPosition(this.props)
-    }
+
     return (
       <Animated.View style={{
             top: this.state.currentOuterTopOffset,
