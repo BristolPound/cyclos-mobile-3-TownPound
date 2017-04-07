@@ -68,7 +68,8 @@ const styles = {
     closeButton: {
       alignSelf: 'center',
       borderLeftWidth: 1,
-      borderLeftColor: color.gray5
+      borderLeftColor: color.gray5,
+      zIndex: 800
     }
   },
   filterItem: {
