@@ -70,7 +70,9 @@ const styles = {
       overflow: 'hidden',
       position: 'absolute',
       // zIndex is needed for overflow: hidden on android, but breaks shadow on iOS
-      zIndex: platform.isIOS() ? undefined : 100
+      zIndex: platform.isIOS() ? undefined : 100,
+      backgroundColor: 'white',
+      elevation: 3
     }
   }
 }
