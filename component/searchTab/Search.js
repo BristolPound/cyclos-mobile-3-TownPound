@@ -123,7 +123,7 @@ export default class Search extends React.Component {
                     style={fixedScrollableListContainer}
                     items={componentListArray}
                     componentForItem={ComponentForItem}
-                    onPress={(item) => this._businessListOnClick(item)}/>
+                    onPress={(item) => item.id && this._businessListOnClick(item)}/>
       } else if (tabMode===tabModes.default) {
         button = <Button
                     onPress={() => updateTabMode(tabModes.filter)}
