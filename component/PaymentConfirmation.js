@@ -1,4 +1,4 @@
-import { View, Image, ScrollView } from 'react-native'
+import { View, Image, ScrollView, StatusBar } from 'react-native'
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -17,6 +17,7 @@ const PaymentConfirmation = (props) => {
 
     return (
       <View style={style.container}>
+          <StatusBar hidden={true} />
         	<ScrollView contentContainerStyle={style.innerContainer}>
             <ProfileHeader
               name={props.payee.name || ""}
