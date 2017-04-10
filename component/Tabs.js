@@ -10,6 +10,7 @@ import TabBar from './tabbar/TabBar'
 import SearchTab from './searchTab/SearchTab'
 import NetworkConnection from './NetworkConnection'
 import SpendingTab from './spending/SpendingTab'
+import { updatePage, resetForm } from '../store/reducer/sendMoney'
 import Account from './Account'
 import LoginToView, { emptyStateImage } from './loggedOutState/LoginToView'
 import TraderScreen from './TraderScreen'
@@ -88,16 +89,16 @@ const Tabs = (props) =>
         }
       </WithNetworkConnection>
     </ScrollableTabView>
-    <Modal visible={props.modalVisible} hideModal={!props.confirmationOpen && props.hideModal} modalOpened={props.modalOpened}>
+    <Modal visible={props.modalVisible} hideModal={() => {!props.confirmationOpen && props.hideModal() && props.resetForm()}} modalOpened={props.modalOpened}>
       {componentForModalState(props.modalState)}
     </Modal>
-    <Modal visible={props.confirmationOpen} hideModal={props.closeConfirmation}>
+    <Modal visible={props.confirmationOpen} hideModal={() => {props.closeConfirmation() && props.updatePage(0)}}>
       <PaymentConfirmation />
     </Modal>
   </View>
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ ...actions, openLoginForm }, dispatch)
+  bindActionCreators({ ...actions, openLoginForm, updatePage, resetForm }, dispatch)
 
 const mapStateToProps = (state) => ({
   tabIndex: state.navigation.tabIndex,
