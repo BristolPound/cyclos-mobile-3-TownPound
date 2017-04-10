@@ -48,8 +48,6 @@ class BackgroundMap extends React.Component {
       this.forceRegion = merge(nextProps.forceRegion)
       this.currentRegion = merge(nextProps.forceRegion)
       this.updateMarkers()
-    } else {
-      this.forceRegion = undefined
     }
   }
 
