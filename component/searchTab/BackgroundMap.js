@@ -15,8 +15,6 @@ import MapMarker from './MapMarker'
 const MAP_PAN_DEBOUNCE_TIME = 600
 
 class BackgroundMap extends React.Component {
-  onRegionChangeComplete = () => {}
-  onRegionChange = () => {}
 
   constructor(props) {
     super()
@@ -28,23 +26,20 @@ class BackgroundMap extends React.Component {
   }
 
   componentDidMount() {
-    // To prevent the user seeing the centre of the earth when opening the app
-    // and to prevent phony region changes
-    setTimeout(() => {
-      this.onRegionChangeComplete = _.debounce((region) => {
-        this.props.updateMapViewport(region)
-        this.updateMarkers()
-      }, MAP_PAN_DEBOUNCE_TIME)
-      this.onRegionChange = (region) => this.currentRegion = merge(region)
       if (this.props.businessList) {
         this.populateSupercluster()
       }
       this.setState({ loading: false })
-    }, 1500)
+  }
+
+  onRegionChangeComplete(region) {
+      this.currentRegion = merge(region)
+      this.props.updateMapViewport(region)
+      this.updateMarkers()
   }
 
   componentWillUpdate(nextProps) {
-    if (nextProps.forceRegion !== this.props.forceRegion) {
+    if (!_.isEqual(nextProps.forceRegion, this.props.forceRegion)) {
       this.forceRegion = merge(nextProps.forceRegion)
       this.currentRegion = merge(nextProps.forceRegion)
       this.updateMarkers()
@@ -154,7 +149,7 @@ class BackgroundMap extends React.Component {
             pitchEnabled={false}
             scrollEnabled={!this.state.loading}
             zoomEnabled={!this.state.loading}
-            onRegionChange={(region) => this.onRegionChange(region)}
+            onRegionChange={(region) => this.currentRegion = merge(region)}
             onRegionChangeComplete={(region) => this.onRegionChangeComplete(region)}
             loadingEnabled={true}
             moveOnMarkerPress={false}>
