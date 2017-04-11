@@ -48,6 +48,8 @@ class BackgroundMap extends React.Component {
       this.forceRegion = merge(nextProps.forceRegion)
       this.currentRegion = merge(nextProps.forceRegion)
       this.updateMarkers()
+    } else {
+      this.forceRegion = undefined
     }
   }
 
@@ -143,7 +145,7 @@ class BackgroundMap extends React.Component {
             </MultilineText>
           </View>}
         <MapView style={style.map}
-            region={this.forceRegion}
+            region={this.forceRegion || this.currentRegion}
             ref={(ref) => { this.mapRef = ref }}
             showsPointsOfInterest={false}
             showsUserLocation={true}
