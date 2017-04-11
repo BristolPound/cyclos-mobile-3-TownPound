@@ -219,16 +219,14 @@ const reducer = (state = initialState, action) => {
     case 'business/UPDATE_MAP_VIEWPORT':
       let newViewport = merge(state.mapViewport, action.viewport) // action.viewport might only be partial (no deltas)
       // closestBusinesses is declared in the first switch case so we cannot define it here. Blame javascript!
-      if(_.isEqual(newViewport, state.mapViewport)) {
-        businesses = state.filteredBusinesses.length > 0 ? state.filteredBusinesses : state.businessList
-        closestBusinesses = getClosestBusinesses(businesses, businessArea(centerViewportHigher(newViewport)))
-        // state.businessListRef && state.businessListRef.scrollAndSlideTo(1)
-        // ^ resets the list to position 1 (even if the list was closed)
-        state = merge(state, {
-          mapViewport: newViewport,
-          closestBusinesses
-        })
-      }
+      businesses = state.filteredBusinesses.length > 0 ? state.filteredBusinesses : state.businessList
+      closestBusinesses = getClosestBusinesses(businesses, businessArea(centerViewportHigher(newViewport)))
+      // state.businessListRef && state.businessListRef.scrollAndSlideTo(1)
+      // ^ resets the list to position 1 (even if the list was closed)
+      state = merge(state, {
+        mapViewport: newViewport,
+        closestBusinesses
+      })
       break
 
     case 'business/MOVE_MAP':
