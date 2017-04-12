@@ -1,11 +1,8 @@
 import React from 'react'
 import { View, Dimensions } from 'react-native'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
 import Carousel from './Carousel'
 import DefaultText from '../DefaultText'
 import Price from '../Price'
-import * as actions from '../../store/reducer/transaction'
 import { isSameMonth, format } from '../../util/date'
 import styles from './spendingStyle'
 import color from '../../util/colors'
@@ -70,9 +67,4 @@ class SpendingHeader extends React.Component {
   }
 }
 
-
-const mapDispatchToProps = (dispatch) => bindActionCreators(actions, dispatch)
-
-const mapStateToProps = (state) => ({...state.transaction})
-
-export default connect(mapStateToProps, mapDispatchToProps)(SpendingHeader)
+export default SpendingHeader

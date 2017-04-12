@@ -21,14 +21,10 @@ const initialState = {
   transactionsDataSource: new ListView.DataSource({
     rowHasChanged: (a, b) => a.transactionNumber !== b.transactionNumber,
     sectionHeaderHasChanged: (a, b) => a !== b
-  }),
-  spendingListRef: null
+  })
 }
 
-export const selectMonth = (monthIndex) =>
-  (dispatch, getState) => {
-    const { spendingListRef } = getState().transaction
-    spendingListRef && spendingListRef.scrollTo({ y: 0, animated: false })
+export const selectMonth = (monthIndex) => (dispatch) => {
     dispatch ({
       type: 'transaction/SELECT_MONTH',
       monthIndex
@@ -55,11 +51,6 @@ export const resetTransactions = () => ({
 
 const failedToLoadTransactions = () => ({
   type: 'transaction/FAILED_TO_LOAD'
-})
-
-export const registerSpendingList = (ref) => ({
-  type: 'transaction/REGISTER_LIST',
-  ref
 })
 
 const handleError = (dispatch) => (err) => {
@@ -107,17 +98,14 @@ export const loadMoreTransactions = () =>
     .catch(handleError(dispatch))
   }
 
-const filterTransactionsByMonth = (dataSource, sortedTransactions, selectedMonth) => {
-  const filteredTransactions = filterTransactions(sortedTransactions, selectedMonth)
-  const grouped = groupTransactionsByDate(filteredTransactions)
-  return dataSource.cloneWithRowsAndSections(grouped.groups, grouped.groupOrder)
+const filterTransactionsByMonth = (dataSource, selectedMonth) => {
+  return dataSource.cloneWithRowsAndSections(selectedMonth.transactions.groups, selectedMonth.transactions.groupOrder)
 }
 
 // filter transactions based on the current transaction state
 const filterTransactionsByMonthIndex = (state, monthIndex) =>
   state.monthlyTotalSpent.length > 0
-    ? filterTransactionsByMonth(state.transactionsDataSource,
-        state.transactions, state.monthlyTotalSpent[monthIndex].month)
+    ? filterTransactionsByMonth(state.transactionsDataSource, state.monthlyTotalSpent[monthIndex])
     : state.transactionsDataSource.cloneWithRowsAndSections({}, [])
 
 const reducer = (state = initialState, action) => {
@@ -148,8 +136,7 @@ const reducer = (state = initialState, action) => {
         selectedMonthIndex,
         transactions: coloredSortedTransactions,
         transactionsDataSource: filterTransactionsByMonth(
-          state.transactionsDataSource, coloredSortedTransactions, monthlyTotalSpent[selectedMonthIndex].month
-        ),
+          state.transactionsDataSource, monthlyTotalSpent[selectedMonthIndex])
       })
       break
     case 'transaction/LOADING_TRANSACTIONS':
@@ -180,11 +167,6 @@ const reducer = (state = initialState, action) => {
       state = merge(state, {
         loadingTransactions: false,
         refreshing: false
-      })
-      break
-    case 'transaction/REGISTER_LIST':
-      state = merge(state, {
-        spendingListRef: action.ref
       })
   }
   return state
