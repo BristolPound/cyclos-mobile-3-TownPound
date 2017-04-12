@@ -30,7 +30,7 @@ const TraderScreen = (props) => {
       <View style={{maxHeight: Dimensions.get('window').height - sectionHeight}}>
       <ScrollView>
         <ProfileHeader
-            name={props.trader.name || ""}
+            name={props.trader.name || ''}
             username={props.trader.fields.username}
             image={props.trader.image.url}
             category={categories.shop}
