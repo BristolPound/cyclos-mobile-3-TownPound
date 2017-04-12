@@ -15,6 +15,7 @@ import MapMarker from './MapMarker'
 const MAP_PAN_DEBOUNCE_TIME = 600
 
 class BackgroundMap extends React.Component {
+  onRegionChangeComplete = () => {}
 
   constructor(props) {
     super()
@@ -26,16 +27,19 @@ class BackgroundMap extends React.Component {
   }
 
   componentDidMount() {
+    // To prevent the user seeing the centre of the earth when opening the app
+    // and to prevent phony region changes
+    setTimeout(() => {
+      this.onRegionChangeComplete = _.debounce((region) => {
+        this.currentRegion = merge(region)
+        this.props.updateMapViewport(region)
+        this.updateMarkers()
+      }, MAP_PAN_DEBOUNCE_TIME)
       if (this.props.businessList) {
         this.populateSupercluster()
       }
       this.setState({ loading: false })
-  }
-
-  onRegionChangeComplete(region) {
-      this.currentRegion = merge(region)
-      this.props.updateMapViewport(region)
-      this.updateMarkers()
+    }, 1500)
   }
 
   componentWillUpdate(nextProps) {
