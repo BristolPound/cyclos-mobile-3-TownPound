@@ -9,9 +9,6 @@ export const sortTransactions = transactions =>
     .reverse()
     .value()
 
-export const filterTransactions = (transactions, selectedMonth) =>
-  transactions.filter(tr => isSameMonth(tr.date, selectedMonth))
-
 export const calculateMonthlyTotalSpent = (sortedTransactions) => {
 
   const lastTransactionDate = sortedTransactions.length > 0
@@ -20,41 +17,28 @@ export const calculateMonthlyTotalSpent = (sortedTransactions) => {
 
   const allMonths = monthRange(lastTransactionDate, new Date())
 
-  const totals = allMonths.map(month => ({
+  const monthlySpendings = allMonths.map(month => ({
     month,
-    total: 0
+    total: 0,
+    transactions: []
   }))
   sortedTransactions.forEach(transaction => {
     const transactionDate = new Date(transaction.date)
-    const total = totals.find(total => isSameMonth(total.month, transactionDate))
+    const monthToUpdate = monthlySpendings.find(total => isSameMonth(total.month, transactionDate))
     // Only interested in money spent, not received - hence Math.min
-    total.total += Math.min(Number(transaction.amount), 0)
+    monthToUpdate.transactions.push(transaction)
+    monthToUpdate.total += Math.min(Number(transaction.amount), 0)
   })
-  return _.takeRight(totals, 12)
+  _.map(monthlySpendings, (total) => {total.transactions = groupTransactionsByDate(total.transactions)})
+  return _.takeRight(monthlySpendings, 12)
 }
 
-export const groupTransactionsByDate = (transactions, formatString='mmmm dS, yyyy', toUpper=false) => {
+const groupTransactionsByDate = (transactions, formatString='mmmm dS, yyyy', toUpper=false) => {
   const groups = _.groupBy(transactions, tr => {
     const groupTitle = dateFormat(new Date(tr.date), formatString)
     return toUpper ? groupTitle.toUpperCase() : groupTitle
   })
   return { groups, groupOrder: _.keys(groups) }
-}
-
-export const groupTransactionsByBusiness = transactions => {
-  let filtered = transactions.filter(tr => Number(tr.amount) < 0 && tr.relatedAccount.user)
-  let grouped = _.groupBy(filtered, tr => tr.relatedAccount.user.id)
-
-  let results = _.keys(grouped).map(k => {
-    let account = grouped[k][0].relatedAccount
-    return {
-      id: account.user.id,
-      relatedAccount: account,
-      amount: _.sumBy(grouped[k], tr => Number(tr.amount))
-    }
-  })
-
-  return _.sortBy(results, ['amount', 'relatedAccount.user.display'])
 }
 
 export const findTransactionsByDate = (transactions, date) =>
