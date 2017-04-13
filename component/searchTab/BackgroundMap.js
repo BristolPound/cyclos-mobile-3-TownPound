@@ -2,7 +2,7 @@ import React from 'react'
 import MapView from 'react-native-maps'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { View } from 'react-native'
+import { View, StatusBar } from 'react-native'
 import _ from 'lodash'
 import supercluster from 'supercluster'
 import { MultilineText } from '../DefaultText'
@@ -136,6 +136,10 @@ class BackgroundMap extends React.Component {
   render() {
     return (
       <View style={style.mapContainer}>
+        <StatusBar
+          backgroundColor='rgba(255, 255, 255, 0.5)'
+          barStyle="dark-content"
+        />
         {this.state.loading
           ? undefined
           : <View style={style.warningContainer}>
