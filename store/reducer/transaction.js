@@ -1,7 +1,7 @@
 import { ListView } from 'react-native'
 import merge from '../../util/merge'
 import _ from 'lodash'
-import { groupTransactionsByDate, calculateMonthlyTotalSpent, filterTransactions,
+import { calculateMonthlyTotalSpent,
   sortTransactions, findTransactionsByDate } from '../../util/transaction'
 import { addColorCodes } from '../../util/business'
 import { getTransactions, getAccountBalance } from '../../api/accounts'
