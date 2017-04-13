@@ -20,7 +20,7 @@ const PaymentConfirmation = (props) => {
           <StatusBar hidden={true} />
         	<ScrollView contentContainerStyle={style.innerContainer}>
             <ProfileHeader
-              name={props.payee.name || ""}
+              name={props.payee.name || ''}
               username={props.payee.fields.username}
               image={props.payee.image.url}
               category={props.category}

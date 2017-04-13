@@ -62,7 +62,7 @@ class SpendingTab extends React.Component {
       bodyComponent = <ActivityIndicator size='large' style={styles.loadingIndicator}/>
     } else if (dataSource.getRowCount()) {
       bodyComponent = <ListView
-          ref={this.props.registerSpendingList}
+          ref='spendingListRef'
           style={{ backgroundColor: color.offWhite, marginTop: 106 }}
           tabLabel='Transactions'
           decelerationRate='fast'
@@ -93,7 +93,13 @@ class SpendingTab extends React.Component {
       <View style={{flex: 1}}>
         {bodyComponent}
         <View style={styles.header.carouselContainer}>
-          <SpendingHeader />
+          <SpendingHeader
+            selectMonth={(index) => {
+              this.props.selectMonth(index);
+              this.refs.spendingListRef && this.refs.spendingListRef.scrollTo({ y: 0, animated: false })}
+            }
+            monthlyTotalSpent={this.props.monthlyTotalSpent}
+            selectedMonthIndex={this.props.selectedMonthIndex}/>
         </View>
       </View>
     )
