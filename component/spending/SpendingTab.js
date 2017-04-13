@@ -96,7 +96,7 @@ class SpendingTab extends React.Component {
           <SpendingHeader
             selectMonth={(index) => {
               this.props.selectMonth(index);
-              this.refs.spendingListRef.scrollTo({ y: 0, animated: false })}
+              this.refs.spendingListRef && this.refs.spendingListRef.scrollTo({ y: 0, animated: false })}
             }
             monthlyTotalSpent={this.props.monthlyTotalSpent}
             selectedMonthIndex={this.props.selectedMonthIndex}/>

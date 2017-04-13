@@ -20,20 +20,20 @@ export const calculateMonthlyTotalSpent = (sortedTransactions) => {
 
   const allMonths = monthRange(lastTransactionDate, new Date())
 
-  const totals = allMonths.map(month => ({
+  const monthlySpendings = allMonths.map(month => ({
     month,
     total: 0,
     transactions: []
   }))
   sortedTransactions.forEach(transaction => {
     const transactionDate = new Date(transaction.date)
-    const total = totals.find(total => isSameMonth(total.month, transactionDate))
+    const monthToUpdate = monthlySpendings.find(total => isSameMonth(total.month, transactionDate))
     // Only interested in money spent, not received - hence Math.min
-    total.transactions.push(transaction)
-    total.total += Math.min(Number(transaction.amount), 0)
+    monthToUpdate.transactions.push(transaction)
+    monthToUpdate.total += Math.min(Number(transaction.amount), 0)
   })
-  _.map(totals, (total) => {total.transactions = groupTransactionsByDate(total.transactions)})
-  return _.takeRight(totals, 12)
+  _.map(monthlySpendings, (total) => {total.transactions = groupTransactionsByDate(total.transactions)})
+  return _.takeRight(monthlySpendings, 12)
 }
 
 export const groupTransactionsByDate = (transactions, formatString='mmmm dS, yyyy', toUpper=false) => {
