@@ -9,9 +9,6 @@ export const sortTransactions = transactions =>
     .reverse()
     .value()
 
-export const filterTransactions = (transactions, selectedMonth) =>
-  transactions.filter(tr => isSameMonth(tr.date, selectedMonth))
-
 export const calculateMonthlyTotalSpent = (sortedTransactions) => {
 
   const lastTransactionDate = sortedTransactions.length > 0
@@ -36,28 +33,12 @@ export const calculateMonthlyTotalSpent = (sortedTransactions) => {
   return _.takeRight(monthlySpendings, 12)
 }
 
-export const groupTransactionsByDate = (transactions, formatString='mmmm dS, yyyy', toUpper=false) => {
+const groupTransactionsByDate = (transactions, formatString='mmmm dS, yyyy', toUpper=false) => {
   const groups = _.groupBy(transactions, tr => {
     const groupTitle = dateFormat(new Date(tr.date), formatString)
     return toUpper ? groupTitle.toUpperCase() : groupTitle
   })
   return { groups, groupOrder: _.keys(groups) }
-}
-
-export const groupTransactionsByBusiness = transactions => {
-  let filtered = transactions.filter(tr => Number(tr.amount) < 0 && tr.relatedAccount.user)
-  let grouped = _.groupBy(filtered, tr => tr.relatedAccount.user.id)
-
-  let results = _.keys(grouped).map(k => {
-    let account = grouped[k][0].relatedAccount
-    return {
-      id: account.user.id,
-      relatedAccount: account,
-      amount: _.sumBy(grouped[k], tr => Number(tr.amount))
-    }
-  })
-
-  return _.sortBy(results, ['amount', 'relatedAccount.user.display'])
 }
 
 export const findTransactionsByDate = (transactions, date) =>
