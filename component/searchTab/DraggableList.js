@@ -269,8 +269,8 @@ class DraggableList extends React.Component {
     )
   }
 
-  responderRelease() {
-    this.props.onTouchEnd && this.props.onTouchEnd(this.hasMoved)
+  responderRelease(event) {
+    this.props.onTouchEnd && this.props.onTouchEnd(event, this.hasMoved)
 
     if (Date.now() - this.timeAtLastPosition > 150) {
       this.velocity = 0
