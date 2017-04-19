@@ -1,6 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
 import color from '../../util/colors'
+import { SEARCH_BAR_HEIGHT } from './SearchTabStyle'
 
 class ComponentList extends React.Component {
   constructor() {
@@ -25,10 +26,23 @@ class ComponentList extends React.Component {
     })
   }
 
-  handleRelease(hasMoved) {
+  /*
+    Issue this fixes: #865
+    How the issue appears: on some Android devices, when pressing the deselect button the touch event is triggered at the draggableList level, instead of at the Button level
+    How it fixes the issue: handle the touch manually, and if the touch is within the deselect button area, trigger the deselect function istead of the onPressItem function
+  */
+  isDeselectButtonPressed(index, pageX) {
+    return this.props.items[index].isSelected && this.layoutInfo[index].width - pageX < SEARCH_BAR_HEIGHT
+  }
+
+  handleRelease(hasMoved, event) {
     const index = this.state.highlightedIndex
     if (!hasMoved && this.props.items[index]) {
-      this.props.onPressItem(index)
+      if (this.isDeselectButtonPressed(index, event.nativeEvent.pageX) ) {
+        this.props.deselect()
+      } else {
+        this.props.onPressItem(index)
+      }
     }
     this.setState({
       highlightedIndex: -1

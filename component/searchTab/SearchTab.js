@@ -102,7 +102,7 @@ class SearchTab extends React.Component {
             style={styles.searchTab.expandPanel}
             topOffset={this.calculateOffset([ expandedHeight, collapsedHeight, closedHeight ])}
             expandedHeight={expandedHeight}
-            onTouchEnd={hasMoved => componentList && componentList.handleRelease(hasMoved)}
+            onTouchEnd={(event, hasMoved) => componentList && componentList.handleRelease(hasMoved, event)}
             onTouchStart={location => componentList && componentList.highlightItem(location)}
             onMove={() => componentList && componentList.handleRelease(true)}
             childrenHeight={childrenHeight + BUSINESS_LIST_SELECTED_GAP}
