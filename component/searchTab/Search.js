@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TextInput, TouchableOpacity, Image } from 'react-native'
+import { View, TextInput, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
 import _ from 'lodash'
 import haversine from 'haversine'
 
@@ -39,13 +39,13 @@ const ComponentForItem = (item) => {
 export default class Search extends React.Component {
     constructor(props) {
       super(props)
-      this.state = { searchTerms: [], componentListArray: [], input: null }
+      this.state = { searchTerms: [], componentListArray: [], input: null, searching: false }
     }
 
     componentWillReceiveProps(nextProps) {
       if (nextProps.tabMode !== tabModes.search && this.props.tabMode === tabModes.search) {
         this.refs.textInput.blur()
-        this.setState({ searchTerms: [], input: null, componentListArray: [] })
+        this.setState({ searchTerms: [], input: null, componentListArray: [], searching: false })
       }
     }
 
@@ -63,13 +63,13 @@ export default class Search extends React.Component {
       ? _.filter(allBusinesses, business => termsMatch(business.name) || termsMatch(business.fields.username) || (business.fields.description && termsMatch(business.fields.description)))
       : []
       const componentListArray = this.createComponentListArray(filteredBusinessList)
-      this.setState({ componentListArray })
+      this.setState({ componentListArray, searching: false })
     }
 
     debouncedUpdate = _.debounce(() => this.updateResults(), 800)
 
     _onChangeText(input) {
-      this.setState({ searchTerms: input ? input.split(' ') : [], input: input || null })
+      this.setState({ searchTerms: input ? input.split(' ') : [], input: input || null, searching: true })
       this.debouncedUpdate()
     }
 
@@ -161,6 +161,7 @@ export default class Search extends React.Component {
                        style={textInput}
                        value={input}
                        underlineColorAndroid={colors.transparent}/>
+          {tabMode===tabModes.search && this.state.searching && <ActivityIndicator />}
           {button}
           </View>
         </View>
