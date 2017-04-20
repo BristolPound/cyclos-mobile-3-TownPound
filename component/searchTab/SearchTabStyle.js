@@ -40,7 +40,7 @@ const styles = {
     textInput: {
       ...margin(5, 9),
       ...padding(2),
-      ...dimensions(SEARCH_BAR_WIDTH - SEARCH_BAR_HEIGHT - NEARBY_WIDTH, SEARCH_BAR_HEIGHT - 10),
+      ...dimensions(SEARCH_BAR_WIDTH - SEARCH_BAR_HEIGHT - NEARBY_WIDTH - SEARCH_BAR_HEIGHT, SEARCH_BAR_HEIGHT - 10),
       fontSize: 16,
       backgroundColor: color.white,
       color: color.bristolBlue,
