@@ -57,6 +57,7 @@ class BackgroundMap extends React.Component {
       this.populateSupercluster()
     } else if (lastProps.forceRegion !== this.props.forceRegion
         || lastProps.selectedBusinessId !== this.props.selectedBusinessId) {
+      console.log('updating markers')
       this.updateMarkers()
     }
   }
@@ -81,7 +82,7 @@ class BackgroundMap extends React.Component {
     const angle = region.longitudeDelta
 
     // 0.95 for finetuning zoomlevel grouping
-    return Math.round(Math.log(360 / angle) / Math.LN2)
+    return Math.max(0, Math.min(Math.round(Math.log(360 / angle) / Math.LN2), 17))
   }
 
   updateMarkers(props = this.props) {
@@ -110,17 +111,22 @@ class BackgroundMap extends React.Component {
 
   renderClusteredMarker = ({ selectBusiness, selectedBusinessId }) =>
     ({ geometry, properties, id }) => {
+      console.log(selectedBusinessId)
       const coordinate = {
         longitude: geometry.coordinates[0],
         latitude: geometry.coordinates[1]
       }
-
       let onPress = null
       let selected = null
       if ( id && (properties.point_count === 1 || !properties.point_count) ) {
           onPress = () => selectBusiness(id)
           selected = id === selectedBusinessId
       } else if (properties.point_count > 1 ) {
+        if(selectedBusinessId) {
+          var points = this.supercluster.getLeaves(properties.cluster_id, this.getZoomLevel(), Infinity)
+          var pt = points.find(point => point.id === selectedBusinessId)
+          selected = pt !== undefined
+        }
         onPress = () => this.zoomToCluster(coordinate)
       }
 
@@ -134,6 +140,7 @@ class BackgroundMap extends React.Component {
     }
 
   render() {
+    console.log('-----------------------------')
     return (
       <View style={style.mapContainer}>
         <StatusBar

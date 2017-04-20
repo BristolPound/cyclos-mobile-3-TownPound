@@ -6,17 +6,29 @@ import DefaultText from '../DefaultText'
 
 const markerImage = require('./assets/marker.png')
 const selectedMarkerImage = require('./assets/selected_trader.png')
-const clusterOver4 = require('./assets/cluster.png')
+const cluster = require('./assets/cluster.png')
 const clusterOver9 = require('./assets/over_9.png')
 const clusterOver99 = require('./assets/over_99.png')
+const selectedCluster = require('./assets/selected_cluster.png')
+const selectedClusterOver9 = require('./assets/selected_over_9.png')
+const selectedClusterOver99 = require('./assets/selected_over_99.png')
 
-const getClusterImage = (pointCount) => {
-  return pointCount > 99
-    ? clusterOver99
-    : ( pointCount > 9
-        ? clusterOver9
-        : clusterOver4
-      )
+const getClusterImage = (pointCount, selected) => {
+  if (selected) {
+    return pointCount > 99
+      ? selectedClusterOver99
+      : ( pointCount > 9
+          ? selectedClusterOver9
+          : selectedCluster
+        )
+  } else {
+    return pointCount > 99
+      ? clusterOver99
+      : ( pointCount > 9
+          ? clusterOver9
+          : cluster
+        )
+  }
 }
 
 const MapMarker = ({ coordinate, selected, onPress, pointCount }) => {
@@ -29,7 +41,7 @@ const MapMarker = ({ coordinate, selected, onPress, pointCount }) => {
         onPress={onPress}
         anchor={platform.isIOS() ? null : { x: 0.5, y: 0.5 }}>
         <Image
-          source={getClusterImage(pointCount)}
+          source={getClusterImage(pointCount, selected)}
           style={{ justifyContent: 'flex-start', alignItems: 'center' }}>
           <DefaultText style={{ color: 'white', fontSize, marginTop, marginLeft }}>
             {pointCount}
