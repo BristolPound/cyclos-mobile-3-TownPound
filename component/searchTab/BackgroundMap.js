@@ -157,7 +157,6 @@ class BackgroundMap extends React.Component {
             pitchEnabled={false}
             scrollEnabled={!this.state.loading}
             zoomEnabled={!this.state.loading}
-            onRegionChange={(region) => this.currentRegion = merge(region)}
             onRegionChangeComplete={(region) => this.onRegionChangeComplete(region)}
             loadingEnabled={true}
             moveOnMarkerPress={false}>
