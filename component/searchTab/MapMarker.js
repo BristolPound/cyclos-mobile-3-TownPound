@@ -39,14 +39,11 @@ const MapMarker = ({ coordinate, selected, onPress, pointCount }) => {
     return <Marker
         coordinate={coordinate}
         onPress={onPress}
-        anchor={platform.isIOS() ? null : { x: 0.5, y: 0.5 }}>
-        <Image
-          source={getClusterImage(pointCount, selected)}
-          style={{ justifyContent: 'flex-start', alignItems: 'center' }}>
-          <DefaultText style={{ color: 'white', fontSize, marginTop, marginLeft }}>
-            {pointCount}
-          </DefaultText>
-        </Image>
+        anchor={platform.isIOS() ? null : { x: 0.5, y: 0.5 }}
+        image={getClusterImage(pointCount, selected)}>
+        <DefaultText style={{ color: 'white', fontSize, marginTop, marginLeft }}>
+          {pointCount}
+        </DefaultText>
     </Marker>
   }
 
