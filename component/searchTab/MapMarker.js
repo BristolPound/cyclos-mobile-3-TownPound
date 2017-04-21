@@ -14,21 +14,19 @@ const selectedClusterOver9 = require('./assets/selected_over_9.png')
 const selectedClusterOver99 = require('./assets/selected_over_99.png')
 
 const getClusterImage = (pointCount, selected) => {
-  if (selected) {
-    return pointCount > 99
-      ? selectedClusterOver99
-      : ( pointCount > 9
-          ? selectedClusterOver9
-          : selectedCluster
-        )
-  } else {
-    return pointCount > 99
-      ? clusterOver99
-      : ( pointCount > 9
-          ? clusterOver9
-          : cluster
-        )
+  var image
+  switch (true) {
+    case (pointCount > 99):
+      image = selected ? selectedClusterOver99 : clusterOver99
+      break;
+    case (pointCount > 9):
+      image = selected ? selectedClusterOver9 : clusterOver9
+      break;
+    default:
+      image = selected ? selectedCluster : cluster
+      break;
   }
+  return image
 }
 
 const MapMarker = ({ coordinate, selected, onPress, pointCount }) => {
