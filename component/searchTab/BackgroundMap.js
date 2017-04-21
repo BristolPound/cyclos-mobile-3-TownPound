@@ -57,7 +57,6 @@ class BackgroundMap extends React.Component {
       this.populateSupercluster()
     } else if (lastProps.forceRegion !== this.props.forceRegion
         || lastProps.selectedBusinessId !== this.props.selectedBusinessId) {
-      console.log('updating markers')
       this.updateMarkers()
     }
   }
@@ -111,7 +110,6 @@ class BackgroundMap extends React.Component {
 
   renderClusteredMarker = ({ selectBusiness, selectedBusinessId }) =>
     ({ geometry, properties, id }) => {
-      console.log(selectedBusinessId)
       const coordinate = {
         longitude: geometry.coordinates[0],
         latitude: geometry.coordinates[1]
@@ -140,7 +138,6 @@ class BackgroundMap extends React.Component {
     }
 
   render() {
-    console.log('-----------------------------')
     return (
       <View style={style.mapContainer}>
         <StatusBar
