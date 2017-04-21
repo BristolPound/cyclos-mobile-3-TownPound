@@ -33,7 +33,7 @@ const getClusterImage = (pointCount, selected) => {
 
 const MapMarker = ({ coordinate, selected, onPress, pointCount }) => {
   if (pointCount) {
-    const marginTop = pointCount > 99 ? 4.5 : pointCount > 9 ? 2.5 : 7/3
+    const marginTop = pointCount > 99 ? 5 : pointCount > 9 ? 4 : 7/3
     const marginLeft = pointCount > 99 ? 14.5 : pointCount > 9 ? 13 : 12.5
     const fontSize = pointCount > 9 ? 13 : 12
     return <Marker
