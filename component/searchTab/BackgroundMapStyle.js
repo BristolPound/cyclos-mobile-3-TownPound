@@ -17,7 +17,10 @@ const style = {
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'white'
+    position: 'absolute',
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   warningContainer: {
     backgroundColor: 'red',
