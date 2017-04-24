@@ -2,7 +2,7 @@ import React from 'react'
 import MapView from 'react-native-maps'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { View, StatusBar } from 'react-native'
+import { View, StatusBar, ActivityIndicator } from 'react-native'
 import _ from 'lodash'
 import supercluster from 'supercluster'
 import { MultilineText } from '../DefaultText'
@@ -30,11 +30,11 @@ class BackgroundMap extends React.Component {
     // To prevent the user seeing the centre of the earth when opening the app
     // and to prevent phony region changes
     setTimeout(() => {
-      this.onRegionChangeComplete = _.debounce((region) => {
+      this.onRegionChangeComplete = (region) => {
         this.currentRegion = merge(region)
         this.props.updateMapViewport(region)
         this.updateMarkers()
-      }, MAP_PAN_DEBOUNCE_TIME)
+      }
       if (this.props.businessList) {
         this.populateSupercluster()
       }
@@ -162,12 +162,17 @@ class BackgroundMap extends React.Component {
             scrollEnabled={!this.state.loading}
             zoomEnabled={!this.state.loading}
             onRegionChangeComplete={(region) => this.onRegionChangeComplete(region)}
-            loadingEnabled={true}
+            loadingEnabled={false}
             moveOnMarkerPress={false}>
           {this.state.markerArray}
         </MapView>
         {this.state.loading
-          ? <View style={style.loadingOverlay}/>
+          ? <View style={style.loadingOverlay}>
+              <ActivityIndicator size='large' style={{
+                alignItems: 'center',
+                justifyContent: 'center'
+              }} />
+            </View>
           : undefined}
       </View>
     )
