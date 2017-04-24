@@ -12,8 +12,6 @@ import merge from '../../util/merge'
 import style from './BackgroundMapStyle'
 import MapMarker from './MapMarker'
 
-const MAP_PAN_DEBOUNCE_TIME = 600
-
 class BackgroundMap extends React.Component {
   onRegionChangeComplete = () => {}
 
