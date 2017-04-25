@@ -21,7 +21,8 @@ const initialState = {
   transactionsDataSource: new ListView.DataSource({
     rowHasChanged: (a, b) => a.transactionNumber !== b.transactionNumber,
     sectionHeaderHasChanged: (a, b) => a !== b
-  })
+  }),
+  spendingListRef: null
 }
 
 export const selectMonth = (monthIndex) => (dispatch) => {
@@ -30,6 +31,11 @@ export const selectMonth = (monthIndex) => (dispatch) => {
       monthIndex
     })
   }
+
+export const registerSpengingList = (ref) => ({
+  type: 'transaction/REGISTER_SPENDING_LIST',
+  ref
+})
 
 const transactionsReceived = (transactions, keepOldTransactions) => ({
   type: 'transaction/TRANSACTIONS_RECEIVED',
@@ -118,6 +124,7 @@ const reducer = (state = initialState, action) => {
         })
       }
       break
+
     case 'transaction/TRANSACTIONS_RECEIVED':
       const mergedTransactions = action.keepOldTransactions
         ? _.uniqBy([...state.transactions, ...action.transactions], 'transactionNumber')
@@ -139,16 +146,15 @@ const reducer = (state = initialState, action) => {
           state.transactionsDataSource, monthlyTotalSpent[selectedMonthIndex])
       })
       break
+
     case 'transaction/LOADING_TRANSACTIONS':
-      state = merge(state, {
-        loadingTransactions: true
-      })
+      state = merge(state, { loadingTransactions: true })
       break
+
     case 'transaction/UPDATE_REFRESHING':
-      state = merge(state, {
-        refreshing: true
-      })
+      state = merge(state, { refreshing: true })
       break
+
     case 'transaction/SELECT_MONTH':
       if (state.selectedMonthIndex !== action.monthIndex) {
         state = merge(state, {
@@ -159,10 +165,17 @@ const reducer = (state = initialState, action) => {
         state = merge(state, {
         })
       }
+      state.spendingListRef && state.spendingListRef.scrollTo({ y: 0, animated: false })
       break
+
     case 'transaction/RESET_TRANSACTIONS':
       state = initialState
       break
+
+    case 'transaction/REGISTER_SPENDING_LIST':
+      state = merge(state, { spendingListRef: action.ref })
+      break
+
     case 'transaction/FAILED_TO_LOAD':
       state = merge(state, {
         loadingTransactions: false,

@@ -36,7 +36,7 @@ export const navigateToTab = (tabIndex) =>
     businessListRef && businessListRef.resetToInitalState()
 
     const { spendingListRef } = getState().transaction
-    spendingListRef && spendingListRef.scrollTo({ y: 0 })
+    spendingListRef && spendingListRef.scrollTo({ y: 0, animated: false })
 
     dispatch ({
       type: 'navigation/NAVIGATE_TO_TAB',
