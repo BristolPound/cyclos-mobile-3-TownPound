@@ -32,6 +32,14 @@ const getTransactionImage = (user, businessList) => {
   }
 }
 
+const getUserCategory = (user, businessList) => {
+  if (user) {
+    return businessList[user.id] ? 'shop' : 'person'
+  } else {
+    return 'system'
+  }
+}
+
 const renderRow = (transaction, openDetailsModal, businessList) =>
     <TouchableHighlight
       onPress={() => transaction.relatedAccount.user && openDetailsModal(transaction.relatedAccount.user)}
@@ -41,7 +49,7 @@ const renderRow = (transaction, openDetailsModal, businessList) =>
       <ProfileImage
         image={getTransactionImage(transaction.relatedAccount.user, businessList)}
         style={styles.row.image}
-        category={businessList[transaction.relatedAccount.user.id] ? 'shop' : 'person'}
+        category={getUserCategory(transaction.relatedAccount.user, businessList)}
         colorCode={transaction.colorCode}/>
       <View style={styles.row.textContainer}>
         <DefaultText style={styles.row.text}>
