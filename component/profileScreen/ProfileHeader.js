@@ -61,6 +61,7 @@ const renderBackground = (props) => {
             pitchEnabled={false}
             scrollEnabled={false}
             zoomEnabled={false}
+            liteMode={true}
             onPress={props.goToTraderLocation}>
           <MapMarker key='marker' coordinate={props.address.location} selected={true} />
         </MapView>
