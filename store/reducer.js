@@ -12,6 +12,7 @@ import networkConnection, {connectivityChanged} from './reducer/networkConnectio
 import developerOptions from './reducer/developerOptions'
 import statusMessage from './reducer/statusMessage'
 import { setBaseUrl } from '../api/api'
+import { Location, Permissions } from 'expo'
 
 export const reducer = combineReducers({
   transaction,
@@ -37,13 +38,18 @@ export const initialise = (store) => {
 
   store.dispatch(loadBusinessList())
 
-  navigator.geolocation.getCurrentPosition(
-    ({coords}) => geolocationChanged(coords, store.dispatch),
-    () => {
+  let _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION)
+    if (status !== 'granted') {
       alert('Unable to get location. Are location services enabled?')
       store.dispatch(geolocationFailed())
     }
-  )
+
+    let location = await Location.getCurrentPositionAsync({})
+    geolocationChanged(location.coords, store.dispatch)
+  }
+
+  _getLocationAsync()
 
   setBaseUrl(store.getState().developerOptions.server)
 
