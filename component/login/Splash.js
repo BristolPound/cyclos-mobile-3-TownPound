@@ -8,8 +8,9 @@ import { bindActionCreators } from 'redux'
 import * as actions from '../../store/reducer/login'
 import PLATFORM from '../../util/Platforms'
 import style from './SplashStyle'
+import Images from '@BPAssets/images'
 
-const background = require('../../../assets/BristolPound/background/background.png')
+const background = Images.background
 const screenWidth = Dimensions.get('window').width
 
 class Splash  extends React.Component {

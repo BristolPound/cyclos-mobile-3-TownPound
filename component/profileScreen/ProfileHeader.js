@@ -8,9 +8,10 @@ import merge from '../../util/merge'
 import MapMarker from '../searchTab/MapMarker'
 import { isIncorrectLocation } from '../../util/business'
 import  { Button } from '../common/Button'
+import Images from '@BPAssets/images'
 
-const closeButton = require('./../common/assets/Close.png')
-const expandIcon = require('./assets/Expand.png')
+const closeButton = Images.close
+const expandIcon = Images.expand
 
 const screenWidth = Dimensions.get('window').width,
   screenHeight = Dimensions.get('window').height
@@ -69,7 +70,7 @@ const renderBackground = (props) => {
     )
   }
   return (
-    <Image source={require('./assets/gorillaWithBackground.png')}
+    <Image source={Images.gorillaWithBackground}
         style={styles.header.backgroundImage}
         resizeMode='cover' />
   )

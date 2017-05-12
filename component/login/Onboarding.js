@@ -5,6 +5,7 @@ import Splash from './Splash'
 import { isScreenSmall } from '../../util/ScreenSizes'
 import colors from '../../util/colors'
 import commonStyle from '../style'
+import Images from '@BPAssets/images'
 
 const style = {
   infoText: {
@@ -14,7 +15,7 @@ const style = {
   }
 }
 
-const logo = isScreenSmall ? require('../../../assetsBristolPound/login/onboarding_logo_SE.png') : require('../../../assetsBristolPound/login/onboarding_logo_7.png')
+const logo = isScreenSmall ? Images.onboardingLogoSE : Images.onboardingLogo7
 
 const renderWelcomeMessage = () => <Image source={logo} />
 const renderInfoText = () =>

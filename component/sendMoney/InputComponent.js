@@ -8,13 +8,14 @@ import merge from '../../util/merge'
 import KeyboardComponent from '../KeyboardComponent'
 import { View, TextInput, TouchableOpacity, Animated, Image } from 'react-native'
 import styles from './InputComponentStyle'
+import Images from '@BPAssets/images'
 
 const BalanceMessage = ({ balance }) => {
   return (
     <View style={styles.balanceContainer}>
       <DefaultText style={commonStyle.sectionHeader.text}>CURRENT BALANCE</DefaultText>
       <View style={styles.priceContainer}>
-        <Image source={require('../tabbar/assets/balance_symbol.png')}/>
+        <Image source={Images.balanceSymbol}/>
         <Price prefix=''
             price={balance}
             size={30}
@@ -89,7 +90,7 @@ class InputComponent extends KeyboardComponent {
                     </DefaultText>
                   </View>
                   <View style={styles.confirmAmountContainer}>
-                    <Image source={require('../tabbar/assets/balance_symbol.png')}/>
+                    <Image source={Images.balanceSymbol}/>
                     <Price prefix=''
                         price={amount}
                         size={24}

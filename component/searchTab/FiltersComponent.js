@@ -6,17 +6,18 @@ import FixedScrollableList from './FixedScrollableList'
 import { allFilters } from '../../store/reducer/business'
 import styles from './BusinessListStyle'
 import searchTabStyle from './SearchTabStyle'
+import Images from '@BPAssets/images'
 
-const foodanddrink = require('./assets/foodanddrink.png')
-const goingout = require('./assets/goingout.png')
-const visitingbristol = require('./assets/visitingbristol.png')
-const shopping = require('./assets/shopping.png')
-const foryourbusiness = require('./assets/foryourbusiness.png')
-const foryourhome = require('./assets/foryourhome.png')
-const gettingaround = require('./assets/gettingaround.png')
-const lookingafteryou = require('./assets/lookingafteryou.png')
+const foodanddrink = Images.foodAndDrink
+const goingout = Images.goingOut
+const visitingbristol = Images.visitingBristol
+const shopping = Images.shopping
+const foryourbusiness = Images.forYourBusiness
+const foryourhome = Images.forYourHome
+const gettingaround = Images.gettingAround
+const lookingafteryou = Images.lookingAfterYou
 
-const TICK = require('./assets/Tick.png')
+const TICK = Images.tick
 
 const images = {
   foodanddrink,

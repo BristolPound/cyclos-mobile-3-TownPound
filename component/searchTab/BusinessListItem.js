@@ -6,9 +6,10 @@ import styles from './BusinessListStyle'
 import merge from '../../util/merge'
 import { SEARCH_BAR_HEIGHT } from './SearchTabStyle'
 import { Button } from '../common/Button'
+import Images from '@BPAssets/images'
 
 
-const CLOSE_BUTTON = require('../common/assets/Close.png')
+const CLOSE_BUTTON = Images.close
 
 class BusinessListItem extends React.Component {
   shouldComponentUpdate(nextProps) {

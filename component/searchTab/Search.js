@@ -16,14 +16,15 @@ import colors from '../../util/colors'
 import { addColorCodes } from '../../util/business'
 import searchTabStyle, { maxExpandedHeight, SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN } from './SearchTabStyle'
 import { ROW_HEIGHT } from './BusinessListStyle'
+import Images from '@BPAssets/images'
 
 const { searchBar, textInput, searchHeaderText, closeButton, nearbyButton, fixedScrollableListContainer } = searchTabStyle.searchTab
 
-const CLOSE_BUTTON = require('../common/assets/Close.png')
-const FILTER_BUTTON = require('./assets/filters.png')
-const FILTER_DISABLED_BUTTON = require('./assets/filters_disabled.png')
-const NEARBY_BLUE = require('./assets/nearby_blue.png')
-const NEARBY_GREY = require('./assets/nearby_grey.png')
+const CLOSE_BUTTON = Images.close
+const FILTER_BUTTON = Images.filters
+const FILTER_DISABLED_BUTTON = Images.filtersDisabled
+const NEARBY_BLUE = Images.nearbyBlue
+const NEARBY_GREY = Images.nearbyGrey
 
 const MAX_LIST_LENGTH = 50
 

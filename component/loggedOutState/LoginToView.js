@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Image, Dimensions } from 'react-native'
 import color from '../../util/colors'
 import DefaultText from '../DefaultText'
+import Images from '@BPAssets/images'
 
 const screenWidth = Dimensions.get('window').width,
   screenHeight = Dimensions.get('window').height
@@ -36,11 +37,11 @@ export const emptyStateImage = {
 const getImageSource = (image) => {
   switch(image) {
     case emptyStateImage.spending:
-      return require('../../../assets/BristolPound/loggedOutState/Spending.png')
+      return Images.spending
     case emptyStateImage.map:
-      return require('../../../assets/BristolPound/loggedOutState/Map.png')
+      return Images.map
     case emptyStateImage.account:
-      return require('../../../assets/BristolPound/loggedOutState/Account.png')
+      return Images.account
   }
 }
 
