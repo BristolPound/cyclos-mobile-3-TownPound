@@ -9,7 +9,7 @@ import * as actions from '../../store/reducer/login'
 import PLATFORM from '../../util/Platforms'
 import style from './SplashStyle'
 
-const background = require('../../assets/background.png')
+const background = require('../../../assets/BristolPound/background/background.png')
 const screenWidth = Dimensions.get('window').width
 
 class Splash  extends React.Component {

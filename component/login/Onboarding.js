@@ -14,7 +14,7 @@ const style = {
   }
 }
 
-const logo = isScreenSmall ? require('./assets/onboarding_logo_SE.png') : require('./assets/onboarding_logo_7.png')
+const logo = isScreenSmall ? require('../../../assetsBristolPound/login/onboarding_logo_SE.png') : require('../../../assetsBristolPound/login/onboarding_logo_7.png')
 
 const renderWelcomeMessage = () => <Image source={logo} />
 const renderInfoText = () =>
