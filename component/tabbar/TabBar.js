@@ -10,6 +10,7 @@ import { showModal, modalState } from '../../store/reducer/navigation'
 import { LOGIN_STATUSES } from '../../store/reducer/login'
 import style from './TabBarStyle'
 import Config from 'react-native-config'
+import Images from '@BPAssets/images'
 
 // NOTE - The image URLs must be known statically
 // see: https://facebook.github.io/react-native/docs/images.html
@@ -17,18 +18,18 @@ import Config from 'react-native-config'
 const TabItem = (active, inactive, label) => ({ active, inactive, label })
 const TABS = [
     TabItem(
-        require('./assets/Search_active.png'),
-        require('./assets/Search_inactive.png'),
+        Images.searchActive,
+        Images.searchInactive,
         'Search Tab'
     ),
     TabItem(
-        require('./assets/Spending_active.png'),
-        require('./assets/Spending_inactive.png'),
+        Images.spendingActive,
+        Images.spendingInactive,
         'Spending Tab'
     ),
     TabItem(
-        require('./assets/Me_active.png'),
-        require('./assets/Me_inactive.png'),
+        Images.meActive,
+        Images.meInactive,
         'My Details Tab'
     )
 ]
@@ -53,7 +54,7 @@ const TabBar = (props) =>
       {
         props.loggedIn
           ? <View style={style.amountInnerContainer}>
-              <Image source={require('./assets/balance_symbol.png')} style={style.balanceSymbol}/>
+              <Image source={Images.balanceSymbol} style={style.balanceSymbol}/>
               <Price
                   style={style.amount}
                   price={props.balance}

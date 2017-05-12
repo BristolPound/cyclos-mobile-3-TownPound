@@ -1,6 +1,7 @@
 import React from 'react'
 import { Image, View } from 'react-native'
 import categories from '../../util/categories'
+import Images from '@BPAssets/images'
 
 const layer = (src, style) => {
   if (src) {
@@ -9,20 +10,20 @@ const layer = (src, style) => {
 }
 
 const backgroundImage = [
-  require('./assets/BrandBlue1.png'),
-  require('./assets/BrandBlue2.png'),
-  require('./assets/DarkBlue1.png'),
-  require('./assets/SecondaryBlue1.png')
+  Images.brandBlue1,
+  Images.brandBlue2,
+  Images.darkBlue1,
+  Images.secondaryBlue1
 ]
 
 const border = {
-  offWhite: require('./assets/BorderOffWhite.png'),
+  offWhite: Images.borderOffWhite,
 }
 
 const categoryImage = { }
-categoryImage[categories.shop] = require('./assets/shop.png')
-categoryImage[categories.person] = require('./assets/person.png')
-categoryImage[categories.system] = require('./assets/system.png')
+categoryImage[categories.shop] = Images.shop
+categoryImage[categories.person] = Images.person
+categoryImage[categories.system] = Images.system
 
 const CustomImage = ({image, style, borderColor}) =>
     <View style={style}>

@@ -5,6 +5,7 @@ import { View, Linking, Image, TouchableOpacity, Text } from 'react-native'
 import { MultilineText } from '../DefaultText'
 import addressToString from '../../util/addresses'
 import styles from './BusinessDetailsStyle'
+import Images from '@BPAssets/images'
 
 const Field = ({icon, text, accessibilityLabel, onPress}) =>
   <View style={styles.field}>
@@ -61,31 +62,31 @@ function getFields(business, goToTraderLocation) {
   //    access point*, special offer*, address, opening times*, phone number, email address
   // Note: access point and special offer aren't supported yet.
     business.address.location && fields.push(
-      businessDetail('addressField', require('../../../assets/BristolPound/businessDetails/Address.png'), addressToString(business.address), goToTraderLocation )
+      businessDetail('addressField', Images.address, addressToString(business.address), goToTraderLocation )
     )
 
     business.fields.businessphone && fields.push(
-      businessDetail('phoneField', require('../../../assets/BristolPound/businessDetails/Phone.png'), business.fields.businessphone, () => Communications.phonecall(business.fields.businessphone, true))
+      businessDetail('phoneField', Images.phone, business.fields.businessphone, () => Communications.phonecall(business.fields.businessphone, true))
     )
 
     business.fields.businessemail && fields.push(
-      businessDetail('emailField', require('../../../assets/BristolPound/businessDetails/Email.png'), business.fields.businessemail, () => Communications.email([business.fields.businessemail], null, null, null, null))
+      businessDetail('emailField', Images.email, business.fields.businessemail, () => Communications.email([business.fields.businessemail], null, null, null, null))
     )
 
     business.fields.facebook && fields.push(
-      businessDetail('facebookField', require('../../../assets/BristolPound/businessDetails/Facebook.png'), business.name, () => Communications.web(business.fields.facebook))
+      businessDetail('facebookField', Images.facebook, business.name, () => Communications.web(business.fields.facebook))
     )
 
     business.fields.businesswebsite && fields.push(
-          businessDetail('websiteField', require('../../../assets/BristolPound/businessDetails/Website.png'), business.fields.businesswebsite, () => Communications.web(business.fields.businesswebsite))
+          businessDetail('websiteField', Images.website, business.fields.businesswebsite, () => Communications.web(business.fields.businesswebsite))
     )
 
     business.fields.twitter && fields.push(
-          businessDetail('twitterField', require('../../../assets/BristolPound/businessDetails/Twitter.png'), business.fields.twitter.split("@").join(""), () => Communications.web("https://www.twitter.com/" + business.fields.twitter.split("@").join("")))
+          businessDetail('twitterField', Images.twitter, business.fields.twitter.split("@").join(""), () => Communications.web("https://www.twitter.com/" + business.fields.twitter.split("@").join("")))
     )
 
     business.fields.linkedin && fields.push(
-          businessDetail('linkedinField', require('../../../assets/BristolPound/businessDetails/Linkedin.png'), business.name, () => Communications.web(business.fields.linkedin))
+          businessDetail('linkedinField', Images.iinkedin, business.name, () => Communications.web(business.fields.linkedin))
     )
 
   return fields

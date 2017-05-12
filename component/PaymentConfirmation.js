@@ -8,6 +8,7 @@ import style from './PaymentConfirmationStyle'
 import ProfileHeader from './profileScreen/ProfileHeader'
 import DefaultText from './DefaultText'
 import categories from '../util/categories'
+import Images from '@BPAssets/images'
 
 const PaymentConfirmation = (props) => {
 
@@ -36,7 +37,7 @@ const PaymentConfirmation = (props) => {
 const renderPrice = (priceBeforeDecimal, priceAfterDecimal) =>
   <View style={style.priceContainer}>
     <View style={style.pricePoundLogoContainer}>
-      <Image source={require('./common/assets/Shape.png')} style={style.pricePoundLogo} />
+      <Image source={Images.shape} style={style.pricePoundLogo} />
     </View>
     <DefaultText style={style.priceBeforeDecimal}>
         {priceBeforeDecimal}

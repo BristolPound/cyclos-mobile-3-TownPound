@@ -11,6 +11,7 @@ import { hideModal } from '../store/reducer/navigation'
 import { LOGIN_STATUSES } from '../store/reducer/login'
 import { selectServer, SERVER } from '../store/reducer/developerOptions'
 import { setSessionToken } from '../api/api'
+import Images from '@BPAssets/images'
 
 const INFO_FONT_SIZE = 14
 const ACTION_FONT_SIZE = 18
@@ -146,7 +147,7 @@ const DeveloperOptions = props => {
           underlayColor={color.white}
           accessiblityLabel='Close Developer Options'
         >
-          <Image source={require('../../assets/BristolPound/common/Close.png')} style={{margin: 20}}/>
+          <Image source={Images.close} style={{margin: 20}}/>
         </TouchableHighlight>
       </View>
       <ListView

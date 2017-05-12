@@ -3,15 +3,7 @@ import { Marker } from 'react-native-maps'
 import platform from '../../util/Platforms'
 import { Image, View } from 'react-native'
 import DefaultText from '../DefaultText'
-
-import markerImage from './assets/marker.png'
-import selectedMarkerImage from './assets/selected_trader.png'
-import cluster from './assets/cluster.png'
-import clusterOver9 from './assets/over_9.png'
-import clusterOver99 from './assets/over_99.png'
-import selectedCluster from './assets/selected_cluster.png'
-import selectedClusterOver9 from './assets/selected_over_9.png'
-import selectedClusterOver99 from './assets/selected_over_99.png'
+import Images from '@BPAssets/images'
 
 const getClusterDetails = (pointCount, selected) => {
   var image
@@ -20,19 +12,19 @@ const getClusterDetails = (pointCount, selected) => {
   var marginLeft
   switch (true) {
     case (pointCount > 99):
-      image = selected ? selectedClusterOver99 : clusterOver99
+      image = selected ? Images.selectedClusterOver99 : Images.clusterOver99
       marginTop = 5
       marginLeft = 14.5
       fontSize = 13
       break;
     case (pointCount > 9):
-      image = selected ? selectedClusterOver9 : clusterOver9
+      image = selected ? Images.selectedClusterOver9 : Images.clusterOver9
       marginTop = 3
       marginLeft = 13
       fontSize = 13
       break;
     default:
-      image = selected ? selectedCluster : cluster
+      image = selected ? Images.selectedCluster : Images.cluster
       marginTop = 7/3
       marginLeft = 12.5
       fontSize = 12
@@ -58,7 +50,7 @@ const MapMarker = ({ coordinate, selected, onPress, pointCount }) => {
     </Marker>
   }
 
-  const marker = selected ? selectedMarkerImage : markerImage
+  const marker = selected ? Images.selectedTrader : Images.marker
   return <Marker
       coordinate={coordinate}
       onPress={onPress}
