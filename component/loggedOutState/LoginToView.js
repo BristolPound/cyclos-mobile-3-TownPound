@@ -36,11 +36,11 @@ export const emptyStateImage = {
 const getImageSource = (image) => {
   switch(image) {
     case emptyStateImage.spending:
-      return require('./assets/Spending.png')
+      return require('../../../assets/BristolPound/loggedOutState/Spending.png')
     case emptyStateImage.map:
-      return require('./assets/Map.png')
+      return require('../../../assets/BristolPound/loggedOutState/Map.png')
     case emptyStateImage.account:
-      return require('./assets/Account.png')
+      return require('../../../assets/BristolPound/loggedOutState/Account.png')
   }
 }
 
