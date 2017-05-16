@@ -5,7 +5,7 @@ import { View, Linking, Image, TouchableOpacity, Text } from 'react-native'
 import { MultilineText } from '../DefaultText'
 import addressToString from '../../util/addresses'
 import styles from './BusinessDetailsStyle'
-import Images from '@BPAssets/images'
+import Images from '@Assets/images'
 
 const Field = ({icon, text, accessibilityLabel, onPress}) =>
   <View style={styles.field}>

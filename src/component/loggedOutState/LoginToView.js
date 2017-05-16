@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Image, Dimensions } from 'react-native'
 import color from '../../util/colors'
 import DefaultText from '../DefaultText'
-import Images from '@BPAssets/images'
+import Images from '@Assets/images'
 
 const screenWidth = Dimensions.get('window').width,
   screenHeight = Dimensions.get('window').height

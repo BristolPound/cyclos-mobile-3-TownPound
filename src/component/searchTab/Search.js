@@ -16,7 +16,7 @@ import colors from '../../util/colors'
 import { addColorCodes } from '../../util/business'
 import searchTabStyle, { maxExpandedHeight, SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN } from './SearchTabStyle'
 import { ROW_HEIGHT } from './BusinessListStyle'
-import Images from '@BPAssets/images'
+import Images from '@Assets/images'
 
 const { searchBar, textInput, searchHeaderText, closeButton, nearbyButton, fixedScrollableListContainer } = searchTabStyle.searchTab
 

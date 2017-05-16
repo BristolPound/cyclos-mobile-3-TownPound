@@ -6,7 +6,7 @@ import styles from './BusinessListStyle'
 import merge from '../../util/merge'
 import { SEARCH_BAR_HEIGHT } from './SearchTabStyle'
 import { Button } from '../common/Button'
-import Images from '@BPAssets/images'
+import Images from '@Assets/images'
 
 
 const CLOSE_BUTTON = Images.close

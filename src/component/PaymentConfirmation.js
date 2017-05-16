@@ -8,7 +8,7 @@ import style from './PaymentConfirmationStyle'
 import ProfileHeader from './profileScreen/ProfileHeader'
 import DefaultText from './DefaultText'
 import categories from '../util/categories'
-import Images from '@BPAssets/images'
+import Images from '@Assets/images'
 
 const PaymentConfirmation = (props) => {
 

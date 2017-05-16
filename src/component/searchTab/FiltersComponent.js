@@ -6,7 +6,7 @@ import FixedScrollableList from './FixedScrollableList'
 import { allFilters } from '../../store/reducer/business'
 import styles from './BusinessListStyle'
 import searchTabStyle from './SearchTabStyle'
-import Images from '@BPAssets/images'
+import Images from '@Assets/images'
 
 const foodanddrink = Images.foodAndDrink
 const goingout = Images.goingOut

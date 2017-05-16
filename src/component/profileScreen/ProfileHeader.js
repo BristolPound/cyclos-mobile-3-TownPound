@@ -8,7 +8,7 @@ import merge from '../../util/merge'
 import MapMarker from '../searchTab/MapMarker'
 import { isIncorrectLocation } from '../../util/business'
 import  { Button } from '../common/Button'
-import Images from '@BPAssets/images'
+import Images from '@Assets/images'
 
 const closeButton = Images.close
 const expandIcon = Images.expand
