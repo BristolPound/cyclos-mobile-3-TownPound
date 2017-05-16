@@ -1,0 +1,4 @@
+--compilers js:./test/compiler
+--require ./test/setup.js
+--recursive
+ test/**/*.js
