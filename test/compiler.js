@@ -7,7 +7,7 @@ var origJs = require.extensions['.js'];
 require.extensions['.js'] = function (module, fileName) {
   var isAReactNativeModule = fileName.indexOf('node_modules/react-native/Libraries/react-native/react-native-implementation.js') >= 0;
   if (isAReactNativeModule) {
-    fileName = path.resolve('./test/mocks/react-native.js');
+    fileName = path.resolve('./CityPoundSourceCode/test/mocks/react-native.js');
   }
 
   if (fileName.indexOf('node_modules/') >= 0) {
