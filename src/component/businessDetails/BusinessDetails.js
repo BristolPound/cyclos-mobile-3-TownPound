@@ -86,7 +86,7 @@ function getFields(business, goToTraderLocation) {
     )
 
     business.fields.linkedin && fields.push(
-          businessDetail('linkedinField', Images.iinkedin, business.name, () => Communications.web(business.fields.linkedin))
+          businessDetail('linkedinField', Images.linkedin, business.name, () => Communications.web(business.fields.linkedin))
     )
 
   return fields
