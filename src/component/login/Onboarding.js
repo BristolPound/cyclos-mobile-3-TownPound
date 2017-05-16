@@ -5,7 +5,7 @@ import Splash from './Splash'
 import { isScreenSmall } from '../../util/ScreenSizes'
 import colors from '../../util/colors'
 import commonStyle from '../style'
-import Images from '@BPAssets/images'
+import Images from '@Assets/images'
 
 const style = {
   infoText: {

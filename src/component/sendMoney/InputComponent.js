@@ -8,7 +8,7 @@ import merge from '../../util/merge'
 import KeyboardComponent from '../KeyboardComponent'
 import { View, TextInput, TouchableOpacity, Animated, Image } from 'react-native'
 import styles from './InputComponentStyle'
-import Images from '@BPAssets/images'
+import Images from '@Assets/images'
 
 const BalanceMessage = ({ balance }) => {
   return (

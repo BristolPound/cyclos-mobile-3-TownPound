@@ -10,7 +10,7 @@ import { showModal, modalState } from '../../store/reducer/navigation'
 import { LOGIN_STATUSES } from '../../store/reducer/login'
 import style from './TabBarStyle'
 import Config from 'react-native-config'
-import Images from '@BPAssets/images'
+import Images from '@Assets/images'
 
 // NOTE - The image URLs must be known statically
 // see: https://facebook.github.io/react-native/docs/images.html

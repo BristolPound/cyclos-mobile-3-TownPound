@@ -3,7 +3,7 @@ import { Marker } from 'react-native-maps'
 import platform from '../../util/Platforms'
 import { Image, View } from 'react-native'
 import DefaultText from '../DefaultText'
-import Images from '@BPAssets/images'
+import Images from '@Assets/images'
 
 const getClusterDetails = (pointCount, selected) => {
   var image

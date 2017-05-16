@@ -1,7 +1,7 @@
 import React from 'react'
 import { Image, View } from 'react-native'
 import categories from '../../util/categories'
-import Images from '@BPAssets/images'
+import Images from '@Assets/images'
 
 const layer = (src, style) => {
   if (src) {

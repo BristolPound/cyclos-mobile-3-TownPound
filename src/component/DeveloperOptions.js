@@ -11,7 +11,7 @@ import { hideModal } from '../store/reducer/navigation'
 import { LOGIN_STATUSES } from '../store/reducer/login'
 import { selectServer, SERVER } from '../store/reducer/developerOptions'
 import { setSessionToken } from '../api/api'
-import Images from '@BPAssets/images'
+import Images from '@Assets/images'
 
 const INFO_FONT_SIZE = 14
 const ACTION_FONT_SIZE = 18
