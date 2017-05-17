@@ -16,7 +16,7 @@ import LoginToView, { emptyStateImage } from './loggedOutState/LoginToView'
 import TraderScreen from './TraderScreen'
 import PersonScreen from './PersonScreen'
 import DeveloperOptions from './DeveloperOptions'
-import color from '../util/colors'
+ import Colors from '@Colors/colors'
 import { LOGIN_STATUSES } from '../store/reducer/login'
 import Modal from './Modal'
 import PaymentConfirmation from './PaymentConfirmation'
@@ -24,7 +24,7 @@ import PaymentConfirmation from './PaymentConfirmation'
 const style = {
   tabs: {
     flex: 1,
-    backgroundColor: color.white
+    backgroundColor: Colors.white
   },
   hiddenTabBar: {
     height: 0
@@ -59,14 +59,14 @@ const Tabs = (props) =>
         renderTabBar={() => (props.dialogOpen && props.modalVisible) ? <View style={style.hiddenTabBar}/> : <TabBar/>}
         tabBarPosition='bottom'
         initialPage={props.tabIndex}
-        tabBarActiveTextColor={color.bristolBlue}
+        tabBarActiveTextColor={Colors.primaryBlue}
         style={style.tabs}
         page={props.tabIndex}
-        tabBarBackgroundColor={color.lightGray}
+        tabBarBackgroundColor={Colors.lightGray}
         scrollWithoutAnimation={true}
         locked={true}
         onChangeTab={({i}) => props.navigateToTab(i)}
-        tabBarUnderlineColor={color.transparent}>
+        tabBarUnderlineColor={Colors.transparent}>
       <WithNetworkConnection tabLabel='Search'>
         <SearchTab/>
       </WithNetworkConnection>

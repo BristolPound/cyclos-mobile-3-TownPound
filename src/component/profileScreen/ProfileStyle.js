@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native'
-import colors from '../../util/colors'
+import Colors from '@Colors/colors'
 import commonStyle from '../style'
 import { dimensions, margin, border, horizontalAbsolutePosition } from '../../util/StyleUtils'
 
@@ -39,7 +39,7 @@ const styles = {
     },
     subtitle: {
       fontSize: 18,
-      color: colors.gray
+      color: Colors.gray
     },
     backgroundImage: {
       ...dimensions(screenWidth, 248),
@@ -56,7 +56,7 @@ const styles = {
       justifyContent: 'center',
       height: 50,
       borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: colors.gray5,
+      borderBottomColor: Colors.gray5,
     },
     leftColumn: {
       width: screenWidth / 3,
@@ -101,8 +101,8 @@ const styles = {
     },
   },
   footer: {
-    ...border(['top'], colors.gray5, StyleSheet.hairlineWidth),
-    backgroundColor: colors.offWhite,
+    ...border(['top'], Colors.gray5, StyleSheet.hairlineWidth),
+    backgroundColor: Colors.offWhite,
     flex: 1,
     flexDirection: 'column-reverse'
   },

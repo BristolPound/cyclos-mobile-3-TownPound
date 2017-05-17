@@ -5,7 +5,7 @@ import DefaultText from '../DefaultText'
 import Price from '../Price'
 import { isSameMonth, format } from '../../util/date'
 import styles from './spendingStyle'
-import color from '../../util/colors'
+ import Colors from '@Colors/colors'
 
 const CAROUSEL_ITEM_WIDTH = Dimensions.get('window').width / 3
 
@@ -13,13 +13,13 @@ export const toMonthString = month => isSameMonth(month, new Date()) ? 'This Mon
 
 const MonthOption = ({ monthTotal, isSelected, highlight }) => {
   const basicPriceStyle = (color, size) => ({ color, size })
-  const priceProps = isSelected ? basicPriceStyle(color.bristolBlue, 32) : basicPriceStyle(color.bristolBlue2, 28)
+  const priceProps = isSelected ? basicPriceStyle(Colors.primaryBlue, 32) : basicPriceStyle(Colors.primaryBlue2, 28)
 
   const basicTextStyle = (color, paddingBottom) => ({ color, paddingBottom })
-  const textStyle = isSelected ? basicTextStyle(color.gray, 4) : basicTextStyle(color.gray2, 2)
+  const textStyle = isSelected ? basicTextStyle(Colors.gray, 4) : basicTextStyle(Colors.gray2, 2)
 
   return (
-      <View style={{ width: CAROUSEL_ITEM_WIDTH, backgroundColor: highlight ? color.offWhite : color.white }} >
+      <View style={{ width: CAROUSEL_ITEM_WIDTH, backgroundColor: highlight ? Colors.offWhite : Colors.white }} >
         <DefaultText style={{...styles.header.monthlyOption, ...textStyle}}>
           {toMonthString(monthTotal.month).toUpperCase()}
         </DefaultText>

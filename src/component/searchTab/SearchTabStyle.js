@@ -1,7 +1,7 @@
 import { Dimensions } from 'react-native'
 
 import platform from '../../util/Platforms'
-import color from '../../util/colors'
+ import Colors from '@Colors/colors'
 import commonStyle from '../style'
 import { dimensions, margin, padding } from '../../util/StyleUtils'
 import { isScreenSmall, screenHeight } from '../../util/ScreenSizes'
@@ -27,7 +27,7 @@ const styles = {
       ...margin(SEARCH_BAR_MARGIN, MARGIN_SIZE, 0, MARGIN_SIZE),
       ...dimensions(SEARCH_BAR_WIDTH, SEARCH_BAR_HEIGHT),
       ...commonStyle.shadow,
-      backgroundColor: color.white,
+      backgroundColor: Colors.white,
       flexDirection: 'row',
       borderRadius: 2,
       zIndex: platform.isIOS() ? undefined : 200
@@ -42,21 +42,21 @@ const styles = {
       ...padding(2),
       ...dimensions(SEARCH_BAR_WIDTH - SEARCH_BAR_HEIGHT - NEARBY_WIDTH - SEARCH_BAR_HEIGHT, SEARCH_BAR_HEIGHT - 10),
       fontSize: 16,
-      backgroundColor: color.white,
-      color: color.bristolBlue,
+      backgroundColor: Colors.white,
+      color: Colors.primaryBlue,
     },
     closeButton: {
       alignSelf: 'center',
       borderLeftWidth: 1,
-      borderLeftColor: color.gray5,
+      borderLeftColor: Colors.gray5,
       right: 0,
       position: 'absolute',
     },
     searchHeaderText: {
       ...commonStyle.sectionHeader.text,
-      color: color.gray1,
+      color: Colors.gray1,
       ...margin(20, 0, 10, 14),
-      backgroundColor: color.transparent
+      backgroundColor: Colors.transparent
     },
     hide: {
       height: 0

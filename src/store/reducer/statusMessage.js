@@ -1,4 +1,4 @@
-import color from '../../util/colors'
+ import Colors from '@Colors/colors'
 
 const initialState = {
   message: '',
@@ -6,8 +6,8 @@ const initialState = {
 }
 
 export const ERROR_SEVERITY = {
-  MILD: color.bristolBlue,
-  SEVERE: color.orange
+  MILD: Colors.primaryBlue,
+  SEVERE: Colors.orange
 }
 
 export const unknownError = (err) => (dispatch) => {
@@ -33,14 +33,14 @@ const reducer = (state = initialState, action) => {
     case 'login/LOGIN_IN_PROGRESS':
       state = {
         message: 'Checking details ...',
-        backgroundColor: color.bristolBlue
+        backgroundColor: Colors.primaryBlue
       }
       break
 
     case 'login/LOGGED_IN':
       state = {
         message: 'Logged in ✓',
-        backgroundColor: color.bristolBlue
+        backgroundColor: Colors.primaryBlue
       }
       break
   }

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { View, ListView, TouchableHighlight } from 'react-native'
 import DefaultText from './DefaultText'
-import colors from './../util/colors'
+import Colors from '@Colors/colors'
 import * as actions from '../store/reducer/login'
 import { updateStatus } from '../store/reducer/statusMessage'
 import ProfileHeader from './profileScreen/ProfileHeader'
@@ -23,7 +23,7 @@ const AccountOption = ({text, secondaryText, onPress, index}) =>
   <TouchableHighlight
       onPress={() => onPress ? onPress() : undefined}
       key={index}
-      underlayColor={onPress ? colors.gray5 : colors.transparent}>
+      underlayColor={onPress ? Colors.gray5 : Colors.transparent}>
     <View style={styles.row.container}>
       <DefaultText style={styles.row.label}>{text}</DefaultText>
       { secondaryText

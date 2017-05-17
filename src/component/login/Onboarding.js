@@ -3,14 +3,14 @@ import { View, Image } from 'react-native'
 import DefaultText, { HyperlinkText } from '../DefaultText'
 import Splash from './Splash'
 import { isScreenSmall } from '../../util/ScreenSizes'
-import colors from '../../util/colors'
+import Colors from '@Colors/colors'
 import commonStyle from '../style'
 import Images from '@Assets/images'
-import Config from 'react-native-config'
+import Config from '@Config/config'
 
 const style = {
   infoText: {
-    color: colors.white,
+    color: Colors.white,
     fontSize: 16,
     fontFamily: commonStyle.museo700
   }

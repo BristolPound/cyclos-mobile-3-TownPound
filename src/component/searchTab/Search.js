@@ -12,7 +12,7 @@ import FiltersComponent from './FiltersComponent'
 
 import { tabModes } from '../../store/reducer/business'
 import FixedScrollableList from './FixedScrollableList'
-import colors from '../../util/colors'
+import Colors from '@Colors/colors'
 import { addColorCodes } from '../../util/business'
 import searchTabStyle, { maxExpandedHeight, SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN } from './SearchTabStyle'
 import { ROW_HEIGHT } from './BusinessListStyle'
@@ -157,11 +157,11 @@ export default class Search extends React.Component {
                        onFocus={() => tabMode!==tabModes.search && updateTabMode(tabModes.search)}
                        onChangeText={(text) => this._onChangeText(text)}
                        placeholder={'Search Trader'}
-                       placeholderTextColor={colors.gray4}
+                       placeholderTextColor={Colors.gray4}
                        selectTextOnFocus={true}
                        style={textInput}
                        value={input}
-                       underlineColorAndroid={colors.transparent}/>
+                       underlineColorAndroid={Colors.transparent}/>
           {tabMode===tabModes.search && this.state.searching && <ActivityIndicator />}
           {button}
           </View>

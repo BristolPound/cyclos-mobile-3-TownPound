@@ -1,6 +1,6 @@
 import React from 'react'
 import { ScrollView, TouchableHighlight, View } from 'react-native'
-import colors from '../../util/colors'
+import Colors from '@Colors/colors'
 
 const FixedScrollableList = (props) =>
   	<View style={props.style}>
@@ -13,7 +13,7 @@ const FixedScrollableList = (props) =>
 	            			zIndex: 100,
 	            			flex: 1 }}
 	            	key={item.id || index}
-	            	underlayColor={colors.offWhite}
+	            	underlayColor={Colors.offWhite}
 	            	onPress={() => props.onPress(item)}>
 	              		{props.componentForItem(item)}
 	            </TouchableHighlight>

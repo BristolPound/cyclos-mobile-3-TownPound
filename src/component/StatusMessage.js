@@ -3,7 +3,7 @@ import { Animated } from 'react-native'
 import { connect } from 'react-redux'
 import { TAB_BAR_HEIGHT } from './tabbar/TabBarStyle'
 import DefaultText from './DefaultText'
-import color from '../util/colors'
+ import Colors from '@Colors/colors'
 import merge from '../util/merge'
 import commonStyle from './style'
 import { updateStatus } from '../store/reducer/statusMessage'
@@ -59,7 +59,7 @@ class StatusMessage extends React.Component {
             height: this.state.height
           })
         }>
-        <DefaultText style={{ color: color.white, fontSize: this.state.fontSize }}>
+        <DefaultText style={{ color: Colors.white, fontSize: this.state.fontSize }}>
           {this.props.message}
         </DefaultText>
       </Animated.View>

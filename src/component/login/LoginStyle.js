@@ -1,4 +1,4 @@
-import colors from '../../util/colors'
+import Colors from '@Colors/colors'
 import { horizontalAbsolutePosition } from '../../util/StyleUtils'
 import commonStyle from '../style'
 
@@ -26,13 +26,13 @@ const styles = {
   input: {
     height: 68,
     fontSize: 20,
-    color: colors.bristolBlue,
+    color: Colors.primaryBlue,
     backgroundColor: 'white',
     textAlign: 'center'
   },
   separator: {
     height: 1,
-    backgroundColor: colors.gray5
+    backgroundColor: Colors.gray5
   }
 }
 

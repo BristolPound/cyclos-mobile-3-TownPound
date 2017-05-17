@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { Text, Linking, TouchableHighlight } from 'react-native'
-import colors from '../util/colors'
+import Colors from '@Colors/colors'
 import merge from '../util/merge'
 import commonStyle from './style'
 
@@ -20,8 +20,8 @@ export const baselineDeltaForFonts = (largeFontSize, smallFontSize) =>
 const style = {
   fontFamily: commonStyle.font.museo300,
   fontSize: 18,
-  color: colors.offBlack,
-  backgroundColor: colors.transparent
+  color: Colors.offBlack,
+  backgroundColor: Colors.transparent
 }
 
 class DefaultText extends Component {

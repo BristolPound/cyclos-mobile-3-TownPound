@@ -12,13 +12,13 @@ const getClusterDetails = (pointCount, selected) => {
   var marginLeft
   switch (true) {
     case (pointCount > 99):
-      image = selected ? Images.selectedClusterOver99 : Images.clusterOver99
+      image = selected ? Images.selectedOver99 : Images.clusterOver99
       marginTop = 5
       marginLeft = 14.5
       fontSize = 13
       break;
     case (pointCount > 9):
-      image = selected ? Images.selectedClusterOver9 : Images.clusterOver9
+      image = selected ? Images.selectedOver9 : Images.clusterOver9
       marginTop = 3
       marginLeft = 13
       fontSize = 13

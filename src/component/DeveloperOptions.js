@@ -2,7 +2,7 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { ListView, View, TouchableHighlight, Image } from 'react-native'
-import color from '../util/colors'
+import Colors from '@Colors/colors'
 import merge from '../util/merge'
 import { loadBusinessList, resetBusinesses } from '../store/reducer/business'
 import { loadTransactions, resetTransactions } from '../store/reducer/transaction'
@@ -21,7 +21,7 @@ const style = {
   header: {
     container: {
       padding: PADDING,
-      backgroundColor: color.gray4
+      backgroundColor: Colors.gray4
     },
     text: {
       fontSize: INFO_FONT_SIZE
@@ -62,7 +62,7 @@ const DeveloperAction = ({text, onPress, disabled, index, accessibilityLabel}) =
     <TouchableHighlight
       onPress={() => !disabled && onPress()}
       activeOpacity={0.6}
-      underlayColor={color.transparent}
+      underlayColor={Colors.transparent}
     >
       <View>
         <DefaultText
@@ -144,7 +144,7 @@ const DeveloperOptions = props => {
       <View>
         <TouchableHighlight
           onPress={() => props.hideModal()}
-          underlayColor={color.white}
+          underlayColor={Colors.white}
           accessiblityLabel='Close Developer Options'
         >
           <Image source={Images.close} style={{margin: 20}}/>

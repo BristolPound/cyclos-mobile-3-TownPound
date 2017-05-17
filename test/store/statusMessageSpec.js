@@ -1,5 +1,5 @@
 import reducer from '../../src/store/reducer/statusMessage'
-import color from '../../src/util/colors'
+import Colors from '@Colors/colors'
 var expect = require('chai').expect
 
 const initialState = {
@@ -8,8 +8,8 @@ const initialState = {
 }
 
 const ERROR_SEVERITY = {
-  MILD: color.bristolBlue,
-  SEVERE: color.orange
+  MILD: Colors.primaryBlue,
+  SEVERE: Colors.orange
 }
 
 describe('StatusMessage reducer', () => {
@@ -29,7 +29,7 @@ describe('StatusMessage reducer', () => {
 	      	})
 	    ).to.deep.equal({
 		  	message: 'status message',
-        	backgroundColor: color.orange
+        	backgroundColor: Colors.orange
       	})
 	})
 
@@ -40,7 +40,7 @@ describe('StatusMessage reducer', () => {
 	      	})
 	    ).to.deep.equal({
 	        message: 'Checking details ...',
-	        backgroundColor: color.bristolBlue
+	        backgroundColor: Colors.primaryBlue
 	    })
 	})
 
@@ -51,7 +51,7 @@ describe('StatusMessage reducer', () => {
 	      	})
 	    ).to.deep.equal({
 	        message: 'Logged in ✓',
-	        backgroundColor: color.bristolBlue
+	        backgroundColor: Colors.primaryBlue
 	    })
 	})
 })

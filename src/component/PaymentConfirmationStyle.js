@@ -1,4 +1,4 @@
-import colors from '../util/colors'
+import Colors from '@Colors/colors'
 import commonStyle from './style'
 import { Dimensions } from 'react-native'
 import { baselineDeltaForFonts } from './DefaultText'
@@ -17,7 +17,7 @@ const style = {
       height: sectionHeight,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: colors.bristolBlue
+      backgroundColor: Colors.primaryBlue
 	},
 	buttonInnerContainer: {
 		alignItems: 'center',
@@ -50,19 +50,19 @@ const style = {
 			alignSelf: 'flex-end',
 			margin: 0,
 			padding: 0,
-			color: colors.bristolBlue
+			color: Colors.primaryBlue
 	},
 	priceAfterDecimal: {
 			fontFamily: commonStyle.font.museo300,
 			fontSize: 58,
-			color: colors.bristolBlue,
+			color: Colors.primaryBlue,
 			alignSelf: 'flex-end',
 			marginBottom: baselineDeltaForFonts(80, 58),
 			paddingBottom: 0,
 			opacity: 0.6
 	},
 	separator: {
-      ...border(['bottom'], colors.gray5, 1),
+      ...border(['bottom'], Colors.gray5, 1),
       marginHorizontal: 24
   },
 	detailsInnerContainer: {
@@ -85,12 +85,12 @@ const style = {
 	},
 	rowTitle: {
 		fontFamily: commonStyle.font.museo300,
-		color: colors.gray,
+		color: Colors.gray,
 		fontSize: isScreenSmall ? 19 : 22
 	},
 	rowData: {
 		fontFamily: commonStyle.font.museo300,
-		color: colors.offBlack,
+		color: Colors.offBlack,
 		fontSize: isScreenSmall ? 19 : 22
 	},
 	sectionHeader: commonStyle.sectionHeader

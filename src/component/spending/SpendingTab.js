@@ -7,7 +7,7 @@ import ProfileImage from '../profileImage/ProfileImage'
 import SpendingHeader from './SpendingHeader'
 import DefaultText, { MultilineText } from '../DefaultText'
 import Price from '../Price'
-import color from '../../util/colors'
+ import Colors from '@Colors/colors'
 import * as actions from '../../store/reducer/transaction'
 import { openDetailsModal, navigateToTransactionTab } from '../../store/reducer/navigation'
 import styles from './spendingStyle'
@@ -43,7 +43,7 @@ const getUserCategory = (user, businessList) => {
 const renderRow = (transaction, openDetailsModal, businessList) =>
     <TouchableHighlight
       onPress={() => transaction.relatedAccount.user && openDetailsModal(transaction.relatedAccount.user)}
-      underlayColor={color.transparent}
+      underlayColor={Colors.transparent}
       key={transaction.transactionNumber}>
     <View style={styles.row.container}>
       <ProfileImage
@@ -71,7 +71,7 @@ class SpendingTab extends React.Component {
     } else if (dataSource.getRowCount()) {
       bodyComponent = <ListView
           ref={this.props.registerSpengingList}
-          style={{ backgroundColor: color.offWhite, marginTop: 106 }}
+          style={{ backgroundColor: Colors.offWhite, marginTop: 106 }}
           tabLabel='Transactions'
           decelerationRate='fast'
           renderSeparator={renderSeparator}

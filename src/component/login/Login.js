@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { View, TouchableOpacity, TextInput, Animated } from 'react-native'
 import DefaultText from '../DefaultText'
-import colors from '../../util/colors'
+import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import animateTo from '../../util/animateTo'
 import * as actions from '../../store/reducer/login'
@@ -61,7 +61,7 @@ class Login extends KeyboardComponent {
     const loginView = (
       <Animated.View style={merge(styles.outerContainer, { bottom: this.state.keyboardHeight })}>
         <Animated.View style={merge(styles.loginContainer, { bottom: this.state.bottom })}>
-          <TouchableOpacity style={{ ...styles.loginButton, backgroundColor: detailsValid(this.state.username, this.state.password) ? colors.bristolBlue : colors.offWhite }}
+          <TouchableOpacity style={{ ...styles.loginButton, backgroundColor: detailsValid(this.state.username, this.state.password) ? Colors.primaryBlue : Colors.offWhite }}
               accessibilityLabel={'Login Button'}
               onPress={() => detailsValid(this.state.username, this.state.password) && this.login()}>
             <DefaultText style={{ ...styles.loginButtonText, color: detailsValid(this.state.username, this.state.password) ? 'white' : 'black' }}>
@@ -80,10 +80,10 @@ class Login extends KeyboardComponent {
               onChangeText={(text) => this.usernameUpdated(text)}
               onSubmitEditing={this.selectPasswordField.bind(this)}
               placeholder={'Username'}
-              placeholderTextColor={colors.gray4}
+              placeholderTextColor={Colors.gray4}
               selectTextOnFocus={true}
               value={this.state.username}
-              underlineColorAndroid={colors.transparent}
+              underlineColorAndroid={Colors.transparent}
               autoCorrect={false} />
           <View style={styles.separator}/>
           <TextInput style={styles.input}
@@ -93,10 +93,10 @@ class Login extends KeyboardComponent {
               onChangeText={(text) => this.passwordUpdated(text)}
               onSubmitEditing={() => this.login()}
               placeholder={'Password'}
-              placeholderTextColor={colors.gray4}
+              placeholderTextColor={Colors.gray4}
               secureTextEntry={true}
               selectTextOnFocus={true}
-              underlineColorAndroid={colors.transparent} />
+              underlineColorAndroid={Colors.transparent} />
         </Animated.View>
       </Animated.View>
     )

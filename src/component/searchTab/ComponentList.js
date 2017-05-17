@@ -1,6 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
-import color from '../../util/colors'
+ import Colors from '@Colors/colors'
 import { SEARCH_BAR_HEIGHT } from './SearchTabStyle'
 
 class ComponentList extends React.Component {
@@ -56,7 +56,7 @@ class ComponentList extends React.Component {
           let containerBackgroundColor
           if (item.pressable) {
             containerBackgroundColor = this.state.highlightedIndex === index
-              ? color.offWhite
+              ? Colors.offWhite
               : 'white'
           }
           return (

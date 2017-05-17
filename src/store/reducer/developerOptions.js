@@ -1,6 +1,6 @@
 import { setBaseUrl } from '../../api/api'
 import merge from '../../util/merge'
-import Config from 'react-native-config'
+import Config from '@Config/config'
 
 
 export const SERVER = {
