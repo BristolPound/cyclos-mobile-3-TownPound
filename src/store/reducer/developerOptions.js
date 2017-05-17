@@ -1,9 +1,11 @@
 import { setBaseUrl } from '../../api/api'
 import merge from '../../util/merge'
+import Config from 'react-native-config'
+
 
 export const SERVER = {
-  STAGE: 'https://bristol-stage.community-currency.org/cyclos/api/',
-  DEV: 'https://bristol.cyclos.org/bristolpoundsandbox03/api/'
+  STAGE: Config.STAGE_SERVER,
+  DEV: Config.DEV_SERVER
 }
 
 const initialState = {

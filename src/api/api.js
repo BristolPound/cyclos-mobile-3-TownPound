@@ -1,8 +1,9 @@
 import {encode} from 'base-64'
 import merge from '../util/merge'
 import { throwErrorOnUnexpectedResponse } from './apiError'
+import Config from 'react-native-config'
 
-let BASE_URL = 'https://bristol-stage.community-currency.org/cyclos/bristolpound/api/'
+let BASE_URL = Config.BASE_URL
 let globalSessionToken = ''
 
 export const setSessionToken = (newToken) => {
