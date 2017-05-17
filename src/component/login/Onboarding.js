@@ -6,6 +6,7 @@ import { isScreenSmall } from '../../util/ScreenSizes'
 import colors from '../../util/colors'
 import commonStyle from '../style'
 import Images from '@Assets/images'
+import Config from 'react-native-config'
 
 const style = {
   infoText: {
@@ -21,11 +22,11 @@ const renderWelcomeMessage = () => <Image source={logo} />
 const renderInfoText = () =>
   <View style={{flex: 1, alignItems: 'center'}}>
     <DefaultText style={style.infoText}>
-        If you haven't signed up for Bristol Pound,
+        If you haven't signed up for Config.APP_CITY Pound,
     </DefaultText>
     <View style={{flexDirection: 'row'}}>
       <DefaultText style={style.infoText}>you can do so </DefaultText>
-      <HyperlinkText text='from our website' style={style.infoText} link={'http://bristolpound.org'} />
+      <HyperlinkText text='from our website' style={style.infoText} link={Config.APP_WEBSITE} />
     </View>
   </View>
 

@@ -10,7 +10,7 @@ import Images from '@Assets/images'
 
 const foodanddrink = Images.foodAndDrink
 const goingout = Images.goingOut
-const visitingbristol = Images.visitingBristol
+const visitingthecity = Images.visitingthecity
 const shopping = Images.shopping
 const foryourbusiness = Images.forYourBusiness
 const foryourhome = Images.forYourHome
@@ -22,7 +22,7 @@ const TICK = Images.tick
 const images = {
   foodanddrink,
   goingout,
-  visitingbristol,
+  visitingthecity,
   shopping,
   foryourbusiness,
   foryourhome,
