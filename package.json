@@ -3,6 +3,7 @@
   "version": "0.0.35",
   "dependencies": {
     "expo": "^16.0.0",
+    "exponent": "^14.0.0",
     "base-64": "^0.1.0",
     "dateformat": "^1.0.12",
     "haversine": "^1.0.0",
@@ -12,7 +13,6 @@
     "react": "16.0.0-alpha.6",
     "react-native": "^0.43.4",
     "react-native-communications": "^2.1.4",
-    "react-native-config": "^0.3.1",
     "react-native-fabric": "^0.4.1",
     "react-native-htmlview": "0.5.0",
     "react-native-maps": "git+https://github.com/Geor23/react-native-maps",

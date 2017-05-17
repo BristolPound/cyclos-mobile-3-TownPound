@@ -2,7 +2,7 @@ import React from 'react'
 import { View } from 'react-native'
 import DefaultText, { baselineDeltaForFonts } from './DefaultText'
 import merge from '../util/merge'
-import colors from '../util/colors'
+import Colors from '@Colors/colors'
 import commonStyle from './style'
 
 const Price = ({prefix, price, color, size, style, center}) => {
@@ -16,7 +16,7 @@ const Price = ({prefix, price, color, size, style, center}) => {
   // offset the smaller font based on the difference in baseline
   const marginBottom = baselineDeltaForFonts(size, smallFontSize)
 
-  color = color || (isCredit ? colors.orange : colors.offBlack)
+  color = color || (isCredit ? Colors.orange : Colors.offBlack)
   prefix = prefix !== undefined ? prefix : (isCredit ? '+' : '')
   const alignSelf = center ? 'center': 'flex-end'
 

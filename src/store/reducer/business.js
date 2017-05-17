@@ -10,7 +10,7 @@ import { UNEXPECTED_DATA } from '../../api/apiError'
 import { ERROR_SEVERITY, unknownError, updateStatus } from './statusMessage'
 import { showModal, modalState } from './navigation'
 import { updatePayee } from './sendMoney'
-import Config from 'react-native-config'
+import Config from '@Config/config'
 
 const DEFAULT_COORDINATES = { latitude: 51.454513, longitude:  -2.58791 }
 
@@ -68,7 +68,7 @@ export const allFilters = [
   },
   {
     label: 'visitingthecity',
-    text: "Visiting " + Congif.APP_CITY
+    text: "Visiting " + Config.APP_CITY
   }
 ]
 

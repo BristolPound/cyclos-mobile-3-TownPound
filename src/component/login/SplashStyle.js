@@ -1,5 +1,5 @@
 import { Dimensions } from 'react-native'
-import colors from '../../util/colors'
+import Colors from '@Colors/colors'
 import commonStyle from './../style.js'
 import  { margin, absolutePosition } from '../../util/StyleUtils'
 
@@ -21,11 +21,11 @@ const style = {
   background: {
     ...absolutePosition(),
     height: Dimensions.get('window').height,
-    backgroundColor: colors.bristolBlue2
+    backgroundColor: Colors.primaryBlue2
   },
   loginButton: {
     container: {
-      backgroundColor: colors.white,
+      backgroundColor: Colors.white,
       borderRadius: 10,
       alignSelf: 'stretch',
       height: 48,
@@ -40,10 +40,10 @@ const style = {
   },
   skipButton: {
     container: {
-      backgroundColor: colors.transparent,
+      backgroundColor: Colors.transparent,
       borderRadius: 10,
       borderWidth: 1.5,
-      borderColor: colors.white,
+      borderColor: Colors.white,
       alignSelf: 'stretch',
       height: 48,
       alignItems: 'center',
@@ -51,7 +51,7 @@ const style = {
       ...margin(0, 20, 18, 20),
     },
     text: {
-      color: colors.white,
+      color: Colors.white,
       fontSize: 18,
       fontFamily: commonStyle.museo500
     }

@@ -2,7 +2,7 @@ import React from 'react'
 import animateTo from '../../util/animateTo'
 import Price from '../Price'
 import commonStyle from '../style'
-import color from '../../util/colors'
+ import Colors from '@Colors/colors'
 import DefaultText from '../DefaultText'
 import merge from '../../util/merge'
 import KeyboardComponent from '../KeyboardComponent'
@@ -19,7 +19,7 @@ const BalanceMessage = ({ balance }) => {
         <Price prefix=''
             price={balance}
             size={30}
-            color={color.bristolBlue}/>
+            color={Colors.primaryBlue}/>
       </View>
     </View>
   )
@@ -28,13 +28,13 @@ const BalanceMessage = ({ balance }) => {
 class InputComponent extends KeyboardComponent {
   getButtonColor () {
     if (this.props.invalidInput) {
-      return color.offWhite
+      return Colors.offWhite
     }
-    return color.bristolBlue
+    return Colors.primaryBlue
   }
 
   getButtonTextColor () {
-    return this.getButtonColor() === color.offWhite ? 'black' : 'white'
+    return this.getButtonColor() === Colors.offWhite ? 'black' : 'white'
   }
 
   componentWillUpdate(nextProps) {

@@ -7,10 +7,11 @@ import { allFilters } from '../../store/reducer/business'
 import styles from './BusinessListStyle'
 import searchTabStyle from './SearchTabStyle'
 import Images from '@Assets/images'
+import Config from '@Config/config'
 
 const foodanddrink = Images.foodAndDrink
 const goingout = Images.goingOut
-const visitingthecity = Images.visitingthecity
+const visitingthecity = Images.visitingTheCity
 const shopping = Images.shopping
 const foryourbusiness = Images.forYourBusiness
 const foryourhome = Images.forYourHome

@@ -1,4 +1,4 @@
-import color from '../../util/colors'
+ import Colors from '@Colors/colors'
 import { isScreenSmall } from '../../util/ScreenSizes'
 import { dimensions, padding, border, margin } from '../../util/StyleUtils'
 
@@ -21,20 +21,20 @@ const styles = {
       borderTopWidth: 0,
     },
     container: {
-      ...border(['top'], color.offWhite, 1),
+      ...border(['top'], Colors.offWhite, 1),
       flexDirection: 'row',
       height: ROW_HEIGHT,
-      backgroundColor: color.transparent
+      backgroundColor: Colors.transparent
     },
     containerHighlighted: {
-      backgroundColor: color.offWhite
+      backgroundColor: Colors.offWhite
     },
     // The container contains a color coded margin, an image and a title.
     status: {
       width: 5,
     },
     statusSelected: {
-      backgroundColor: color.bristolBlue,
+      backgroundColor: Colors.primaryBlue,
       borderBottomLeftRadius: 2,
       borderTopLeftRadius: 2
     },
@@ -62,13 +62,13 @@ const styles = {
     },
     shortDisplay: {
       fontSize: 14,
-      color: color.gray3,
+      color: Colors.gray3,
       marginBottom: 6
     },
     closeButton: {
       alignSelf: 'center',
       borderLeftWidth: 1,
-      borderLeftColor: color.gray5,
+      borderLeftColor: Colors.gray5,
       zIndex: 800
     }
   },

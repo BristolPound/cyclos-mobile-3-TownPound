@@ -1,4 +1,4 @@
-import color from '../../util/colors'
+ import Colors from '@Colors/colors'
 import commonStyle from '../style'
 import { dimensions, margin, border } from '../../util/StyleUtils'
 import { baselineDeltaForFonts } from '../DefaultText'
@@ -10,7 +10,7 @@ const IMAGE_MARGIN = 14
 
 const styles = {
     separator: {
-        ...border(['bottom'], color.gray5, 1),
+        ...border(['bottom'], Colors.gray5, 1),
         marginLeft: IMAGE_SIZE + IMAGE_MARGIN * 2,
         marginRight: 0
     },
@@ -33,15 +33,15 @@ const styles = {
         image: {
             ...dimensions(IMAGE_SIZE),
             ...margin(0, IMAGE_MARGIN, 0, IMAGE_MARGIN),
-            ...border(['top', 'right', 'bottom', 'left'], color.offWhite, 1),
+            ...border(['top', 'right', 'bottom', 'left'], Colors.offWhite, 1),
             borderRadius: 5,
-            backgroundColor: color.transparent
+            backgroundColor: Colors.transparent
         },
         text: {
             fontFamily: commonStyle.font.museo300,
             // the offset required to align this text (18px) with the price (22px)
             marginBottom: baselineDeltaForFonts(22, 18),
-            color: color.offBlack,
+            color: Colors.offBlack,
             fontSize: 18,
             marginRight: 10,
             flex: 1
@@ -57,10 +57,10 @@ const styles = {
             alignItems: 'center',
             justifyContent: 'center',
             padding: 50,
-            backgroundColor: color.offWhite
+            backgroundColor: Colors.offWhite
         },
         text: {
-            color: color.gray3,
+            color: Colors.gray3,
             textAlign: 'center'
         },
         outerContainer: {
@@ -73,7 +73,7 @@ const styles = {
     header: {
         carouselContainer: {
             ...commonStyle.minorShadow,
-            backgroundColor: color.white,
+            backgroundColor: Colors.white,
             height: 106,
             position: 'absolute',
         },

@@ -4,12 +4,12 @@ import { bindActionCreators } from 'redux'
 import DefaultText from '../DefaultText'
 import Price from '../Price'
 import { connect } from 'react-redux'
-import color from '../../util/colors'
+ import Colors from '@Colors/colors'
 import { openLoginForm } from '../../store/reducer/login'
 import { showModal, modalState } from '../../store/reducer/navigation'
 import { LOGIN_STATUSES } from '../../store/reducer/login'
 import style from './TabBarStyle'
-import Config from 'react-native-config'
+import Config from '@Config/config'
 import Images from '@Assets/images'
 
 // NOTE - The image URLs must be known statically
@@ -60,14 +60,14 @@ const TabBar = (props) =>
                   price={props.balance}
                   prefix=''
                   size={30}
-                  color={color.bristolBlue}/>
+                  color={Colors.primaryBlue}/>
             </View>
           : <TouchableOpacity
                 style={style.centerChildren}
                 onPress={props.connection ? () => props.openLoginForm(true) : undefined}
                 accessibilityLabel='Log in Tab'>
               <View>
-                <DefaultText style={{ color: props.connection ? color.bristolBlue : color.offWhite }}>Log in</DefaultText>
+                <DefaultText style={{ color: props.connection ? Colors.primaryBlue : Colors.offWhite }}>Log in</DefaultText>
               </View>
             </TouchableOpacity>
       }

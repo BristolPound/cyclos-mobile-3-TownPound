@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, TouchableHighlight, View } from 'react-native'
-
-import colors from '../../util/colors'
+import Colors from '@Colors/colors'
 
 const overlayStyle =  {
     visible: {
@@ -19,6 +18,6 @@ export const Overlay = props =>
     <TouchableHighlight
         style={props.overlayVisible ? overlayStyle.visible : overlayStyle.hidden}
         onPress={props.onPress}
-        underlayColor={colors.transparent}>
+        underlayColor={Colors.transparent}>
         <View/>
     </TouchableHighlight>

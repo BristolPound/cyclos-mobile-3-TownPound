@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 import { baselineDeltaForFonts } from './DefaultText'
-import colors from './../util/colors'
+import Colors from '@Colors/colors'
 import commonStyle from './style'
 import { isScreenSmall } from '../util/ScreenSizes'
 
@@ -11,7 +11,7 @@ const styles = {
   detailsList: {
     flex: 1,
     ...commonStyle.shadow,
-    backgroundColor: colors.offWhite
+    backgroundColor: Colors.offWhite
   },
   sectionHeader: commonStyle.sectionHeader,
   row: {
@@ -21,11 +21,11 @@ const styles = {
       alignItems: 'center',
       paddingLeft: 14,
       paddingRight: 14,
-      backgroundColor: colors.white
+      backgroundColor: Colors.white
     },
     label: {
       fontSize: 16,
-      color: colors.offBlack,
+      color: Colors.offBlack,
       fontFamily: commonStyle.font.museo500,
       flex: 1
     },
@@ -34,12 +34,12 @@ const styles = {
       // the delta required to align this with the label (which has a larger font size)
       marginBottom: baselineDeltaForFonts(16, 14),
       fontSize: 14,
-      color: colors.gray2,
+      color: Colors.gray2,
       fontFamily: commonStyle.font.museo300
     }
   },
   separator: {
-    borderBottomColor: colors.gray5,
+    borderBottomColor: Colors.gray5,
     borderBottomWidth: 1
   },
   gradient: {

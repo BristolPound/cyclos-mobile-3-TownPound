@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Image, Dimensions } from 'react-native'
-import color from '../../util/colors'
+import Colors from '@Colors/colors'
 import DefaultText from '../DefaultText'
 import Images from '@Assets/images'
 
@@ -12,13 +12,13 @@ const styles = {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: color.offWhite,
+    backgroundColor: Colors.offWhite,
     width: screenWidth,
     height: screenHeight,
     position: 'absolute'
   },
   text: {
-    color: color.gray4,
+    color: Colors.gray4,
     marginBottom: 8,
     fontSize: 20
   },

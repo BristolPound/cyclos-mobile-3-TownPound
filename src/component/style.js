@@ -1,4 +1,4 @@
-import color from '../util/colors'
+ import Colors from '@Colors/colors'
 import { dimensions, border } from '../util/StyleUtils'
 
 const museo900 = 'MuseoSans-900'
@@ -45,16 +45,16 @@ const style = {
   },
   sectionHeader: {
     container: {
-      ...border(['bottom', 'top'], color.gray5, 1),
+      ...border(['bottom', 'top'], Colors.gray5, 1),
       height: 34,
-      backgroundColor: color.offWhite,
+      backgroundColor: Colors.offWhite,
       flexDirection: 'row',
       alignItems: 'center'
     },
     text: {
       fontFamily: museo700,
       fontSize: 14,
-      color: color.gray3,
+      color: Colors.gray3,
       marginLeft: 14
     }
   }

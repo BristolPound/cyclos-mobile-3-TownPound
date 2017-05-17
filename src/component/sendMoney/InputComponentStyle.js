@@ -1,5 +1,5 @@
 import { Dimensions } from 'react-native'
-import color from '../../util/colors'
+ import Colors from '@Colors/colors'
 import { sectionHeight, dimensions, border } from '../../util/StyleUtils'
 
 const { width } = Dimensions.get('window')
@@ -22,8 +22,8 @@ const styles = {
     textAlign: 'center'
   },
   balanceContainer: {
-    ...border(['bottom'], color.gray5, 1),
-    backgroundColor: color.offWhite,
+    ...border(['bottom'], Colors.gray5, 1),
+    backgroundColor: Colors.offWhite,
     height: 46,
     flexDirection: 'row',
     alignItems: 'center'
@@ -33,24 +33,24 @@ const styles = {
     right: 14,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: color.transparent,
+    backgroundColor: Colors.transparent,
     justifyContent: 'flex-end'
   },
   confirmContainer: {
     flexDirection: 'column', 
     alignItems: 'center', 
-    backgroundColor: color.offWhite 
+    backgroundColor: Colors.offWhite 
   },
   confirmPayeeContainer: {
     height: sectionHeight, 
     alignItems: 'center', 
     justifyContent: 'center', 
-    borderBottomColor: color.gray5, 
+    borderBottomColor: Colors.gray5, 
     borderBottomWidth: 1
   },
   confirmPayeeText: {
     fontSize: 24, 
-    color: color.offBlack, 
+    color: Colors.offBlack, 
     textAlign: 'center'
   },
   confirmAmountContainer: {

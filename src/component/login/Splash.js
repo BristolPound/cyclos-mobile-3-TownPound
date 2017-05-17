@@ -2,7 +2,7 @@ import React from 'react'
 import { View, TouchableHighlight, Animated,  Easing, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 import DefaultText from '../DefaultText'
-import colors from '../../util/colors'
+import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import { bindActionCreators } from 'redux'
 import * as actions from '../../store/reducer/login'
@@ -74,15 +74,15 @@ class Splash  extends React.Component {
               <TouchableHighlight
                   style={style.loginButton.container}
                   onPress={this.props.connection ? () => this.props.openLoginForm(true) : undefined}
-                  underlayColor={colors.offWhite}>
-                <DefaultText style={merge(style.loginButton.text, { color: this.props.connection ? colors.bristolBlue2 : colors.offWhite })}>
+                  underlayColor={Colors.offWhite}>
+                <DefaultText style={merge(style.loginButton.text, { color: this.props.connection ? Colors.primaryBlue2 : Colors.offWhite })}>
                   {this.props.connection ? this.props.loginButtonText : 'No internet connection'}
                 </DefaultText>
               </TouchableHighlight>
               <TouchableHighlight
                   style={style.skipButton.container}
                   onPress={this.props.logout}
-                  underlayColor={colors.bristolBlue3}>
+                  underlayColor={Colors.primaryBlue3}>
                 <DefaultText style={style.skipButton.text}>{this.props.logoutButtonText}</DefaultText>
               </TouchableHighlight>
               { this.props.renderInfoText(this.props) }

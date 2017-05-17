@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import Login from './login/Login'
 import LoginOverlay from './login/LoginOverlay'
 import StatusMessage from './StatusMessage'
-import color from '../util/colors'
+import Colors from '@Colors/colors'
 import SendMoney from './sendMoney/SendMoney'
 
 const Root = (props) => {
@@ -33,7 +33,7 @@ const Root = (props) => {
   return (
     <View style={{flex: 1}}>
       <StatusBar animated={true}
-          backgroundColor={color.transparent}
+          backgroundColor={Colors.transparent}
           translucent={true}
           barStyle={props.mainComponent === mainComponent.returningLogin ? 'light-content' : 'dark-content'}/>
       {bodyComponent}
