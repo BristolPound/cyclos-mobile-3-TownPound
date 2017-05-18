@@ -9,7 +9,7 @@ require.extensions['.js'] = function (module, fileName) {
   if (isAReactNativeModule) {
     fileName = path.resolve('./CityPoundSourceCode/test/mocks/react-native.js');
   }
-
+  
   if (fileName.indexOf('node_modules/') >= 0) {
     return (origJs || require.extensions['.js'])(module, fileName);
   }
@@ -26,9 +26,30 @@ require.extensions['.js'] = function (module, fileName) {
     "plugins": [
       "transform-object-rest-spread"
     ],
-    "sourceMaps": false
+    "sourceMaps": false,
+    'resolveModuleSource': function(source) {
+      if(source==='@Colors/colors') {
+        return getModulePathFromSource(fileName, 'colors')
+      } else if (source==='@Config/config') {
+        return getModulePathFromSource(fileName, 'config')
+      } else {
+        return source
+      }
+    }
 
   }).code;
 
   return module._compile(output, fileName);
 };
+
+
+var getModulePathFromSource = (source, module) => {
+  var res = source.split('/')
+  var ind = res.indexOf('CityPoundSourceCode')
+  var toReturn = module + '/' + module;
+  for (i = 1; i<(res.length - ind); i++) {
+    toReturn = '../' + toReturn
+  }
+  return toReturn
+}
+
