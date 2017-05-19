@@ -22,7 +22,7 @@ const renderWelcomeMessage = () => <Image source={logo} />
 const renderInfoText = () =>
   <View style={{flex: 1, alignItems: 'center'}}>
     <DefaultText style={style.infoText}>
-        If you haven't signed up for Config.APP_CITY Pound,
+        If you haven't signed up for {Config.APP_CITY} Pound,
     </DefaultText>
     <View style={{flexDirection: 'row'}}>
       <DefaultText style={style.infoText}>you can do so </DefaultText>
