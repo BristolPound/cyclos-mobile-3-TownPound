@@ -2,8 +2,6 @@
   "name": "CityPoundSourceCode",
   "version": "0.0.35",
   "dependencies": {
-    "expo": "^16.0.0",
-    "exponent": "^14.0.0",
     "base-64": "^0.1.0",
     "dateformat": "^1.0.12",
     "haversine": "^1.0.0",
