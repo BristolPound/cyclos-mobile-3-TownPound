@@ -15,7 +15,7 @@
     "invariant": "^2.2.2",
     "mocha": "^3.4.1",
     "moment": "^2.15.0",
-    "org.bristolpound.cyclos.api.directory": "git+https://code.bristolpound.org/cyclos-scripts/directory-api-JS.git#v1.0.1",
+    "org.bristolpound.cyclos.api.directory": "git+https://github.com/Geor23/directory-api-JS",
     "react": "16.0.0-alpha.6",
     "react-native-communications": "^2.1.4",
     "react-native-fabric": "^0.4.1",
