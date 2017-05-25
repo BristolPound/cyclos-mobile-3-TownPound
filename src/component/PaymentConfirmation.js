@@ -20,9 +20,9 @@ const PaymentConfirmation = (props) => {
       <View style={style.container}>
         	<ScrollView contentContainerStyle={style.innerContainer}>
             <ProfileHeader
-              name={props.payee.name || ''}
-              username={props.payee.fields.username}
-              image={props.payee.image.url}
+              name={props.payee.name || props.payee.display}
+              username={props.payee.fields? props.payee.username : props.payee.shortDisplay}
+              image={props.payee.image ? props.payee.image.url : ''}
               category={props.category}
               onPressClose={() => {props.closeConfirmation() && props.updatePage(0)}}
               isModal={true}
