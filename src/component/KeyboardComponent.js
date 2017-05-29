@@ -29,20 +29,36 @@ class KeyboardComponent extends React.Component {
       this.keyboardShowListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
       this.keyboardHideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
     }
+
+    if (PLATFORM.isAndroid()) {
+      this.keyboardShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow.bind(this))
+      this.keyboardHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide.bind(this))
+    }
   }
 
   componentWillUnmount () {
-    if (PLATFORM.isIOS()) {
+    // if (PLATFORM.isIOS()) {
       this.keyboardShowListener.remove()
       this.keyboardHideListener.remove()
-    }
+    // }
   }
 
   keyboardWillShow (e) {
     if (AppState.currentState === 'active') {
-      animateTo(this.state.keyboardHeight, e.endCoordinates.height, 300, undefined, () => this.props.setOverlayOpen && this.props.setOverlayOpen(true))
+      animateTo(this.state.keyboardHeight, e.endCoordinates.height, 500, undefined, () => this.props.setOverlayOpen && this.props.setOverlayOpen(true))
       this.keyboardOpen = true
     }
+  }
+
+  keyboardDidShow (e) {
+    if (AppState.currentState === 'active') {
+      animateTo(this.state.keyboardHeight, e.endCoordinates.height, 500, undefined, () => this.props.setOverlayOpen && this.props.setOverlayOpen(true))
+      this.keyboardOpen = true
+    }
+  }
+
+  keyboardDidHide () {
+    // Do nothing as this is too slow to trigger anyway
   }
 
   keyboardWillHide () {
