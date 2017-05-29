@@ -16,7 +16,8 @@ const initialState = {
   timestamp: undefined,
   inputPage: 0,
   transactionNumber: -1,
-  resetClipboard: false
+  resetClipboard: false,
+  askToContinuePayment: false
 }
 
 const Page = {
@@ -59,6 +60,11 @@ const transactionComplete = (success, message, amountPaid, timestamp, transactio
   transactionNumber
 })
 
+export const askToContinuePayment = (value) => ({
+  type: 'sendMoney/ASK_CONTINUE_PAYMENT',
+  value
+})
+
 export const sendTransaction = () =>
   (dispatch, getState) => {
     if (getState().sendMoney.loading) {
@@ -79,6 +85,7 @@ export const sendTransaction = () =>
         if (err.type === UNAUTHORIZED_ACCESS) {
             dispatch(transactionComplete(false, 'Session expired', 0, null, null))
             dispatch(logout())
+            dispatch(askToContinuePayment(true))
         } else if (err.type === UNEXPECTED_ERROR) {
           err.response.json()
             .then(json => {
@@ -124,16 +131,19 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'sendMoney/TRANSACTION_COMPLETE':
-      state = merge(state, {
+      var stateToUpdate = {
         success: action.success,
         message: action.message,
         amountPaid: action.amountPaid,
-        amount: '',
         timestamp: action.timestamp,
-        inputPage: Page.PaymentComplete,
         loading: false,
         transactionNumber: action.transactionNumber
-      })
+      }
+      if (action.message !== 'Session expired') {
+        stateToUpdate.amount = ''
+        stateToUpdate.inputPage = Page.PaymentComplete
+      }
+      state = merge(state, stateToUpdate)
       break
     case 'navigation/OVERLAY_VISIBLE':
       if (action.value === false) {
@@ -150,6 +160,10 @@ const reducer = (state = initialState, action) => {
         })
       }
       break
+    case 'sendMoney/ASK_CONTINUE_PAYMENT':
+      state = merge(state, {
+        askToContinuePayment: action.value 
+      })
   }
   return state
 }
