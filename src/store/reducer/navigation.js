@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import merge from '../../util/merge'
 import { openTraderModal } from './business'
-import { LOGGED_OUT, LOGGED_IN } from './login'
 import { moveMap, selectClosestBusiness } from './business'
 import { updatePayee } from './sendMoney'
 import { selectPerson } from './person'
@@ -118,8 +117,8 @@ const reducer = (state = initialState, action) => {
         modalState: modalState.none
       })
       break
-    case LOGGED_OUT:
-    case LOGGED_IN:
+    case 'login/LOGGED_OUT':
+    case 'login/LOGGED_IN':
       state = merge(state, {
         mainComponent: mainComponent.tabs
       })
