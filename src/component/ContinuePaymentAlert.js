@@ -1,29 +1,28 @@
-var React = require('react');
-var ReactNative = require('react-native');
+import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-var {
-  Alert,
-  View,
-} = ReactNative;
+import { Alert } from 'react-native'
 
-import { resetForm, askToContinuePayment } from '../store/reducer/sendMoney'
+import { resetForm, askToContinuePayment, returnToPayment } from '../store/reducer/sendMoney'
+import { hideModal } from '../store/reducer/navigation'
 
 class ContinuePaymentAlert extends React.Component {
     returnToPayment() {
+        this.props.returnToPayment()
         this.props.askToContinuePayment(false)
     }
 
     clearPayment() {
         this.props.askToContinuePayment(false)
+        this.props.hideModal()
         this.props.resetForm()
     }
 
     render() {
         return (
             Alert.alert(
-                'Return',
                 'Would you like to go back to finish your payment?',
+                '',
                 [
                     {text: 'No', onPress: () => this.clearPayment()},
                     {text: 'Yes', onPress: () => this.returnToPayment()},
@@ -34,6 +33,6 @@ class ContinuePaymentAlert extends React.Component {
 }
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ resetForm, askToContinuePayment }, dispatch)
+  bindActionCreators({ askToContinuePayment, hideModal, resetForm, returnToPayment }, dispatch)
 
-export default connect(mapDispatchToProps)(ContinuePaymentAlert)
+export default connect(null, mapDispatchToProps)(ContinuePaymentAlert)

@@ -47,6 +47,10 @@ export const updateAmount = (amount) => ({
   amount
 })
 
+export const returnToPayment = () => ({
+  type: 'sendMoney/RETURN_TO_PAYMENT'
+})
+
 const setLoading = () => ({
   type: 'sendMoney/SET_LOADING'
 })
@@ -79,8 +83,8 @@ export const sendTransaction = () =>
       }, dispatch)
       .then((result) => {
         dispatch(loadMoreTransactions())
-        dispatch(transactionComplete(true, 'Transaction complete', amount, moment(result.date).format('MMMM Do YYYY, h:mm:ss a'), result.transactionNumber))
-      })
+        dispatch(transactionComplete(true, 'Payment complete', amount, moment(result.date).format('MMMM Do YYYY, h:mm:ss a'), result.transactionNumber))
+    })
       .catch(err => {
         if (err.type === UNAUTHORIZED_ACCESS) {
             dispatch(transactionComplete(false, 'Session expired', 0, null, null))
@@ -144,6 +148,11 @@ const reducer = (state = initialState, action) => {
         stateToUpdate.inputPage = Page.PaymentComplete
       }
       state = merge(state, stateToUpdate)
+      break
+    case 'sendMoney/RETURN_TO_PAYMENT':
+      state = merge(state, {
+        inputPage: Page.ConfirmAmount
+      })
       break
     case 'navigation/OVERLAY_VISIBLE':
       if (action.value === false) {

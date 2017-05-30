@@ -96,7 +96,7 @@ const Tabs = (props) =>
     <Modal visible={props.confirmationOpen} hideModal={() => {props.closeConfirmation() && props.updatePage(0)}}>
       <PaymentConfirmation />
     </Modal>
-    {props.askToContinuePayment && <ContinuePaymentAlert />}
+    {props.askToContinuePayment && props.loggedIn && <ContinuePaymentAlert />}
   </View>
 
 const mapDispatchToProps = (dispatch) =>
