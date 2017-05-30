@@ -37,10 +37,8 @@ class KeyboardComponent extends React.Component {
   }
 
   componentWillUnmount () {
-    // if (PLATFORM.isIOS()) {
-      this.keyboardShowListener.remove()
-      this.keyboardHideListener.remove()
-    // }
+    this.keyboardShowListener.remove()
+    this.keyboardHideListener.remove()
   }
 
   keyboardWillShow (e) {
@@ -50,6 +48,9 @@ class KeyboardComponent extends React.Component {
     }
   }
 
+  // Android doesn't currently support 'WillShow' and 'WillHide' so use
+  // 'DidShow' and 'DidHide' - KeyboardAvoidingView did not work as expected
+  // on rn 44.0
   keyboardDidShow (e) {
     if (AppState.currentState === 'active') {
       animateTo(this.state.keyboardHeight, e.endCoordinates.height, 500, undefined, () => this.props.setOverlayOpen && this.props.setOverlayOpen(true))
