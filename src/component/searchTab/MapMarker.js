@@ -36,6 +36,7 @@ const getClusterDetails = (pointCount, selected) => {
 const MapMarker = ({ coordinate, selected, onPress, pointCount }) => {
   if (pointCount) {
     const {image, marginTop, marginLeft, fontSize} = getClusterDetails(pointCount, selected)
+    // added Date.now into marker key to force update marker (fixes cluster text disappearing)
     return <Marker
         coordinate={coordinate}
         onPress={onPress}
