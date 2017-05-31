@@ -88,9 +88,11 @@ class SendMoney extends React.Component {
       } else if (this.props.loggedIn) {
         switch (this.props.inputPage) {
           case Page.Ready: // Initial state, ready to begin
+          // sometimes when pressing on the 'no' on the alert triggers the onPress here 
+          //-> hence the !this.props.alertShouldPopUp check
             inputProps = {
               buttonText: 'Send Payment',
-              onButtonPress: () => { this.nextPage() },
+              onButtonPress: () => { !this.props.alertShouldPopUp && this.nextPage() }, 
               accessibilityLabel: 'Ready'
             }
             break
