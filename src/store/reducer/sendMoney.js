@@ -16,7 +16,8 @@ const initialState = {
   timestamp: undefined,
   inputPage: 0,
   transactionNumber: -1,
-  resetClipboard: false
+  resetClipboard: false,
+  alertShouldPopUp: false
 }
 
 const Page = {
@@ -46,6 +47,10 @@ export const updateAmount = (amount) => ({
   amount
 })
 
+export const returnToPayment = () => ({
+  type: 'sendMoney/RETURN_TO_PAYMENT'
+})
+
 const setLoading = () => ({
   type: 'sendMoney/SET_LOADING'
 })
@@ -57,6 +62,11 @@ const transactionComplete = (success, message, amountPaid, timestamp, transactio
   amountPaid,
   timestamp,
   transactionNumber
+})
+
+export const askToContinuePayment = (value) => ({
+  type: 'sendMoney/ASK_CONTINUE_PAYMENT',
+  value
 })
 
 export const sendTransaction = () =>
@@ -79,6 +89,7 @@ export const sendTransaction = () =>
         if (err.type === UNAUTHORIZED_ACCESS) {
             dispatch(transactionComplete(false, 'Session expired', 0, null, null))
             dispatch(logout())
+            dispatch(askToContinuePayment(true))
         } else if (err.type === UNEXPECTED_ERROR) {
           err.response.json()
             .then(json => {
@@ -124,15 +135,23 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'sendMoney/TRANSACTION_COMPLETE':
-      state = merge(state, {
+      var stateToUpdate = {
         success: action.success,
         message: action.message,
         amountPaid: action.amountPaid,
-        amount: '',
         timestamp: action.timestamp,
-        inputPage: Page.PaymentComplete,
         loading: false,
         transactionNumber: action.transactionNumber
+      }
+      if (action.message !== 'Session expired') {
+        stateToUpdate.amount = ''
+        stateToUpdate.inputPage = Page.PaymentComplete
+      }
+      state = merge(state, stateToUpdate)
+      break
+    case 'sendMoney/RETURN_TO_PAYMENT':
+      state = merge(state, {
+        inputPage: Page.ConfirmAmount
       })
       break
     case 'navigation/OVERLAY_VISIBLE':
@@ -150,6 +169,10 @@ const reducer = (state = initialState, action) => {
         })
       }
       break
+    case 'sendMoney/ASK_CONTINUE_PAYMENT':
+      state = merge(state, {
+        alertShouldPopUp: action.value 
+      })
   }
   return state
 }

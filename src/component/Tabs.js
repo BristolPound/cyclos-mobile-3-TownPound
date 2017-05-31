@@ -20,6 +20,7 @@ import DeveloperOptions from './DeveloperOptions'
 import { LOGIN_STATUSES } from '../store/reducer/login'
 import Modal from './Modal'
 import PaymentConfirmation from './PaymentConfirmation'
+import ContinuePaymentAlert from './ContinuePaymentAlert'
 
 const style = {
   tabs: {
@@ -95,6 +96,7 @@ const Tabs = (props) =>
     <Modal visible={props.confirmationOpen} hideModal={() => {props.closeConfirmation() && props.updatePage(0)}}>
       <PaymentConfirmation />
     </Modal>
+    {props.alertShouldPopUp && props.loggedIn && <ContinuePaymentAlert />}
   </View>
 
 const mapDispatchToProps = (dispatch) =>
@@ -108,7 +110,8 @@ const mapStateToProps = (state) => ({
   status: state.status,
   dialogOpen: state.login.loginFormOpen,
   online: state.networkConnection.status,
-  confirmationOpen: state.navigation.confirmationOpen
+  confirmationOpen: state.navigation.confirmationOpen,
+  alertShouldPopUp: state.sendMoney.alertShouldPopUp
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tabs)
