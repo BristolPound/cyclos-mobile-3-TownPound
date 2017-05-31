@@ -83,8 +83,8 @@ export const sendTransaction = () =>
       }, dispatch)
       .then((result) => {
         dispatch(loadMoreTransactions())
-        dispatch(transactionComplete(true, 'Payment complete', amount, moment(result.date).format('MMMM Do YYYY, h:mm:ss a'), result.transactionNumber))
-    })
+        dispatch(transactionComplete(true, 'Transaction complete', amount, moment(result.date).format('MMMM Do YYYY, h:mm:ss a'), result.transactionNumber))
+      })
       .catch(err => {
         if (err.type === UNAUTHORIZED_ACCESS) {
             dispatch(transactionComplete(false, 'Session expired', 0, null, null))
