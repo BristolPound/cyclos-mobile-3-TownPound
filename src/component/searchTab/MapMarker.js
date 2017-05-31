@@ -39,10 +39,10 @@ const MapMarker = ({ coordinate, selected, onPress, pointCount }) => {
     return <Marker
         coordinate={coordinate}
         onPress={onPress}
-        key={coordinate.latitude + '-' + coordinate.longitude}
+        key={coordinate.latitude + '-' + coordinate.longitude + '-' + Date.now()}
         anchor={platform.isIOS() ? null : { x: 0.5, y: 0.5 }}
         image={image}>
-        <View>
+        <View collapsible={false}>
           <DefaultText style={{ color: 'white', fontSize, marginTop, marginLeft }}>
             {pointCount}
           </DefaultText>
