@@ -96,7 +96,7 @@ const Tabs = (props) =>
     <Modal visible={props.confirmationOpen} hideModal={() => {props.closeConfirmation() && props.updatePage(0)}}>
       <PaymentConfirmation />
     </Modal>
-    {props.askToContinuePayment && props.loggedIn && <ContinuePaymentAlert />}
+    {props.alertShouldPopUp && props.loggedIn && <ContinuePaymentAlert />}
   </View>
 
 const mapDispatchToProps = (dispatch) =>
@@ -111,7 +111,7 @@ const mapStateToProps = (state) => ({
   dialogOpen: state.login.loginFormOpen,
   online: state.networkConnection.status,
   confirmationOpen: state.navigation.confirmationOpen,
-  askToContinuePayment: state.sendMoney.askToContinuePayment
+  alertShouldPopUp: state.sendMoney.alertShouldPopUp
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tabs)

@@ -7,25 +7,25 @@ import { resetForm, askToContinuePayment, returnToPayment } from '../store/reduc
 import { hideModal } from '../store/reducer/navigation'
 
 class ContinuePaymentAlert extends React.Component {
-    returnToPayment() {
+    returnToPayment () {
         this.props.returnToPayment()
         this.props.askToContinuePayment(false)
     }
 
-    clearPayment() {
-        this.props.askToContinuePayment(false)
-        this.props.hideModal()
+    clearPayment () {
         this.props.resetForm()
+        this.props.hideModal()
+        this.props.askToContinuePayment(false)
     }
 
-    render() {
+    render () {
         return (
             Alert.alert(
                 'Would you like to go back to finish your payment?',
                 '',
                 [
                     {text: 'No', onPress: () => this.clearPayment()},
-                    {text: 'Yes', onPress: () => this.returnToPayment()},
+                    {text: 'Yes', onPress: () => this.returnToPayment()}
                 ]
             )
         )

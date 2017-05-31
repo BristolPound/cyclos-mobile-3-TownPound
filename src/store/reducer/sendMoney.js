@@ -17,7 +17,7 @@ const initialState = {
   inputPage: 0,
   transactionNumber: -1,
   resetClipboard: false,
-  askToContinuePayment: false
+  alertShouldPopUp: false
 }
 
 const Page = {
@@ -171,7 +171,7 @@ const reducer = (state = initialState, action) => {
       break
     case 'sendMoney/ASK_CONTINUE_PAYMENT':
       state = merge(state, {
-        askToContinuePayment: action.value 
+        alertShouldPopUp: action.value 
       })
   }
   return state
