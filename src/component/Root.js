@@ -9,6 +9,7 @@ import Login from './login/Login'
 import LoginOverlay from './login/LoginOverlay'
 import StatusMessage from './StatusMessage'
 import Colors from '@Colors/colors'
+import Config from '@Config/config'
 import SendMoney from './sendMoney/SendMoney'
 
 const Root = (props) => {
@@ -38,7 +39,7 @@ const Root = (props) => {
           barStyle={props.mainComponent === mainComponent.returningLogin ? 'light-content' : 'dark-content'}/>
       {bodyComponent}
       <LoginOverlay/>
-      {props.modalOpen && !props.loginFormOpen ? <SendMoney /> : undefined}
+      {(props.modalOpen && !props.loginFormOpen) && Config.APP_CITY!=='Exeter' ? <SendMoney /> : undefined}
       <Login/>
       <StatusMessage/>
     </View>
