@@ -36,6 +36,10 @@ const style = {
     text: {
       fontSize: 22,
       fontFamily: commonStyle.museo500
+    },
+    replacementContainer: {
+      height: 48,
+      ...margin(gapSize, 20, 10, 20),
     }
   },
   skipButton: {
