@@ -71,7 +71,8 @@ class Root extends React.Component {
           {(this.props.modalOpen && !this.props.loginFormOpen) && Config.APP_CITY!=='Exeter' ? <SendMoney /> : undefined}
           <Login/>
           <StatusMessage/>
-          {AppState.currentState !== 'active' && <AppCover />}
+          {this.state.coverApp && <AppCover />}
+
         </View>
       )
   }
