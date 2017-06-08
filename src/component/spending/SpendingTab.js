@@ -28,6 +28,12 @@ const getTransactionImage = (user, businessList) => {
     image = userDetails ? userDetails.image.url : undefined
     if (image) {
       return { uri: image }
+    } else if (user.image && user.image.url) {
+      /*
+      if it's an individual to individual transaction,
+      the user details are received in the user object
+      */
+      return { uri: user.image.url }
     }
   }
 }
