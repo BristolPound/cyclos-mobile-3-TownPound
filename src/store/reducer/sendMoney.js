@@ -48,7 +48,7 @@ export const updateAmount = (amount) => ({
   amount
 })
 
-export const updateDescription = (amount) => ({
+export const updateDescription = (description) => ({
   type: 'sendMoney/UPDATE_DESCRIPTION',
   description
 })

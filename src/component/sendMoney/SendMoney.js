@@ -123,6 +123,7 @@ class SendMoney extends React.Component {
               onButtonPress: () => { this.props.sendTransaction(); this.nextPage() },
               amount: this.props.amount,
               payee: this.props.payee.display || this.props.payee.name || "",
+              description: this.props.description,
               onChangeAmount: () => { this.prevPage() },
               accessibilityLabel: 'Confirm Amount'
             }
