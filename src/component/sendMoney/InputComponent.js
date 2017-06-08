@@ -44,16 +44,17 @@ class InputComponent extends KeyboardComponent {
   }
 
   render () {
-    let { 
-      onButtonPress, 
-      buttonText, 
-      input, 
-      invalidInput, 
-      accessibilityLabel, 
-      balance, 
-      amount, 
-      onChangeAmount, 
-      payee 
+    let {
+      onButtonPress,
+      buttonText,
+      input,
+      invalidInput,
+      accessibilityLabel,
+      balance,
+      amount,
+      onChangeAmount,
+      payee ,
+      updateDescription
     } = this.props
 
     const button = <View style={merge(styles.button, { backgroundColor: this.getButtonColor() })}>
@@ -80,7 +81,7 @@ class InputComponent extends KeyboardComponent {
                 <BalanceMessage balance={balance}/>
               </View>
             : undefined}
-            
+
           {amount
             ? <TouchableOpacity onPress={onChangeAmount}>
                 <View style={styles.confirmContainer}>
@@ -103,7 +104,7 @@ class InputComponent extends KeyboardComponent {
 
         </Animated.View>
       )
-    
+
   }
 }
 

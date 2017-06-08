@@ -10,6 +10,7 @@ const initialState = {
   payeeId: '',
   amount: '',
   amountPaid: '',
+  description: '',
   loading: false,
   success: undefined,
   message: '',
@@ -45,6 +46,11 @@ export const updatePage = (page) => ({
 export const updateAmount = (amount) => ({
   type: 'sendMoney/UPDATE_AMOUNT',
   amount
+})
+
+export const updateDescription = (amount) => ({
+  type: 'sendMoney/UPDATE_DESCRIPTION',
+  description
 })
 
 export const returnToPayment = () => ({
@@ -123,6 +129,11 @@ const reducer = (state = initialState, action) => {
         amount: action.amount
       })
       break
+    case 'sendMoney/UPDATE_DESCRIPTION':
+      state = merge(state, {
+        description: action.description
+      })
+      break
     case 'sendMoney/SET_LOADING':
       state = merge(state, {
         loading: true
@@ -171,7 +182,7 @@ const reducer = (state = initialState, action) => {
       break
     case 'sendMoney/ASK_CONTINUE_PAYMENT':
       state = merge(state, {
-        alertShouldPopUp: action.value 
+        alertShouldPopUp: action.value
       })
   }
   return state
