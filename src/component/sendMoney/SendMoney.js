@@ -110,6 +110,7 @@ class SendMoney extends React.Component {
                 keyboardType: 'default',
                 value: this.props.description,
                 placeholder: 'Description',
+                maxLength: 20,
                 onChangeText: desc => this.props.updateDescription(desc)
               },
               invalidInput: this.isInputInvalid(),
