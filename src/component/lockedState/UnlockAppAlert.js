@@ -4,10 +4,11 @@ import DefaultText from '../DefaultText'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import style from './UnlockAppAlertStyle'
+import { unlockCharNo } from '../../store/reducer/login'
 
 export const maxAttempts = 5;
 
-const passwordValid = (password) => password && password.indexOf(' ') === -1 && password.length === 3
+const passwordValid = (password) => password && password.indexOf(' ') === -1 && password.length === unlockCharNo
 
 class UnlockAppAlert extends React.Component {
     constructor() {
@@ -26,7 +27,7 @@ class UnlockAppAlert extends React.Component {
             <View style={style.wrapper}>
                 <View style={style.container}>
                     <Text style={style.instructionText}>
-                        To unlock, please introduce the last 3 characters of your password
+                        To unlock, please introduce the last {unlockCharNo} characters of your password
                     </Text>
                     { this.props.error &&
                         <View>
@@ -34,7 +35,7 @@ class UnlockAppAlert extends React.Component {
                                 You have {maxAttempts - this.props.failedAttempts} attempts left
                             </Text>
                             <Text style={style.errorText}>
-                                The characters you intoduced don't match the last 3 characters of you password.
+                                The characters entered don't match
                             </Text>
                         </View>
                     }

@@ -13,6 +13,8 @@ export const LOGIN_STATUSES = {
   LOGIN_IN_PROGRESS: 'LOGIN_IN_PROGRESS'
 }
 
+export const unlockCharNo = 3
+
 const initialState = {
   loginStatus: LOGIN_STATUSES.LOGGED_OUT,
   loginFormOpen: false,
@@ -53,7 +55,7 @@ export const login = (username, password) =>
       .then(() => {
         dispatch(loadTransactions(username === getState().login.loggedInUsername))
         dispatch(loadAccountDetails())
-        dispatch(loggedIn(username, md5(password.substr(password.length - 3))))
+        dispatch(loggedIn(username, md5(password.substr(password.length - unlockCharNo))))
       })
       .catch (err => {
         if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
