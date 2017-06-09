@@ -51,6 +51,10 @@ export const returnToPayment = () => ({
   type: 'sendMoney/RETURN_TO_PAYMENT'
 })
 
+export const resetPayment = () => ({
+  type: 'sendMoney/RESET_PAYMENT'
+})
+
 const setLoading = () => ({
   type: 'sendMoney/SET_LOADING'
 })
@@ -112,6 +116,20 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'sendMoney/RESET_FORM':
       state = initialState
+      break
+    case 'sendMoney/RESET_PAYMENT':
+      state = merge(state, {
+        amount: '',
+        amountPaid: '',
+        loading: false,
+        success: undefined,
+        message: '',
+        timestamp: undefined,
+        inputPage: 0,
+        transactionNumber: -1,
+        resetClipboard: false,
+        alertShouldPopUp: false
+      })
       break
     case 'sendMoney/UPDATE_PAYEE':
       state = merge(state, {

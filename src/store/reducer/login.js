@@ -5,6 +5,7 @@ import { loadAccountDetails, resetAccount } from './account'
 import { loadTransactions, resetTransactions } from './transaction'
 import { deleteSessionToken } from '../../api/api'
 import { updateStatus, ERROR_SEVERITY, unknownError } from './statusMessage'
+import md5 from 'md5'
 
 export const LOGIN_STATUSES = {
   LOGGED_IN: 'LOGGED_IN',
@@ -17,16 +18,18 @@ const initialState = {
   loginFormOpen: false,
   // logged in username state stores the username on successful login
   loggedInUsername: '',
-  failedAttempts: []
+  failedAttempts: [],
+  passToUnlock: ''
 }
 
 export const loginInProgress = () => ({
   type: 'login/LOGIN_IN_PROGRESS'
 })
 
-const loggedIn = (username) => ({
+const loggedIn = (username, passToUnlock) => ({
   type: 'login/LOGGED_IN',
-  username
+  username,
+  passToUnlock
 })
 
 export const loggedOut = () => ({
@@ -50,7 +53,7 @@ export const login = (username, password) =>
       .then(() => {
         dispatch(loadTransactions(username === getState().login.loggedInUsername))
         dispatch(loadAccountDetails())
-        dispatch(loggedIn(username))
+        dispatch(loggedIn(username, md5(password.substr(password.length - 3))))
       })
       .catch (err => {
         if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
@@ -84,7 +87,8 @@ const reducer = (state = initialState, action) => {
       state = merge(state, {
         loggedInUsername: action.username,
         loginStatus: LOGIN_STATUSES.LOGGED_IN,
-        failedAttempts
+        failedAttempts,
+        passToUnlock: action.passToUnlock
       })
       break
     case 'login/LOGIN_IN_PROGRESS':
@@ -94,7 +98,7 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'login/LOGGED_OUT':
-      state = merge(state, { loginStatus: LOGIN_STATUSES.LOGGED_OUT })
+      state = merge(state, { loginStatus: LOGIN_STATUSES.LOGGED_OUT, passToUnlock: '' })
       deleteSessionToken()
       break
     case 'login/OPEN_LOGIN_FORM':

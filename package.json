@@ -13,6 +13,7 @@
     "eslint-plugin-react": "^6.4.1",
     "haversine": "^1.0.0",
     "invariant": "^2.2.2",
+    "md5": "^2.2.1",
     "mocha": "^3.4.1",
     "moment": "^2.15.0",
     "org.bristolpound.cyclos.api.directory": "git+https://gitlab.com/TownPound/cyclos/directory/directory-api-JS.git#develop",

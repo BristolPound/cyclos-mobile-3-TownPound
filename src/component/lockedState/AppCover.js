@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Image } from 'react-native'
-import { isScreenSmall } from '../util/ScreenSizes'
+import { isScreenSmall } from '../../util/ScreenSizes'
 import Colors from '@Colors/colors'
 import Images from '@Assets/images'
 

@@ -5,13 +5,19 @@ import ReturningLogin from './login/ReturningLogin'
 import Onboarding from './login/Onboarding'
 import { mainComponent } from '../store/reducer/navigation'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Login from './login/Login'
 import LoginOverlay from './login/LoginOverlay'
 import StatusMessage from './StatusMessage'
 import Colors from '@Colors/colors'
 import Config from '@Config/config'
 import SendMoney from './sendMoney/SendMoney'
-import AppCover from './AppCover'
+import AppCover from './lockedState/AppCover'
+import md5 from 'md5'
+import { logout } from '../store/reducer/login'
+import { closeConfirmation } from '../store/reducer/navigation'
+import { updatePage, resetPayment } from '../store/reducer/sendMoney'
+import UnlockAppAlert from './lockedState/UnlockAppAlert'
 
 class Root extends React.Component {
 
@@ -19,7 +25,9 @@ class Root extends React.Component {
     super()
     this.state = {
       appState: AppState.currentState,
-      coverApp: false
+      coverApp: false,
+      unlockError: false,
+      failedAttempts: 0
     }
   }
 
@@ -35,9 +43,30 @@ class Root extends React.Component {
     if (nextAppState.match(/inactive|background/) && this.state.appState === 'active') {
       this.setState({coverApp: true, appState: nextAppState})
     } else if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-      this.setState({coverApp: false, appState: nextAppState})
+      if (this.props.passToUnlock!=='') {
+        this.setState({askToUnlock: true, appState: nextAppState})
+      } else {
+        this.setState({coverApp: false, appState: nextAppState})
+      }
     } else {
       this.setState({appState: nextAppState})
+    }
+  }
+
+  checkPass (pass) {
+    var encodedPass = md5(pass)
+    if (encodedPass === this.props.passToUnlock) {
+      this.setState({askToUnlock: false, coverApp: false, unlockError: false, failedAttempts: 0})
+    } else {
+      var failedAttempts = this.state.failedAttempts + 1
+      if(failedAttempts < 5) {
+        this.setState({unlockError: true, failedAttempts})
+      } else {
+        this.props.logout()
+        this.props.closeConfirmation()
+        this.props.resetPayment()
+        this.setState({askToUnlock: false, coverApp: false, unlockError: false, failedAttempts: 0})
+      }
     }
   }
 
@@ -72,16 +101,21 @@ class Root extends React.Component {
           <Login/>
           <StatusMessage/>
           {this.state.coverApp && <AppCover />}
-
+          {this.props.passToUnlock!=='' && this.state.askToUnlock
+             && <UnlockAppAlert checkPass={(pass) => this.checkPass(pass)} error={this.state.unlockError} failedAttempts={this.state.failedAttempts} />}
         </View>
       )
   }
 
 }
 
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators({ logout, closeConfirmation, updatePage, resetPayment }, dispatch)
+
 const mapStateToProps = (state) => ({
     ...state.navigation,
-    loginFormOpen: state.login.loginFormOpen
+    loginFormOpen: state.login.loginFormOpen,
+    passToUnlock: state.login.passToUnlock
 })
 
-export default connect(mapStateToProps)(Root)
+export default connect(mapStateToProps, mapDispatchToProps)(Root)
