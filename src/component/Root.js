@@ -103,7 +103,7 @@ class Root extends React.Component {
           {(this.props.modalOpen && !this.props.loginFormOpen) && Config.APP_CITY!=='Exeter' ? <SendMoney /> : undefined}
           <Login/>
           <StatusMessage/>
-          {this.state.coverApp && <AppCover />}
+          {this.props.coverApp && <AppCover />}
           {this.props.passToUnlock!=='' && this.state.askToUnlock
              && <UnlockAppAlert checkPass={(pass) => this.checkPass(pass)} error={this.state.unlockError} failedAttempts={this.state.failedAttempts}/>}
         </View>

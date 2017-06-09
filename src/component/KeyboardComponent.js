@@ -63,7 +63,9 @@ class KeyboardComponent extends React.Component {
   }
 
   keyboardWillHide () {
-    this.props.setOverlayOpen && this.props.setOverlayOpen(false)
+    // Do nothing as this is too slow to trigger anyway
+    animateTo(this.state.keyboardHeight, 0, 500, undefined, () => this.props.setOverlayOpen && this.props.setOverlayOpen(false))
+    this.keyboardOpen = false
   }
 }
 
