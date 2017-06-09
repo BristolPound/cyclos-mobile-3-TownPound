@@ -15,9 +15,9 @@ import SendMoney from './sendMoney/SendMoney'
 import AppCover from './lockedState/AppCover'
 import md5 from 'md5'
 import { logout } from '../store/reducer/login'
-import { closeConfirmation } from '../store/reducer/navigation'
+import { closeConfirmation, setCoverApp } from '../store/reducer/navigation'
 import { updatePage, resetPayment } from '../store/reducer/sendMoney'
-import UnlockAppAlert from './lockedState/UnlockAppAlert'
+import UnlockAppAlert, {maxAttempts} from './lockedState/UnlockAppAlert'
 
 class Root extends React.Component {
 
@@ -25,28 +25,29 @@ class Root extends React.Component {
     super()
     this.state = {
       appState: AppState.currentState,
-      coverApp: false,
       unlockError: false,
       failedAttempts: 0
     }
   }
 
-  componentDidMount() {
-    AppState.addEventListener('change', this._handleAppStateChange);
+  componentDidMount () {
+    AppState.addEventListener('change', this._handleAppStateChange)
   }
 
-  componentWillUnmount() {
-    AppState.removeEventListener('change', this._handleAppStateChange);
+  componentWillUnmount () {
+    AppState.removeEventListener('change', this._handleAppStateChange)
   }
 
   _handleAppStateChange = (nextAppState) => {
     if (nextAppState.match(/inactive|background/) && this.state.appState === 'active') {
-      this.setState({coverApp: true, appState: nextAppState})
+      this.props.setCoverApp(true)
+      this.setState({ appState: nextAppState})
     } else if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       if (this.props.passToUnlock!=='') {
         this.setState({askToUnlock: true, appState: nextAppState})
       } else {
-        this.setState({coverApp: false, appState: nextAppState})
+        this.props.setCoverApp(false)
+        this.setState({appState: nextAppState})
       }
     } else {
       this.setState({appState: nextAppState})
@@ -56,21 +57,23 @@ class Root extends React.Component {
   checkPass (pass) {
     var encodedPass = md5(pass)
     if (encodedPass === this.props.passToUnlock) {
-      this.setState({askToUnlock: false, coverApp: false, unlockError: false, failedAttempts: 0})
+      this.props.setCoverApp(false)
+      this.setState({askToUnlock: false, unlockError: false, failedAttempts: 0})
     } else {
       var failedAttempts = this.state.failedAttempts + 1
-      if(failedAttempts < 5) {
+      if(failedAttempts < maxAttempts) {
         this.setState({unlockError: true, failedAttempts})
       } else {
+        this.props.setCoverApp(false)
         this.props.logout()
         this.props.closeConfirmation()
         this.props.resetPayment()
-        this.setState({askToUnlock: false, coverApp: false, unlockError: false, failedAttempts: 0})
+        this.setState({askToUnlock: false, unlockError: false, failedAttempts: 0})
       }
     }
   }
 
-  render() {
+  render () {
       // The app is rendered before the state has been loaded via redux-persist. This state property allows
       // the main 'app' UI to be hidden until initialised.
       if (!this.props.stateInitialised) {
@@ -102,7 +105,7 @@ class Root extends React.Component {
           <StatusMessage/>
           {this.state.coverApp && <AppCover />}
           {this.props.passToUnlock!=='' && this.state.askToUnlock
-             && <UnlockAppAlert checkPass={(pass) => this.checkPass(pass)} error={this.state.unlockError} failedAttempts={this.state.failedAttempts} />}
+             && <UnlockAppAlert checkPass={(pass) => this.checkPass(pass)} error={this.state.unlockError} failedAttempts={this.state.failedAttempts}/>}
         </View>
       )
   }
@@ -110,7 +113,7 @@ class Root extends React.Component {
 }
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ logout, closeConfirmation, updatePage, resetPayment }, dispatch)
+  bindActionCreators({ logout, closeConfirmation, updatePage, resetPayment, setCoverApp }, dispatch)
 
 const mapStateToProps = (state) => ({
     ...state.navigation,

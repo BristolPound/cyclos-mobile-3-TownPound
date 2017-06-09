@@ -27,6 +27,7 @@ const initialState = {
   modalVisible: false,
   modalOpen: false,
   confirmationOpen: false,
+  coverApp: false
 }
 
 export const navigateToTab = (tabIndex) =>
@@ -68,6 +69,11 @@ export const closeConfirmation = () => ({
 export const showModal = (modalState) => ({
   type: 'navigation/SHOW_MODAL',
   modalState
+})
+
+export const setCoverApp = (value) => ({
+  type: 'navigation/COVER_APP',
+  value
 })
 
 export const openDetailsModal = (user) =>
@@ -159,6 +165,10 @@ const reducer = (state = initialState, action) => {
           confirmationOpen: false
       })
       break
+    case 'navigation/COVER_APP':
+      state = merge(state, {
+        coverApp: action.value
+      })
     case 'navigation/MODAL_OPENED':
       state = merge(state, {
         modalOpen: true

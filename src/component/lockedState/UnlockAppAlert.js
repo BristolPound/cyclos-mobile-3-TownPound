@@ -5,9 +5,11 @@ import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import style from './UnlockAppAlertStyle'
 
+export const maxAttempts = 5;
+
 const passwordValid = (password) => password && password.indexOf(' ') === -1 && password.length === 3
 
-export default class UnlockAppAlert extends React.Component {
+class UnlockAppAlert extends React.Component {
     constructor() {
         super()
         this.state = {
@@ -29,7 +31,7 @@ export default class UnlockAppAlert extends React.Component {
                     { this.props.error &&
                         <View>
                             <Text style={style.errorText}>
-                                You have {5 - this.props.failedAttempts} attempts left
+                                You have {maxAttempts - this.props.failedAttempts} attempts left
                             </Text>
                             <Text style={style.errorText}>
                                 The characters you intoduced don't match the last 3 characters of you password.
@@ -60,3 +62,5 @@ export default class UnlockAppAlert extends React.Component {
         )
     }
 }
+
+export default UnlockAppAlert
