@@ -11,7 +11,8 @@ const initialState = {
   	loginStatus: LOGIN_STATUSES.LOGGED_OUT,
   	loginFormOpen: false,
   	loggedInUsername: '',
-  	failedAttempts: []
+  	failedAttempts: [],
+	passToUnlock: ''
 }
 
 describe('Login reducer', () => {
@@ -28,7 +29,7 @@ describe('Login reducer', () => {
 	        	type: 'login/LOGGED_IN',
 	        	username: 'Bob'
 	      	})
-	    ).to.deep.equal({
+	    ).to.containSubset({
 		  	loginStatus: LOGIN_STATUSES.LOGGED_IN,
 		  	loginFormOpen: false,
 		  	loggedInUsername: 'Bob',
@@ -45,7 +46,8 @@ describe('Login reducer', () => {
 		  	loginStatus: LOGIN_STATUSES.LOGGED_OUT,
 		  	loginFormOpen: false,
 		  	loggedInUsername: '',
-		  	failedAttempts: []
+		  	failedAttempts: [],
+			passToUnlock: ''
 		})
 	})
 
@@ -58,7 +60,8 @@ describe('Login reducer', () => {
 		  	loginStatus: LOGIN_STATUSES.LOGIN_IN_PROGRESS,
 		  	loginFormOpen: false,
 		  	loggedInUsername: '',
-		  	failedAttempts: []
+		  	failedAttempts: [],
+			passToUnlock: ''
 		})
 	})
 
@@ -72,7 +75,8 @@ describe('Login reducer', () => {
 		  	loginStatus: LOGIN_STATUSES.LOGGED_OUT,
 		  	loginFormOpen: true,
 		  	loggedInUsername: '',
-		  	failedAttempts: []
+		  	failedAttempts: [],
+			passToUnlock: ''
 		})
 	})
 
@@ -86,7 +90,8 @@ describe('Login reducer', () => {
 		  	loginStatus: LOGIN_STATUSES.LOGGED_OUT,
 		  	loginFormOpen: false,
 		  	loggedInUsername: '',
-		  	failedAttempts: [{username: 'Bob', noOfFails: 1}]
+		  	failedAttempts: [{username: 'Bob', noOfFails: 1}],
+			passToUnlock: ''
 		})
 	})
 
@@ -97,7 +102,8 @@ describe('Login reducer', () => {
 			  	loginStatus: LOGIN_STATUSES.LOGGED_OUT,
 			  	loginFormOpen: false,
 			  	loggedInUsername: '',
-			  	failedAttempts: [{username: 'Bob', noOfFails: 1}]
+			  	failedAttempts: [{username: 'Bob', noOfFails: 1}],
+				passToUnlock: ''
 			}, {
 	        	type: 'login/ATTEMPT_FAILED',
 	        	username: 'Bob'
@@ -106,7 +112,8 @@ describe('Login reducer', () => {
 		  	loginStatus: LOGIN_STATUSES.LOGGED_OUT,
 		  	loginFormOpen: false,
 		  	loggedInUsername: '',
-		  	failedAttempts: [{username: 'Bob', noOfFails: 2}]
+		  	failedAttempts: [{username: 'Bob', noOfFails: 2}],
+			passToUnlock: ''
 		})
 	})
 })
