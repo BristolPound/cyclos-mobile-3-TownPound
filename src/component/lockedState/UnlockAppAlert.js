@@ -27,21 +27,21 @@ class UnlockAppAlert extends React.Component {
             <View style={style.wrapper}>
                 <View style={style.container}>
                     <Text style={style.instructionText}>
-                        To unlock, please introduce the last {unlockCharNo} characters of your password
+                        To unlock, please enter the last {unlockCharNo} characters of your password.
                     </Text>
                     { this.props.error &&
                         <View>
                             <Text style={style.errorText}>
-                                You have {maxAttempts - this.props.failedAttempts} attempts left
+                                You have {maxAttempts - this.props.failedAttempts} attempts left.
                             </Text>
                             <Text style={style.errorText}>
-                                The characters entered don't match
+                                The characters entered don't match.
                             </Text>
                         </View>
                     }
                     <View style={style.form}/>
                     <TextInput
-                        placeholder={'Password'}
+                        placeholder={'Last ' + unlockCharNo + ' characters of password'}
                         autoFocus={true}
                         value={this.state.pass}
                         accessibilityLabel={'Password'}
