@@ -63,7 +63,7 @@ class KeyboardComponent extends React.Component {
   }
 
   keyboardWillHide () {
-    // Do nothing as this is too slow to trigger anyway
+    this.props.setOverlayOpen && this.props.setOverlayOpen(false)
   }
 }
 
