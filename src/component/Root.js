@@ -71,10 +71,10 @@ class Root extends React.Component {
   }
 
   logout () {
-    this.props.setCoverApp(false)
     this.props.logout()
     this.props.closeConfirmation()
     this.setState({askToUnlock: false, unlockError: false, failedAttempts: 0})
+    this.props.setCoverApp(false)
   }
 
   logoutPress () {
