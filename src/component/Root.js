@@ -64,13 +64,17 @@ class Root extends React.Component {
       if(failedAttempts < maxAttempts) {
         this.setState({unlockError: true, failedAttempts})
       } else {
-        this.props.setCoverApp(false)
-        this.props.logout()
-        this.props.closeConfirmation()
-        this.props.resetPayment()
-        this.setState({askToUnlock: false, unlockError: false, failedAttempts: 0})
+        this.logoutPress()
       }
     }
+  }
+
+  logoutPress () {
+    this.props.setCoverApp(false)
+    this.props.logout()
+    this.props.closeConfirmation()
+    this.props.resetPayment()
+    this.setState({askToUnlock: false, unlockError: false, failedAttempts: 0})
   }
 
   render () {
@@ -103,9 +107,9 @@ class Root extends React.Component {
           {(this.props.modalOpen && !this.props.loginFormOpen) && Config.APP_CITY!=='Exeter' ? <SendMoney /> : undefined}
           <Login/>
           <StatusMessage/>
-          {this.props.coverApp && <AppCover />}
+          {this.props.coverApp && <AppCover unlockOpened={this.props.passToUnlock!=='' && this.state.askToUnlock}/>}
           {this.props.passToUnlock!=='' && this.state.askToUnlock
-             && <UnlockAppAlert checkPass={(pass) => this.checkPass(pass)} error={this.state.unlockError} failedAttempts={this.state.failedAttempts}/>}
+             && <UnlockAppAlert checkPass={(pass) => this.checkPass(pass)} error={this.state.unlockError} failedAttempts={this.state.failedAttempts} logout={this.logoutPress} />}
         </View>
       )
   }

@@ -36,7 +36,6 @@ const style = {
     errorText: {
         fontSize: 13,
         color: Colors.red,
-        padding: 10,
         textAlign: 'center'
     },
     form: { 
