@@ -53,13 +53,18 @@ class InputComponent extends KeyboardComponent {
       balance, 
       amount, 
       onChangeAmount, 
-      payee 
+      payee,
+      offlinePaymentLabel 
     } = this.props
 
     const button = <View style={merge(styles.button, { backgroundColor: this.getButtonColor() })}>
       <DefaultText style={merge(styles.buttonText, { color: this.getButtonTextColor() })}>
         {buttonText}
       </DefaultText>
+      {offlinePaymentLabel && 
+        <DefaultText style={styles.noInternetMessage}>
+          {offlinePaymentLabel}
+        </DefaultText>}
     </View>
 
     return (
