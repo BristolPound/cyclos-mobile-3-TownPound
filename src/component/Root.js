@@ -15,8 +15,8 @@ import SendMoney from './sendMoney/SendMoney'
 import AppCover from './lockedState/AppCover'
 import md5 from 'md5'
 import { logout } from '../store/reducer/login'
-import { closeConfirmation, setCoverApp } from '../store/reducer/navigation'
-import { updatePage, resetPayment } from '../store/reducer/sendMoney'
+import { closeConfirmation, setCoverApp, navigateToTab, hideModal, setOverlayOpen } from '../store/reducer/navigation'
+import { updatePage, resetPayment, resetForm } from '../store/reducer/sendMoney'
 import UnlockAppAlert, {maxAttempts} from './lockedState/UnlockAppAlert'
 
 class Root extends React.Component {
@@ -64,17 +64,25 @@ class Root extends React.Component {
       if(failedAttempts < maxAttempts) {
         this.setState({unlockError: true, failedAttempts})
       } else {
-        this.logoutPress()
+        this.props.resetPayment()
+        this.logout()
       }
     }
   }
 
-  logoutPress () {
+  logout() {
     this.props.setCoverApp(false)
     this.props.logout()
     this.props.closeConfirmation()
-    this.props.resetPayment()
     this.setState({askToUnlock: false, unlockError: false, failedAttempts: 0})
+  }
+
+  logoutPress () {
+    this.props.navigateToTab(0)
+    this.props.resetForm()
+    this.props.setOverlayOpen(false)
+    this.props.hideModal()
+    this.logout()
   }
 
   render () {
@@ -107,9 +115,15 @@ class Root extends React.Component {
           {(this.props.modalOpen && !this.props.loginFormOpen) && Config.APP_CITY!=='Exeter' ? <SendMoney /> : undefined}
           <Login/>
           <StatusMessage/>
-          {this.props.coverApp && <AppCover unlockOpened={this.props.passToUnlock!=='' && this.state.askToUnlock}/>}
+          {this.props.coverApp 
+              && <AppCover unlockOpened={this.props.passToUnlock!=='' && this.state.askToUnlock}/> }
           {this.props.passToUnlock!=='' && this.state.askToUnlock
-             && <UnlockAppAlert checkPass={(pass) => this.checkPass(pass)} error={this.state.unlockError} failedAttempts={this.state.failedAttempts} logout={this.logoutPress} />}
+              && <UnlockAppAlert 
+                  checkPass={(pass) => this.checkPass(pass)} 
+                  error={this.state.unlockError} 
+                  failedAttempts={this.state.failedAttempts} 
+                  logout={() => this.logoutPress()} />
+          }
         </View>
       )
   }
@@ -117,7 +131,17 @@ class Root extends React.Component {
 }
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ logout, closeConfirmation, updatePage, resetPayment, setCoverApp }, dispatch)
+  bindActionCreators({ 
+    logout, 
+    hideModal, 
+    closeConfirmation, 
+    updatePage, 
+    resetPayment, 
+    setCoverApp, 
+    navigateToTab,
+    setOverlayOpen,
+    resetForm 
+  }, dispatch)
 
 const mapStateToProps = (state) => ({
     ...state.navigation,
