@@ -31,6 +31,11 @@ const TABS = [
         Images.meActive,
         Images.meInactive,
         'My Details Tab'
+    ),
+    TabItem(
+        Images.spendingActive,
+        Images.spendingInactive,
+        'Quick Pay Tab'
     )
 ]
 
@@ -47,31 +52,17 @@ const TabBar = (props) =>
             accessibilityLabel={tab.label}>
           <Image source={props.tabIndex === index ? tab.active : tab.inactive}/>
         </TouchableOpacity>
-        {index !== TABS.length - 1 ? <View style={style.separator}/> : undefined}
+        <View style={style.separator}/>
       </View>
     )}
-    <View style={style.amountContainer}>
-      {
-        props.loggedIn
-          ? <View style={style.amountInnerContainer}>
-              <Image source={Images.balanceSymbol} style={style.balanceSymbol}/>
-              <Price
-                  style={style.amount}
-                  price={props.balance}
-                  prefix=''
-                  size={30}
-                  color={Colors.primaryBlue}/>
-            </View>
-          : <TouchableOpacity
-                style={style.centerChildren}
-                onPress={props.connection ? () => props.openLoginForm(true) : undefined}
-                accessibilityLabel='Log in Tab'>
-              <View>
-                <DefaultText style={{ color: props.connection ? Colors.primaryBlue : Colors.offWhite }}>Log in</DefaultText>
-              </View>
-            </TouchableOpacity>
-      }
-    </View>
+    <View style={style.centerChildren} key={TABS.length}>
+        <TouchableOpacity
+            style={style.iconContainer}
+            onPress={() => {}}
+            accessibilityLabel='Menu'>
+          <Image source={props.menuOpened ? Images.meActive : Images.meInactive}/>
+        </TouchableOpacity>
+      </View>
   </View>
 
 
