@@ -59,7 +59,7 @@ const Account = (props) => {
       <ProfileHeader
         name={props.details.display}
         username={props.details.shortDisplay}
-        image={props.details.image.url}
+        image={props.details.image && props.details.image.url}
         category='person'/>
       <ListView
         style={styles.detailsList}
@@ -76,6 +76,6 @@ const Account = (props) => {
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators({ ...actions, updateStatus }, dispatch)
 
-const mapStateToProps = state =>  state.account
+const mapStateToProps = state => state.account
 
 export default connect(mapStateToProps, mapDispatchToProps)(Account)
