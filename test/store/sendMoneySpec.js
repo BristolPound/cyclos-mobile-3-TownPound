@@ -162,6 +162,39 @@ describe('SendMoney reducer', () => {
 		  	timestamp: undefined,
 		  	inputPage: Page.Ready,
 		  	transactionNumber: -1,
+          	resetClipboard: false,
+  			alertShouldPopUp: false
+		})
+	})
+
+	it('should handle navigation/OVERLAY_VISIBLE', () => {
+	    expect(
+	      	reducer({
+				payeeId: '',
+				amount: '',
+				amountPaid: '',
+				loading: false,
+				success: undefined,
+				message: '',
+				timestamp: undefined,
+				inputPage: Page.EnterAmount,
+				transactionNumber: -1,
+				resetClipboard: false,
+				alertShouldPopUp: false
+			}, {
+	        	type: 'navigation/OVERLAY_VISIBLE',
+	        	value: false
+	      	})
+	    ).to.deep.equal({
+		  	payeeId: '',
+		  	amount: '',
+		  	amountPaid: '',
+		  	loading: false,
+		  	success: undefined,
+		  	message: '',
+		  	timestamp: undefined,
+		  	inputPage: Page.Ready,
+		  	transactionNumber: -1,
           	resetClipboard: true,
   			alertShouldPopUp: false
 		})

@@ -1,11 +1,13 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
+import Communications from 'react-native-communications'
 import { connect } from 'react-redux'
 import { Clipboard } from 'react-native'
 import * as actions from '../../store/reducer/sendMoney'
 import { openLoginForm, LOGIN_STATUSES } from '../../store/reducer/login'
 import { setOverlayOpen } from '../../store/reducer/navigation'
 import InputComponent from './InputComponent'
+import Config from '@Config/config'
 
 const Page = {
   Ready: 0,
@@ -71,6 +73,15 @@ class SendMoney extends React.Component {
     )
   }
 
+  payByTextOnPress () {
+    var action = this.props.payee.fields && this.props.payee.fields.icon === 1 ? 'exc' : 'pay'
+    var text = action + ' [replace with your PIN] ' + (this.props.payee.shortDisplay || this.props.payee.fields.username) + ' ' + this.props.amount
+    Communications.textWithoutEncoding(Config.TXT2PAY_NO, text)
+    this.props.updateAmount('')
+    this.props.updatePage(Page.Ready)
+    this.props.setOverlayOpen(false)
+  }
+
   render () {
     let inputProps
 
@@ -78,76 +89,77 @@ class SendMoney extends React.Component {
       Clipboard.setString(tempClipboardString)
     }
 
-    if (this.props.connection) {
-      if (this.props.inputPage === Page.PaymentComplete) {
-        inputProps = {
-          buttonText: this.props.message,
-          onButtonPress: () => {},
-          accessibilityLabel: 'Payment complete'
-        }
-      } else if (this.props.loggedIn) {
-        switch (this.props.inputPage) {
-          case Page.Ready: // Initial state, ready to begin
-          // sometimes when pressing on the 'no' on the alert triggers the onPress here
-          //-> hence the !this.props.alertShouldPopUp check
-            inputProps = {
-              buttonText: 'Send Payment',
-              onButtonPress: () => { !this.props.alertShouldPopUp && this.nextPage() },
-              accessibilityLabel: 'Ready'
-            }
-            break
-          case Page.EnterAmount: // provide amount
-            inputProps = {
-              buttonText: 'Pay ' + (this.props.payee.display || this.props.payee.name || ""),
-              onButtonPress: () => { this.nextPage() },
-              input: {
-                keyboardType: 'numeric',
-                value: this.props.amount,
-                placeholder: 'Amount',
-                onChangeText: amt => this.props.updateAmount(amt)
-              },
-              descriptionInput: {
-                keyboardType: 'default',
-                value: this.props.description,
-                placeholder: 'Description',
-                maxLength: 20,
-                onChangeText: desc => this.props.updateDescription(desc)
-              },
-              invalidInput: this.isInputInvalid(),
-              accessibilityLabel: 'Enter Amount',
-              balance: this.props.balance
-            }
-            break
-          case Page.ConfirmAmount: // provide amount
-            inputProps = {
-              buttonText: 'Confirm',
-              onButtonPress: () => { this.props.sendTransaction(); this.nextPage() },
-              amount: this.props.amount,
-              payee: this.props.payee.display || this.props.payee.name || "",
-              description: this.props.description,
-              onChangeAmount: () => { this.prevPage() },
-              accessibilityLabel: 'Confirm Amount'
-            }
-            break
-          case Page.MakingPayment: // in progress
-            inputProps = {
-              buttonText: 'Making Payment',
-              loading: true,
-              accessibilityLabel: 'Making Payment'
-            }
-            break
-        }
-      } else {
-        inputProps = {
-          buttonText: 'Log in to make payment',
-          onButtonPress: () => this.props.openLoginForm(true),
-          accessibilityLabel: 'Log in to make payment'
-        }
+    if (this.props.inputPage === Page.PaymentComplete) {
+      inputProps = {
+        buttonText: this.props.message,
+        onButtonPress: () => {},
+        accessibilityLabel: 'Payment complete'
+      }
+    } else if (this.props.loggedIn) {
+      switch (this.props.inputPage) {
+        case Page.Ready: // Initial state, ready to begin
+        // sometimes when pressing on the 'no' on the alert triggers the onPress here
+        //-> hence the !this.props.alertShouldPopUp check
+          inputProps = {
+            buttonText: 'Send Payment',
+            onButtonPress: () => { !this.props.alertShouldPopUp && this.nextPage() },
+            accessibilityLabel: 'Ready'
+          }
+          break
+        case Page.EnterAmount: // provide amount
+          inputProps = {
+            buttonText: 'Pay ' + (this.props.payee.display || this.props.payee.name || ""),
+            onButtonPress: () => { this.nextPage() },
+            input: {
+              keyboardType: 'numeric',
+              value: this.props.amount,
+              placeholder: 'Amount',
+              onChangeText: amt => this.props.updateAmount(amt)
+            },
+            descriptionInput: {
+              keyboardType: 'default',
+              value: this.props.description,
+              placeholder: 'Description',
+              maxLength: 20,
+              onChangeText: desc => this.props.updateDescription(desc)
+            },
+            invalidInput: this.isInputInvalid(),
+            accessibilityLabel: 'Enter Amount',
+            balance: this.props.balance
+          }
+          if (this.props.connection) {
+            inputProps.offlinePaymentLabel = 'No internet connection (Using TXT2PAY)'
+            inputProps.onButtonPress = () => { this.payByTextOnPress() }
+          }
+          break
+        case Page.ConfirmAmount: // provide amount
+          inputProps = {
+            buttonText: 'Confirm',
+            onButtonPress: () => { this.props.sendTransaction(); this.nextPage() },
+            amount: this.props.amount,
+            payee: this.props.payee.display || this.props.payee.name || "",
+            description: this.props.description,
+            onChangeAmount: () => { this.prevPage() },
+            accessibilityLabel: 'Confirm Amount'
+          }
+          if (this.props.connection) {
+            inputProps.offlinePaymentLabel = 'No internet connection (Using TXT2PAY)'
+            inputProps.onButtonPress = () => { this.payByTextOnPress() }
+          }
+          break
+        case Page.MakingPayment: // in progress
+          inputProps = {
+            buttonText: 'Making Payment',
+            loading: true,
+            accessibilityLabel: 'Making Payment'
+          }
+          break
       }
     } else {
       inputProps = {
-        buttonText: 'No internet connection',
-        accessibilityLabel: 'No internet connection'
+        buttonText: 'Log in to make payment',
+        onButtonPress: () => this.props.openLoginForm(true),
+        accessibilityLabel: 'Log in to make payment'
       }
     }
 

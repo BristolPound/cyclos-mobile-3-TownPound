@@ -9,12 +9,19 @@ const styles = {
     height: sectionHeight,
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'row'
+    flexDirection: 'column'
   },
   buttonText: {
     fontSize: 24,
     textAlign: 'center',
     width: Dimensions.get('window').width - 20
+  },
+  noInternetMessage: {
+    fontSize: 14, 
+    textAlign: 'center', 
+    width: Dimensions.get('window').width - 20,
+    fontStyle: 'italic',
+    color: 'red'
   },
   textInput: {
     ...dimensions(width, sectionHeight),

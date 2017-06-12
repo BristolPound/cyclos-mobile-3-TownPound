@@ -6,6 +6,7 @@ import { MultilineText } from '../DefaultText'
 import addressToString from '../../util/addresses'
 import styles from './BusinessDetailsStyle'
 import Images from '@Assets/images'
+import Config from '@Config/config'
 
 const Field = ({icon, text, accessibilityLabel, onPress}) =>
   <View style={styles.field}>
@@ -124,7 +125,7 @@ class BusinessDetails extends React.Component {
     return (
       <View style={fields.length > 1 ? styles.moreDetails : styles.addressOnly}>
         {renderFields(fields)}
-        {this.state.isExpanded
+        {(this.state.isExpanded || Config.APP_CITY==='Exeter')
           ? renderExpandedDetails(expandedFields, this.props.business.fields.description)
           : ((expandedFields.length > 0 || this.props.business.fields.description)
               ? renderExpander(() => this.expandDetails())

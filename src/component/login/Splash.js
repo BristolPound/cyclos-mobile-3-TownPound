@@ -9,6 +9,7 @@ import * as actions from '../../store/reducer/login'
 import PLATFORM from '../../util/Platforms'
 import style from './SplashStyle'
 import Images from '@Assets/images'
+import Config from '@Config/config'
 
 const background = Images.background
 const screenWidth = Dimensions.get('window').width
@@ -71,7 +72,8 @@ class Splash  extends React.Component {
         { this.state.showButtons
           ? <View style={style.bottomContainer}>
               { this.props.renderWelcomeMessage(this.props) }
-              <TouchableHighlight
+              { Config.APP_CITY!=='Exeter' ?
+                <TouchableHighlight
                   style={style.loginButton.container}
                   onPress={this.props.connection ? () => this.props.openLoginForm(true) : undefined}
                   underlayColor={Colors.offWhite}>
@@ -79,13 +81,14 @@ class Splash  extends React.Component {
                   {this.props.connection ? this.props.loginButtonText : 'No internet connection'}
                 </DefaultText>
               </TouchableHighlight>
+              : <View style={style.loginButton.replacementContainer}/>}
               <TouchableHighlight
                   style={style.skipButton.container}
                   onPress={this.props.logout}
                   underlayColor={Colors.primaryBlue3}>
                 <DefaultText style={style.skipButton.text}>{this.props.logoutButtonText}</DefaultText>
               </TouchableHighlight>
-              { this.props.renderInfoText(this.props) }
+              { Config.APP_CITY!=='Exeter' && this.props.renderInfoText(this.props) }
             </View>
           : undefined
         }

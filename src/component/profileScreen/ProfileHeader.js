@@ -77,7 +77,6 @@ const renderBackground = (props) => {
 }
 
 const ProfileHeader = (props) => {
-
   const getSubtitleStyle = () => {
     return props.paymentComplete ? styles.header.subtitle : merge(styles.header.subtitle, {marginBottom: 46})
   }
@@ -88,7 +87,7 @@ const ProfileHeader = (props) => {
       {renderButtonBar(props)}
       <View style={{ alignItems: 'center' }}>
         <ProfileImage
-          image={props.image && {uri: props.image}}
+          image={props.image ? ( props.image.url ? {uri: props.image.url} : {uri: props.image} ) : undefined }
           style={styles.header.businessLogo}
           category={props.category}
           colorCode={0} />
