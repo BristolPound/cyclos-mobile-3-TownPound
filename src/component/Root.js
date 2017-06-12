@@ -70,7 +70,7 @@ class Root extends React.Component {
     }
   }
 
-  logout() {
+  logout () {
     this.props.setCoverApp(false)
     this.props.logout()
     this.props.closeConfirmation()
@@ -115,13 +115,13 @@ class Root extends React.Component {
           {(this.props.modalOpen && !this.props.loginFormOpen) && Config.APP_CITY!=='Exeter' ? <SendMoney /> : undefined}
           <Login/>
           <StatusMessage/>
-          {this.props.coverApp 
+          {this.props.coverApp
               && <AppCover unlockOpened={this.props.passToUnlock!=='' && this.state.askToUnlock}/> }
           {this.props.passToUnlock!=='' && this.state.askToUnlock
-              && <UnlockAppAlert 
-                  checkPass={(pass) => this.checkPass(pass)} 
-                  error={this.state.unlockError} 
-                  failedAttempts={this.state.failedAttempts} 
+              && <UnlockAppAlert
+                  checkPass={(pass) => this.checkPass(pass)}
+                  error={this.state.unlockError}
+                  failedAttempts={this.state.failedAttempts}
                   logout={() => this.logoutPress()} />
           }
         </View>
@@ -131,16 +131,16 @@ class Root extends React.Component {
 }
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ 
-    logout, 
-    hideModal, 
-    closeConfirmation, 
-    updatePage, 
-    resetPayment, 
-    setCoverApp, 
+  bindActionCreators({
+    logout,
+    hideModal,
+    closeConfirmation,
+    updatePage,
+    resetPayment,
+    setCoverApp,
     navigateToTab,
     setOverlayOpen,
-    resetForm 
+    resetForm
   }, dispatch)
 
 const mapStateToProps = (state) => ({
