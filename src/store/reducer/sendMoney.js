@@ -81,10 +81,10 @@ export const sendTransaction = () =>
       return
     }
     dispatch(setLoading())
-    const { payeeId, amount } = getState().sendMoney
+    const { payeeId, amount, description } = getState().sendMoney
     makePayment({
         subject: payeeId,
-        description: 'Test description',
+        description: description,
         amount: amount
       }, dispatch)
       .then((result) => {

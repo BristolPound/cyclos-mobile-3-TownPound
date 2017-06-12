@@ -91,7 +91,7 @@ const style = {
 	rowData: {
 		fontFamily: commonStyle.font.museo300,
 		color: Colors.offBlack,
-		fontSize: isScreenSmall ? 19 : 22,
+    fontSize: isScreenSmall ? 19 : 22,
     paddingLeft: 20,
     maxWidth: Dimensions.get('window').width * 0.5
 	},
