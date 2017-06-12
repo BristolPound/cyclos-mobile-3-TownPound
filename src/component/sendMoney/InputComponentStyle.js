@@ -12,8 +12,8 @@ const styles = {
     flexDirection: 'column'
   },
   buttonText: {
-    fontSize: 24, 
-    textAlign: 'center', 
+    fontSize: 24,
+    textAlign: 'center',
     width: Dimensions.get('window').width - 20
   },
   noInternetMessage: {
@@ -44,26 +44,30 @@ const styles = {
     justifyContent: 'flex-end'
   },
   confirmContainer: {
-    flexDirection: 'column', 
-    alignItems: 'center', 
-    backgroundColor: Colors.offWhite 
+    flexDirection: 'column',
+    alignItems: 'center',
+    backgroundColor: Colors.offWhite
   },
   confirmPayeeContainer: {
-    height: sectionHeight, 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    borderBottomColor: Colors.gray5, 
+    height: sectionHeight,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderBottomColor: Colors.gray5,
     borderBottomWidth: 1
   },
   confirmPayeeText: {
-    fontSize: 24, 
-    color: Colors.offBlack, 
+    fontSize: 24,
+    color: Colors.offBlack,
     textAlign: 'center'
   },
   confirmAmountContainer: {
-    height: sectionHeight, 
-    flexDirection: 'row', 
+    height: sectionHeight,
+    flexDirection: 'row',
     alignItems: 'center'
+  },
+  separator: {
+    height: 1,
+    backgroundColor: Colors.gray5
   }
 }
 

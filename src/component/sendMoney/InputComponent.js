@@ -44,15 +44,17 @@ class InputComponent extends KeyboardComponent {
   }
 
   render () {
-    let { 
-      onButtonPress, 
-      buttonText, 
-      input, 
-      invalidInput, 
-      accessibilityLabel, 
-      balance, 
-      amount, 
-      onChangeAmount, 
+    let {
+      onButtonPress,
+      buttonText,
+      input,
+      descriptionInput,
+      invalidInput,
+      accessibilityLabel,
+      balance,
+      amount,
+      description,
+      onChangeAmount,
       payee,
       offlinePaymentLabel 
     } = this.props
@@ -61,7 +63,7 @@ class InputComponent extends KeyboardComponent {
       <DefaultText style={merge(styles.buttonText, { color: this.getButtonTextColor() })}>
         {buttonText}
       </DefaultText>
-      {offlinePaymentLabel && 
+      {offlinePaymentLabel &&
         <DefaultText style={styles.noInternetMessage}>
           {offlinePaymentLabel}
         </DefaultText>}
@@ -82,16 +84,25 @@ class InputComponent extends KeyboardComponent {
                     {...input}
                     autoFocus={true}
                     accessibilityLabel={input.placeholder} />
+                <View style={styles.separator}/>
+                <TextInput style={styles.textInput}
+                    {...descriptionInput}
+                    accessibilityLabel={descriptionInput.placeholder} />
                 <BalanceMessage balance={balance}/>
               </View>
             : undefined}
-            
+
           {amount
             ? <TouchableOpacity onPress={onChangeAmount}>
                 <View style={styles.confirmContainer}>
                   <View style={styles.confirmPayeeContainer}>
                     <DefaultText style={styles.confirmPayeeText}>
                       {payee}
+                    </DefaultText>
+                  </View>
+                  <View style={styles.confirmPayeeContainer}>
+                    <DefaultText style={styles.confirmPayeeText}>
+                    {description}
                     </DefaultText>
                   </View>
                   <View style={styles.confirmAmountContainer}>
@@ -108,7 +119,7 @@ class InputComponent extends KeyboardComponent {
 
         </Animated.View>
       )
-    
+
   }
 }
 
