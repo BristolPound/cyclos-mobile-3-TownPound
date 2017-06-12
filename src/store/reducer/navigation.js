@@ -169,6 +169,7 @@ const reducer = (state = initialState, action) => {
       state = merge(state, {
         coverApp: action.value
       })
+      break
     case 'navigation/MODAL_OPENED':
       state = merge(state, {
         modalOpen: true
