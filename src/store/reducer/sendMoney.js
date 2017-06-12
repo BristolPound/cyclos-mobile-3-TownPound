@@ -10,6 +10,7 @@ const initialState = {
   payeeId: '',
   amount: '',
   amountPaid: '',
+  description: '',
   loading: false,
   success: undefined,
   message: '',
@@ -47,6 +48,11 @@ export const updateAmount = (amount) => ({
   amount
 })
 
+export const updateDescription = (description) => ({
+  type: 'sendMoney/UPDATE_DESCRIPTION',
+  description
+})
+
 export const returnToPayment = () => ({
   type: 'sendMoney/RETURN_TO_PAYMENT'
 })
@@ -79,10 +85,10 @@ export const sendTransaction = () =>
       return
     }
     dispatch(setLoading())
-    const { payeeId, amount } = getState().sendMoney
+    const { payeeId, amount, description } = getState().sendMoney
     makePayment({
         subject: payeeId,
-        description: 'Test description',
+        description: description,
         amount: amount
       }, dispatch)
       .then((result) => {
@@ -141,6 +147,11 @@ const reducer = (state = initialState, action) => {
         amount: action.amount
       })
       break
+    case 'sendMoney/UPDATE_DESCRIPTION':
+      state = merge(state, {
+        description: action.description
+      })
+      break
     case 'sendMoney/SET_LOADING':
       state = merge(state, {
         loading: true
@@ -191,7 +202,7 @@ const reducer = (state = initialState, action) => {
       break
     case 'sendMoney/ASK_CONTINUE_PAYMENT':
       state = merge(state, {
-        alertShouldPopUp: action.value 
+        alertShouldPopUp: action.value
       })
   }
   return state

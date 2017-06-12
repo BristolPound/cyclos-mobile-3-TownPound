@@ -98,11 +98,11 @@ class SendMoney extends React.Component {
     } else if (this.props.loggedIn) {
       switch (this.props.inputPage) {
         case Page.Ready: // Initial state, ready to begin
-        // sometimes when pressing on the 'no' on the alert triggers the onPress here 
+        // sometimes when pressing on the 'no' on the alert triggers the onPress here
         //-> hence the !this.props.alertShouldPopUp check
           inputProps = {
             buttonText: 'Send Payment',
-            onButtonPress: () => { !this.props.alertShouldPopUp && this.nextPage() }, 
+            onButtonPress: () => { !this.props.alertShouldPopUp && this.nextPage() },
             accessibilityLabel: 'Ready'
           }
           break
@@ -115,6 +115,13 @@ class SendMoney extends React.Component {
               value: this.props.amount,
               placeholder: 'Amount',
               onChangeText: amt => this.props.updateAmount(amt)
+            },
+            descriptionInput: {
+              keyboardType: 'default',
+              value: this.props.description,
+              placeholder: 'Description',
+              maxLength: 20,
+              onChangeText: desc => this.props.updateDescription(desc)
             },
             invalidInput: this.isInputInvalid(),
             accessibilityLabel: 'Enter Amount',
@@ -131,6 +138,7 @@ class SendMoney extends React.Component {
             onButtonPress: () => { this.props.sendTransaction(); this.nextPage() },
             amount: this.props.amount,
             payee: this.props.payee.display || this.props.payee.name || "",
+            description: this.props.description,
             onChangeAmount: () => { this.prevPage() },
             accessibilityLabel: 'Confirm Amount'
           }

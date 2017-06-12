@@ -28,7 +28,7 @@ const PaymentConfirmation = (props) => {
               isModal={true}
               paymentComplete={true} />
             {renderPrice(priceBeforeDecimal, priceAfterDecimal)}
-            {renderDetails(props.transactionNumber, props.timestamp)}
+            {renderDetails(props.transactionNumber, props.description, props.timestamp)}
           </ScrollView>
         </View>
     )
@@ -52,10 +52,12 @@ const getDateOrTime = (timestamp, index) => {
   return res[index]
 }
 
-const renderDetails = (transactionNumber, timestamp) =>
+const renderDetails = (transactionNumber, description, timestamp) =>
   <View style={style.detailsContainer}>
     {renderSectionHeader()}
     {renderRow('Reference:', transactionNumber, true)}
+    <View style={style.separator} />
+    {renderRow('Description:', description, true)}
     <View style={style.separator} />
     <View style={style.detailsInnerContainer}>
       {timestamp && renderRow('Date:', getDateOrTime(timestamp, 0), false)}
@@ -93,7 +95,8 @@ const mapStateToProps = (state) => {
     message: state.sendMoney.message,
     amountPaid: state.sendMoney.amountPaid,
     timestamp: state.sendMoney.timestamp,
-    transactionNumber: state.sendMoney.transactionNumber
+    transactionNumber: state.sendMoney.transactionNumber,
+    description: state.sendMoney.description
   }
 }
 
