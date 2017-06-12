@@ -22,7 +22,8 @@ const initialState = {
   stateInitialised: false,
   modalVisible: false,
   modalOpen: false,
-  confirmationOpen: false
+  confirmationOpen: false,
+  coverApp: false
 }
 
 describe('Navigation reducer', () => {
@@ -47,7 +48,8 @@ describe('Navigation reducer', () => {
 		  	stateInitialised: false,
 		  	modalVisible: false,
 		  	modalOpen: false,
-		  	confirmationOpen: false
+		  	confirmationOpen: false,
+  			coverApp: false
 		})
 	})
 
@@ -65,7 +67,8 @@ describe('Navigation reducer', () => {
 		  	stateInitialised: false,
 		  	modalVisible: true,
 		  	modalOpen: false,
-		  	confirmationOpen: false
+		  	confirmationOpen: false,
+  			coverApp: false
 		})
 	})
 
@@ -108,7 +111,8 @@ describe('Navigation reducer', () => {
 		  	stateInitialised: false,
 		  	modalVisible: false,
 		  	modalOpen: false,
-		  	confirmationOpen: false
+		  	confirmationOpen: false,
+  			coverApp: false
 		})
 	})
 
@@ -125,7 +129,8 @@ describe('Navigation reducer', () => {
 		  	stateInitialised: false,
 		  	modalVisible: false,
 		  	modalOpen: false,
-		  	confirmationOpen: false
+		  	confirmationOpen: false,
+  			coverApp: false
 		})
 	})
 
@@ -143,7 +148,8 @@ describe('Navigation reducer', () => {
 		  	stateInitialised: false,
 		  	modalVisible: false,
 		  	modalOpen: false,
-		  	confirmationOpen: false
+		  	confirmationOpen: false,
+  			coverApp: false
 		})
 	})
 
@@ -160,7 +166,8 @@ describe('Navigation reducer', () => {
 		  	stateInitialised: true,
 		  	modalVisible: false,
 		  	modalOpen: false,
-		  	confirmationOpen: false
+		  	confirmationOpen: false,
+ 		 	coverApp: false
 		})
 	})
 
@@ -178,7 +185,8 @@ describe('Navigation reducer', () => {
 		  	stateInitialised: false,
 		  	modalVisible: false,
 		  	modalOpen: false,
-		  	confirmationOpen: true
+		  	confirmationOpen: true,
+  			coverApp: false
 		})
 	})
 
@@ -222,7 +230,8 @@ describe('Navigation reducer', () => {
 		  	stateInitialised: false,
 		  	modalVisible: false,
 		  	modalOpen: false,
-		  	confirmationOpen: false
+		  	confirmationOpen: false,
+  			coverApp: false
 		})
 	})
 
@@ -240,7 +249,8 @@ describe('Navigation reducer', () => {
 		  	stateInitialised: false,
 		  	modalVisible: false,
 		  	modalOpen: false,
-		  	confirmationOpen: false
+		  	confirmationOpen: false,
+  			coverApp: false
 		})
 	})
 
@@ -283,7 +293,8 @@ describe('Navigation reducer', () => {
 		  	stateInitialised: false,
 		  	modalVisible: false,
 		  	modalOpen: true,
-		  	confirmationOpen: false
+		  	confirmationOpen: false,
+  			coverApp: false
 		})
 	})
 
