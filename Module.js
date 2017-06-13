@@ -40,10 +40,11 @@ class Module extends React.Component {
           {whitelist: ['transaction']}
         ),
         createTransform(
-          (state) => _.pick(state, ['loggedInUsername']),
+          (state) => _.pick(state, ['loggedInUsername', 'loggedInName']),
           (state) => ({
             // this 'auto fills' the username field
             loggedInUsername: state.loggedInUsername,
+            loggedInName: state.loggedInName
           }),
           {whitelist: ['login']}
         )
