@@ -11,6 +11,7 @@ const initialState = {
   	loginStatus: LOGIN_STATUSES.LOGGED_OUT,
   	loginFormOpen: false,
   	loggedInUsername: '',
+  	loggedInName: '',
   	failedAttempts: [],
 	passToUnlock: ''
 }
@@ -33,6 +34,7 @@ describe('Login reducer', () => {
 		  	loginStatus: LOGIN_STATUSES.LOGGED_IN,
 		  	loginFormOpen: false,
 		  	loggedInUsername: 'Bob',
+  			loggedInName: '',
 		  	failedAttempts: []
 		})
 	})
@@ -46,6 +48,7 @@ describe('Login reducer', () => {
 		  	loginStatus: LOGIN_STATUSES.LOGGED_OUT,
 		  	loginFormOpen: false,
 		  	loggedInUsername: '',
+  			loggedInName: '',
 		  	failedAttempts: [],
 			passToUnlock: ''
 		})
@@ -60,6 +63,7 @@ describe('Login reducer', () => {
 		  	loginStatus: LOGIN_STATUSES.LOGIN_IN_PROGRESS,
 		  	loginFormOpen: false,
 		  	loggedInUsername: '',
+  			loggedInName: '',
 		  	failedAttempts: [],
 			passToUnlock: ''
 		})
@@ -75,6 +79,7 @@ describe('Login reducer', () => {
 		  	loginStatus: LOGIN_STATUSES.LOGGED_OUT,
 		  	loginFormOpen: true,
 		  	loggedInUsername: '',
+  			loggedInName: '',
 		  	failedAttempts: [],
 			passToUnlock: ''
 		})
@@ -90,6 +95,7 @@ describe('Login reducer', () => {
 		  	loginStatus: LOGIN_STATUSES.LOGGED_OUT,
 		  	loginFormOpen: false,
 		  	loggedInUsername: '',
+  			loggedInName: '',
 		  	failedAttempts: [{username: 'Bob', noOfFails: 1}],
 			passToUnlock: ''
 		})
@@ -102,6 +108,7 @@ describe('Login reducer', () => {
 			  	loginStatus: LOGIN_STATUSES.LOGGED_OUT,
 			  	loginFormOpen: false,
 			  	loggedInUsername: '',
+  				loggedInName: '',
 			  	failedAttempts: [{username: 'Bob', noOfFails: 1}],
 				passToUnlock: ''
 			}, {
@@ -112,6 +119,7 @@ describe('Login reducer', () => {
 		  	loginStatus: LOGIN_STATUSES.LOGGED_OUT,
 		  	loginFormOpen: false,
 		  	loggedInUsername: '',
+  			loggedInName: '',
 		  	failedAttempts: [{username: 'Bob', noOfFails: 2}],
 			passToUnlock: ''
 		})
