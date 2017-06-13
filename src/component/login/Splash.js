@@ -72,7 +72,7 @@ class Splash  extends React.Component {
         { this.state.showButtons
           ? <View style={style.bottomContainer}>
               { this.props.renderWelcomeMessage(this.props) }
-              { Config.APP_CITY!=='Exeter' ?
+              { Config.ALLOW_LOGIN ?
                 <TouchableHighlight
                   style={style.loginButton.container}
                   onPress={this.props.connection ? () => this.props.openLoginForm(true) : undefined}
@@ -88,7 +88,7 @@ class Splash  extends React.Component {
                   underlayColor={Colors.primaryBlue3}>
                 <DefaultText style={style.skipButton.text}>{this.props.logoutButtonText}</DefaultText>
               </TouchableHighlight>
-              { Config.APP_CITY!=='Exeter' && this.props.renderInfoText(this.props) }
+              { Config.ALLOW_LOGIN && this.props.renderInfoText(this.props) }
             </View>
           : undefined
         }

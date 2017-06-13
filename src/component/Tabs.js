@@ -58,7 +58,7 @@ const Tabs = (props) =>
     <ScrollableTabView
         // On Android devices, when the keyboard is visible it pushes the entire
         // view upwards. In this instance we want to hide the tab bar
-        renderTabBar={() => ((props.dialogOpen && props.modalVisible) || Config.APP_CITY==='Exeter') ? <View style={style.hiddenTabBar}/> : <TabBar/>}
+        renderTabBar={() => ((props.dialogOpen && props.modalVisible) || !Config.ALLOW_LOGIN) ? <View style={style.hiddenTabBar}/> : <TabBar/>}
         tabBarPosition='bottom'
         initialPage={props.tabIndex}
         tabBarActiveTextColor={Colors.primaryBlue}
