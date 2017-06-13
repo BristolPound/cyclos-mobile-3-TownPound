@@ -49,6 +49,7 @@ class InputComponent extends KeyboardComponent {
       buttonText,
       input,
       descriptionInput,
+      pinInput,
       invalidInput,
       accessibilityLabel,
       balance,
@@ -56,7 +57,7 @@ class InputComponent extends KeyboardComponent {
       description,
       onChangeAmount,
       payee,
-      offlinePaymentLabel 
+      offlinePaymentLabel
     } = this.props
 
     const button = <View style={merge(styles.button, { backgroundColor: this.getButtonColor() })}>
@@ -85,9 +86,14 @@ class InputComponent extends KeyboardComponent {
                     autoFocus={true}
                     accessibilityLabel={input.placeholder} />
                 <View style={styles.separator}/>
-                <TextInput style={styles.textInput}
-                    {...descriptionInput}
-                    accessibilityLabel={descriptionInput.placeholder} />
+                {pinInput
+                  ? <TextInput style={styles.textInput}
+                      {...pinInput}
+                      accessibilityLabel={pinInput.placeholder} />
+                  : <TextInput style={styles.textInput}
+                      {...descriptionInput}
+                      accessibilityLabel={descriptionInput.placeholder} />
+                }
                 <BalanceMessage balance={balance}/>
               </View>
             : undefined}
