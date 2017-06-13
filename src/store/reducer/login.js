@@ -20,6 +20,7 @@ const initialState = {
   loginFormOpen: false,
   // logged in username state stores the username on successful login
   loggedInUsername: '',
+  loggedInName: '',
   failedAttempts: [],
   passToUnlock: ''
 }
@@ -106,6 +107,11 @@ const reducer = (state = initialState, action) => {
     case 'login/OPEN_LOGIN_FORM':
       state = merge(state, {
         loginFormOpen: action.open
+      })
+      break
+    case 'account/ACCOUNT_DETAILS_RECEIVED':
+      state = merge(state, {
+        loggedInName: action.details.display.split(' ')[0],
       })
       break
     case 'login/ATTEMPT_FAILED':
