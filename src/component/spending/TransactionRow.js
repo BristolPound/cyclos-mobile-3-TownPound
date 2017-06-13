@@ -7,7 +7,7 @@ import Colors from '@Colors/colors'
 import styles from './spendingStyle'
 import DefaultText, { MultilineText } from '../DefaultText'
 import merge from '../../util/merge'
-
+import animateTo from '../../util/animateTo'
 
 
 class TransactionRow extends React.Component {
@@ -16,6 +16,8 @@ class TransactionRow extends React.Component {
     this.state = {
       expanded: false,
       height: new Animated.Value(0),
+      spinValue: new Animated.Value(0),
+      spin: '0deg',
       minHeight: styles.row.container.height,
       maxHeight: styles.description.container.height
     }
@@ -48,6 +50,14 @@ class TransactionRow extends React.Component {
       ? this.state.minHeight
       : this.state.maxHeight + this.state.minHeight
 
+    let initialRotation = this.state.expanded
+      ? 0.5
+      : 0
+
+    let finalRotation = this.state.expanded
+      ? 0
+      : 0.5
+
     this.setState( {
       expanded: !this.state.expanded
     })
@@ -60,6 +70,13 @@ class TransactionRow extends React.Component {
         toValue: finalValue
       }
     ).start()
+
+    animateTo(this.state.spinValue, finalRotation, 300)
+
+    this.state.spin = this.state.spinValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '-360deg']
+    })
 
   }
 
@@ -97,10 +114,10 @@ class TransactionRow extends React.Component {
                 style={styles.row.button}
                 onPress={this.toggle}
                 underlayColor={Colors.transparent}>
-                <Image
-                  style={styles.row.buttonImage}
+                <Animated.Image
+                  style={merge(styles.row.buttonImage, {transform: [{rotate: this.state.spin}]})}
                   source={icon}
-                ></Image>
+                ></Animated.Image>
               </TouchableHighlight>
             </View>
             <View style={styles.description.container} >
