@@ -1,4 +1,4 @@
- import Colors from '@Colors/colors'
+import Colors from '@Colors/colors'
 import commonStyle from '../style'
 import { dimensions, margin, border } from '../../util/StyleUtils'
 import { baselineDeltaForFonts } from '../DefaultText'
@@ -14,8 +14,24 @@ const styles = {
         marginLeft: IMAGE_SIZE + IMAGE_MARGIN * 2,
         marginRight: 0
     },
+    container: {
+        backgroundColor: 'white'
+    },
     loadingIndicator: {
         flex: 1
+    },
+    tab: {
+        container: {
+
+        }
+    },
+    description: {
+        container: {
+            backgroundColor: 'white',
+            paddingRight: 20,
+            marginLeft: 14,
+            height: 100
+        }
     },
     row: {
         container: {
@@ -36,6 +52,14 @@ const styles = {
             ...border(['top', 'right', 'bottom', 'left'], Colors.offWhite, 1),
             borderRadius: 5,
             backgroundColor: Colors.transparent
+        },
+        button: {
+
+        },
+        buttonImage: {
+            width: 30,
+            height: 25,
+            ...margin(0, IMAGE_MARGIN, 0, IMAGE_MARGIN)
         },
         text: {
             fontFamily: commonStyle.font.museo300,

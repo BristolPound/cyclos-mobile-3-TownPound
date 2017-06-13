@@ -7,10 +7,11 @@ import ProfileImage from '../profileImage/ProfileImage'
 import SpendingHeader from './SpendingHeader'
 import DefaultText, { MultilineText } from '../DefaultText'
 import Price from '../Price'
- import Colors from '@Colors/colors'
+import Colors from '@Colors/colors'
 import * as actions from '../../store/reducer/transaction'
 import { openDetailsModal, navigateToTransactionTab } from '../../store/reducer/navigation'
 import styles from './spendingStyle'
+import TransactionRow from './TransactionRow'
 
 const renderSeparator = (sectionID, rowID) =>
   <View style={styles.separator} key={`sep:${sectionID}:${rowID}`}/>
@@ -46,25 +47,37 @@ const getUserCategory = (user, businessList) => {
   }
 }
 
-const renderRow = (transaction, openDetailsModal, businessList) =>
-    <TouchableHighlight
-      onPress={() => transaction.relatedAccount.user && openDetailsModal(transaction.relatedAccount.user)}
-      underlayColor={Colors.transparent}
-      key={transaction.transactionNumber}>
-    <View style={styles.row.container}>
-      <ProfileImage
-        image={getTransactionImage(transaction.relatedAccount.user, businessList)}
-        style={styles.row.image}
-        category={getUserCategory(transaction.relatedAccount.user, businessList)}
-        colorCode={transaction.colorCode}/>
-      <View style={styles.row.textContainer}>
-        <DefaultText style={styles.row.text}>
-          { transaction.relatedAccount.user ? transaction.relatedAccount.user.display : 'System' }
-        </DefaultText>
-        <Price price={transaction.amount} style={styles.row.price} size={22}/>
-      </View>
-    </View>
-  </TouchableHighlight>
+const renderRow = (transaction, openDetailsModal, businessList) => {
+    const transactionProps = {
+        transaction: transaction,
+        openDetailsModal: (usr) => {openDetailsModal(usr)},
+        businessList: businessList,
+        getTransactionImage: (usr, busList) => {getTransactionImage(usr, busList)},
+        getUserCategory: (usr, busList) => {getUserCategory(usr, busList)}
+    }
+
+    return <TransactionRow {...transactionProps}/>
+}
+
+// const renderRow = (transaction, openDetailsModal, businessList) =>
+//     <TouchableHighlight
+//       onPress={() => transaction.relatedAccount.user && openDetailsModal(transaction.relatedAccount.user)}
+//       underlayColor={Colors.transparent}
+//       key={transaction.transactionNumber}>
+//     <View style={styles.row.container}>
+//       <ProfileImage
+//         image={getTransactionImage(transaction.relatedAccount.user, businessList)}
+//         style={styles.row.image}
+//         category={getUserCategory(transaction.relatedAccount.user, businessList)}
+//         colorCode={transaction.colorCode}/>
+//       <View style={styles.row.textContainer}>
+//         <DefaultText style={styles.row.text}>
+//           { transaction.relatedAccount.user ? transaction.relatedAccount.user.display : 'System' }
+//         </DefaultText>
+//         <Price price={transaction.amount} style={styles.row.price} size={22}/>
+//       </View>
+//     </View>
+//   </TouchableHighlight>
 
 
 class SpendingTab extends React.Component {
