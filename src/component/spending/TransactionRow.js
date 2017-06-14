@@ -16,20 +16,24 @@ class TransactionRow extends React.Component {
     this.state = {
       expanded: false,
       height: new Animated.Value(),
-      spinValue: new Animated.Value(0),
-      spin: '0deg',
+      spinValue: new Animated.Value(-0.25),
+      spin: '-90deg',
       minHeight: styles.row.container.height,
-      // maxHeight: styles.description.container.height
     }
 
     this.icons = {
       'expand': Images.expandTab
     }
 
-    // this.state.height.setValue(this.state.minHeight)
-
     this.toggle = this.toggle.bind(this)
 
+  }
+
+
+  _setMinHeight(event) {
+    console.log(event.nativeEvent.layout.height)
+
+    this.state.height.setValue(this.state.minHeight)
   }
 
   _setMaxHeight(event) {
@@ -37,8 +41,7 @@ class TransactionRow extends React.Component {
     this.setState({
         maxHeight: event.nativeEvent.layout.height
     })
-    this.state.height.setValue(this.state.minHeight)
-
+    // this.state.height.setValue(this.state.minHeight)
   }
 
   toggle() {
@@ -53,18 +56,17 @@ class TransactionRow extends React.Component {
       : this.state.maxHeight + this.state.minHeight
 
     let initialRotation = this.state.expanded
-      ? 0.5
-      : 0
+      ? 0
+      : -0.25
 
     let finalRotation = this.state.expanded
-      ? 0
-      : 0.5
+      ? -0.25
+      : 0
 
     this.setState( {
       expanded: !this.state.expanded
     })
 
-    // Spring animation or ease animation (animateTo util)?
     this.state.height.setValue(initialValue)
     Animated.spring(
       this.state.height,
@@ -76,8 +78,8 @@ class TransactionRow extends React.Component {
     animateTo(this.state.spinValue, finalRotation, 300)
 
     this.state.spin = this.state.spinValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['0deg', '-360deg']
+      inputRange: [-0.25, 0],
+      outputRange: ['-90deg', '0deg']
     })
 
   }
@@ -100,7 +102,7 @@ class TransactionRow extends React.Component {
           underlayColor={Colors.transparent}
           key={transaction.transactionNumber}>
           <View style={styles.tab.container}>
-            <View style={styles.row.container}>
+            <View style={styles.row.container} onLayout={this._setMinHeight.bind(this)}>
               <ProfileImage
                 image={getTransactionImage(transaction.relatedAccount.user, businessList)}
                 style={styles.row.image}
