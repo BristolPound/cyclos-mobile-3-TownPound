@@ -31,17 +31,13 @@ class TransactionRow extends React.Component {
 
 
   _setMinHeight(event) {
-    console.log(event.nativeEvent.layout.height)
-
     this.state.height.setValue(this.state.minHeight)
   }
 
   _setMaxHeight(event) {
-    console.log(event.nativeEvent.layout.height)
     this.setState({
         maxHeight: event.nativeEvent.layout.height
     })
-    // this.state.height.setValue(this.state.minHeight)
   }
 
   toggle() {
