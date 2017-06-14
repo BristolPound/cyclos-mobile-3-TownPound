@@ -11,7 +11,7 @@ const IMAGE_MARGIN = 14
 const styles = {
     separator: {
         ...border(['bottom'], Colors.gray5, 1),
-        marginLeft: IMAGE_SIZE + IMAGE_MARGIN * 2,
+        marginLeft: 0,
         marginRight: 0
     },
     container: {
@@ -30,7 +30,8 @@ const styles = {
             backgroundColor: 'white',
             paddingRight: 20,
             marginLeft: 14,
-            height: 100
+            marginTop: 10,
+            marginBottom: 10
         }
     },
     row: {
@@ -54,11 +55,14 @@ const styles = {
             backgroundColor: Colors.transparent
         },
         button: {
-
+            width: IMAGE_SIZE,
+            height: IMAGE_SIZE,
+            alignContent: 'center',
+            justifyContent: 'center'
         },
         buttonImage: {
-            width: 30,
-            height: 25,
+            width: 20,
+            height: 15,
             ...margin(0, IMAGE_MARGIN, 0, IMAGE_MARGIN)
         },
         text: {

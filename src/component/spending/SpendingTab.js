@@ -50,34 +50,14 @@ const getUserCategory = (user, businessList) => {
 const renderRow = (transaction, openDetailsModal, businessList) => {
     const transactionProps = {
         transaction: transaction,
-        openDetailsModal: (usr) => {openDetailsModal(usr)},
+        openDetailsModal: openDetailsModal,
         businessList: businessList,
-        getTransactionImage: (usr, busList) => {getTransactionImage(usr, busList)},
-        getUserCategory: (usr, busList) => {getUserCategory(usr, busList)}
+        getTransactionImage: getTransactionImage,
+        getUserCategory: getUserCategory
     }
 
     return <TransactionRow {...transactionProps}/>
 }
-
-// const renderRow = (transaction, openDetailsModal, businessList) =>
-//     <TouchableHighlight
-//       onPress={() => transaction.relatedAccount.user && openDetailsModal(transaction.relatedAccount.user)}
-//       underlayColor={Colors.transparent}
-//       key={transaction.transactionNumber}>
-//     <View style={styles.row.container}>
-//       <ProfileImage
-//         image={getTransactionImage(transaction.relatedAccount.user, businessList)}
-//         style={styles.row.image}
-//         category={getUserCategory(transaction.relatedAccount.user, businessList)}
-//         colorCode={transaction.colorCode}/>
-//       <View style={styles.row.textContainer}>
-//         <DefaultText style={styles.row.text}>
-//           { transaction.relatedAccount.user ? transaction.relatedAccount.user.display : 'System' }
-//         </DefaultText>
-//         <Price price={transaction.amount} style={styles.row.price} size={22}/>
-//       </View>
-//     </View>
-//   </TouchableHighlight>
 
 
 class SpendingTab extends React.Component {

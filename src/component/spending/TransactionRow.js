@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TouchableHighlight, Animated, Image } from 'react-native'
+import { View, TouchableHighlight, Animated, Image, Text } from 'react-native'
 import ProfileImage from '../profileImage/ProfileImage'
 import Price from '../Price'
 import Images from '@Assets/images'
@@ -15,28 +15,30 @@ class TransactionRow extends React.Component {
     super(props)
     this.state = {
       expanded: false,
-      height: new Animated.Value(0),
+      height: new Animated.Value(),
       spinValue: new Animated.Value(0),
       spin: '0deg',
       minHeight: styles.row.container.height,
-      maxHeight: styles.description.container.height
+      // maxHeight: styles.description.container.height
     }
 
     this.icons = {
       'expand': Images.expandTab
     }
 
-    this.state.height.setValue(this.state.minHeight)
+    // this.state.height.setValue(this.state.minHeight)
 
     this.toggle = this.toggle.bind(this)
-
 
   }
 
   _setMaxHeight(event) {
+    console.log(event.nativeEvent.layout.height)
     this.setState({
         maxHeight: event.nativeEvent.layout.height
     })
+    this.state.height.setValue(this.state.minHeight)
+
   }
 
   toggle() {
@@ -120,10 +122,10 @@ class TransactionRow extends React.Component {
                 ></Animated.Image>
               </TouchableHighlight>
             </View>
-            <View style={styles.description.container} >
-              <DefaultText style={merge(styles.row.text)}>
+            <View style={styles.description.container} onLayout={this._setMaxHeight.bind(this)}>
+              <Text style={merge(styles.row.text)}>
                 Description: { transaction.description }
-              </DefaultText>
+              </Text>
             </View>
 
           </View>
