@@ -17,8 +17,8 @@ const styles = {
     width: Dimensions.get('window').width - 20
   },
   noInternetMessage: {
-    fontSize: 14, 
-    textAlign: 'center', 
+    fontSize: 14,
+    textAlign: 'center',
     width: Dimensions.get('window').width - 20,
     fontStyle: 'italic',
     color: 'red'
@@ -55,7 +55,19 @@ const styles = {
     borderBottomColor: Colors.gray5,
     borderBottomWidth: 1
   },
+  confrimDescriptionContainer: {
+    height: sectionHeight,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderBottomColor: Colors.gray5,
+    borderBottomWidth: 1
+  },
   confirmPayeeText: {
+    fontSize: 24,
+    color: Colors.offBlack,
+    textAlign: 'center'
+  },
+  confirmDescriptionText: {
     fontSize: 24,
     color: Colors.offBlack,
     textAlign: 'center'

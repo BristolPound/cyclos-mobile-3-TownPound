@@ -91,6 +91,8 @@ class TransactionRow extends React.Component {
 
     let icon = this.icons['expand']
 
+    let userEnteredDescription = transaction.description != "Online Payment from Individual Account"
+
     return (
       <Animated.View style={merge(styles.container, {height: this.state.height})}>
         <TouchableHighlight
@@ -110,22 +112,25 @@ class TransactionRow extends React.Component {
                 </DefaultText>
                 <Price price={transaction.amount} style={styles.row.price} size={22}/>
               </View>
-              <TouchableHighlight
-                style={styles.row.button}
-                onPress={this.toggle}
-                underlayColor={Colors.transparent}>
-                <Animated.Image
-                  style={merge(styles.row.buttonImage, {transform: [{rotate: this.state.spin}]})}
-                  source={icon}
-                ></Animated.Image>
-              </TouchableHighlight>
+              {userEnteredDescription &&
+              <View>
+                <TouchableHighlight
+                  style={styles.row.button}
+                  onPress={this.toggle}
+                  underlayColor={Colors.transparent}>
+                  <Animated.Image
+                    style={merge(styles.row.buttonImage, {transform: [{rotate: this.state.spin}]})}
+                    source={icon}
+                  ></Animated.Image>
+                </TouchableHighlight>
+              </View>}
             </View>
+            {userEnteredDescription &&
             <View style={styles.description.container} onLayout={this._setMaxHeight.bind(this)}>
               <Text style={merge(styles.row.text)}>
                 Description: { transaction.description }
               </Text>
-            </View>
-
+            </View>}
           </View>
         </TouchableHighlight>
       </Animated.View>
