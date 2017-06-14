@@ -71,10 +71,10 @@ class Root extends React.Component {
   }
 
   logout () {
-    this.props.setCoverApp(false)
     this.props.logout()
     this.props.closeConfirmation()
     this.setState({askToUnlock: false, unlockError: false, failedAttempts: 0})
+    this.props.setCoverApp(false)
   }
 
   logoutPress () {
@@ -112,7 +112,7 @@ class Root extends React.Component {
               barStyle={this.props.mainComponent === mainComponent.returningLogin ? 'light-content' : 'dark-content'}/>
           {bodyComponent}
           <LoginOverlay/>
-          {(this.props.modalOpen && !this.props.loginFormOpen) && Config.APP_CITY!=='Exeter' ? <SendMoney /> : undefined}
+          {(this.props.modalOpen && !this.props.loginFormOpen) && Config.ALLOW_LOGIN ? <SendMoney /> : undefined}
           <Login/>
           <StatusMessage/>
           {this.props.coverApp

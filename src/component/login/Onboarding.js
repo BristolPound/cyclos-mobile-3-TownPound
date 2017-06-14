@@ -32,7 +32,7 @@ const renderInfoText = () =>
 
 class Onboarding extends React.Component {
   render() {
-    var logoutButtonText = Config.APP_CITY==='Exeter' ? "Start browsing" : "I'm just browsing"
+    var logoutButtonText = Config.ALLOW_LOGIN ? "I'm just browsing" : "Start browsing"
     return (
       <Splash loginButtonText='Log in'
         logoutButtonText={logoutButtonText}

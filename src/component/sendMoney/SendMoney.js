@@ -127,7 +127,7 @@ class SendMoney extends React.Component {
             accessibilityLabel: 'Enter Amount',
             balance: this.props.balance
           }
-          if (this.props.connection) {
+          if (!this.props.connection) {
             inputProps.offlinePaymentLabel = 'No internet connection (Using TXT2PAY)'
             inputProps.onButtonPress = () => { this.payByTextOnPress() }
           }
@@ -142,7 +142,7 @@ class SendMoney extends React.Component {
             onChangeAmount: () => { this.prevPage() },
             accessibilityLabel: 'Confirm Amount'
           }
-          if (this.props.connection) {
+          if (!this.props.connection) {
             inputProps.offlinePaymentLabel = 'No internet connection (Using TXT2PAY)'
             inputProps.onButtonPress = () => { this.payByTextOnPress() }
           }

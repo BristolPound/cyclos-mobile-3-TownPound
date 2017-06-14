@@ -8,7 +8,7 @@ const renderWelcomeMessage = (props) => {
   return (
     <View style={style.centerContainer}>
       <DefaultText style={style.welcome.welcomeText}>Welcome back</DefaultText>
-      <DefaultText style={style.welcome.usernameText}>{props.loggedInUsername}</DefaultText>
+      <DefaultText style={style.welcome.usernameText}>{props.loggedInName}</DefaultText>
     </View>
   )
 }
