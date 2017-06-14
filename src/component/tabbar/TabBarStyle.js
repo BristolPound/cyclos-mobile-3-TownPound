@@ -22,19 +22,6 @@ const style = {
     ...dimensions(1, TAB_BAR_HEIGHT / 2),
     backgroundColor: '#e2e3e6'
   },
-  amountContainer: {
-    width: 148,
-    backgroundColor: '#f4f4f4',
-    flexDirection: 'row',
-    justifyContent: 'flex-end'
-  },
-  amountInnerContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
-    paddingRight: 10,
-    height: TAB_BAR_HEIGHT
-  },
   centerChildren: {
     flex: 1,
     flexDirection:'row',
@@ -48,13 +35,6 @@ const style = {
     justifyContent:'center',
     alignItems: 'flex-end',
     paddingBottom: BASELINE
-  },
-  balanceSymbol: {
-    paddingRight: 4,
-    marginBottom: BASELINE
-  },
-  amount: {
-    marginBottom: BASELINE - MAGIC_NUMBER
   }
 }
 

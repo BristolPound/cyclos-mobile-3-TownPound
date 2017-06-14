@@ -22,6 +22,7 @@ import { LOGIN_STATUSES } from '../store/reducer/login'
 import Modal from './Modal'
 import PaymentConfirmation from './PaymentConfirmation'
 import ContinuePaymentAlert from './ContinuePaymentAlert'
+import Menu from './Menu'
 
 const style = {
   tabs: {
@@ -98,6 +99,7 @@ const Tabs = (props) =>
       <PaymentConfirmation />
     </Modal>
     {props.alertShouldPopUp && props.loggedIn && <ContinuePaymentAlert />}
+    <Menu/>
   </View>
 
 const mapDispatchToProps = (dispatch) =>

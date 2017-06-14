@@ -1,12 +1,8 @@
 import React from 'react'
 import { View, Image, TouchableOpacity } from 'react-native'
 import { bindActionCreators } from 'redux'
-import DefaultText from '../DefaultText'
-import Price from '../Price'
 import { connect } from 'react-redux'
- import Colors from '@Colors/colors'
-import { openLoginForm } from '../../store/reducer/login'
-import { showModal, modalState } from '../../store/reducer/navigation'
+import { showModal, modalState, setMenuOpen } from '../../store/reducer/navigation'
 import { LOGIN_STATUSES } from '../../store/reducer/login'
 import style from './TabBarStyle'
 import Config from '@Config/config'
@@ -58,7 +54,7 @@ const TabBar = (props) =>
     <View style={style.centerChildren} key={TABS.length}>
         <TouchableOpacity
             style={style.iconContainer}
-            onPress={() => {}}
+            onPress={() => props.setMenuOpen()}
             accessibilityLabel='Menu'>
           <Image source={props.menuOpened ? Images.meActive : Images.meInactive}/>
         </TouchableOpacity>
@@ -67,16 +63,13 @@ const TabBar = (props) =>
 
 
 const mapStateToProps = (state) => ({
-  loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
-  balance: state.account.balance,
-  connection: state.networkConnection.status,
   tabIndex: state.navigation.tabIndex
 })
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators({
-    openLoginForm,
-    showModal
+    showModal,
+    setMenuOpen
   }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TabBar)
