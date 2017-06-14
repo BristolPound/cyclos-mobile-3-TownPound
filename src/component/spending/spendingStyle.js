@@ -30,8 +30,8 @@ const styles = {
             backgroundColor: 'white',
             paddingRight: 20,
             marginLeft: 14,
-            marginTop: 10,
-            marginBottom: 10
+            paddingTop: 10,
+            paddingBottom: 10
         }
     },
     row: {
