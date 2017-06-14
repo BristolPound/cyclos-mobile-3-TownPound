@@ -4,7 +4,7 @@ import ScrollableTabView from 'react-native-scrollable-tab-view'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from '../store/reducer/navigation'
-import { modalState } from '../store/reducer/navigation'
+import { modalState, menuActions } from '../store/reducer/navigation'
 import { openLoginForm } from '../store/reducer/login'
 import TabBar from './tabbar/TabBar'
 import SearchTab from './searchTab/SearchTab'
@@ -23,6 +23,8 @@ import Modal from './Modal'
 import PaymentConfirmation from './PaymentConfirmation'
 import ContinuePaymentAlert from './ContinuePaymentAlert'
 import Menu from './Menu'
+import ContactList from './menuActions/ContactList'
+import MenuAction from './menuActions/MenuAction'
 
 const style = {
   tabs: {
@@ -45,6 +47,15 @@ const componentForModalState = (state) => {
       return <PersonScreen/>
     case modalState.developerOptions:
       return <DeveloperOptions/>
+  }
+}
+
+const componentForMenuAction = (state) => {
+  switch (state) {
+    case menuActions.contactList:
+      return <ContactList/>
+    case menuActions.settings:
+      return <View />
   }
 }
 
@@ -92,6 +103,9 @@ const Tabs = (props) =>
         }
       </WithNetworkConnection>
     </ScrollableTabView>
+    <MenuAction visible={props.menuAction !== menuActions.none} hideMenuAction={() => props.showMenuAction(menuActions.none)}>
+      {componentForMenuAction(props.menuAction)}
+    </MenuAction>
     <Modal visible={props.modalVisible} hideModal={() => {!props.confirmationOpen && props.hideModal() && props.resetForm()}} modalOpened={props.modalOpened}>
       {componentForModalState(props.modalState)}
     </Modal>
@@ -109,6 +123,7 @@ const mapStateToProps = (state) => ({
   tabIndex: state.navigation.tabIndex,
   modalState: state.navigation.modalState,
   modalVisible: state.navigation.modalVisible,
+  menuAction: state.navigation.menuAction,
   loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
   status: state.status,
   dialogOpen: state.login.loginFormOpen,

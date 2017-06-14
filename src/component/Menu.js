@@ -6,9 +6,8 @@ import { screenWidth } from '../util/ScreenSizes'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Config from '@Config/config'
-import { TAB_BAR_HEIGHT } from './tabbar/TabBarStyle'
 import { openLoginForm } from '../store/reducer/login'
-import { showModal, modalState, setMenuOpen } from '../store/reducer/navigation'
+import { showModal, modalState, setMenuOpen, showMenuAction, menuActions } from '../store/reducer/navigation'
 import { LOGIN_STATUSES } from '../store/reducer/login'
 import DefaultText from './DefaultText'
 import Colors from '@Colors/colors'
@@ -26,7 +25,7 @@ class Menu extends React.Component {
     this.onBackButtonPressBound = this.onBackButtonPress.bind(this)
   }
   onBackButtonPress () {
-    this.props.hideModal && this.props.hideModal()
+    this.props.menuOpen && this.props.setMenuOpen()
     return true
   }
   componentDidUpdate (lastProps) {
@@ -64,13 +63,18 @@ class Menu extends React.Component {
                 <View>
                     <DefaultText style={{ color: this.props.connection ? Colors.primaryBlue : Colors.offWhite }}>Log in</DefaultText>
                 </View>
-                </TouchableOpacity>
+            </TouchableOpacity>
         }
         </View>
         <View style={style.separator} />
-        <Text>
-            Actions go here
-        </Text>
+        <TouchableOpacity
+                style={style.centerChildren}
+                onPress={this.props.connection ? () => this.props.showMenuAction(menuActions.contactList) && this.props.setMenuOpen() : undefined}
+                accessibilityLabel='Contact List'>
+            <View>
+                <DefaultText style={{ color: this.props.connection ? Colors.primaryBlue : Colors.offWhite }}>Contact List</DefaultText>
+            </View>
+        </TouchableOpacity>
         <View style={style.separator} />
         <Text>
             {Config.VERSION}
@@ -83,7 +87,8 @@ class Menu extends React.Component {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
     openLoginForm,
     showModal,
-    setMenuOpen
+    setMenuOpen,
+    showMenuAction
 }, dispatch)
 
 const mapStateToProps = (state) => ({

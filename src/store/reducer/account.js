@@ -1,6 +1,6 @@
 
 import merge from '../../util/merge'
-import { getAccountBalance } from '../../api/accounts'
+import { getAccountBalance, getContactList } from '../../api/accounts'
 import { getAccountDetails } from '../../api/users'
 import { UNAUTHORIZED_ACCESS } from '../../api/apiError'
 import { openLoginForm } from './login'
@@ -9,8 +9,10 @@ import { unknownError } from './statusMessage'
 const initialState = {
   loadingBalance: true,
   loadingDetails: true,
+  loadingContactList: true,
   balance: undefined,
   details: {},
+  contactList: {}
 }
 
 export const accountBalanceReceived = account => ({
@@ -25,6 +27,11 @@ export const resetAccount = () => ({
 const accountDetailsReceived = details => ({
   type: 'account/ACCOUNT_DETAILS_RECEIVED',
   details
+})
+
+const contactListReceived = contactList => ({
+  type: 'account/CONTACT_LIST_RECEIVED',
+  contactList
 })
 
 const handleAPIError = (dispatch) => (err) => {
@@ -43,6 +50,9 @@ export const loadAccountDetails = () =>
     getAccountDetails(dispatch)
       .then(details => dispatch(accountDetailsReceived(details)))
       .catch(handleAPIError(dispatch))
+    getContactList(dispatch)
+      .then(contactList => dispatch(contactListReceived(contactList)))
+      .catch(handleAPIError(dispatch))
   }
 
 const reducer = (state = initialState, action) => {
@@ -59,6 +69,12 @@ const reducer = (state = initialState, action) => {
         loadingDetails: false
       })
       break
+    case 'account/CONTACT_LIST_RECEIVED':
+      console.log(action.contactList)
+      state = merge(state, {
+        contactList: action.contactList,
+        loadingContactList: false
+      })
     case 'account/RESET':
       state = initialState
       break

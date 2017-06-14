@@ -9,7 +9,13 @@ export const modalState = {
   none: 'none',
   traderScreen: 'traderScreen',
   personScreen: 'personScreen',
-  developerOptions: 'developerOptions',
+  developerOptions: 'developerOptions'
+}
+
+export const menuActions = {
+  none: 'none',
+  componentList: 'componentList',
+  settings: 'settings'
 }
 
 export const mainComponent = {
@@ -28,7 +34,8 @@ const initialState = {
   modalOpen: false,
   confirmationOpen: false,
   coverApp: false,
-  menuOpen: false
+  menuOpen: false,
+  menuAction: menuActions.none
 }
 
 export const navigateToTab = (tabIndex) =>
@@ -72,6 +79,11 @@ export const showModal = (modalState) => ({
   modalState
 })
 
+export const showMenuAction = (menuAction) => ({
+  type: 'navigation/SHOW_MENU_ACTION',
+  menuAction
+})
+
 export const setCoverApp = (value) => ({
   type: 'navigation/COVER_APP',
   value
@@ -112,13 +124,19 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'navigation/NAVIGATE_TO_TAB':
       state = merge(state, {
-        tabIndex: action.tabIndex
+        tabIndex: action.tabIndex,
+        menuAction: menuActions.none,
+        menuOpen: false
       })
       break
     case 'navigation/SHOW_MODAL':
       state = merge(state, {
-        modalState: action.modalState,
-        modalVisible: true,
+        modalState: action.modalState
+      })
+      break
+    case 'navigation/SHOW_MENU_ACTION':
+      state = merge(state, {
+        menuAction: action.menuAction
       })
       break
     case 'navigation/HIDE_MODAL':
@@ -176,9 +194,16 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'navigation/SET_MENU_OPEN':
-      state = merge(state, {
-        menuOpen: !state.menuOpen
-      })
+      if(state.menuOpen === false) {
+        state = merge(state, {
+          menuOpen: !state.menuOpen,
+          menuAction: menuActions.none
+        })
+      } else {
+        state = merge(state, {
+          menuOpen: !state.menuOpen
+        })
+      }
       break
     case 'navigation/MODAL_OPENED':
       state = merge(state, {

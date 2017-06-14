@@ -15,7 +15,7 @@ import SendMoney from './sendMoney/SendMoney'
 import AppCover from './lockedState/AppCover'
 import md5 from 'md5'
 import { logout } from '../store/reducer/login'
-import { closeConfirmation, setCoverApp, navigateToTab, hideModal, setOverlayOpen } from '../store/reducer/navigation'
+import { closeConfirmation, setCoverApp, navigateToTab, hideModal, setOverlayOpen, modalState } from '../store/reducer/navigation'
 import { updatePage, resetPayment, resetForm } from '../store/reducer/sendMoney'
 import UnlockAppAlert, {maxAttempts} from './lockedState/UnlockAppAlert'
 
@@ -112,7 +112,7 @@ class Root extends React.Component {
               barStyle={this.props.mainComponent === mainComponent.returningLogin ? 'light-content' : 'dark-content'}/>
           {bodyComponent}
           <LoginOverlay/>
-          {(this.props.modalOpen && !this.props.loginFormOpen) && Config.APP_CITY!=='Exeter' ? <SendMoney /> : undefined}
+          {(this.props.modalOpen && (this.props.modalState===modalState.traderScreen || this.props.modalState===modalState.personScreen) &&  !this.props.loginFormOpen) && Config.APP_CITY!=='Exeter' ? <SendMoney /> : undefined}
           <Login/>
           <StatusMessage/>
           {this.props.coverApp
