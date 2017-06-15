@@ -56,7 +56,8 @@ const styles = {
     }
 }
 
-const ComponentForItem = (item) => {
+const componentForItem = (item) => {
+    console.log(item)
     return (
     <View style={styles.container} ref="contactListItem">
         <View style={styles.status}/>
@@ -72,18 +73,38 @@ const ComponentForItem = (item) => {
 }
 
 class ContactList extends React.Component {
+    constructor() {
+        super()
+        this.state = { visible: false}
+    }
+
+    componentDidMount() {
+        setTimeout(()=>{
+            this.setState({visible: true})
+        }, 300)
+    }
+
+    componentWillUnmount() {
+        this.setState({visible: false})
+    }
+
     render() {
         return (
-            <View style={{padding: 20, paddingTop: 40, height: '100%'}}>
-                <DefaultText>
-                    Contact List
-                </DefaultText>
-                <View style={styles.separator}/>
-                <FixedScrollableList
-                    items={this.props.contactList}
-                    componentForItem={ComponentForItem}
-                    onPress={(item) => {}}
-                    style={{bottom: 0, flex: 1}}/>
+            <View style={{padding: 20, paddingTop: 40, flex: 1}}>
+           
+                    {this.state.visible &&
+                        <View>
+                            <DefaultText>
+                                Contact List
+                            </DefaultText>
+                            <View style={styles.separator}/>
+                            <FixedScrollableList
+                                items={this.props.contactList}
+                                componentForItem={componentForItem}
+                                onPress={(item) => {}}
+                                style={{bottom: 0, flex: 1}}/>
+                        </View>
+                    }
             </View>
         )
     }
