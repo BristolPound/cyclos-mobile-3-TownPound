@@ -17,6 +17,17 @@ import style from './MenuStyle'
 
 const modalSlideTime = 300
 
+const menuAction = (buttonText, onPress) => 
+    <TouchableOpacity
+            style={style.centerChildren}
+            onPress={onPress}
+            accessibilityLabel={buttonText}>
+        <View>
+            <DefaultText style={{ margin: 10, color: Colors.primaryBlue }}>
+                {buttonText}
+            </DefaultText>
+        </View>
+    </TouchableOpacity>
 
 class Menu extends React.Component {
   constructor () {
@@ -67,30 +78,9 @@ class Menu extends React.Component {
         }
         </View>
         <View style={style.separator} />
-        <TouchableOpacity
-                style={style.centerChildren}
-                onPress={this.props.connection ? () => this.props.showMenuAction(menuActions.contactList) && this.props.setMenuOpen() : undefined}
-                accessibilityLabel='Contact List'>
-            <View>
-                <DefaultText style={{ margin: 10, color: this.props.connection ? Colors.primaryBlue : Colors.offWhite }}>Contact List</DefaultText>
-            </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-                style={style.centerChildren}
-                onPress={this.props.connection ? () => this.props.showMenuAction(menuActions.feedback) && this.props.setMenuOpen() : undefined}
-                accessibilityLabel='Feedback'>
-            <View>
-                <DefaultText style={{ margin: 10, color: this.props.connection ? Colors.primaryBlue : Colors.offWhite }}>Feedback</DefaultText>
-            </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-                style={style.centerChildren}
-                onPress={this.props.connection ? () => this.props.showMenuAction(menuActions.settings) && this.props.setMenuOpen() : undefined}
-                accessibilityLabel='Settings'>
-            <View>
-                <DefaultText style={{ margin: 10, color: this.props.connection ? Colors.primaryBlue : Colors.offWhite }}>Settings</DefaultText>
-            </View>
-        </TouchableOpacity>
+        { menuAction('Contact List', () => this.props.showMenuAction(menuActions.contactList) && this.props.setMenuOpen()) }
+        { menuAction('Feedback', () => this.props.showMenuAction(menuActions.feedback) && this.props.setMenuOpen()) }
+        { menuAction('Settings', () => this.props.showMenuAction(menuActions.settings) && this.props.setMenuOpen()) }
         <View style={style.separator} />
         <Text>
             {Config.VERSION}
