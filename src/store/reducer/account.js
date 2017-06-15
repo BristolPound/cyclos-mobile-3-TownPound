@@ -12,7 +12,7 @@ const initialState = {
   loadingContactList: true,
   balance: undefined,
   details: {},
-  contactList: {}
+  contactList: []
 }
 
 export const accountBalanceReceived = account => ({
@@ -70,11 +70,11 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'account/CONTACT_LIST_RECEIVED':
-      console.log(action.contactList)
       state = merge(state, {
         contactList: action.contactList,
         loadingContactList: false
       })
+      break
     case 'account/RESET':
       state = initialState
       break
