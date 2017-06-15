@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Image, TouchableOpacity } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { showModal, modalState, setMenuOpen } from '../../store/reducer/navigation'
+import { showModal, modalState, setMenuOpen, menuActions } from '../../store/reducer/navigation'
 import { LOGIN_STATUSES } from '../../store/reducer/login'
 import style from './TabBarStyle'
 import Config from '@Config/config'
@@ -35,6 +35,10 @@ const TABS = [
     )
 ]
 
+const isTabActive = (index, tabIndex, menuAction, menuOpen) => {
+  return (tabIndex === index) && (menuAction === menuActions.none) && !menuOpen
+}
+
 const isDevMode = Config.FLAVOUR === 'dev'
 
 const TabBar = (props) => 
@@ -46,7 +50,7 @@ const TabBar = (props) =>
             onPress={() => props.goToPage(index)}
             onLongPress={() => {isDevMode && props.showModal(modalState.developerOptions)}}
             accessibilityLabel={tab.label}>
-          <Image source={props.tabIndex === index ? tab.active : tab.inactive}/>
+          <Image source={isTabActive(index, props.tabIndex, props.menuAction, props.menuOpen) ? tab.active : tab.inactive}/>
         </TouchableOpacity>
         <View style={style.separator}/>
       </View>
@@ -56,14 +60,16 @@ const TabBar = (props) =>
             style={style.iconContainer}
             onPress={() => props.setMenuOpen()}
             accessibilityLabel='Menu'>
-          <Image source={props.menuOpened ? Images.meActive : Images.meInactive}/>
+          <Image source={props.menuOpen ? Images.meActive : Images.meInactive}/>
         </TouchableOpacity>
       </View>
   </View>
 
 
 const mapStateToProps = (state) => ({
-  tabIndex: state.navigation.tabIndex
+  tabIndex: state.navigation.tabIndex,
+  menuAction: state.navigation.menuAction,
+  menuOpen: state.navigation.menuOpen
 })
 
 const mapDispatchToProps = (dispatch) =>
