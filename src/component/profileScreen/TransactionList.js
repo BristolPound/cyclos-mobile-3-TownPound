@@ -5,6 +5,10 @@ import commonStyle from '../style'
 import TransactionItem from './TransactionItem'
 import { buildDataSourceForTransactions} from '../../util/transaction'
 
+const renderRow = (transaction) => {
+  return <TransactionItem transaction={transaction}/>
+}
+
 export default class TransactionList extends Component {
   constructor(props) {
     super(props)
@@ -32,9 +36,9 @@ export default class TransactionList extends Component {
         <ListView
           ref={(ref) => this.listViewRef = ref}
           dataSource={this.state.dataSource}
-          renderRow={this.props.renderRow || TransactionItem}
+          renderRow={renderRow}
           renderSectionHeader={renderSectionHeader}
-          removeClippedSubviews={false} 
+          removeClippedSubviews={false}
           scrollEnabled={false} />
     )
   }

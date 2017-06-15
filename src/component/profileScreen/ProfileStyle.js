@@ -3,8 +3,12 @@ import Colors from '@Colors/colors'
 import commonStyle from '../style'
 import { dimensions, margin, border, horizontalAbsolutePosition } from '../../util/StyleUtils'
 
+import { baselineDeltaForFonts } from '../DefaultText'
 const screenWidth = Dimensions.get('window').width
 const listMargin = 4 + screenWidth / 40
+
+const IMAGE_SIZE = 42
+const IMAGE_MARGIN = 14
 
 const styles = {
   header: {
@@ -51,12 +55,45 @@ const styles = {
     }
   },
   list: {
+    tab: {
+      container: {
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: Colors.gray5,
+        backgroundColor: 'white',
+      }
+    },
     rowContainer: {
       flexDirection: 'row',
       justifyContent: 'center',
       height: 50,
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: Colors.gray5,
+    },
+    description: {
+        container: {
+            paddingRight: 20,
+            marginLeft: 14,
+            paddingTop: 10,
+            paddingBottom: 10
+        },
+        text: {
+            fontFamily: commonStyle.font.museo300,
+            // the offset required to align this text (18px) with the price (22px)
+            marginBottom: baselineDeltaForFonts(22, 18),
+            color: Colors.offBlack,
+            fontSize: 18,
+            marginRight: 10,
+            flex: 1
+        }
+    },
+    button: {
+        width: IMAGE_SIZE,
+        height: IMAGE_SIZE,
+        alignContent: 'center',
+        justifyContent: 'center'
+    },
+    buttonImage: {
+        width: 20,
+        height: 15,
+        ...margin(0, IMAGE_MARGIN, 0, IMAGE_MARGIN)
     },
     leftColumn: {
       width: screenWidth / 3,
