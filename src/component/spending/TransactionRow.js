@@ -10,10 +10,14 @@ import merge from '../../util/merge'
 import animateTo from '../../util/animateTo'
 
 
+
 class TransactionRow extends React.Component {
   constructor (props) {
     super(props)
-    this.state = {
+
+    console.log("new component")
+
+    this.initialState = {
       expanded: false,
       height: new Animated.Value(),
       spinValue: new Animated.Value(-0.25),
@@ -25,19 +29,67 @@ class TransactionRow extends React.Component {
       'expand': Images.expandTab
     }
 
+    this.state = this.initialState
+
     this.toggle = this.toggle.bind(this)
+    this.resetState = this.resetState.bind(this)
+
+  }
+
+
+  resetState() {
+    this.setState({
+      expanded: false,
+      height: new Animated.Value()
+    })
+
+    // this.state.height.setValue(300)
+  }
+
+
+
+  componentWillReceiveProps(nextProps) {
+    console.log("receiving new props")
+    if (nextProps.transaction !== this.props.transaction) {
+      console.log("and resetting the state!")
+      this.resetState()
+    }
+
+  }
+
+
+  componentWillUpdate() {
+    console.log("component will update")
+    // if(this.state.height.)
+  }
+
+  componentDidUpdate() {
+    console.log("component did update")
 
   }
 
 
   _setMinHeight(event) {
-    this.state.height.setValue(this.state.minHeight)
+    // this.state.height.setValue(this.state.minHeight)
   }
 
   _setMaxHeight(event) {
-    this.setState({
-        maxHeight: event.nativeEvent.layout.height
-    })
+    // this.resetState()
+
+    console.log("description on layout triggered with " + event.nativeEvent.layout.height)
+
+    // if(!this.state.maxHeight) {
+      console.log("setting this height for " + this.props.transaction.relatedAccount.user.display)
+      this.setState({
+        maxHeight: event.nativeEvent.layout.height,
+        height: new Animated.Value(this.state.minHeight)
+      })
+      // this.state.height.setValue(this.state.minHeight)
+
+      console.log("forcing update")
+      this.forceUpdate()
+
+    // }
   }
 
   toggle() {
@@ -100,7 +152,7 @@ class TransactionRow extends React.Component {
           underlayColor={Colors.transparent}
           key={transaction.transactionNumber}>
           <View style={styles.tab.container}>
-            <View style={styles.row.container} onLayout={this._setMinHeight.bind(this)}>
+            <View style={styles.row.container}>
               <ProfileImage
                 image={getTransactionImage(transaction.relatedAccount.user, businessList)}
                 style={styles.row.image}
@@ -125,12 +177,11 @@ class TransactionRow extends React.Component {
                 </TouchableHighlight>
               </View>}
             </View>
-            {userEnteredDescription &&
             <View style={styles.description.container} onLayout={this._setMaxHeight.bind(this)}>
-              <Text style={merge(styles.row.text)}>
+              <Text style={styles.row.text}>
                 Description: { transaction.description }
               </Text>
-            </View>}
+            </View>
           </View>
         </TouchableHighlight>
       </Animated.View>
