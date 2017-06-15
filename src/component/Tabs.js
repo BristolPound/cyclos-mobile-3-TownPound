@@ -25,6 +25,8 @@ import ContinuePaymentAlert from './ContinuePaymentAlert'
 import Menu from './Menu'
 import ContactList from './menuActions/ContactList'
 import MenuAction from './menuActions/MenuAction'
+import Settings from './menuActions/Settings'
+import Feedback from './menuActions/Feedback'
 
 const style = {
   tabs: {
@@ -55,7 +57,9 @@ const componentForMenuAction = (state) => {
     case menuActions.contactList:
       return <ContactList/>
     case menuActions.settings:
-      return <View />
+      return <Settings />
+    case menuActions.feedback:
+      return <Feedback />
   }
 }
 

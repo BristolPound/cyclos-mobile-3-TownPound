@@ -8,6 +8,7 @@ import { bindActionCreators } from 'redux'
 import DefaultText from '../DefaultText'
 import ProfileImage from '../profileImage/ProfileImage'
 import Colors from '@Colors/colors'
+import { TAB_BAR_HEIGHT } from '../tabbar/TabBarStyle'
 
 export const ROW_HEIGHT = isScreenSmall ? 50 : 60
 const CONTENT_PADDING = isScreenSmall ? 4 : 8
@@ -45,6 +46,13 @@ const styles = {
     },
     status: {
       width: 5,
+    },
+    separator: {
+        ...border(['bottom'], Colors.gray5, 1),
+        marginLeft: 0,
+        marginRight: 0,
+        marginTop: 10,
+        marginBottom: 10
     }
 }
 
@@ -66,11 +74,16 @@ const ComponentForItem = (item) => {
 class ContactList extends React.Component {
     render() {
         return (
-            <View style={{margin: 20, marginTop: 40}}>
+            <View style={{padding: 20, paddingTop: 40, height: '100%'}}>
+                <DefaultText>
+                    Contact List
+                </DefaultText>
+                <View style={styles.separator}/>
                 <FixedScrollableList
                     items={this.props.contactList}
                     componentForItem={ComponentForItem}
-                    onPress={(item) => {}}/>
+                    onPress={(item) => {}}
+                    style={{bottom: 0, flex: 1}}/>
             </View>
         )
     }

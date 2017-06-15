@@ -2,7 +2,7 @@ import React from 'react'
 import { Animated, BackHandler } from 'react-native'
 import animateTo from '../../util/animateTo'
 import merge from '../../util/merge'
-import { screenWidth } from '../../util/ScreenSizes'
+import { screenWidth, screenHeight } from '../../util/ScreenSizes'
 import Colors from '@Colors/colors'
 import { TAB_BAR_HEIGHT } from '../tabbar/TabBarStyle'
 
@@ -12,6 +12,7 @@ const style = {
   bottom: TAB_BAR_HEIGHT+ 1.5,
   top: 0,
   position: 'absolute',
+  height: screenHeight - TAB_BAR_HEIGHT - 1.5,
   backgroundColor: Colors.offWhite
 }
 

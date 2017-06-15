@@ -15,7 +15,8 @@ export const modalState = {
 export const menuActions = {
   none: 'none',
   componentList: 'componentList',
-  settings: 'settings'
+  settings: 'settings',
+  feedback: 'feedback'
 }
 
 export const mainComponent = {

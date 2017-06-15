@@ -72,7 +72,23 @@ class Menu extends React.Component {
                 onPress={this.props.connection ? () => this.props.showMenuAction(menuActions.contactList) && this.props.setMenuOpen() : undefined}
                 accessibilityLabel='Contact List'>
             <View>
-                <DefaultText style={{ color: this.props.connection ? Colors.primaryBlue : Colors.offWhite }}>Contact List</DefaultText>
+                <DefaultText style={{ margin: 10, color: this.props.connection ? Colors.primaryBlue : Colors.offWhite }}>Contact List</DefaultText>
+            </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+                style={style.centerChildren}
+                onPress={this.props.connection ? () => this.props.showMenuAction(menuActions.feedback) && this.props.setMenuOpen() : undefined}
+                accessibilityLabel='Feedback'>
+            <View>
+                <DefaultText style={{ margin: 10, color: this.props.connection ? Colors.primaryBlue : Colors.offWhite }}>Feedback</DefaultText>
+            </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+                style={style.centerChildren}
+                onPress={this.props.connection ? () => this.props.showMenuAction(menuActions.settings) && this.props.setMenuOpen() : undefined}
+                accessibilityLabel='Settings'>
+            <View>
+                <DefaultText style={{ margin: 10, color: this.props.connection ? Colors.primaryBlue : Colors.offWhite }}>Settings</DefaultText>
             </View>
         </TouchableOpacity>
         <View style={style.separator} />
