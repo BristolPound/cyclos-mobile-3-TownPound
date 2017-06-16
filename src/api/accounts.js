@@ -15,7 +15,7 @@ export const getContactList = (dispatch) =>
     pageSize: PAGE_SIZE,
     url: 'self/contacts',
     params: {
-        fields: ['display', 'shortDisplay', 'image.url', 'email', 'phone', 'name', 'username'],
+        fields: ['id', 'display', 'shortDisplay', 'image.url', 'email', 'phone', 'name', 'username'],
         pageSize: PAGE_SIZE,
         requiresAuthorisation: true
       },
