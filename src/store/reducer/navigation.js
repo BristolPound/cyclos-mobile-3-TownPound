@@ -132,7 +132,8 @@ const reducer = (state = initialState, action) => {
       break
     case 'navigation/SHOW_MODAL':
       state = merge(state, {
-        modalState: action.modalState
+        modalState: action.modalState,
+        modalVisible: true,
       })
       break
     case 'navigation/SHOW_MENU_ACTION':

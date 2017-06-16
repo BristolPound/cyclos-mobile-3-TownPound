@@ -7,6 +7,7 @@ import DefaultText from '../DefaultText'
 import ProfileImage from '../profileImage/ProfileImage'
 import animateTo from '../../util/animateTo'
 import styles from './ContactListStyle'
+import { openDetailsModal, showMenuAction, menuActions } from '../../store/reducer/navigation'
 
 const modalSlideTime = 300
 
@@ -39,6 +40,7 @@ class ContactList extends React.Component {
     }
 
     render() {
+        const { openDetailsModal, showMenuAction, contactList } = this.props
         return (
             <View style={styles.contactList.container}>
                 <DefaultText>
@@ -47,9 +49,9 @@ class ContactList extends React.Component {
                 <View style={styles.contactList.separator}/>
                 { this.state.visible 
                     ?   <FixedScrollableList
-                            items={this.props.contactList}
+                            items={contactList}
                             componentForItem={componentForItem}
-                            onPress={(item) => {}}
+                            onPress={(item) => { showMenuAction(menuActions.none) ; setTimeout(()=>{openDetailsModal(item)}, 540) }}
                             style={styles.contactList.list}/>
                     :   <View style={styles.contactList.activityIndicatorContainer}> 
                             <ActivityIndicator /> 
@@ -64,6 +66,6 @@ const mapStateToProps = (state) => ({
     contactList: state.account.contactList
 })
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ }, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({ openDetailsModal, showMenuAction }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactList)
