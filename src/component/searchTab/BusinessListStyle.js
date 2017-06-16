@@ -1,4 +1,4 @@
- import Colors from '@Colors/colors'
+import Colors from '@Colors/colors'
 import { isScreenSmall } from '../../util/ScreenSizes'
 import { dimensions, padding, border, margin } from '../../util/StyleUtils'
 
