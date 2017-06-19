@@ -100,7 +100,7 @@ class InputComponent extends KeyboardComponent {
                       {payee}
                     </DefaultText>
                   </View>
-                  {description != "" &&
+                  {description.trim() != "" &&
                   <View style={styles.confirmDescriptionContainer}>
                     <DefaultText style={styles.confirmDescriptionText}>
                       {description}
