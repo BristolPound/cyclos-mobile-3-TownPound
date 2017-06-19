@@ -101,9 +101,7 @@ class TransactionItem extends React.Component {
 
   render() {
     const { transaction } = this.props
-
     const dateString = format(transaction.date, 'Do')
-
 
     let userEnteredDescription = transaction.description != "Online Payment from Individual Account"
 

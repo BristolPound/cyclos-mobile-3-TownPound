@@ -1,13 +1,10 @@
 import React from 'react'
-import { View, TouchableHighlight, Animated, Image, Text } from 'react-native'
+import { View, TouchableHighlight, Animated, } from 'react-native'
 import ProfileImage from '../profileImage/ProfileImage'
 import Price from '../Price'
-import Images from '@Assets/images'
 import Colors from '@Colors/colors'
 import styles from './spendingStyle'
-import DefaultText, { MultilineText } from '../DefaultText'
-import merge from '../../util/merge'
-import animateTo from '../../util/animateTo'
+import DefaultText from '../DefaultText'
 
 
 class TransactionRow extends React.Component {
