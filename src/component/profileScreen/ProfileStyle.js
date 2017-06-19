@@ -7,7 +7,7 @@ import { baselineDeltaForFonts } from '../DefaultText'
 const screenWidth = Dimensions.get('window').width
 const listMargin = 4 + screenWidth / 40
 
-const IMAGE_SIZE = 50
+export const IMAGE_SIZE = 50
 const IMAGE_MARGIN = 14
 
 const styles = {
@@ -80,7 +80,7 @@ const styles = {
         },
         header: {
           fontSize: 20,
-          fontWeight: '800'
+          fontFamily: commonStyle.font.museo700,
         },
         text: {
             fontFamily: commonStyle.font.museo300,

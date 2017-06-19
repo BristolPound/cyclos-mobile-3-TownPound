@@ -8,6 +8,7 @@ import Images from '@Assets/images'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import animateTo from '../../util/animateTo'
+import { IMAGE_SIZE } from './ProfileStyle'
 /**
  * Render a row representing a single transaction.
  */
@@ -112,7 +113,7 @@ class TransactionItem extends React.Component {
           onPress={() => {userEnteredDescription && this.toggle()}}
           underlayColor={Colors.offWhite}>
           <View style={styles.list.tab.container}>
-            <View  style={merge(styles.list.rowContainer, {marginRight: userEnteredDescription ? 0 : 42})}>
+            <View  style={merge(styles.list.rowContainer, {marginRight: userEnteredDescription ? 0 : IMAGE_SIZE})}>
               <View style={styles.list.leftColumn}>
                 <View style={{flexDirection: 'row', flex: 1}}>
                   <DefaultText style={styles.list.dateNumbers}>{dateString.substring(0, dateString.length - 2)}</DefaultText>

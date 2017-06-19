@@ -82,7 +82,7 @@ const ProfileHeader = (props) => {
   }
 
   return (
-    <View style={{ width: screenWidth, height: props.paymentComplete ? screenHeight / 2 - 45 : 248 }}>
+    <View style={{ width: screenWidth, height: props.paymentComplete ? screenHeight / 2 - 90 : 248 }}>
       {!props.paymentComplete && renderBackground(props)}
       {renderButtonBar(props)}
       <View style={{ alignItems: 'center' }}>
