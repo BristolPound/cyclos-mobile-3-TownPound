@@ -4,6 +4,14 @@ import DefaultText from '../DefaultText'
 import commonStyle from '../style'
 import TransactionItem from './TransactionItem'
 import { buildDataSourceForTransactions} from '../../util/transaction'
+import styles from './ProfileStyle'
+
+const renderRow = (transaction) => {
+  return <TransactionItem transaction={transaction} key={transaction.transactionNumber}/>
+}
+
+const renderSeparator = (sectionID, rowID) =>
+  <View style={styles.separator} key={`sep:${sectionID}:${rowID}`}/>
 
 export default class TransactionList extends Component {
   constructor(props) {
@@ -27,14 +35,16 @@ export default class TransactionList extends Component {
     }
   }
 
+
   render() {
     return (
         <ListView
           ref={(ref) => this.listViewRef = ref}
           dataSource={this.state.dataSource}
-          renderRow={this.props.renderRow || TransactionItem}
+          renderRow={renderRow}
+          renderSeparator={renderSeparator}
           renderSectionHeader={renderSectionHeader}
-          removeClippedSubviews={false} 
+          removeClippedSubviews={false}
           scrollEnabled={false} />
     )
   }
