@@ -3,10 +3,19 @@ import Colors from '@Colors/colors'
 import commonStyle from '../style'
 import { dimensions, margin, border, horizontalAbsolutePosition } from '../../util/StyleUtils'
 
+import { baselineDeltaForFonts } from '../DefaultText'
 const screenWidth = Dimensions.get('window').width
 const listMargin = 4 + screenWidth / 40
 
+export const IMAGE_SIZE = 50
+const IMAGE_MARGIN = 14
+
 const styles = {
+  separator: {
+      ...border(['bottom'], Colors.gray5, 1),
+      marginLeft: 0,
+      marginRight: 0
+  },
   header: {
     buttonBar: {
       ...horizontalAbsolutePosition(0, 0),
@@ -51,12 +60,46 @@ const styles = {
     }
   },
   list: {
+    tab: {
+      container: {
+        backgroundColor: 'white',
+      }
+    },
     rowContainer: {
       flexDirection: 'row',
       justifyContent: 'center',
       height: 50,
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: Colors.gray5,
+    },
+    description: {
+        container: {
+            paddingRight: 20,
+            marginLeft: 14,
+            paddingTop: 10,
+            paddingBottom: 10,
+            backgroundColor: 'white',
+        },
+        header: {
+          fontSize: 20,
+          fontFamily: commonStyle.font.museo700,
+        },
+        text: {
+            fontFamily: commonStyle.font.museo300,
+            color: Colors.offBlack,
+            fontSize: 18,
+            marginRight: 10,
+            flex: 1
+        }
+    },
+    button: {
+        width: IMAGE_SIZE,
+        height: IMAGE_SIZE,
+        alignContent: 'center',
+        justifyContent: 'center'
+    },
+    buttonImage: {
+        width: 20,
+        height: 15,
+        ...margin(0, IMAGE_MARGIN, 0, IMAGE_MARGIN)
     },
     leftColumn: {
       width: screenWidth / 3,

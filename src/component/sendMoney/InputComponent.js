@@ -56,7 +56,7 @@ class InputComponent extends KeyboardComponent {
       description,
       onChangeAmount,
       payee,
-      offlinePaymentLabel 
+      offlinePaymentLabel
     } = this.props
 
     const button = <View style={merge(styles.button, { backgroundColor: this.getButtonColor() })}>
@@ -86,8 +86,8 @@ class InputComponent extends KeyboardComponent {
                     accessibilityLabel={input.placeholder} />
                 <View style={styles.separator}/>
                 <TextInput style={styles.textInput}
-                    {...descriptionInput}
-                    accessibilityLabel={descriptionInput.placeholder} />
+                  {...descriptionInput}
+                  accessibilityLabel={descriptionInput.placeholder} />
                 <BalanceMessage balance={balance}/>
               </View>
             : undefined}
@@ -100,11 +100,12 @@ class InputComponent extends KeyboardComponent {
                       {payee}
                     </DefaultText>
                   </View>
-                  <View style={styles.confirmPayeeContainer}>
-                    <DefaultText style={styles.confirmPayeeText}>
-                    {description}
+                  {description.trim() != "" &&
+                  <View style={styles.confirmDescriptionContainer}>
+                    <DefaultText style={styles.confirmDescriptionText}>
+                      {description}
                     </DefaultText>
-                  </View>
+                  </View>}
                   <View style={styles.confirmAmountContainer}>
                     <Image source={Images.balanceSymbol}/>
                     <Price prefix=''
