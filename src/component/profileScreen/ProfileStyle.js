@@ -78,10 +78,12 @@ const styles = {
             paddingBottom: 10,
             backgroundColor: 'white',
         },
+        header: {
+          fontSize: 20,
+          fontWeight: '800'
+        },
         text: {
             fontFamily: commonStyle.font.museo300,
-            // the offset required to align this text (18px) with the price (22px)
-            marginBottom: baselineDeltaForFonts(22, 18),
             color: Colors.offBlack,
             fontSize: 18,
             marginRight: 10,

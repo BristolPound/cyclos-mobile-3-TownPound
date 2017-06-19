@@ -18,7 +18,6 @@ class TransactionItem extends React.Component {
 
     this.initialState = {
       expanded: false,
-      // height: new Animated.Value(),
       spinValue: new Animated.Value(-0.25),
       spin: '-90deg',
       minHeight: styles.list.rowContainer.height,
@@ -31,121 +30,33 @@ class TransactionItem extends React.Component {
     }
 
     this.state = this.initialState
-
-    this.updateQueued = false
-
     this.toggle = this.toggle.bind(this)
     this.resetState = this.resetState.bind(this)
-    this.queueUpdate = this.queueUpdate.bind(this)
-    this.update = this.update.bind(this)
-
   }
 
   resetState() {
-    // if(this.state.maxHeight) {
-    //   console.log("already has a max height of " + this.state.maxHeight + " so wont refresh")
-    //   return
-    // }
-
     this.setState({
       expanded: false,
-      // height: new Animated.Value()
     })
 
     this.height = new Animated.Value()
-
-    // this.queueUpdate()
-    // this.state.height.setValue(300)
-  }
-
-  queueUpdate() {
-    // console.log("state reset and update queued")
-    // this.updateQueued = true
-    // console.log("updating right away")
-    // console.log("max height is " + this.state.maxHeight)
-    // console.log("and min height is " + this.state.minHeight)
-    this.forceUpdate( () => {
-      // this.state.height.setValue(this.state.minHeight)
-      // console.log("min height is NOOOOOOOWWWWWW " + this.state.minHeight)
-      // console.log("max height is NOOOOOOOWWWWWW " + this.state.maxHeight)
-      // console.log("the height itself is NOOOOWWW " + this.height._value)
-    })
-    // this.state.height.setValue(this.state.minHeight)
-    // console.log("max height is " + this.state.maxHeight)
-
-
-  }
-
-  update() {
-    console.log("updated was queued so updating now ")
-    this.updateQueued = false
-    this.forceUpdate()
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log("receiving new props")
     if (nextProps.transaction.description !== this.props.transaction.description) {
-      console.log("and resetting the state! " + nextProps.transaction.description + " vs " + this.props.transaction.description)
       this.resetState()
     }
   }
 
-
-  componentWillUpdate() {
-    // console.log("component will update and height is " + this.height._value + " and max height is " + this.state.maxHeight)
-  }
-
-  componentDidUpdate() {
-    // console.log("component did update and max height is " + this.state.maxHeight)
-    // this.updateQueued && this.update()
-    // if (!this.height._value) {
-    //   console.log("NO PROPER HEIGHT - RE-RENDER")
-      // this.setState({
-      //   height: new Animated.Value(this.state.minHeight)
-      // })
-      // this.height.setValue(this.state.maxHeight)
-      // this.toggle()
-      // this.forceUpdate()
-    // }
-    // else {
-    //   console.log("valid height of " + this.height._value)
-    // }
-
-
-  }
-
-  componentWillMount() {
-    console.log("component mounting")
-  }
-
-  _setMinHeight(event) {
-    // this.state.height.setValue(this.state.minHeight)
-  }
-
   _setMaxHeight(event) {
-    // this.resetState()
+    this.height.setValue(this.state.minHeight)
 
-    console.log("description on layout triggered with " + event.nativeEvent.layout.height + " for description " + this.props.transaction.description)
-
-    // if(!this.state.maxHeight) {
-      console.log("the old max height was " + this.state.maxHeight)
-      console.log("setting this height for " + this.props.transaction.relatedAccount.user.display)
-      this.setState({
-        maxHeight: event.nativeEvent.layout.height,
-        // height: new Animated.Value(this.state.minHeight)
-      })
-      this.height.setValue(this.state.minHeight)
-
-      // console.log("height should now be " + this.height._value)
-      // console.log("forcing update")
-      // this.update()
-
-    // }
+    this.setState({
+      maxHeight: event.nativeEvent.layout.height,
+    })
   }
 
   toggle() {
-    console.log("toggled");
-
     let initialValue = this.state.expanded
       ? this.state.maxHeight + this.state.minHeight
       : this.state.minHeight
@@ -194,11 +105,12 @@ class TransactionItem extends React.Component {
     let userEnteredDescription = transaction.description != "Online Payment from Individual Account"
 
     return (
-      <Animated.View style={merge(styles.container, {height: this.height})}>
+      <Animated.View
+        style={merge(styles.container, {height: this.height})}
+        key={transaction.transactionNumber}>
         <TouchableHighlight
           onPress={() => {userEnteredDescription && this.toggle()}}
-          underlayColor={Colors.offWhite}
-          key={transaction.transactionNumber}>
+          underlayColor={Colors.offWhite}>
           <View style={styles.list.tab.container}>
             <View  style={merge(styles.list.rowContainer, {marginRight: userEnteredDescription ? 0 : 42})}>
               <View style={styles.list.leftColumn}>
@@ -232,7 +144,7 @@ class TransactionItem extends React.Component {
             </View>
             {userEnteredDescription &&
             <View style={styles.list.description.container} onLayout={this._setMaxHeight.bind(this)}>
-              <DefaultText style={merge(styles.list.description.text, {fontSize: 20})}>
+              <DefaultText style={styles.list.description.header}>
                 Description:
               </DefaultText>
               <Text style={styles.list.description.text}>

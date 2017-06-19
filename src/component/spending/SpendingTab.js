@@ -53,16 +53,10 @@ const renderRow = (transaction, openDetailsModal, businessList, tabIndex, modalS
         openDetailsModal: openDetailsModal,
         businessList: businessList,
         getTransactionImage: getTransactionImage,
-        getUserCategory: getUserCategory,
-        tabIndex: tabIndex,
-        modalState: modalState
+        getUserCategory: getUserCategory
     }
 
-    console.log(transactionProps.tabIndex)
-
-    // if (transactionProps.modalState == 'none') {
-      return <TransactionRow {...transactionProps}/>
-    // }
+    return <TransactionRow {...transactionProps}/>
 }
 
 
@@ -82,7 +76,7 @@ class SpendingTab extends React.Component {
           renderSeparator={renderSeparator}
           initialListSize={15}
           enableEmptySections={true}
-          renderRow={transaction => renderRow(transaction, props.openDetailsModal, props.businessList, props.tabIndex, props.modalState)}
+          renderRow={transaction => renderRow(transaction, props.openDetailsModal, props.businessList)}
           dataSource={dataSource}
           renderSectionHeader={renderSectionHeader}
           refreshControl={props.selectedMonthIndex === props.monthlyTotalSpent.length - 1
@@ -118,9 +112,7 @@ class SpendingTab extends React.Component {
 
 const mapStateToProps = (state) => ({
   ...state.transaction,
-  businessList: state.business.businessList,
-  tabIndex: state.navigation.tabIndex,
-  modalState: state.navigation.modalState
+  businessList: state.business.businessList
 })
 
 const mapDispatchToProps = (dispatch) =>
