@@ -40,17 +40,6 @@ const styles = {
             borderRadius: 5,
             backgroundColor: Colors.transparent
         },
-        button: {
-            width: IMAGE_SIZE,
-            height: IMAGE_SIZE,
-            alignContent: 'center',
-            justifyContent: 'center'
-        },
-        buttonImage: {
-            width: 20,
-            height: 15,
-            ...margin(0, IMAGE_MARGIN, 0, IMAGE_MARGIN)
-        },
         text: {
             fontFamily: commonStyle.font.museo300,
             // the offset required to align this text (18px) with the price (22px)
