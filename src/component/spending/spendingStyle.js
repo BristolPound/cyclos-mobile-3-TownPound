@@ -20,20 +20,6 @@ const styles = {
     loadingIndicator: {
         flex: 1
     },
-    tab: {
-        container: {
-
-        }
-    },
-    description: {
-        container: {
-            backgroundColor: 'white',
-            paddingRight: 20,
-            marginLeft: 14,
-            paddingTop: 10,
-            paddingBottom: 10
-        }
-    },
     row: {
         container: {
             flexDirection: 'row',
