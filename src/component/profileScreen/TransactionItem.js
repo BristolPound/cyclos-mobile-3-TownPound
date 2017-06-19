@@ -21,10 +21,11 @@ class TransactionItem extends React.Component {
       expanded: false,
       spinValue: new Animated.Value(-0.25),
       spin: '-90deg',
-      minHeight: styles.list.rowContainer.height,
+      height: new Animated.Value()
     }
 
-    this.height = new Animated.Value()
+    this.addedHeight = undefined
+    this.minHeight = styles.list.rowContainer.height
 
     this.icons = {
       'expand': Images.expandTab
@@ -33,14 +34,15 @@ class TransactionItem extends React.Component {
     this.state = this.initialState
     this.toggle = this.toggle.bind(this)
     this.resetState = this.resetState.bind(this)
+    this.expandIcon = this.icons['expand']
   }
 
   resetState() {
     this.setState({
       expanded: false,
+      height: new Animated.Value()
     })
 
-    this.height = new Animated.Value()
   }
 
   componentWillReceiveProps(nextProps) {
@@ -49,22 +51,23 @@ class TransactionItem extends React.Component {
     }
   }
 
-  _setMaxHeight(event) {
-    this.height.setValue(this.state.minHeight)
+  _setAddedHeight(event) {
+    this.addedHeight = event.nativeEvent.layout.height
+    this.collapsedHeight = this.minHeight
+    this.expandedHeight = this.addedHeight + this.minHeight
 
-    this.setState({
-      maxHeight: event.nativeEvent.layout.height,
-    })
+    this.state.height.setValue(this.minHeight)
+
   }
 
   toggle() {
     let initialValue = this.state.expanded
-      ? this.state.maxHeight + this.state.minHeight
-      : this.state.minHeight
+      ? this.expandedHeight
+      : this.collapsedHeight
 
     let finalValue = this.state.expanded
-      ? this.state.minHeight
-      : this.state.maxHeight + this.state.minHeight
+      ? this.collapsedHeight
+      : this.expandedHeight
 
     let initialRotation = this.state.expanded
       ? 0
@@ -78,9 +81,9 @@ class TransactionItem extends React.Component {
       expanded: !this.state.expanded
     })
 
-    this.height.setValue(initialValue)
+    this.state.height.setValue(initialValue)
     Animated.spring(
-      this.height,
+      this.state.height,
       {
         toValue: finalValue
       }
@@ -101,13 +104,12 @@ class TransactionItem extends React.Component {
 
     const dateString = format(transaction.date, 'Do')
 
-    let icon = this.icons['expand']
 
     let userEnteredDescription = transaction.description != "Online Payment from Individual Account"
 
     return (
       <Animated.View
-        style={merge(styles.container, {height: this.height})}>
+        style={merge(styles.container, {height: this.state.height})}>
         <TouchableHighlight
           onPress={() => {userEnteredDescription && this.toggle()}}
           underlayColor={Colors.offWhite}>
@@ -137,13 +139,13 @@ class TransactionItem extends React.Component {
                   underlayColor={Colors.transparent}>
                   <Animated.Image
                     style={merge(styles.list.buttonImage, {transform: [{rotate: this.state.spin}]})}
-                    source={icon}
+                    source={this.expandIcon}
                   ></Animated.Image>
                 </View>
               </View>}
             </View>
             {userEnteredDescription &&
-            <View style={styles.list.description.container} onLayout={this._setMaxHeight.bind(this)}>
+            <View style={styles.list.description.container} onLayout={this._setAddedHeight.bind(this)}>
               <DefaultText style={styles.list.description.header}>
                 Description:
               </DefaultText>

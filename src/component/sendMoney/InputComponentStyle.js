@@ -55,12 +55,14 @@ const styles = {
     borderBottomColor: Colors.gray5,
     borderBottomWidth: 1
   },
-  confrimDescriptionContainer: {
+  confirmDescriptionContainer: {
     height: sectionHeight,
     alignItems: 'center',
     justifyContent: 'center',
     borderBottomColor: Colors.gray5,
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
+    marginLeft: 15,
+    marginRight: 15
   },
   confirmPayeeText: {
     fontSize: 24,
