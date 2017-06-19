@@ -7,10 +7,15 @@ import { baselineDeltaForFonts } from '../DefaultText'
 const screenWidth = Dimensions.get('window').width
 const listMargin = 4 + screenWidth / 40
 
-const IMAGE_SIZE = 42
+const IMAGE_SIZE = 50
 const IMAGE_MARGIN = 14
 
 const styles = {
+  separator: {
+      ...border(['bottom'], Colors.gray5, 1),
+      marginLeft: 0,
+      marginRight: 0
+  },
   header: {
     buttonBar: {
       ...horizontalAbsolutePosition(0, 0),
@@ -57,8 +62,6 @@ const styles = {
   list: {
     tab: {
       container: {
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: Colors.gray5,
         backgroundColor: 'white',
       }
     },
@@ -72,7 +75,8 @@ const styles = {
             paddingRight: 20,
             marginLeft: 14,
             paddingTop: 10,
-            paddingBottom: 10
+            paddingBottom: 10,
+            backgroundColor: 'white',
         },
         text: {
             fontFamily: commonStyle.font.museo300,
