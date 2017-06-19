@@ -7,7 +7,7 @@ import { buildDataSourceForTransactions} from '../../util/transaction'
 import styles from './ProfileStyle'
 
 const renderRow = (transaction) => {
-  return <TransactionItem transaction={transaction}/>
+  return <TransactionItem transaction={transaction} key={transaction.transactionNumber}/>
 }
 
 const renderSeparator = (sectionID, rowID) =>

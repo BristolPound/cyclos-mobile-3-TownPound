@@ -107,8 +107,7 @@ class TransactionItem extends React.Component {
 
     return (
       <Animated.View
-        style={merge(styles.container, {height: this.height})}
-        key={transaction.transactionNumber}>
+        style={merge(styles.container, {height: this.height})}>
         <TouchableHighlight
           onPress={() => {userEnteredDescription && this.toggle()}}
           underlayColor={Colors.offWhite}>
