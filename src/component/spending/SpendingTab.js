@@ -1,15 +1,13 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { ListView, View, ActivityIndicator, TouchableHighlight, RefreshControl, TouchableOpacity } from 'react-native'
+import { ListView, View, ActivityIndicator, RefreshControl, TouchableOpacity } from 'react-native'
 import moment from 'moment'
-import ProfileImage from '../profileImage/ProfileImage'
 import SpendingHeader from './SpendingHeader'
 import DefaultText, { MultilineText } from '../DefaultText'
-import Price from '../Price'
 import Colors from '@Colors/colors'
 import * as actions from '../../store/reducer/transaction'
-import { openDetailsModal, navigateToTransactionTab } from '../../store/reducer/navigation'
+import { openDetailsModal } from '../../store/reducer/navigation'
 import styles from './spendingStyle'
 import TransactionRow from './TransactionRow'
 
@@ -117,7 +115,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators({
-    ...actions, navigateToTransactionTab, openDetailsModal
+    ...actions, openDetailsModal
   }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(SpendingTab)
