@@ -23,6 +23,9 @@ class SendMoney extends React.Component {
 
   constructor () {
     super()
+    this.state = {
+      pin: ''
+    }
   }
 
   setClipboardContent = async () => {
@@ -61,6 +64,11 @@ class SendMoney extends React.Component {
     }
   }
 
+  isPinInvalid () {
+    const { pin } = this.state
+    return !this.props.connection && (pin.length < 4 || pin.indexOf('.') !== -1)
+  }
+
   isInputInvalid () {
     const { amount } = this.props
     return (
@@ -70,14 +78,16 @@ class SendMoney extends React.Component {
         || (amount.charAt(0) === '0' && amount.charAt(1) !== '.')
         || amount.charAt(amount.length - 1) === '.'
         || (amount.split('.')[1] && amount.split('.')[1].length > 2)
+        || this.isPinInvalid()
     )
   }
 
   payByTextOnPress () {
     var action = this.props.payee.fields && this.props.payee.fields.icon === 1 ? 'exc' : 'pay'
-    var text = action + ' [replace with your PIN] ' + (this.props.payee.shortDisplay || this.props.payee.fields.username) + ' ' + this.props.amount
+    var text = action + ' ' + this.state.pin + ' ' + (this.props.payee.shortDisplay || this.props.payee.fields.username) + ' ' + this.props.amount
     Communications.textWithoutEncoding(Config.TXT2PAY_NO, text)
     this.props.updateAmount('')
+    this.setState({pin: ''})
     this.props.updatePage(Page.Ready)
     this.props.setOverlayOpen(false)
   }
@@ -130,6 +140,13 @@ class SendMoney extends React.Component {
           if (!this.props.connection) {
             inputProps.offlinePaymentLabel = 'No internet connection (Using TXT2PAY)'
             inputProps.onButtonPress = () => { this.payByTextOnPress() }
+            inputProps.pinInput = {
+              keyboardType: 'numeric',
+              value: this.state.pin,
+              placeholder: 'PIN',
+              maxLength: 4,
+              onChangeText: pin => this.setState({pin: pin})
+            }
           }
           break
         case Page.ConfirmAmount: // provide amount
@@ -144,7 +161,14 @@ class SendMoney extends React.Component {
           }
           if (!this.props.connection) {
             inputProps.offlinePaymentLabel = 'No internet connection (Using TXT2PAY)'
-            inputProps.onButtonPress = () => { this.payByTextOnPress() }
+            inputProps.onButtonPress = () => { this.prevPage() }
+            inputProps.pinInput = {
+              keyboardType: 'numeric',
+              value: this.state.pin,
+              placeholder: 'PIN',
+              maxLength: 4,
+              onChangeText: pin => this.setState({pin: pin})
+            }
           }
           break
         case Page.MakingPayment: // in progress
