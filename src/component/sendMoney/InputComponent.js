@@ -106,11 +106,12 @@ class InputComponent extends KeyboardComponent {
                       {payee}
                     </DefaultText>
                   </View>
-                  <View style={styles.confirmPayeeContainer}>
-                    <DefaultText style={styles.confirmPayeeText}>
-                    {description}
+                  {description.trim() != "" &&
+                  <View style={styles.confirmDescriptionContainer}>
+                    <DefaultText style={styles.confirmDescriptionText}>
+                      {description}
                     </DefaultText>
-                  </View>
+                  </View>}
                   <View style={styles.confirmAmountContainer}>
                     <Image source={Images.balanceSymbol}/>
                     <Price prefix=''

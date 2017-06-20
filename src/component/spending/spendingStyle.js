@@ -1,4 +1,4 @@
- import Colors from '@Colors/colors'
+import Colors from '@Colors/colors'
 import commonStyle from '../style'
 import { dimensions, margin, border } from '../../util/StyleUtils'
 import { baselineDeltaForFonts } from '../DefaultText'
@@ -11,8 +11,11 @@ const IMAGE_MARGIN = 14
 const styles = {
     separator: {
         ...border(['bottom'], Colors.gray5, 1),
-        marginLeft: IMAGE_SIZE + IMAGE_MARGIN * 2,
+        marginLeft: 0,
         marginRight: 0
+    },
+    container: {
+        backgroundColor: 'white'
     },
     loadingIndicator: {
         flex: 1

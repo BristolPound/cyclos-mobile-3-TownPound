@@ -57,8 +57,8 @@ const renderDetails = (transactionNumber, description, timestamp) =>
     {renderSectionHeader()}
     {renderRow('Reference:', transactionNumber, true)}
     <View style={style.separator} />
-    {renderRow('Description:', description, true)}
-    <View style={style.separator} />
+    {description.trim() != '' && renderRow('Description:', description, true)}
+    {description.trim() != '' && <View style={style.separator} />}
     <View style={style.detailsInnerContainer}>
       {timestamp && renderRow('Date:', getDateOrTime(timestamp, 0), false)}
       {timestamp && renderRow('Time:', getDateOrTime(timestamp, 1), false)}

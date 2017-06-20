@@ -1,16 +1,15 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { ListView, View, ActivityIndicator, TouchableHighlight, RefreshControl, TouchableOpacity } from 'react-native'
+import { ListView, View, ActivityIndicator, RefreshControl, TouchableOpacity } from 'react-native'
 import moment from 'moment'
-import ProfileImage from '../profileImage/ProfileImage'
 import SpendingHeader from './SpendingHeader'
 import DefaultText, { MultilineText } from '../DefaultText'
-import Price from '../Price'
- import Colors from '@Colors/colors'
+import Colors from '@Colors/colors'
 import * as actions from '../../store/reducer/transaction'
-import { openDetailsModal, navigateToTransactionTab } from '../../store/reducer/navigation'
+import { openDetailsModal } from '../../store/reducer/navigation'
 import styles from './spendingStyle'
+import TransactionRow from './TransactionRow'
 
 const renderSeparator = (sectionID, rowID) =>
   <View style={styles.separator} key={`sep:${sectionID}:${rowID}`}/>
@@ -46,25 +45,17 @@ const getUserCategory = (user, businessList) => {
   }
 }
 
-const renderRow = (transaction, openDetailsModal, businessList) =>
-    <TouchableHighlight
-      onPress={() => transaction.relatedAccount.user && openDetailsModal(transaction.relatedAccount.user)}
-      underlayColor={Colors.transparent}
-      key={transaction.transactionNumber}>
-    <View style={styles.row.container}>
-      <ProfileImage
-        image={getTransactionImage(transaction.relatedAccount.user, businessList)}
-        style={styles.row.image}
-        category={getUserCategory(transaction.relatedAccount.user, businessList)}
-        colorCode={transaction.colorCode}/>
-      <View style={styles.row.textContainer}>
-        <DefaultText style={styles.row.text}>
-          { transaction.relatedAccount.user ? transaction.relatedAccount.user.display : 'System' }
-        </DefaultText>
-        <Price price={transaction.amount} style={styles.row.price} size={22}/>
-      </View>
-    </View>
-  </TouchableHighlight>
+const renderRow = (transaction, openDetailsModal, businessList, tabIndex, modalState) => {
+    const transactionProps = {
+        transaction: transaction,
+        openDetailsModal: openDetailsModal,
+        businessList: businessList,
+        getTransactionImage: getTransactionImage,
+        getUserCategory: getUserCategory
+    }
+
+    return <TransactionRow {...transactionProps}/>
+}
 
 
 class SpendingTab extends React.Component {
@@ -124,7 +115,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators({
-    ...actions, navigateToTransactionTab, openDetailsModal
+    ...actions, openDetailsModal
   }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(SpendingTab)
