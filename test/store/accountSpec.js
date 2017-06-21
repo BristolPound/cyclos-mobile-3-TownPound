@@ -1,11 +1,14 @@
-import reducer from '../../src/store/reducer/account'
+import reducer, { accountSections } from '../../src/store/reducer/account'
 var expect = require('chai').expect
 
 const initialState = {
   loadingBalance: true,
   loadingDetails: true,
   balance: undefined,
-  details: {}
+  loadingContactList: true,
+  details: {},
+  contactList: [],
+  accountSection: accountSections.me
 }
 
 describe('Account reducer', () => {
@@ -26,7 +29,10 @@ describe('Account reducer', () => {
 		  	loadingBalance: false,
 		  	loadingDetails: true,
 		  	balance: 200,
-		  	details: {}
+			loadingContactList: true,
+			details: {},
+			contactList: [],
+			accountSection: accountSections.me
 		})
 	})
 
@@ -40,7 +46,10 @@ describe('Account reducer', () => {
 		  	loadingBalance: true,
 		  	loadingDetails: false,
 		  	balance: undefined,
-		  	details: 'These are the account details'
+			loadingContactList: true,
+		  	details: 'These are the account details',
+			contactList: [],
+			accountSection: accountSections.me
 		})
 	})
 
@@ -50,7 +59,10 @@ describe('Account reducer', () => {
 			  	loadingBalance: false,
 			  	loadingDetails: false,
 			  	balance: 200,
-			  	details: 'These are the account details'
+				loadingContactList: true,
+			  	details: 'These are the account details',
+				contactList: [],
+				accountSection: accountSections.me
 			}, {
 	        	type: 'account/RESET'
 	      	})
