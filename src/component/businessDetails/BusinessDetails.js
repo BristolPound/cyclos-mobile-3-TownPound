@@ -2,18 +2,27 @@ import React from 'react'
 import Communications from 'react-native-communications'
 import HTMLView from 'react-native-htmlview'
 import { View, Linking, Image, TouchableOpacity, Text } from 'react-native'
-import { MultilineText } from '../DefaultText'
+import { DefaultText, MultilineText } from '../DefaultText'
 import addressToString from '../../util/addresses'
 import styles from './BusinessDetailsStyle'
 import Images from '@Assets/images'
 import Config from '@Config/config'
 
-const Field = ({icon, text, accessibilityLabel, onPress}) =>
+const Field = ({icon, text, accessibilityLabel, onPress, additionalOption}) =>
   <View style={styles.field}>
     <Image style={styles.image} source={icon}/>
     <TouchableOpacity style={styles.item} accessibilityLabel={accessibilityLabel} onPress={onPress}>
       <MultilineText style={styles.text}>{text}</MultilineText>
     </TouchableOpacity>
+    {additionalOption &&
+    <View style={{flexDirection:'row'}}>
+      <View>
+        <Text style={styles.text}>{" / "}</Text>
+      </View>
+      <TouchableOpacity style={styles.item} accessibilityLabel={accessibilityLabel} onPress={additionalOption.onPress}>
+        <MultilineText style={styles.text}>{additionalOption.text}</MultilineText>
+      </TouchableOpacity>
+    </View>}
   </View>
 
 const renderFields = (fields) =>
@@ -57,7 +66,17 @@ const renderDescription = (description) => {
 
 function getFields(business, goToTraderLocation) {
   const fields = [],
-      businessDetail = (key, icon, text, onPress) => ({ key, icon, text, onPress })
+      businessDetail = (key, icon, text, onPress, additionalOption = null) => ({ key, icon, text, onPress, additionalOption })
+
+  const phoneDetail = () => {
+    let phoneNumbers = business.fields.businessphone.split("/")
+    let additionalNumber = phoneNumbers.length == 2
+      ? {text: phoneNumbers[1].trim(), onPress: () => Communications.phonecall(phoneNumbers[1].trim(), true)}
+      : null
+    fields.push(
+      businessDetail('phoneField', Images.phone, phoneNumbers[0].trim(), () => Communications.phonecall(phoneNumbers[0].trim(), true), additionalNumber)
+    )
+  }
 
   // Order of display should be:
   //    access point*, special offer*, address, opening times*, phone number, email address
@@ -66,9 +85,7 @@ function getFields(business, goToTraderLocation) {
       businessDetail('addressField', Images.address, addressToString(business.address), goToTraderLocation )
     )
 
-    business.fields.businessphone && fields.push(
-      businessDetail('phoneField', Images.phone, business.fields.businessphone, () => Communications.phonecall(business.fields.businessphone, true))
-    )
+    business.fields.businessphone && phoneDetail()
 
     business.fields.businessemail && fields.push(
       businessDetail('emailField', Images.email, business.fields.businessemail, () => Communications.email([business.fields.businessemail], null, null, null, null))
