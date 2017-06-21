@@ -1,9 +1,8 @@
 import { dimensions, padding, border } from '../../util/StyleUtils'
 import { isScreenSmall } from '../../util/ScreenSizes'
 import Colors from '@Colors/colors'
-import { TAB_BAR_HEIGHT } from '../tabbar/TabBarStyle'
 
-export const ROW_HEIGHT = 52
+const ROW_HEIGHT = 52
 const CONTENT_PADDING = 14
 
 const styles = {

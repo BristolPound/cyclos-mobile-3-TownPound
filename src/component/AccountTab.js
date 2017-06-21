@@ -4,7 +4,6 @@ import { accountSections } from '../store/reducer/account'
 import Account from './account/Account'
 import ContactList from './account/ContactList'
 
-
 const AccountTab = (props) => {
     switch (props.accountSection) {
             case accountSections.me:
