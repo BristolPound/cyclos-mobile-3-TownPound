@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native'
-import { baselineDeltaForFonts } from './DefaultText'
+import { baselineDeltaForFonts } from '../DefaultText'
 import Colors from '@Colors/colors'
-import commonStyle from './style'
-import { isScreenSmall } from '../util/ScreenSizes'
+import commonStyle from '../style'
+import { isScreenSmall } from '../../util/ScreenSizes'
 
 const styles = {
   container: {
