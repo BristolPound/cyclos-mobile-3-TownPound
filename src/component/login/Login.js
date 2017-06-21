@@ -6,7 +6,7 @@ import DefaultText from '../DefaultText'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import animateTo from '../../util/animateTo'
-import * as actions from '../../store/reducer/login'
+import { login } from '../../store/reducer/login'
 import KeyboardComponent from '../KeyboardComponent'
 import styles from './LoginStyle'
 
@@ -105,7 +105,7 @@ class Login extends KeyboardComponent {
 }
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(actions, dispatch)
+  bindActionCreators({ login }, dispatch)
 
 const mapStateToProps = (state) => ({...state.login})
 
