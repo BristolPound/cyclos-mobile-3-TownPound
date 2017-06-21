@@ -10,6 +10,19 @@ export const getAccountBalance = (dispatch) =>
   },
   dispatch)
 
+export const getContactList = (dispatch) => 
+   getPages({
+     pageSize: PAGE_SIZE,
+     url: 'self/contacts',
+     params: {
+         fields: ['id', 'display', 'shortDisplay', 'image.url', 'email', 'phone', 'name', 'username'],
+         pageSize: PAGE_SIZE,
+         requiresAuthorisation: true
+       },
+     dispatch
+   })
+ 
+
 export const getTransactions = (dispatch, additionalParams, successCriteria) =>
   getPages({
     pageSize: PAGE_SIZE,
