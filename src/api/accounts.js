@@ -10,7 +10,7 @@ export const getAccountBalance = (dispatch) =>
   },
   dispatch)
 
-export const getContactList = (dispatch) => 
+export const getContactList = (dispatch) =>
    getPages({
      pageSize: PAGE_SIZE,
      url: 'self/contacts',
