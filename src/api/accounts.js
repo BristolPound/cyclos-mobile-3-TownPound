@@ -21,7 +21,6 @@ export const getContactList = (dispatch) =>
        },
      dispatch
    })
- 
 
 export const getTransactions = (dispatch, additionalParams, successCriteria) =>
   getPages({
