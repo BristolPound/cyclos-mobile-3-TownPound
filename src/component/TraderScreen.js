@@ -8,6 +8,7 @@ import ProfileHeader from './profileScreen/ProfileHeader'
 import BusinessDetails from './businessDetails/BusinessDetails'
 import { sectionHeight } from '../util/StyleUtils'
 import { resetForm } from '../store/reducer/sendMoney'
+import { updateRecentDescriptions } from '../store/reducer/sendMoney'
 import { goToLocation } from '../store/reducer/navigation'
 import { isIncorrectLocation } from '../util/business'
 import DefaultText from './DefaultText'
@@ -42,7 +43,8 @@ const TraderScreen = (props) => {
         <BusinessDetails business={props.trader} goToTraderLocation={() => goToTraderLocation()}/>
         <DefaultText style={{height: 0}}></DefaultText>
         <TransactionList
-          listData={props.transactions} />
+          listData={props.transactions}
+          updateRecentDescriptions={props.updateRecentDescriptions}/>
         </ScrollView>
       </View>
   )
@@ -62,6 +64,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ ...actions, resetForm, goToLocation }, dispatch)
+  bindActionCreators({ ...actions, resetForm, goToLocation, updateRecentDescriptions }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TraderScreen)

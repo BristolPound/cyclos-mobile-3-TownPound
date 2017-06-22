@@ -3,7 +3,7 @@ import { View, ListView } from 'react-native'
 import DefaultText from '../DefaultText'
 import commonStyle from '../style'
 import TransactionItem from './TransactionItem'
-import { buildDataSourceForTransactions} from '../../util/transaction'
+import { buildDataSourceForTransactions, sortTransactions } from '../../util/transaction'
 import styles from './ProfileStyle'
 
 const renderRow = (transaction) => {
@@ -19,12 +19,17 @@ export default class TransactionList extends Component {
     this.state = { dataSource: buildDataSourceForTransactions(props.listData) }
   }
 
+  componentWillMount() {
+    this.props.updateRecentDescriptions(sortTransactions(this.props.listData))
+  }
+
   componentWillUpdate(nextProps) {
     if (this.props.listData !== nextProps.listData) {
       // https://github.com/facebook/react-native/issues/11825
       // With this workaround, the only problem is the renderSeparator disappears
       this.setState({ dataSource: buildDataSourceForTransactions([]) })
       this.setState({ dataSource: buildDataSourceForTransactions(nextProps.listData, this.state.dataSource) })
+      // this.props.updateRecentDescriptions(sortTransactions(nextProps.listData))
 
       // If the user has been logged out due to attempting a payment when their token has expired
       if (nextProps.listData.length === 0) {
@@ -34,7 +39,6 @@ export default class TransactionList extends Component {
       }
     }
 
-    this.props.updateRecentDescriptions(this.state.dataSource)
 
   }
 

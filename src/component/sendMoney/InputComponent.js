@@ -7,6 +7,7 @@ import DefaultText from '../DefaultText'
 import merge from '../../util/merge'
 import KeyboardComponent from '../KeyboardComponent'
 import { View, TextInput, TouchableOpacity, Animated, Image } from 'react-native'
+import ModalDropdown from 'react-native-modal-dropdown'
 import styles from './InputComponentStyle'
 import Images from '@Assets/images'
 
@@ -41,6 +42,8 @@ class InputComponent extends KeyboardComponent {
     if (nextProps.accessibilityLabel !== 'Enter Amount') {
       animateTo(this.state.keyboardHeight, 0, 50)
     }
+
+    console.log(nextProps.recentDescriptions)
   }
 
   render () {
@@ -58,7 +61,7 @@ class InputComponent extends KeyboardComponent {
       onChangeAmount,
       payee,
       offlinePaymentLabel,
-      prevDescriptions
+      recentDescriptions
     } = this.props
 
     const button = <View style={merge(styles.button, { backgroundColor: this.getButtonColor() })}>
@@ -95,6 +98,11 @@ class InputComponent extends KeyboardComponent {
                       {...descriptionInput}
                       accessibilityLabel={descriptionInput.placeholder} />
                 }
+                <Picker
+                  selectedValue={descriptionInput.value}
+                  onValueChange={(itemValue, itemIndex) => this.setState({description: itemValue})}>
+                  <Picker.Item label={recentDescriptions[0]} value={recentDescriptions[0]} />
+                </Picker>
                 <BalanceMessage balance={balance}/>
               </View>
             : undefined}

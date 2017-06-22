@@ -18,7 +18,8 @@ const initialState = {
   inputPage: 0,
   transactionNumber: -1,
   resetClipboard: false,
-  alertShouldPopUp: false
+  alertShouldPopUp: false,
+  recentDescriptions: []
 }
 
 const Page = {
@@ -53,9 +54,9 @@ export const updateDescription = (description) => ({
   description
 })
 
-export const updateRecentDescriptions = (dataSource) => ({
+export const updateRecentDescriptions = (sortedTransactions) => ({
   type: 'sendMoney/UPDATE_RECENT_DESCRIPTIONS',
-  dataSource
+  sortedTransactions
 })
 
 export const returnToPayment = () => ({
@@ -158,9 +159,16 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'sendMoney/UPDATE_RECENT_DESCRIPTIONS':
-      let recentDescriptions = []
-      let transactions = action.dataSource.transactions
-
+      let recentDescriptions = new Set()
+      let transactions = action.sortedTransactions
+      transactions.forEach( (transaction, index, transactions) => {
+        transaction.description != "Online Payment from Individual Account" &&
+          recentDescriptions.add(transaction.description)
+      })
+      let descArray = Array.from(recentDescriptions)
+      state = merge(state, {
+        recentDescriptions: descArray
+      })
       break
     case 'sendMoney/SET_LOADING':
       state = merge(state, {
