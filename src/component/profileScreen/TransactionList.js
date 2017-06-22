@@ -33,6 +33,9 @@ export default class TransactionList extends Component {
         this.listViewRef.scrollTo({ y: 0, animated: false })
       }
     }
+
+    this.props.updateRecentDescriptions(this.state.dataSource)
+
   }
 
 

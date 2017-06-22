@@ -53,6 +53,11 @@ export const updateDescription = (description) => ({
   description
 })
 
+export const updateRecentDescriptions = (dataSource) => ({
+  type: 'sendMoney/UPDATE_RECENT_DESCRIPTIONS',
+  dataSource
+})
+
 export const returnToPayment = () => ({
   type: 'sendMoney/RETURN_TO_PAYMENT'
 })
@@ -151,6 +156,11 @@ const reducer = (state = initialState, action) => {
       state = merge(state, {
         description: action.description
       })
+      break
+    case 'sendMoney/UPDATE_RECENT_DESCRIPTIONS':
+      let recentDescriptions = []
+      let transactions = action.dataSource.transactions
+
       break
     case 'sendMoney/SET_LOADING':
       state = merge(state, {

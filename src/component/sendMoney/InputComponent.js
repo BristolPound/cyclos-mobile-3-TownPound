@@ -57,7 +57,8 @@ class InputComponent extends KeyboardComponent {
       description,
       onChangeAmount,
       payee,
-      offlinePaymentLabel
+      offlinePaymentLabel,
+      prevDescriptions
     } = this.props
 
     const button = <View style={merge(styles.button, { backgroundColor: this.getButtonColor() })}>
