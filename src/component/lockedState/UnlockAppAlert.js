@@ -44,8 +44,8 @@ class UnlockAppAlert extends React.Component {
                     <TextInput
                         placeholder={'Unlock code'}
                         autoFocus={true}
-                        value={this.state.pass}
                         accessibilityLabel={'Password'}
+                        value={''}
                         style={style.input}
                         placeholderTextColor={Colors.gray4}
                         secureTextEntry={true}
