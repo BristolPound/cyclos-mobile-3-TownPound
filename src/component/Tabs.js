@@ -3,9 +3,8 @@ import { View } from 'react-native'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import * as actions from '../store/reducer/navigation'
-import { modalState } from '../store/reducer/navigation'
-import { openLoginForm } from '../store/reducer/login'
+import { navigateToTab, hideModal, closeConfirmation, modalState, modalOpened } from '../store/reducer/navigation'
+import { openLoginForm, LOGIN_STATUSES } from '../store/reducer/login'
 import TabBar from './tabbar/TabBar'
 import SearchTab from './searchTab/SearchTab'
 import NetworkConnection from './NetworkConnection'
@@ -18,7 +17,6 @@ import PersonScreen from './PersonScreen'
 import DeveloperOptions from './DeveloperOptions'
 import Colors from '@Colors/colors'
 import Config from '@Config/config'
-import { LOGIN_STATUSES } from '../store/reducer/login'
 import Modal from './Modal'
 import PaymentConfirmation from './PaymentConfirmation'
 import ContinuePaymentAlert from './ContinuePaymentAlert'
@@ -101,7 +99,7 @@ const Tabs = (props) =>
   </View>
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ ...actions, openLoginForm, updatePage, resetForm }, dispatch)
+  bindActionCreators({ navigateToTab, hideModal, closeConfirmation, openLoginForm, updatePage, resetForm, modalOpened }, dispatch)
 
 const mapStateToProps = (state) => ({
   tabIndex: state.navigation.tabIndex,

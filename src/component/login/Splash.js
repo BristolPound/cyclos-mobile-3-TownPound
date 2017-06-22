@@ -5,7 +5,7 @@ import DefaultText from '../DefaultText'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import { bindActionCreators } from 'redux'
-import * as actions from '../../store/reducer/login'
+import { openLoginForm, logout } from '../../store/reducer/login'
 import PLATFORM from '../../util/Platforms'
 import style from './SplashStyle'
 import Images from '@Assets/images'
@@ -103,6 +103,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(actions, dispatch)
+  bindActionCreators({ openLoginForm, logout }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Splash)

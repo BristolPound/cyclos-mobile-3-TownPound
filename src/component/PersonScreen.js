@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Dimensions, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import * as actions from '../store/reducer/navigation'
+import { hideModal } from '../store/reducer/navigation'
 import ProfileHeader from './profileScreen/ProfileHeader'
 import TransactionList from './profileScreen/TransactionList'
 import { resetForm } from '../store/reducer/sendMoney'
@@ -41,6 +41,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({...actions, resetForm}, dispatch)
+  bindActionCreators({ hideModal, resetForm}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonScreen)

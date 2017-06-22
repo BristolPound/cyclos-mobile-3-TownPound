@@ -2,13 +2,12 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { View, Dimensions, ScrollView } from 'react-native'
-import * as actions from '../store/reducer/navigation'
 import TransactionList from './profileScreen/TransactionList'
 import ProfileHeader from './profileScreen/ProfileHeader'
 import BusinessDetails from './businessDetails/BusinessDetails'
 import { sectionHeight } from '../util/StyleUtils'
 import { resetForm } from '../store/reducer/sendMoney'
-import { goToLocation } from '../store/reducer/navigation'
+import { goToLocation, hideModal } from '../store/reducer/navigation'
 import { isIncorrectLocation } from '../util/business'
 import DefaultText from './DefaultText'
 import categories from '../util/categories'
@@ -62,6 +61,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ ...actions, resetForm, goToLocation }, dispatch)
+  bindActionCreators({ hideModal, resetForm, goToLocation }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TraderScreen)
