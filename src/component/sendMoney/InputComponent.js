@@ -7,7 +7,7 @@ import DefaultText from '../DefaultText'
 import merge from '../../util/merge'
 import KeyboardComponent from '../KeyboardComponent'
 import { View, TextInput, TouchableOpacity, Animated, Image } from 'react-native'
-import ModalDropdown from 'react-native-modal-dropdown'
+import Autocomplete from 'react-native-autocomplete-input'
 import styles from './InputComponentStyle'
 import Images from '@Assets/images'
 
@@ -84,7 +84,7 @@ class InputComponent extends KeyboardComponent {
               </TouchableOpacity>}
 
           {input
-            ? <View>
+            ? <View keyboardShouldPersistTaps={true}>
                 <TextInput style={styles.textInput}
                     {...input}
                     autoFocus={true}
@@ -98,12 +98,11 @@ class InputComponent extends KeyboardComponent {
                       {...descriptionInput}
                       accessibilityLabel={descriptionInput.placeholder} />
                 }
-                <Picker
-                  selectedValue={descriptionInput.value}
-                  onValueChange={(itemValue, itemIndex) => this.setState({description: itemValue})}>
-                  <Picker.Item label={recentDescriptions[0]} value={recentDescriptions[0]} />
-                </Picker>
-                <BalanceMessage balance={balance}/>
+                <Autocomplete
+                  data={recentDescriptions}
+                  placeholder={descriptionInput.placeholder}
+                  keyboardShouldPersistTaps={true}/>
+
               </View>
             : undefined}
 
