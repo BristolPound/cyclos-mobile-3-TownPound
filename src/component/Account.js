@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { View, ListView, TouchableHighlight } from 'react-native'
 import DefaultText from './DefaultText'
 import Colors from '@Colors/colors'
-import * as actions from '../store/reducer/login'
+import { logout } from '../store/reducer/login'
 import { updateStatus } from '../store/reducer/statusMessage'
 import ProfileHeader from './profileScreen/ProfileHeader'
 import styles from './AccountStyle'
@@ -74,7 +74,7 @@ const Account = (props) => {
 }
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ ...actions, updateStatus }, dispatch)
+  bindActionCreators({ logout, updateStatus }, dispatch)
 
 const mapStateToProps = state => state.account
 

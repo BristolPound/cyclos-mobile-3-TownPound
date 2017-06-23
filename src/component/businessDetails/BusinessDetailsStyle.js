@@ -15,6 +15,7 @@ const styles = {
     flexDirection: 'row',
     paddingTop: 1,
     backgroundColor: Colors.white,
+    justifyContent: 'flex-start'
   },
   image: {
     ...dimensions(18, 20),
@@ -22,13 +23,12 @@ const styles = {
   },
   item: {
     flexDirection: 'column',
-    flex: 1
   },
   text: {
     flex: 1,
     fontSize: 16,
     color: Colors.gray,
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   minorButtonText: {
     fontFamily: commonStyle.font.museo500,
