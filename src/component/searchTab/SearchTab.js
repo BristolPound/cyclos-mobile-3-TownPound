@@ -9,6 +9,7 @@ import BusinessListItem, { SelectedBusiness } from './BusinessListItem'
 import DraggableList from './DraggableList'
 import styles, { SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN, maxExpandedHeight } from './SearchTabStyle'
 import { LOGIN_STATUSES } from '../../store/reducer/login'
+import { openDetailsModal } from '../../store/reducer/navigation'
 import { ROW_HEIGHT, BUSINESS_LIST_SELECTED_GAP} from './BusinessListStyle'
 import { selectBusiness, updateTabMode, openTraderModal, moveMap, addFilter, removeFilter, tabModes } from '../../store/reducer/business'
 import { Overlay } from '../common/Overlay'
@@ -134,6 +135,6 @@ const mapStateToProps = (state) => ({
   loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
 })
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ moveMap, addFilter, removeFilter, selectBusiness, updateTabMode, openTraderModal }, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({ moveMap, addFilter, removeFilter, selectBusiness, updateTabMode, openTraderModal, openDetailsModal }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchTab)

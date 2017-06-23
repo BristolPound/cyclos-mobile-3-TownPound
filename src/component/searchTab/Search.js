@@ -82,7 +82,7 @@ export default class Search extends React.Component {
 
     _businessListOnClick(item) {
       this.refs.textInput.blur()
-      this.props.openTraderModal(item.id)
+      this.props.openDetailsModal(item)
     }
 
     nearbyButtonEnabled() {
