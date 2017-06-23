@@ -27,6 +27,12 @@ const BalanceMessage = ({ balance }) => {
 }
 
 class InputComponent extends KeyboardComponent {
+  constructor(props) {
+    super(props)
+
+    this.findDescs = this.findDescs.bind(this)
+  }
+
   getButtonColor () {
     if (this.props.invalidInput) {
       return Colors.offWhite
@@ -44,7 +50,25 @@ class InputComponent extends KeyboardComponent {
     }
 
     console.log(nextProps.recentDescriptions)
+
+    if (nextProps.descriptionInput) {
+      this.setState({
+        description: nextProps.descriptionInput.value,
+        recentDescriptions: nextProps.descriptionInput.recentDescriptions
+      })
+    }
   }
+
+  findDescs(query) {
+    if (query === "") {
+      return []
+    }
+
+    const { recentDescriptions } = this.state
+    const regex = new RegExp(`${query.trim()}`, 'i')
+    return recentDescriptions.filter(description => description.search(regex) >= 0)
+  }
+
 
   render () {
     let {
@@ -57,12 +81,14 @@ class InputComponent extends KeyboardComponent {
       accessibilityLabel,
       balance,
       amount,
-      description,
       onChangeAmount,
       payee,
       offlinePaymentLabel,
-      recentDescriptions
     } = this.props
+
+    const { description } = this.state
+    const descriptions = description ? this.findDescs(description) : null
+    const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase.trim()
 
     const button = <View style={merge(styles.button, { backgroundColor: this.getButtonColor() })}>
       <DefaultText style={merge(styles.buttonText, { color: this.getButtonTextColor() })}>
@@ -74,7 +100,10 @@ class InputComponent extends KeyboardComponent {
         </DefaultText>}
     </View>
 
+
     return (
+
+
           <Animated.View style={{backgroundColor: 'white', bottom: this.state.keyboardHeight }} accessibilityLabel={accessibilityLabel}>
 
           {accessibilityLabel === 'Payment complete'
@@ -84,12 +113,31 @@ class InputComponent extends KeyboardComponent {
               </TouchableOpacity>}
 
           {input
-            ? <View keyboardShouldPersistTaps={true}>
+            ? <View keyboardShouldPersistTaps="always">
                 <TextInput style={styles.textInput}
                     {...input}
                     autoFocus={true}
                     accessibilityLabel={input.placeholder} />
                 <View style={styles.separator}/>
+                {descriptions
+                  ?
+                }
+                <Autocomplete
+                  data={descriptions.length === 1 && comp(description, descriptions[0]) ? [] : (descriptions[0] || [])}
+                  autoCapitalize="none"
+                  hideResults={false}
+                  placeholder={descriptionInput.placeholder}
+                  keyboardShouldPersistTaps="always"
+                  defaultValue={descriptionInput.value}
+                  renderItem={(description => (
+                    <TouchableOpacity onPress={() => descriptionInput.onChangeText(description)}>
+                      <DefaultText>
+                        {description}
+                      </DefaultText>
+                    </TouchableOpacity>
+
+                ))}/>
+
                 {pinInput
                   ? <TextInput style={styles.textInput}
                       {...pinInput}
@@ -98,10 +146,6 @@ class InputComponent extends KeyboardComponent {
                       {...descriptionInput}
                       accessibilityLabel={descriptionInput.placeholder} />
                 }
-                <Autocomplete
-                  data={recentDescriptions}
-                  placeholder={descriptionInput.placeholder}
-                  keyboardShouldPersistTaps={true}/>
 
               </View>
             : undefined}

@@ -131,12 +131,12 @@ class SendMoney extends React.Component {
               value: this.props.description,
               placeholder: 'Description (optional)',
               maxLength: 100,
-              onChangeText: desc => this.props.updateDescription(desc)
+              onChangeText: desc => this.props.updateDescription(desc),
+              recentDescriptions: this.props.recentDescriptions
             },
             invalidInput: this.isInputInvalid(),
             accessibilityLabel: 'Enter Amount',
             balance: this.props.balance,
-            recentDescriptions: this.props.recentDescriptions
           }
           if (!this.props.connection) {
             inputProps.offlinePaymentLabel = 'No internet connection (Using TXT2PAY)'
