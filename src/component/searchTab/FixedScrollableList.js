@@ -13,7 +13,7 @@ const FixedScrollableList = (props) =>
 	            			zIndex: 100,
 	            			flex: 1 }}
 	            	key={item.id || index}
-	            	underlayColor={Colors.transparent}
+	            	underlayColor={Colors.offWhite}
 	            	onPress={() => props.onPress(item)}>
 	              		{props.componentForItem(item)}
 	            </TouchableHighlight>
