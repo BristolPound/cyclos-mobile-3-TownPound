@@ -22,6 +22,11 @@ class UnlockAppAlert extends React.Component {
         this.setState({pass: value })
     }
 
+    _submit () {
+        this.props.checkPass(this.state.pass)
+        this._onChangeText('')
+    }
+
     render() {
         return (
             <View style={style.wrapper}>
@@ -63,7 +68,7 @@ class UnlockAppAlert extends React.Component {
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={merge(style.buttonContainer, { flex: 1, marginLeft: 2, backgroundColor: passwordValid(this.state.pass) ? Colors.primaryBlue : Colors.offWhite})}
-                            onPress={() => passwordValid(this.state.pass) && this.props.checkPass(this.state.pass)}>
+                            onPress={() => passwordValid(this.state.pass) && this._submit() }>
                             <DefaultText style={merge(style.buttonText, { color: passwordValid(this.state.pass) ? 'white' : 'black' })}>
                                 Unlock
                             </DefaultText>
