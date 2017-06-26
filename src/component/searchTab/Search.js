@@ -119,11 +119,15 @@ export default class Search extends React.Component {
         return itemProps
       }
 
+      const getMatchesText = (matches, category) => {
+        return matches === 1 ? matches + category + ' MATCH' : matches + category + ' MATCHES' 
+      }
+
       const array = this.state.input == null 
         ? [ ...coloredContactList.map(setPressableAndCategory), ...coloredTraderList.map(makePressable) ] 
         : ( this.props.loggedIn
-            ? [ `${contactMatches} CONTACT MATCHES`, ...coloredContactList.map(setPressableAndCategory), `${matches} TRADER MATCHES`, ...coloredTraderList.map(makePressable) ]
-            : [ `${matches} TRADER MATCHES`, ...coloredTraderList.map(makePressable) ]
+            ? [ getMatchesText(contactMatches, ' CONTACT'), ...coloredContactList.map(setPressableAndCategory), getMatchesText(matches, ' BUSINESS'), ...coloredTraderList.map(makePressable) ]
+            : [ getMatchesText(matches, ' BUSINESS'), ...coloredTraderList.map(makePressable) ]
         )
       if (cropped) {
         array.push(`${matches - MAX_LIST_LENGTH} ADDITIONAL RESULTS NOT DISPLAYED`)
@@ -179,7 +183,7 @@ export default class Search extends React.Component {
                        ref='textInput'
                        onFocus={() => tabMode!==tabModes.search && updateTabMode(tabModes.search)}
                        onChangeText={(text) => this._onChangeText(text)}
-                       placeholder={this.props.loggedIn ? 'Search Trader or Contact' : 'Search Trader'}
+                       placeholder={this.props.loggedIn ? 'Search Business or Contact' : 'Search Business'}
                        placeholderTextColor={Colors.gray4}
                        selectTextOnFocus={true}
                        style={textInput}
