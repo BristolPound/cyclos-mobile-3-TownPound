@@ -20,9 +20,9 @@ class UnlockAppAlert extends React.Component {
 
     _onChangeText (value) {
         this.setState({pass: value })
-        if(passwordValid(value)) {
+        if(value.length === unlockCharNo) {
             this.props.checkPass(value)
-            this._onChangeText('')
+            this.setState({pass: '' })
         }
     }
 
