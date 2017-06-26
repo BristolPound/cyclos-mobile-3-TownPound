@@ -27,7 +27,7 @@ const TraderScreen = (props) => {
 
   return (
       <View style={{maxHeight: Dimensions.get('window').height - sectionHeight}}>
-      <ScrollView keyboardShouldPersistTaps="always">
+      <ScrollView keyboardShouldPersistTaps='always'>
         <ProfileHeader
             name={props.trader.name || ''}
             username={props.trader.fields.username}

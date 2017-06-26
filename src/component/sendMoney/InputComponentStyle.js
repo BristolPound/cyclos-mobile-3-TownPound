@@ -82,6 +82,16 @@ const styles = {
   separator: {
     height: 1,
     backgroundColor: Colors.gray5
+  },
+  dropdownSpace: {
+    height: 30,
+    backgroundColor: 'white'
+  },
+  dropdownItem: {
+    paddingLeft: 15,
+    paddingRight: 15,
+    textAlign: 'center',
+    height: 30
   }
 }
 

@@ -2,7 +2,7 @@ import React from 'react'
 import animateTo from '../../util/animateTo'
 import Price from '../Price'
 import commonStyle from '../style'
- import Colors from '@Colors/colors'
+import Colors from '@Colors/colors'
 import DefaultText from '../DefaultText'
 import merge from '../../util/merge'
 import KeyboardComponent from '../KeyboardComponent'
@@ -49,9 +49,11 @@ class InputComponent extends KeyboardComponent {
       animateTo(this.state.keyboardHeight, 0, 50)
     }
 
-    console.log(nextProps.recentDescriptions)
 
-    if (nextProps.descriptionInput) {
+    if (!this.props.descriptionInput && nextProps.descriptionInput) {
+
+      console.log("description currently is " + nextProps.descriptionInput.value)
+      console.log("recent descriptions are " + nextProps.descriptionInput.recentDescriptions)
       this.setState({
         description: nextProps.descriptionInput.value,
         recentDescriptions: nextProps.descriptionInput.recentDescriptions
@@ -60,11 +62,15 @@ class InputComponent extends KeyboardComponent {
   }
 
   findDescs(query) {
-    if (query === "") {
-      return []
+    const { recentDescriptions } = this.state
+
+    if (!query) {
+      let descriptions = []
+      console.log("entering description = " + this.state.enteringDescription)
+      this.state.enteringDescription && recentDescriptions.length > 0 && descriptions.push(recentDescriptions[0])
+      return descriptions
     }
 
-    const { recentDescriptions } = this.state
     const regex = new RegExp(`${query.trim()}`, 'i')
     return recentDescriptions.filter(description => description.search(regex) >= 0)
   }
@@ -87,8 +93,15 @@ class InputComponent extends KeyboardComponent {
     } = this.props
 
     const { description } = this.state
-    const descriptions = description ? this.findDescs(description) : null
-    const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase.trim()
+    const descriptions = this.findDescs(description)
+    const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase().trim()
+
+    const newOnButtonPress = descriptionInput
+      ? () => {
+        descriptionInput.updateDescription(this.state.description)
+        onButtonPress()
+      }
+      : onButtonPress
 
     const button = <View style={merge(styles.button, { backgroundColor: this.getButtonColor() })}>
       <DefaultText style={merge(styles.buttonText, { color: this.getButtonTextColor() })}>
@@ -100,15 +113,17 @@ class InputComponent extends KeyboardComponent {
         </DefaultText>}
     </View>
 
+    console.log("descriptions to be rendered are " + descriptions)
+    console.log("and one that will be is " + descriptions.slice(0, 1))
+
 
     return (
-
 
           <Animated.View style={{backgroundColor: 'white', bottom: this.state.keyboardHeight }} accessibilityLabel={accessibilityLabel}>
 
           {accessibilityLabel === 'Payment complete'
             ? button
-            : <TouchableOpacity onPress={invalidInput ? undefined : onButtonPress}>
+            : <TouchableOpacity onPress={invalidInput ? undefined : newOnButtonPress}>
                 {button}
               </TouchableOpacity>}
 
@@ -119,32 +134,31 @@ class InputComponent extends KeyboardComponent {
                     autoFocus={true}
                     accessibilityLabel={input.placeholder} />
                 <View style={styles.separator}/>
-                {descriptions
-                  ?
-                }
-                <Autocomplete
-                  data={descriptions.length === 1 && comp(description, descriptions[0]) ? [] : (descriptions[0] || [])}
-                  autoCapitalize="none"
-                  hideResults={false}
-                  placeholder={descriptionInput.placeholder}
-                  keyboardShouldPersistTaps="always"
-                  defaultValue={descriptionInput.value}
-                  renderItem={(description => (
-                    <TouchableOpacity onPress={() => descriptionInput.onChangeText(description)}>
-                      <DefaultText>
-                        {description}
-                      </DefaultText>
-                    </TouchableOpacity>
-
-                ))}/>
 
                 {pinInput
                   ? <TextInput style={styles.textInput}
-                      {...pinInput}
-                      accessibilityLabel={pinInput.placeholder} />
-                  : <TextInput style={styles.textInput}
-                      {...descriptionInput}
-                      accessibilityLabel={descriptionInput.placeholder} />
+                  {...pinInput}
+                  accessibilityLabel={pinInput.placeholder} />
+                  : <View>
+                      <Autocomplete
+                        data={descriptions && descriptions.length === 1 && comp(description, descriptions[0]) ? [] : (descriptions.slice(0, 1))}
+                        autoCapitalize="none"
+                        style={styles.textInput}
+                        hideResults={false}
+                        onFocus={() => this.setState({enteringDescription: true})}
+                        placeholder={descriptionInput.placeholder}
+                        onChangeText={text => this.setState({description: text})}
+                        keyboardShouldPersistTaps="always"
+                        defaultValue={description}
+                        renderItem={(description => (
+                          <TouchableOpacity style={{alignItems: 'center'}} onPress={() => this.setState({description: description})}>
+                            <DefaultText style={styles.dropdownItem}>
+                              {description}
+                            </DefaultText>
+                          </TouchableOpacity>
+                      ))}/>
+                      <View style={styles.dropdownSpace}/>
+                    </View>
                 }
 
               </View>
@@ -181,5 +195,9 @@ class InputComponent extends KeyboardComponent {
 
   }
 }
+
+// : <TextInput style={styles.textInput}
+// {...descriptionInput}
+// accessibilityLabel={descriptionInput.placeholder} />
 
 export default InputComponent

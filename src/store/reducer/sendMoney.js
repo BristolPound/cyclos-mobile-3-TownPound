@@ -159,6 +159,7 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'sendMoney/UPDATE_RECENT_DESCRIPTIONS':
+      console.log("UPDATE_RECENT_DESCRIPTIONS " + action.sortedTransactions)
       let recentDescriptions = new Set()
       let transactions = action.sortedTransactions
       transactions.forEach( (transaction, index, transactions) => {

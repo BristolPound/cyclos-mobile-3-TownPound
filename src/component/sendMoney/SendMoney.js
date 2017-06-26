@@ -95,6 +95,8 @@ class SendMoney extends React.Component {
   render () {
     let inputProps
 
+    console.log("recent descriptions are " + this.props.recentDescriptions)
+
     if (this.props.resetClipboard) {
       Clipboard.setString(tempClipboardString)
     }
@@ -131,7 +133,7 @@ class SendMoney extends React.Component {
               value: this.props.description,
               placeholder: 'Description (optional)',
               maxLength: 100,
-              onChangeText: desc => this.props.updateDescription(desc),
+              updateDescription: desc => this.props.updateDescription(desc),
               recentDescriptions: this.props.recentDescriptions
             },
             invalidInput: this.isInputInvalid(),
