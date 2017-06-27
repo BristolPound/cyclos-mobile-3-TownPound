@@ -12,7 +12,6 @@ const initialState = {
   	loginFormOpen: false,
   	loggedInUsername: '',
   	loggedInName: '',
-  	failedAttempts: [],
 	passToUnlock: ''
 }
 
@@ -34,8 +33,7 @@ describe('Login reducer', () => {
 		  	loginStatus: LOGIN_STATUSES.LOGGED_IN,
 		  	loginFormOpen: false,
 		  	loggedInUsername: 'Bob',
-  			loggedInName: '',
-		  	failedAttempts: []
+  			loggedInName: ''
 		})
 	})
 
@@ -49,7 +47,6 @@ describe('Login reducer', () => {
 		  	loginFormOpen: false,
 		  	loggedInUsername: '',
   			loggedInName: '',
-		  	failedAttempts: [],
 			passToUnlock: ''
 		})
 	})
@@ -64,7 +61,6 @@ describe('Login reducer', () => {
 		  	loginFormOpen: false,
 		  	loggedInUsername: '',
   			loggedInName: '',
-		  	failedAttempts: [],
 			passToUnlock: ''
 		})
 	})
@@ -80,47 +76,6 @@ describe('Login reducer', () => {
 		  	loginFormOpen: true,
 		  	loggedInUsername: '',
   			loggedInName: '',
-		  	failedAttempts: [],
-			passToUnlock: ''
-		})
-	})
-
-	it('should handle ATTEMPT_FAILED', () => {
-	    expect(
-	      	reducer(initialState, {
-	        	type: 'login/ATTEMPT_FAILED',
-	        	username: 'Bob'
-	      	})
-	    ).to.deep.equal({
-		  	loginStatus: LOGIN_STATUSES.LOGGED_OUT,
-		  	loginFormOpen: false,
-		  	loggedInUsername: '',
-  			loggedInName: '',
-		  	failedAttempts: [{username: 'Bob', noOfFails: 1}],
-			passToUnlock: ''
-		})
-	})
-
-
-	it('should handle another ATTEMPT_FAILED', () => {
-	    expect(
-	      	reducer({
-			  	loginStatus: LOGIN_STATUSES.LOGGED_OUT,
-			  	loginFormOpen: false,
-			  	loggedInUsername: '',
-  				loggedInName: '',
-			  	failedAttempts: [{username: 'Bob', noOfFails: 1}],
-				passToUnlock: ''
-			}, {
-	        	type: 'login/ATTEMPT_FAILED',
-	        	username: 'Bob'
-	      	})
-	    ).to.deep.equal({
-		  	loginStatus: LOGIN_STATUSES.LOGGED_OUT,
-		  	loginFormOpen: false,
-		  	loggedInUsername: '',
-  			loggedInName: '',
-		  	failedAttempts: [{username: 'Bob', noOfFails: 2}],
 			passToUnlock: ''
 		})
 	})
