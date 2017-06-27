@@ -1,5 +1,5 @@
 import { Dimensions } from 'react-native'
- import Colors from '@Colors/colors'
+import Colors from '@Colors/colors'
 import { sectionHeight, dimensions, border } from '../../util/StyleUtils'
 
 const { width } = Dimensions.get('window')
@@ -90,8 +90,9 @@ const styles = {
   dropdownItem: {
     paddingLeft: 15,
     paddingRight: 15,
-    textAlign: 'center',
-    height: 30
+    alignItems: 'center',
+    height: 30,
+    lineHeight: 30
   }
 }
 

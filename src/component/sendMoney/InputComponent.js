@@ -51,9 +51,6 @@ class InputComponent extends KeyboardComponent {
 
 
     if (!this.props.descriptionInput && nextProps.descriptionInput) {
-
-      console.log("description currently is " + nextProps.descriptionInput.value)
-      console.log("recent descriptions are " + nextProps.descriptionInput.recentDescriptions)
       this.setState({
         description: nextProps.descriptionInput.value,
         recentDescriptions: nextProps.descriptionInput.recentDescriptions
@@ -66,7 +63,6 @@ class InputComponent extends KeyboardComponent {
 
     if (!query) {
       let descriptions = []
-      console.log("entering description = " + this.state.enteringDescription)
       this.state.enteringDescription && recentDescriptions.length > 0 && descriptions.push(recentDescriptions[0])
       return descriptions
     }
@@ -113,12 +109,7 @@ class InputComponent extends KeyboardComponent {
         </DefaultText>}
     </View>
 
-    console.log("descriptions to be rendered are " + descriptions)
-    console.log("and one that will be is " + descriptions.slice(0, 1))
-
-
     return (
-
           <Animated.View style={{backgroundColor: 'white', bottom: this.state.keyboardHeight }} accessibilityLabel={accessibilityLabel}>
 
           {accessibilityLabel === 'Payment complete'
@@ -141,11 +132,12 @@ class InputComponent extends KeyboardComponent {
                   accessibilityLabel={pinInput.placeholder} />
                   : <View>
                       <Autocomplete
-                        data={descriptions && descriptions.length === 1 && comp(description, descriptions[0]) ? [] : (descriptions.slice(0, 1))}
+                        data={descriptions.length === 1 && comp(description, descriptions[0]) ? [] : (descriptions.slice(0, 1))}
                         autoCapitalize="none"
-                        style={styles.textInput}
+                        style={merge(styles.textInput, {borderWidth: 0})}
                         hideResults={false}
                         onFocus={() => this.setState({enteringDescription: true})}
+                        onBlur={() => this.setState({enteringDescription: false})}
                         placeholder={descriptionInput.placeholder}
                         onChangeText={text => this.setState({description: text})}
                         keyboardShouldPersistTaps="always"
@@ -195,9 +187,5 @@ class InputComponent extends KeyboardComponent {
 
   }
 }
-
-// : <TextInput style={styles.textInput}
-// {...descriptionInput}
-// accessibilityLabel={descriptionInput.placeholder} />
 
 export default InputComponent

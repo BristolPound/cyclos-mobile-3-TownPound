@@ -2,7 +2,6 @@ import React from 'react'
 import { createStore, applyMiddleware, compose } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
-import logger from 'redux-logger'
 import { composeWithDevTools } from 'remote-redux-devtools'
 import { persistStore, autoRehydrate, createTransform } from 'redux-persist'
 import { AsyncStorage } from 'react-native'
@@ -16,13 +15,8 @@ class Module extends React.Component {
   constructor(){
     super()
 
-    let middleware =
-      (__DEV__)
-        ? [thunk]
-        : [thunk]
-
     let enhancers = [
-      applyMiddleware(...middleware),
+      applyMiddleware(thunk),
       autoRehydrate()
     ]
 

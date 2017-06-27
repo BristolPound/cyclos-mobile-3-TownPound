@@ -95,8 +95,6 @@ class SendMoney extends React.Component {
   render () {
     let inputProps
 
-    console.log("recent descriptions are " + this.props.recentDescriptions)
-
     if (this.props.resetClipboard) {
       Clipboard.setString(tempClipboardString)
     }
