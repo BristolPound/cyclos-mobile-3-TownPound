@@ -29,7 +29,6 @@ export default class TransactionList extends Component {
       // With this workaround, the only problem is the renderSeparator disappears
       this.setState({ dataSource: buildDataSourceForTransactions([]) })
       this.setState({ dataSource: buildDataSourceForTransactions(nextProps.listData, this.state.dataSource) })
-      // this.props.updateRecentDescriptions(sortTransactions(nextProps.listData))
 
       // If the user has been logged out due to attempting a payment when their token has expired
       if (nextProps.listData.length === 0) {
@@ -38,8 +37,6 @@ export default class TransactionList extends Component {
         this.listViewRef.scrollTo({ y: 0, animated: false })
       }
     }
-
-
   }
 
 

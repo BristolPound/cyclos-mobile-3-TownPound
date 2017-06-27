@@ -136,7 +136,7 @@ class SendMoney extends React.Component {
             },
             invalidInput: this.isInputInvalid(),
             accessibilityLabel: 'Enter Amount',
-            balance: this.props.balance,
+            balance: this.props.balance
           }
           if (!this.props.connection) {
             inputProps.offlinePaymentLabel = 'No internet connection (Using TXT2PAY)'

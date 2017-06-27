@@ -71,7 +71,6 @@ class InputComponent extends KeyboardComponent {
     return recentDescriptions.filter(description => description.search(regex) >= 0)
   }
 
-
   render () {
     let {
       onButtonPress,
@@ -85,7 +84,7 @@ class InputComponent extends KeyboardComponent {
       amount,
       onChangeAmount,
       payee,
-      offlinePaymentLabel,
+      offlinePaymentLabel
     } = this.props
 
     const { description } = this.state
@@ -152,7 +151,7 @@ class InputComponent extends KeyboardComponent {
                       <View style={styles.dropdownSpace}/>
                     </View>
                 }
-
+                <BalanceMessage balance={balance}/>
               </View>
             : undefined}
 
