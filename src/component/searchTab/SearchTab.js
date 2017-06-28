@@ -9,8 +9,7 @@ import BusinessListItem, { SelectedBusiness } from './BusinessListItem'
 import DraggableList from './DraggableList'
 import styles, { SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN, maxExpandedHeight } from './SearchTabStyle'
 import { ROW_HEIGHT, BUSINESS_LIST_SELECTED_GAP} from './BusinessListStyle'
-import * as actions from '../../store/reducer/business'
-import { tabModes } from '../../store/reducer/business'
+import { selectBusiness, updateTabMode, openTraderModal, moveMap, addFilter, removeFilter, tabModes } from '../../store/reducer/business'
 import { Overlay } from '../common/Overlay'
 import Search from './Search'
 import calculatePanelHeight from '../../util/calculatePanelHeight'
@@ -132,6 +131,6 @@ const mapStateToProps = (state) => ({
   geolocationStatus: state.business.geolocationStatus
 })
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ ...actions }, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({ moveMap, addFilter, removeFilter, selectBusiness, updateTabMode, openTraderModal }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchTab)

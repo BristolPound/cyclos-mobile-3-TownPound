@@ -6,7 +6,7 @@ import DefaultText from '../DefaultText'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import animateTo from '../../util/animateTo'
-import * as actions from '../../store/reducer/login'
+import { login } from '../../store/reducer/login'
 import KeyboardComponent from '../KeyboardComponent'
 import styles from './LoginStyle'
 
@@ -51,13 +51,6 @@ class Login extends KeyboardComponent {
 
   render() {
     let loginButtonText = 'Log in'
-    let attemptsLeft = ''
-    const { failedAttempts } = this.props
-    const failuresForUsername = failedAttempts.find(attempt => attempt.username === this.state.username)
-    if (failuresForUsername) {
-      const remainingAttempts = 3 - failuresForUsername.noOfFails
-      attemptsLeft = ` (${remainingAttempts} attempt${remainingAttempts === 1 ? '' : 's'} remaining)`
-    }
     const loginView = (
       <Animated.View style={merge(styles.outerContainer, { bottom: this.state.keyboardHeight })}>
         <Animated.View style={merge(styles.loginContainer, { bottom: this.state.bottom })}>
@@ -66,12 +59,6 @@ class Login extends KeyboardComponent {
               onPress={() => detailsValid(this.state.username, this.state.password) && this.login()}>
             <DefaultText style={{ ...styles.loginButtonText, color: detailsValid(this.state.username, this.state.password) ? 'white' : 'black' }}>
               {loginButtonText}
-              {failuresForUsername ? 
-                <DefaultText style={{ ...styles.loginAttemptLeftText, color: detailsValid(this.state.username, this.state.password) ? 'white' : 'black' }}>
-                  {attemptsLeft}
-                </DefaultText>
-                : undefined
-              }
             </DefaultText>
           </TouchableOpacity>
           <TextInput style={styles.input}
@@ -105,7 +92,7 @@ class Login extends KeyboardComponent {
 }
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(actions, dispatch)
+  bindActionCreators({ login }, dispatch)
 
 const mapStateToProps = (state) => ({...state.login})
 

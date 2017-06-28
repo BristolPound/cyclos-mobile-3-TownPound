@@ -21,7 +21,6 @@ const initialState = {
   // logged in username state stores the username on successful login
   loggedInUsername: '',
   loggedInName: '',
-  failedAttempts: [],
   passToUnlock: ''
 }
 
@@ -44,11 +43,6 @@ export const openLoginForm = (open = true) => ({
   open
 })
 
-const attemptFailed = (username) => ({
-  type: 'login/ATTEMPT_FAILED',
-  username
-})
-
 export const login = (username, password) =>
   (dispatch, getState) => {
     dispatch(loginInProgress())
@@ -66,8 +60,6 @@ export const login = (username, password) =>
                 dispatch(updateStatus('Account temporarily blocked', ERROR_SEVERITY.SEVERE))
               } else if (json && json.code === 'login') {
                 dispatch(updateStatus('Your details are incorrect'))
-                dispatch(attemptFailed(username))
-                dispatch(openLoginForm(true))
               } else {
                 dispatch(unknownError(err))
               }
@@ -86,11 +78,9 @@ export const logout = () => dispatch => {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'login/LOGGED_IN':
-      const failedAttempts = state.failedAttempts.filter(attempt => attempt.username !== action.username)
       state = merge(state, {
         loggedInUsername: action.username,
         loginStatus: LOGIN_STATUSES.LOGGED_IN,
-        failedAttempts,
         passToUnlock: action.passToUnlock
       })
       break
@@ -112,20 +102,6 @@ const reducer = (state = initialState, action) => {
     case 'account/ACCOUNT_DETAILS_RECEIVED':
       state = merge(state, {
         loggedInName: action.details.display.split(' ')[0],
-      })
-      break
-    case 'login/ATTEMPT_FAILED':
-      const index = state.failedAttempts.findIndex(attempt => attempt.username === action.username)
-      let newFailedAttempts
-      if (index !== -1) {
-        const noOfFails = state.failedAttempts[index].noOfFails
-        newFailedAttempts = state.failedAttempts.slice()
-        newFailedAttempts[index] = { username: action.username, noOfFails: noOfFails + 1 }
-      } else {
-        newFailedAttempts = [ ...state.failedAttempts, { username: action.username, noOfFails: 1 } ]
-      }
-      state = merge(state, {
-        failedAttempts: newFailedAttempts
       })
       break
   }

@@ -6,7 +6,7 @@ import { View, StatusBar, ActivityIndicator } from 'react-native'
 import _ from 'lodash'
 import supercluster from 'supercluster'
 import { MultilineText } from '../DefaultText'
-import * as actions from '../../store/reducer/business'
+import { updateMapViewport, selectBusiness } from '../../store/reducer/business'
 import { shouldBeDisplayed, isIncorrectLocation } from '../../util/business'
 import merge from '../../util/merge'
 import style from './BackgroundMapStyle'
@@ -184,6 +184,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(actions, dispatch)
+  bindActionCreators({ updateMapViewport, selectBusiness }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(BackgroundMap)
