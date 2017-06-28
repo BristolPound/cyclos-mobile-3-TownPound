@@ -14,8 +14,8 @@ const PersonScreen = (props) =>
     <View style={{flex: 1, maxHeight: Dimensions.get('window').height - sectionHeight}}>
     <ScrollView>
       <ProfileHeader
-        name={props.person.display}
-        username={props.person.shortDisplay}
+        name={props.person.display || props.person.name}
+        username={props.person.shortDisplay || props.person.username}
         image={props.person.image}
         category={categories.person}
         onPressClose={() => {props.hideModal(); props.resetForm()}}

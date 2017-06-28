@@ -10,7 +10,7 @@ import SearchTab from './searchTab/SearchTab'
 import NetworkConnection from './NetworkConnection'
 import SpendingTab from './spending/SpendingTab'
 import { updatePage, resetForm } from '../store/reducer/sendMoney'
-import Account from './Account'
+import AccountTab from './AccountTab'
 import LoginToView, { emptyStateImage } from './loggedOutState/LoginToView'
 import TraderScreen from './TraderScreen'
 import PersonScreen from './PersonScreen'
@@ -81,7 +81,7 @@ const Tabs = (props) =>
       </WithNetworkConnection>
       <WithNetworkConnection tabLabel='Account'>
         { props.loggedIn
-          ? <Account/>
+          ? <AccountTab/>
           : <LoginToView
                   image={emptyStateImage.account}
                   lineOne='Log in to view'

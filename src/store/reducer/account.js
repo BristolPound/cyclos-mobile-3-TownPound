@@ -1,16 +1,24 @@
 
 import merge from '../../util/merge'
-import { getAccountBalance } from '../../api/accounts'
+import { getAccountBalance, getContactList } from '../../api/accounts'
 import { getAccountDetails } from '../../api/users'
 import { UNAUTHORIZED_ACCESS } from '../../api/apiError'
 import { openLoginForm } from './login'
 import { unknownError } from './statusMessage'
 
+export const accountSections = {
+  me: 'me',
+  contactList: 'contactList'
+}
+
 const initialState = {
   loadingBalance: true,
   loadingDetails: true,
   balance: undefined,
+  loadingContactList: true,
   details: {},
+  contactList: [],
+  accountSection: accountSections.me
 }
 
 export const accountBalanceReceived = account => ({
@@ -20,6 +28,16 @@ export const accountBalanceReceived = account => ({
 
 export const resetAccount = () => ({
   type: 'account/RESET'
+})
+
+export const switchSection = (section) => ({
+  type: 'account/SWITCH_SECTION',
+  section
+})
+
+const contactListReceived = contactList => ({
+   type: 'account/CONTACT_LIST_RECEIVED',
+   contactList
 })
 
 const accountDetailsReceived = details => ({
@@ -43,6 +61,9 @@ export const loadAccountDetails = () =>
     getAccountDetails(dispatch)
       .then(details => dispatch(accountDetailsReceived(details)))
       .catch(handleAPIError(dispatch))
+    getContactList(dispatch)
+      .then(contactList => dispatch(contactListReceived(contactList)))
+      .catch(handleAPIError(dispatch))
   }
 
 const reducer = (state = initialState, action) => {
@@ -57,6 +78,22 @@ const reducer = (state = initialState, action) => {
       state = merge(state, {
         details: action.details,
         loadingDetails: false
+      })
+      break
+    case 'account/CONTACT_LIST_RECEIVED':
+       state = merge(state, {
+         contactList: action.contactList,
+         loadingContactList: false
+       })
+      break
+    case 'account/SWITCH_SECTION':
+      state = merge(state, {
+        accountSection: action.section
+      })
+      break
+    case 'navigation/NAVIGATE_TO_TAB':
+      state = merge(state, {
+        accountSection: accountSections.me
       })
       break
     case 'account/RESET':

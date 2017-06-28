@@ -50,7 +50,7 @@ export default class Search extends React.Component {
       }
     }
 
-    updateResults = (allBusinesses = this.props.allBusinesses) => {
+    updateResults = (allBusinesses = this.props.allBusinesses, contactList = this.props.contactList) => {
       const termsMatch = (field) => {
         let match = true
         this.state.searchTerms.forEach((term) => {
@@ -60,10 +60,16 @@ export default class Search extends React.Component {
         })
         return match
       }
+
       const filteredBusinessList = this.state.searchTerms.length
       ? _.filter(allBusinesses, business => termsMatch(business.name) || termsMatch(business.fields.username) || (business.fields.description && termsMatch(business.fields.description)))
       : []
-      const componentListArray = this.createComponentListArray(filteredBusinessList)
+      
+      const filteredContactList = this.state.searchTerms.length
+      ? _.filter(contactList, contact => (contact.name && termsMatch(contact.name)) || (contact.username && termsMatch(contact.username)))
+      : []
+
+      const componentListArray = this.createComponentListArray(filteredBusinessList, filteredContactList)
       this.setState({ componentListArray, searching: false })
     }
 
@@ -76,7 +82,7 @@ export default class Search extends React.Component {
 
     _businessListOnClick(item) {
       this.refs.textInput.blur()
-      this.props.openTraderModal(item.id)
+      this.props.openDetailsModal(item)
     }
 
     nearbyButtonEnabled() {
@@ -90,18 +96,39 @@ export default class Search extends React.Component {
       }
     }
 
-    createComponentListArray(list) {
-      const cropped = list.length > MAX_LIST_LENGTH
-      const matches = list.length
+    createComponentListArray(traderList, contactList) {
+      const cropped = traderList.length > MAX_LIST_LENGTH
+      const matches = traderList.length
+      const contactMatches = contactList.length
+
       if (cropped) {
-        list.length = MAX_LIST_LENGTH
+        traderList.length = MAX_LIST_LENGTH
       }
-      const coloredList = addColorCodes(list)
+
+      const coloredTraderList = addColorCodes(traderList)
+      const coloredContactList = addColorCodes(contactList)
+
       const makePressable = (itemProps) => {
         itemProps.pressable = true
         return itemProps
       }
-      const array = this.state.input == null ? [ ...coloredList.map(makePressable) ] : [ `${matches} TRADER MATCHES`, ...coloredList.map(makePressable) ]
+
+      const setPressableAndCategory = (itemProps) => {
+        itemProps.pressable = true
+        itemProps.category = 'person'
+        return itemProps
+      }
+
+      const getMatchesText = (matches, category) => {
+        return matches === 1 ? matches + category + ' MATCH' : matches + category + ' MATCHES' 
+      }
+
+      const array = this.state.input == null 
+        ? [ ...coloredContactList.map(setPressableAndCategory), ...coloredTraderList.map(makePressable) ] 
+        : ( this.props.loggedIn
+            ? [ getMatchesText(contactMatches, ' CONTACT'), ...coloredContactList.map(setPressableAndCategory), getMatchesText(matches, ' BUSINESS'), ...coloredTraderList.map(makePressable) ]
+            : [ getMatchesText(matches, ' BUSINESS'), ...coloredTraderList.map(makePressable) ]
+        )
       if (cropped) {
         array.push(`${matches - MAX_LIST_LENGTH} ADDITIONAL RESULTS NOT DISPLAYED`)
       }
@@ -156,7 +183,7 @@ export default class Search extends React.Component {
                        ref='textInput'
                        onFocus={() => tabMode!==tabModes.search && updateTabMode(tabModes.search)}
                        onChangeText={(text) => this._onChangeText(text)}
-                       placeholder={'Search Trader'}
+                       placeholder={this.props.loggedIn ? 'Search Business or Contact' : 'Search Business'}
                        placeholderTextColor={Colors.gray4}
                        selectTextOnFocus={true}
                        style={textInput}

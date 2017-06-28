@@ -1,12 +1,14 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { View, ListView, TouchableHighlight } from 'react-native'
-import DefaultText from './DefaultText'
+import { View, ListView, TouchableHighlight, Image } from 'react-native'
+import DefaultText from '../DefaultText'
 import Colors from '@Colors/colors'
-import { logout } from '../store/reducer/login'
-import { updateStatus } from '../store/reducer/statusMessage'
-import ProfileHeader from './profileScreen/ProfileHeader'
+import Images from '@Assets/images'
+import { logout } from '../../store/reducer/login'
+import { updateStatus } from '../../store/reducer/statusMessage'
+import { switchSection, accountSections } from '../../store/reducer/account'
+import ProfileHeader from '../profileScreen/ProfileHeader'
 import styles from './AccountStyle'
 
 const renderSeparator = (sectionID, rowID) =>
@@ -19,18 +21,18 @@ const renderSectionHeader = (sectionData, sectionID) =>
     </DefaultText>
   </View>
 
-const AccountOption = ({text, secondaryText, onPress, index}) =>
+const AccountOption = ({text, secondaryText, onPress, index, icon}) =>
   <TouchableHighlight
       onPress={() => onPress ? onPress() : undefined}
       key={index}
       underlayColor={onPress ? Colors.gray5 : Colors.transparent}>
     <View style={styles.row.container}>
       <DefaultText style={styles.row.label}>{text}</DefaultText>
-      { secondaryText
-        ? <DefaultText style={styles.row.secondary}>{secondaryText}</DefaultText>
-        : undefined }
+      { secondaryText && <DefaultText style={styles.row.secondary}>{secondaryText}</DefaultText> }
+      { icon && <Image source={icon} style={{height: 18, width: 18, transform: [{rotate: '-90deg'}]}}/> }
     </View>
   </TouchableHighlight>
+
 
 const Account = (props) => {
   let ds = new ListView.DataSource({
@@ -50,7 +52,14 @@ const Account = (props) => {
           props.logout()
           props.updateStatus('Logged out ✓')
         }
-      }]
+      }],
+    'Contact List': [{
+        text: props.contactList.length + ' Contacts',
+        icon: Images.expandTab,
+        onPress: () => {
+          props.switchSection(accountSections.contactList)
+        }
+    }]
   }
   ds = ds.cloneWithRowsAndSections(data, Object.keys(data))
 
@@ -74,7 +83,7 @@ const Account = (props) => {
 }
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ logout, updateStatus }, dispatch)
+  bindActionCreators({ logout, updateStatus, switchSection }, dispatch)
 
 const mapStateToProps = state => state.account
 
