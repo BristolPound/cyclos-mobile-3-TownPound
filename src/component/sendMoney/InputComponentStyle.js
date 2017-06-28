@@ -42,6 +42,11 @@ const styles = {
     ...dimensions(width, sectionHeight + DROPDOWN_LINE_HEIGHT),
     padding: 10
   },
+  autocompleteInput: {
+    borderWidth: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.gray5
+  },
   balanceContainer: {
     ...border(['bottom'], Colors.gray5, 1),
     backgroundColor: Colors.offWhite,

@@ -135,9 +135,9 @@ class InputComponent extends KeyboardComponent {
                         <Autocomplete
                           data={descriptions.length === 1 && comp(description, descriptions[0]) ? [] : (descriptions.slice(0, 1))}
                           autoCapitalize="none"
-                          style={merge(styles.textInput, {borderWidth: 0})}
+                          style={styles.textInput}
                           hideResults={false}
-                          inputContainerStyle={{borderWidth: 0, borderBottomWidth: 1}}
+                          inputContainerStyle={styles.autocompleteInput}
                           listStyle={{borderWidth: 0}}
                           onFocus={() => this.setState({enteringDescription: true})}
                           onBlur={() => this.setState({enteringDescription: false})}
