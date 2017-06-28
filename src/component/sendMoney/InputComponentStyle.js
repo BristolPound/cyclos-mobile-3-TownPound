@@ -4,6 +4,8 @@ import { sectionHeight, dimensions, border } from '../../util/StyleUtils'
 
 const { width } = Dimensions.get('window')
 
+const DROPDOWN_LINE_HEIGHT = 30
+
 const styles = {
   button: {
     height: sectionHeight,
@@ -27,6 +29,18 @@ const styles = {
     ...dimensions(width, sectionHeight),
     padding: 10,
     textAlign: 'center'
+  },
+  autocompleteContainer: {
+    position: 'absolute',
+    flex: 1,
+    left: 0,
+    right: 0,
+    top: 0,
+    zIndex: 1
+  },
+  autocompleteFixer: {
+    ...dimensions(width, sectionHeight + DROPDOWN_LINE_HEIGHT),
+    padding: 10
   },
   balanceContainer: {
     ...border(['bottom'], Colors.gray5, 1),
@@ -83,16 +97,15 @@ const styles = {
     height: 1,
     backgroundColor: Colors.gray5
   },
-  dropdownSpace: {
-    height: 30,
-    backgroundColor: 'white'
+  dropdownContainer: {
+    borderWidth: 0,
+    ...dimensions(width, DROPDOWN_LINE_HEIGHT),
   },
   dropdownItem: {
     paddingLeft: 15,
     paddingRight: 15,
-    alignItems: 'center',
-    height: 30,
-    lineHeight: 30
+    lineHeight: DROPDOWN_LINE_HEIGHT,
+    textAlign: 'center'
   }
 }
 

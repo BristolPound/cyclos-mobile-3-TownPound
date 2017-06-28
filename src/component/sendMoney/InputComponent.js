@@ -129,27 +129,32 @@ class InputComponent extends KeyboardComponent {
                   ? <TextInput style={styles.textInput}
                   {...pinInput}
                   accessibilityLabel={pinInput.placeholder} />
-                  : <View>
-                      <Autocomplete
-                        data={descriptions.length === 1 && comp(description, descriptions[0]) ? [] : (descriptions.slice(0, 1))}
-                        autoCapitalize="none"
-                        style={merge(styles.textInput, {borderWidth: 0})}
-                        hideResults={false}
-                        onFocus={() => this.setState({enteringDescription: true})}
-                        onBlur={() => this.setState({enteringDescription: false})}
-                        placeholder={descriptionInput.placeholder}
-                        onChangeText={text => this.setState({description: text})}
-                        keyboardShouldPersistTaps="always"
-                        defaultValue={description}
-                        renderItem={(description => (
-                          <TouchableOpacity style={{alignItems: 'center'}} onPress={() => this.setState({description: description})}>
-                            <DefaultText style={styles.dropdownItem}>
-                              {description}
-                            </DefaultText>
-                          </TouchableOpacity>
-                      ))}/>
-                      <View style={styles.dropdownSpace}/>
+                  :
+                    <View style={styles.autocompleteFixer}>
+                      <View style={styles.autocompleteContainer}>
+                        <Autocomplete
+                          data={descriptions.length === 1 && comp(description, descriptions[0]) ? [] : (descriptions.slice(0, 1))}
+                          autoCapitalize="none"
+                          style={merge(styles.textInput, {borderWidth: 0})}
+                          hideResults={false}
+                          inputContainerStyle={{borderWidth: 0, borderBottomWidth: 1}}
+                          listStyle={{borderWidth: 0}}
+                          onFocus={() => this.setState({enteringDescription: true})}
+                          onBlur={() => this.setState({enteringDescription: false})}
+                          placeholder={descriptionInput.placeholder}
+                          onChangeText={text => this.setState({description: text})}
+                          keyboardShouldPersistTaps="always"
+                          defaultValue={description}
+                          renderItem={(description => (
+                            <TouchableOpacity style={styles.dropdownContainer} onPress={() => this.setState({description: description})}>
+                              <DefaultText style={styles.dropdownItem}>
+                                {description}
+                              </DefaultText>
+                            </TouchableOpacity>
+                        ))}/>
+                      </View>
                     </View>
+
                 }
                 <BalanceMessage balance={balance}/>
               </View>
