@@ -1,12 +1,10 @@
+import Config from '@Config/config'
 import { get } from './api'
 import merge from '../util/merge'
 
 const DirectoryAPI = require('org.bristolpound.cyclos.api.directory')
 
-const directoryAPI = new DirectoryAPI({
-	  host: 'bristol-stage.community-currency.org'
-	, network: 'bristolpound'
-})
+const directoryAPI = new DirectoryAPI(Config.CURRENT_CONFIG)
 
 
 const parseShortDisplay = fullDisplay =>

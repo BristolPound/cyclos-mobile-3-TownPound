@@ -20,6 +20,10 @@ class UnlockAppAlert extends React.Component {
 
     _onChangeText (value) {
         this.setState({pass: value })
+        if(value.length === unlockCharNo) {
+            this.props.checkPass(value)
+            this.setState({pass: '' })
+        }
     }
 
     render() {
@@ -45,7 +49,8 @@ class UnlockAppAlert extends React.Component {
                         placeholder={'Unlock code'}
                         autoFocus={true}
                         value={this.state.pass}
-                        accessibilityLabel={'Password'}
+                        maxLength={unlockCharNo}
+                        accessibilityLabel={'Unlock code'}
                         style={style.input}
                         placeholderTextColor={Colors.gray4}
                         secureTextEntry={true}
@@ -58,13 +63,6 @@ class UnlockAppAlert extends React.Component {
                             onPress={() => this.props.logout && this.props.logout()}>
                             <DefaultText style={merge(style.buttonText, { color: 'white' })}>
                                 Logout
-                            </DefaultText>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={merge(style.buttonContainer, { flex: 1, marginLeft: 2, backgroundColor: passwordValid(this.state.pass) ? Colors.primaryBlue : Colors.offWhite})}
-                            onPress={() => passwordValid(this.state.pass) && this.props.checkPass(this.state.pass)}>
-                            <DefaultText style={merge(style.buttonText, { color: passwordValid(this.state.pass) ? 'white' : 'black' })}>
-                                Unlock
                             </DefaultText>
                         </TouchableOpacity>
                     </View>

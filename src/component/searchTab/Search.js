@@ -155,14 +155,14 @@ export default class Search extends React.Component {
       } else if (tabMode===tabModes.default) {
         button = <Button
                     onPress={() => updateTabMode(tabModes.filter)}
-                    buttonType={FILTER_DISABLED_BUTTON}
+                    buttonType={this.props.activeFilters.length > 0 ? FILTER_BUTTON : FILTER_DISABLED_BUTTON}
                     style={closeButton}
                     size={SEARCH_BAR_HEIGHT}/>
         modeComponent = undefined
       } else if (tabMode===tabModes.filter) {
         button = <Button
                     onPress={() => updateTabMode(tabModes.default)}
-                    buttonType={FILTER_BUTTON}
+                    buttonType={CLOSE_BUTTON}
                     style={closeButton}
                     size={SEARCH_BAR_HEIGHT}/>
         modeComponent = <FiltersComponent
