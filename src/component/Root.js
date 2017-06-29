@@ -112,7 +112,7 @@ class Root extends React.Component {
               barStyle={this.props.mainComponent === mainComponent.returningLogin ? 'light-content' : 'dark-content'}/>
           {bodyComponent}
           <LoginOverlay/>
-          {(this.props.modalOpen && !this.props.loginFormOpen) && Config.ALLOW_LOGIN ? <SendMoney /> : undefined}
+          {(this.props.modalOpen && !this.props.loginFormOpen) && Config.ALLOW_LOGIN && (this.props.userShortDisplay !== this.props.payeeShortDisplay) ? <SendMoney /> : undefined}
           <Login/>
           <StatusMessage/>
           {this.props.coverApp
@@ -145,6 +145,8 @@ const mapDispatchToProps = (dispatch) =>
 
 const mapStateToProps = (state) => ({
     ...state.navigation,
+    userShortDisplay: state.account.details.shortDisplay,
+    payeeShortDisplay: state.business.traderScreenBusinessId ? state.business.businessList[state.business.traderScreenBusinessId].fields.username : '',
     loginFormOpen: state.login.loginFormOpen,
     passToUnlock: state.login.passToUnlock
 })
