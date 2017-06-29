@@ -93,7 +93,6 @@ class Root extends React.Component {
           <View style={{flex: 1}}/>
         )
       }
-      console.log(Config)
       let bodyComponent
       if (this.props.mainComponent === mainComponent.returningLogin) {
         bodyComponent = <ReturningLogin />
