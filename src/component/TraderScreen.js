@@ -7,7 +7,7 @@ import ProfileHeader from './profileScreen/ProfileHeader'
 import BusinessDetails from './businessDetails/BusinessDetails'
 import { sectionHeight } from '../util/StyleUtils'
 import { resetForm } from '../store/reducer/sendMoney'
-import { goToLocation, hideModal } from '../store/reducer/navigation'
+import { goToLocation, hideModal, closeConfirmation } from '../store/reducer/navigation'
 import { isIncorrectLocation } from '../util/business'
 import DefaultText from './DefaultText'
 import categories from '../util/categories'
@@ -34,7 +34,7 @@ const TraderScreen = (props) => {
             image={props.trader.image.url}
             category={categories.shop}
             address={props.trader.address}
-            onPressClose={() => {props.hideModal(); props.resetForm()}}
+            onPressClose={() => {props.hideModal(); props.closeConfirmation(); props.resetForm()}}
             isModal={true}
             showMap={props.modalOpen}
             goToTraderLocation={() => goToTraderLocation()}/>
@@ -61,6 +61,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ hideModal, resetForm, goToLocation }, dispatch)
+  bindActionCreators({ hideModal, resetForm, goToLocation, closeConfirmation }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TraderScreen)
