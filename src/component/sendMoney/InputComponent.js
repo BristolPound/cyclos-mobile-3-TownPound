@@ -44,13 +44,13 @@ class InputComponent extends KeyboardComponent {
     return this.getButtonColor() === Colors.offWhite ? 'black' : 'white'
   }
 
-  componentWillUpdate(nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.accessibilityLabel !== 'Enter Amount') {
       animateTo(this.state.keyboardHeight, 0, 50)
     }
 
 
-    if (!this.props.descriptionInput && nextProps.descriptionInput) {
+    if (nextProps.descriptionInput && (nextProps.descriptionInput != this.props.descriptionInput)) {
       this.setState({
         description: nextProps.descriptionInput.value,
         recentDescriptions: nextProps.descriptionInput.recentDescriptions
@@ -95,6 +95,7 @@ class InputComponent extends KeyboardComponent {
       ? () => {
         descriptionInput.updateDescription(this.state.description)
         onButtonPress()
+        this.setState({enteringDescription: false})
       }
       : onButtonPress
 
@@ -130,12 +131,15 @@ class InputComponent extends KeyboardComponent {
                   {...pinInput}
                   accessibilityLabel={pinInput.placeholder} />
                   :
-                    <View style={styles.autocompleteFixer}>
+                    <View style={descriptionInput.recentDescriptions.length > 0
+                        ? styles.autocompleteFixer
+                        : styles.autocompleteFixerShort}>
                       <View style={styles.autocompleteContainer}>
                         <Autocomplete
                           data={descriptions.length === 1 && comp(description, descriptions[0]) ? [] : (descriptions.slice(0, 1))}
                           autoCapitalize="none"
-                          style={merge(styles.textInput, styles.autocompleteInput)}
+                          inputContainerStyle={styles.autocompleteInput}
+                          style={styles.textInput}
                           hideResults={false}
                           listStyle={{borderWidth: 0}}
                           onFocus={() => this.setState({enteringDescription: true})}
