@@ -42,6 +42,10 @@ const styles = {
     ...dimensions(width, sectionHeight + DROPDOWN_LINE_HEIGHT),
     padding: 10
   },
+  autocompleteFixerShort: {
+    ...dimensions(width, sectionHeight),
+    padding: 10
+  },
   autocompleteInput: {
     borderWidth: 0,
     borderBottomWidth: 1,

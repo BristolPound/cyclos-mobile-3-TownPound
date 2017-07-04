@@ -37,6 +37,12 @@ class SendMoney extends React.Component {
     }
   }
 
+  componentWillReceiveProps(props) {
+    console.log("receiving new send money props")
+
+    console.log("description received is " + props.description)
+  }
+
   nextPage () {
     const nextPage = (this.props.inputPage + 1) % Object.keys(Page).length
     this.props.updatePage(nextPage)
@@ -153,7 +159,7 @@ class SendMoney extends React.Component {
         case Page.ConfirmAmount: // provide amount
           inputProps = {
             buttonText: 'Confirm',
-            onButtonPress: () => { this.props.sendTransaction(); this.nextPage() },
+            onButtonPress: () => { this.props.sendTransaction(); this.nextPage(); this.props.resetPayment() },
             amount: this.props.amount,
             payee: this.props.payee.display || this.props.payee.name || "",
             description: this.props.description,

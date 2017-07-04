@@ -20,7 +20,7 @@ export default class TransactionList extends Component {
   }
 
   componentWillMount() {
-    this.props.updateRecentDescriptions(sortTransactions(this.props.listData))
+    this.props.updateRecentDescriptions(this.props.listData)
   }
 
   componentWillUpdate(nextProps) {

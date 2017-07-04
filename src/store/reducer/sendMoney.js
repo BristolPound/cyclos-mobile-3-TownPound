@@ -5,6 +5,7 @@ import merge from '../../util/merge'
 import { loadMoreTransactions } from './transaction'
 import { UNEXPECTED_ERROR, UNAUTHORIZED_ACCESS } from '../../api/apiError'
 import { logout } from './login'
+import _ from 'lodash'
 
 const initialState = {
   payeeId: '',
@@ -71,13 +72,14 @@ const setLoading = () => ({
   type: 'sendMoney/SET_LOADING'
 })
 
-const transactionComplete = (success, message, amountPaid, timestamp, transactionNumber) => ({
+const transactionComplete = (success, message, amountPaid, timestamp, transactionNumber, description) => ({
   type: 'sendMoney/TRANSACTION_COMPLETE',
   success,
   message,
   amountPaid,
   timestamp,
-  transactionNumber
+  transactionNumber,
+  description
 })
 
 export const askToContinuePayment = (value) => ({
@@ -99,7 +101,7 @@ export const sendTransaction = () =>
       }, dispatch)
       .then((result) => {
         dispatch(loadMoreTransactions())
-        dispatch(transactionComplete(true, 'Transaction complete', amount, moment(result.date).format('MMMM Do YYYY, h:mm:ss a'), result.transactionNumber))
+        dispatch(transactionComplete(true, 'Transaction complete', amount, moment(result.date).format('MMMM Do YYYY, h:mm:ss a'), result.transactionNumber, result.description))
       })
       .catch(err => {
         if (err.type === UNAUTHORIZED_ACCESS) {
@@ -136,6 +138,7 @@ const reducer = (state = initialState, action) => {
         loading: false,
         success: undefined,
         message: '',
+        description: '',
         timestamp: undefined,
         inputPage: 0,
         transactionNumber: -1,
@@ -159,15 +162,12 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'sendMoney/UPDATE_RECENT_DESCRIPTIONS':
-      let recentDescriptions = new Set()
       let transactions = action.sortedTransactions
-      transactions.forEach( (transaction, index, transactions) => {
-        transaction.description != "Online Payment from Individual Account" &&
-          recentDescriptions.add(transaction.description)
-      })
-      let descArray = Array.from(recentDescriptions)
+      let descriptions = _.map(transactions.filter( (transaction) =>
+        transaction.description != "Online Payment from Individual Account"
+      ), 'description')
       state = merge(state, {
-        recentDescriptions: descArray
+        recentDescriptions: descriptions
       })
       break
     case 'sendMoney/SET_LOADING':
@@ -182,13 +182,16 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'sendMoney/TRANSACTION_COMPLETE':
+      let recentDescriptions = state.recentDescriptions.concat()
+      recentDescriptions.unshift(action.description)
       var stateToUpdate = {
         success: action.success,
         message: action.message,
         amountPaid: action.amountPaid,
         timestamp: action.timestamp,
         loading: false,
-        transactionNumber: action.transactionNumber
+        transactionNumber: action.transactionNumber,
+        recentDescriptions: recentDescriptions
       }
       if (action.message !== 'Session expired') {
         stateToUpdate.amount = ''
