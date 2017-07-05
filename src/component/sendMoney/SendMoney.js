@@ -112,7 +112,7 @@ class SendMoney extends React.Component {
         //-> hence the !this.props.alertShouldPopUp check
           inputProps = {
             buttonText: 'Send Payment',
-            onButtonPress: () => { !this.props.alertShouldPopUp && this.nextPage() },
+            onButtonPress: () => { !this.props.alertShouldPopUp && this.props.resetPayment() && this.nextPage() },
             accessibilityLabel: 'Ready'
           }
           break
@@ -153,7 +153,7 @@ class SendMoney extends React.Component {
         case Page.ConfirmAmount: // provide amount
           inputProps = {
             buttonText: 'Confirm',
-            onButtonPress: () => { this.props.sendTransaction(); this.nextPage(); this.props.resetPayment() },
+            onButtonPress: () => { this.props.sendTransaction(); this.nextPage() },
             amount: this.props.amount,
             payee: this.props.payee.display || this.props.payee.name || "",
             description: this.props.description,
