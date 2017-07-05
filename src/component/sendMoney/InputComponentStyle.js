@@ -1,8 +1,10 @@
 import { Dimensions } from 'react-native'
- import Colors from '@Colors/colors'
+import Colors from '@Colors/colors'
 import { sectionHeight, dimensions, border } from '../../util/StyleUtils'
 
 const { width } = Dimensions.get('window')
+
+const DROPDOWN_LINE_HEIGHT = 30
 
 const styles = {
   button: {
@@ -27,6 +29,29 @@ const styles = {
     ...dimensions(width, sectionHeight),
     padding: 10,
     textAlign: 'center'
+  },
+  autocompleteContainer: {
+    position: 'absolute',
+    flex: 1,
+    left: 0,
+    right: 0,
+    top: 0,
+    zIndex: 1
+  },
+  autocompleteFixer: {
+    ...dimensions(width, sectionHeight + DROPDOWN_LINE_HEIGHT),
+    padding: 10
+  },
+  autocompleteFixerShort: {
+    ...dimensions(width, sectionHeight),
+    padding: 10
+  },
+  autocompleteInput: {
+    borderWidth: 0,
+  },
+  autocompleteListContainer: {
+    borderTopWidth: 1,
+    borderTopColor: Colors.gray5
   },
   balanceContainer: {
     ...border(['bottom'], Colors.gray5, 1),
@@ -82,6 +107,16 @@ const styles = {
   separator: {
     height: 1,
     backgroundColor: Colors.gray5
+  },
+  dropdownContainer: {
+    borderWidth: 0,
+    ...dimensions(width, DROPDOWN_LINE_HEIGHT),
+  },
+  dropdownItem: {
+    paddingLeft: 15,
+    paddingRight: 15,
+    lineHeight: DROPDOWN_LINE_HEIGHT,
+    textAlign: 'center'
   }
 }
 

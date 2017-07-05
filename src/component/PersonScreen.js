@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux'
 import { hideModal } from '../store/reducer/navigation'
 import ProfileHeader from './profileScreen/ProfileHeader'
 import TransactionList from './profileScreen/TransactionList'
-import { resetForm } from '../store/reducer/sendMoney'
+import { resetForm, updateRecentDescriptions } from '../store/reducer/sendMoney'
 import { sectionHeight } from '../util/StyleUtils'
 import categories from '../util/categories'
 
@@ -21,7 +21,8 @@ const PersonScreen = (props) =>
         onPressClose={() => {props.hideModal(); props.resetForm()}}
         isModal={true} />
       <TransactionList
-        listData={props.transactions} />
+        listData={props.transactions}
+        updateRecentDescriptions={props.updateRecentDescriptions}/>
       </ScrollView>
     </View>
   </View>
@@ -41,6 +42,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ hideModal, resetForm}, dispatch)
+  bindActionCreators({ hideModal, resetForm, updateRecentDescriptions}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonScreen)

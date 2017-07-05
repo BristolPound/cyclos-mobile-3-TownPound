@@ -112,7 +112,7 @@ class SendMoney extends React.Component {
         //-> hence the !this.props.alertShouldPopUp check
           inputProps = {
             buttonText: 'Send Payment',
-            onButtonPress: () => { !this.props.alertShouldPopUp && this.nextPage() },
+            onButtonPress: () => { !this.props.alertShouldPopUp && this.props.resetPayment() && this.nextPage() },
             accessibilityLabel: 'Ready'
           }
           break
@@ -131,7 +131,8 @@ class SendMoney extends React.Component {
               value: this.props.description,
               placeholder: 'Description (optional)',
               maxLength: 100,
-              onChangeText: desc => this.props.updateDescription(desc)
+              updateDescription: desc => this.props.updateDescription(desc),
+              recentDescriptions: this.props.recentDescriptions
             },
             invalidInput: this.isInputInvalid(),
             accessibilityLabel: 'Enter Amount',

@@ -3,6 +3,7 @@ var expect = require('chai').expect
 
 const initialState = {
   payeeId: '',
+  recentDescriptions: [],
   amount: '',
   amountPaid: '',
   description: '',
@@ -41,6 +42,7 @@ describe('SendMoney reducer', () => {
 	    ).to.deep.equal({
 		  	payeeId: 123,
 		  	amount: '',
+        recentDescriptions: [],
 		  	amountPaid: '',
         description: '',
 		  	loading: false,
@@ -65,6 +67,7 @@ describe('SendMoney reducer', () => {
 		  	amount: 5,
 		  	amountPaid: '',
         description: '',
+        recentDescriptions: [],
 		  	loading: false,
 		  	success: undefined,
 		  	message: '',
@@ -85,6 +88,7 @@ describe('SendMoney reducer', () => {
 		  	payeeId: '',
 		  	amount: '',
 		  	amountPaid: '',
+        recentDescriptions: [],
         description: '',
 		  	loading: true,
 		  	success: undefined,
@@ -108,6 +112,7 @@ describe('SendMoney reducer', () => {
 		  	amount: '',
 		  	amountPaid: '',
         description: '',
+        recentDescriptions: [],
 		  	loading: false,
 		  	success: undefined,
 		  	message: '',
@@ -127,7 +132,8 @@ describe('SendMoney reducer', () => {
 	        	message: 'Done',
 	        	amountPaid: 5,
 	        	timestamp: '10.10.2017',
-	        	transactionNumber: '000012'
+	        	transactionNumber: '000012',
+            description: 'test description'
 	      	})
 	    ).to.deep.equal({
 		  	payeeId: '',
@@ -135,6 +141,7 @@ describe('SendMoney reducer', () => {
 		  	amountPaid: 5,
         description: '',
 		  	loading: false,
+        recentDescriptions: ['test description'],
 		  	success: 'Sucess!!!',
 		  	message: 'Done',
 		  	timestamp: '10.10.2017',
@@ -157,6 +164,7 @@ describe('SendMoney reducer', () => {
 		  	amountPaid: '',
         description: '',
 		  	loading: false,
+        recentDescriptions: [],
 		  	success: undefined,
 		  	message: '',
 		  	timestamp: undefined,
@@ -174,6 +182,7 @@ describe('SendMoney reducer', () => {
 				amount: '',
 				amountPaid: '',
 				loading: false,
+        recentDescriptions: [],
 				success: undefined,
 				message: '',
 				timestamp: undefined,
@@ -191,6 +200,7 @@ describe('SendMoney reducer', () => {
 		  	amountPaid: '',
 		  	loading: false,
 		  	success: undefined,
+        recentDescriptions: [],
 		  	message: '',
 		  	timestamp: undefined,
 		  	inputPage: Page.Ready,
@@ -210,6 +220,7 @@ describe('SendMoney reducer', () => {
 		  	payeeId: '',
 		  	amount: '',
 		  	amountPaid: '',
+        recentDescriptions: [],
         description: '',
 		  	loading: false,
 		  	success: undefined,
