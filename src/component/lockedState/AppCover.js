@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Image } from 'react-native'
+import { View, Image, Dimensions } from 'react-native'
 import { isScreenSmall } from '../../util/ScreenSizes'
 import Colors from '@Colors/colors'
 import Images from '@Assets/images'
@@ -9,16 +9,17 @@ const logo = isScreenSmall ? Images.onboardingLogoSE : Images.onboardingLogo7
 const background = Images.background
 
 const style = {
-    position: 'absolute', 
-    left: 0, 
-    right: 0, 
-    bottom: 0, 
-    top: 0, 
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    top: 0,
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
+    height: Dimensions.get('window').height
 }
 
-const AppCover = (props) => 
+const AppCover = (props) =>
     <View style={merge(style, props.unlockOpened ? { padding: 45 } : { justifyContent: 'center'})}>
         <Image source={background} style={style} />
         <Image source={logo} />
