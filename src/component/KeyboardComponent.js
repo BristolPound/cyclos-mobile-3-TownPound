@@ -20,6 +20,8 @@ class KeyboardComponent extends React.Component {
     super()
     this.keyboardOpen = false
     this.state = { keyboardHeight: new Animated.Value(0) }
+    this.animateOpenKeyboard = this.animateOpenKeyboard.bind(this)
+    this.animateCloseKeyboard = this.animateCloseKeyboard.bind(this)
   }
 
   componentWillMount () {
@@ -42,28 +44,33 @@ class KeyboardComponent extends React.Component {
   }
 
   keyboardWillShow (e) {
-    if (AppState.currentState === 'active') {
-      animateTo(this.state.keyboardHeight, e.endCoordinates.height, 500, undefined, () => this.props.setOverlayOpen && this.props.setOverlayOpen(true))
-      this.keyboardOpen = true
-    }
+    this.animateOpenKeyboard(e)
   }
 
   // Android doesn't currently support 'WillShow' and 'WillHide' so use
   // 'DidShow' and 'DidHide' - KeyboardAvoidingView did not work as expected
   // on rn 44.0
   keyboardDidShow (e) {
+    this.animateOpenKeyboard(e)
+  }
+
+
+  keyboardDidHide () {
+    this.animateCloseKeyboard()
+  }
+
+  keyboardWillHide () {
+    this.animateCloseKeyboard()
+  }
+
+  animateOpenKeyboard(e) {
     if (AppState.currentState === 'active') {
       animateTo(this.state.keyboardHeight, e.endCoordinates.height, 500, undefined, () => this.props.setOverlayOpen && this.props.setOverlayOpen(true))
       this.keyboardOpen = true
     }
   }
 
-  keyboardDidHide () {
-    // Do nothing as this is too slow to trigger anyway
-  }
-
-  keyboardWillHide () {
-    // Do nothing as this is too slow to trigger anyway
+  animateCloseKeyboard() {
     animateTo(this.state.keyboardHeight, 0, 500, undefined, () => this.props.setOverlayOpen && this.props.setOverlayOpen(false))
     this.keyboardOpen = false
   }
