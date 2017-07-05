@@ -41,7 +41,14 @@ class BackgroundMap extends React.Component {
   }
 
   componentWillUpdate(nextProps) {
-    if (!_.isEqual(nextProps.forceRegion, this.props.forceRegion)) {
+    /*
+      if we press on goToLocation from the same business twice in a row, 
+      nextProps.forceRegion and this.props.forceRegion would be the same, 
+      even if the map moved in the meantime
+      in this case, the second component of the OR check is met,
+      fixing https://github.com/ScottLogic/BristolPound/issues/1009
+    */
+    if (!_.isEqual(nextProps.forceRegion, this.props.forceRegion) || (!_.isEqual(nextProps.mapViewport, this.props.mapViewport) && _.isEqual(nextProps.forceRegion, nextProps.mapViewport))) {
       this.forceRegion = merge(nextProps.forceRegion)
       this.currentRegion = merge(nextProps.forceRegion)
       this.updateMarkers()
@@ -180,7 +187,8 @@ class BackgroundMap extends React.Component {
 const mapStateToProps = (state) => ({
   selectedBusinessId: state.business.selectedBusinessId,
   businessList: state.business.filteredBusinesses.length > 0 ? state.business.filteredBusinesses : state.business.businessList,
-  forceRegion: state.business.forceRegion
+  forceRegion: state.business.forceRegion,
+  mapViewport: state.business.mapViewport
 })
 
 const mapDispatchToProps = (dispatch) =>

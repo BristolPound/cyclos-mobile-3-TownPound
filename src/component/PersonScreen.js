@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Dimensions, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { hideModal } from '../store/reducer/navigation'
+import { hideModal, closeConfirmation } from '../store/reducer/navigation'
 import ProfileHeader from './profileScreen/ProfileHeader'
 import TransactionList from './profileScreen/TransactionList'
 import { resetForm, updateRecentDescriptions } from '../store/reducer/sendMoney'
@@ -18,7 +18,7 @@ const PersonScreen = (props) =>
         username={props.person.shortDisplay || props.person.username}
         image={props.person.image}
         category={categories.person}
-        onPressClose={() => {props.hideModal(); props.resetForm()}}
+        onPressClose={() => {props.hideModal(); props.closeConfirmation(); props.resetForm()}}
         isModal={true} />
       <TransactionList
         listData={props.transactions}
@@ -42,6 +42,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ hideModal, resetForm, updateRecentDescriptions}, dispatch)
+  bindActionCreators({ hideModal, resetForm, updateRecentDescriptions, closeConfirmation }, dispatch)
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonScreen)
