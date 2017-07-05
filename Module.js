@@ -14,15 +14,15 @@ class Module extends React.Component {
 
   constructor(){
     super()
-    
+
     let enhancers = [
       applyMiddleware(thunk),
       autoRehydrate()
     ]
 
-    this.store = 
-      (__DEV__) 
-        ? createStore(reducer, composeWithDevTools(...enhancers)) 
+    this.store =
+      (__DEV__)
+        ? createStore(reducer, composeWithDevTools(...enhancers))
         : createStore(reducer, compose(...enhancers))
 
     persistStore(this.store, {

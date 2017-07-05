@@ -3,7 +3,7 @@ import { View, ListView } from 'react-native'
 import DefaultText from '../DefaultText'
 import commonStyle from '../style'
 import TransactionItem from './TransactionItem'
-import { buildDataSourceForTransactions} from '../../util/transaction'
+import { buildDataSourceForTransactions } from '../../util/transaction'
 import styles from './ProfileStyle'
 
 const renderRow = (transaction) => {
@@ -17,6 +17,10 @@ export default class TransactionList extends Component {
   constructor(props) {
     super(props)
     this.state = { dataSource: buildDataSourceForTransactions(props.listData) }
+  }
+
+  componentWillMount() {
+    this.props.updateRecentDescriptions(this.props.listData)
   }
 
   componentWillUpdate(nextProps) {
