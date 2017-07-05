@@ -58,6 +58,7 @@ class InputComponent extends KeyboardComponent {
 
     if (nextProps.descriptionInput && (nextProps.descriptionInput != this.props.descriptionInput)) {
       this.setState({
+        description: nextProps.descriptionInput.value,
         recentDescriptions: nextProps.descriptionInput.recentDescriptions
       })
     }
@@ -114,6 +115,11 @@ class InputComponent extends KeyboardComponent {
         </DefaultText>}
     </View>
 
+    const descriptionOnBlur = () => {
+      this.setState({enteringDescription: false})
+      descriptionInput.updateDescription(description)
+    }
+
     return (
           <Animated.View style={{backgroundColor: 'white', bottom: this.state.keyboardHeight }} accessibilityLabel={accessibilityLabel}>
 
@@ -148,7 +154,7 @@ class InputComponent extends KeyboardComponent {
                           hideResults={false}
                           listStyle={{borderWidth: 0}}
                           onFocus={() => this.setState({enteringDescription: true})}
-                          onBlur={() => this.setState({enteringDescription: false})}
+                          onBlur={descriptionOnBlur}
                           placeholder={descriptionInput.placeholder}
                           onChangeText={text => this.setState({description: text})}
                           keyboardShouldPersistTaps="always"

@@ -37,12 +37,6 @@ class SendMoney extends React.Component {
     }
   }
 
-  componentWillReceiveProps(props) {
-    console.log("receiving new send money props")
-
-    console.log("description received is " + props.description)
-  }
-
   nextPage () {
     const nextPage = (this.props.inputPage + 1) % Object.keys(Page).length
     this.props.updatePage(nextPage)

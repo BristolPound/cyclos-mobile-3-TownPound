@@ -132,7 +132,8 @@ describe('SendMoney reducer', () => {
 	        	message: 'Done',
 	        	amountPaid: 5,
 	        	timestamp: '10.10.2017',
-	        	transactionNumber: '000012'
+	        	transactionNumber: '000012',
+            description: 'test description'
 	      	})
 	    ).to.deep.equal({
 		  	payeeId: '',
@@ -140,7 +141,7 @@ describe('SendMoney reducer', () => {
 		  	amountPaid: 5,
         description: '',
 		  	loading: false,
-        recentDescriptions: [],
+        recentDescriptions: ['test description'],
 		  	success: 'Sucess!!!',
 		  	message: 'Done',
 		  	timestamp: '10.10.2017',
