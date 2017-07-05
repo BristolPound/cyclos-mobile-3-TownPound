@@ -1,9 +1,10 @@
 import React from 'react'
 import { Marker } from 'react-native-maps'
 import platform from '../../util/Platforms'
-import { Image, View } from 'react-native'
-import DefaultText from '../DefaultText'
+import { isScreenSmall } from '../../util/ScreenSizes'
+import { Image, View, Text } from 'react-native'
 import Images from '@Assets/images'
+import { Dimensions } from 'react-native'
 
 const getClusterDetails = (pointCount, selected) => {
   var image
@@ -13,29 +14,26 @@ const getClusterDetails = (pointCount, selected) => {
   switch (true) {
     case (pointCount > 99):
       image = selected ? Images.selectedOver99 : Images.clusterOver99
-      marginTop = 5
+      marginTop = isScreenSmall ? 4 : 3
       marginLeft = 14.5
-      fontSize = 13
       break;
     case (pointCount > 9):
       image = selected ? Images.selectedOver9 : Images.clusterOver9
-      marginTop = 3
+      marginTop = isScreenSmall ? 3 : 2
       marginLeft = 13
-      fontSize = 13
       break;
     default:
       image = selected ? Images.selectedCluster : Images.cluster
-      marginTop = 7/3
-      marginLeft = 12.5
-      fontSize = 12
+      marginTop = isScreenSmall ? 2 : 1
+      marginLeft = 13.5
       break;
   }
-  return {image, marginTop, marginLeft, fontSize}
+  return {image, marginTop, marginLeft}
 }
 
 const MapMarker = ({ coordinate, selected, onPress, pointCount }) => {
   if (pointCount) {
-    const {image, marginTop, marginLeft, fontSize} = getClusterDetails(pointCount, selected)
+    const {image, marginTop, marginLeft} = getClusterDetails(pointCount, selected)
     // added Date.now into marker key to force update marker (fixes cluster text disappearing)
     return <Marker
         coordinate={coordinate}
@@ -44,9 +42,9 @@ const MapMarker = ({ coordinate, selected, onPress, pointCount }) => {
         anchor={platform.isIOS() ? null : { x: 0.5, y: 0.5 }}
         image={image}>
         <View collapsible={false}>
-          <DefaultText style={{ color: 'white', fontSize, marginTop, marginLeft }}>
+          <Text style={{ color: 'white', marginLeft, marginTop, includeFontPadding: false}}>
             {pointCount}
-          </DefaultText>
+          </Text>
         </View>
     </Marker>
   }
