@@ -3,7 +3,7 @@ import { View, ListView } from 'react-native'
 import DefaultText from '../DefaultText'
 import commonStyle from '../style'
 import TransactionItem from './TransactionItem'
-import { buildDataSourceForTransactions, sortTransactions } from '../../util/transaction'
+import { buildDataSourceForTransactions } from '../../util/transaction'
 import styles from './ProfileStyle'
 
 const renderRow = (transaction) => {

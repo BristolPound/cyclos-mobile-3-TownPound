@@ -48,8 +48,10 @@ const styles = {
   },
   autocompleteInput: {
     borderWidth: 0,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray5
+  },
+  autocompleteListContainer: {
+    borderTopWidth: 1,
+    borderTopColor: Colors.gray5
   },
   balanceContainer: {
     ...border(['bottom'], Colors.gray5, 1),

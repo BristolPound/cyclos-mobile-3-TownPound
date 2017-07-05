@@ -153,6 +153,7 @@ class InputComponent extends KeyboardComponent {
                           style={styles.textInput}
                           hideResults={false}
                           listStyle={{borderWidth: 0}}
+                          listContainerStyle={styles.autocompleteListContainer}
                           onFocus={() => this.setState({enteringDescription: true})}
                           onBlur={descriptionOnBlur}
                           placeholder={descriptionInput.placeholder}
