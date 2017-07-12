@@ -26,7 +26,7 @@ class Module extends React.Component {
         : createStore(reducer, compose(...enhancers))
 
     persistStore(this.store, {
-      whitelist: ['business', 'transaction', 'developerOptions', 'login'],
+      whitelist: ['business', 'transaction', 'login'],
       storage: AsyncStorage,
       transforms: [
         createTransform(
