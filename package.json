@@ -21,7 +21,6 @@
     "react-native-communications": "^2.1.4",
     "react-native-fabric": "^0.4.1",
     "react-native-htmlview": "0.5.0",
-    "react-native-maps": "^0.15.2",
     "react-native-scripts": "0.0.29",
     "react-native-scrollable-tab-view": "^0.7.4",
     "react-redux": "^4.4.5",
