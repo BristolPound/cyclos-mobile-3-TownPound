@@ -31,7 +31,7 @@ class UnlockAppAlert extends React.Component {
             <View style={style.wrapper}>
                 <View style={style.container}>
                     <Text style={style.instructionText}>
-                        To protect your privacy, we have locked the login area.
+                        For your privacy, the app was locked.
                         To unlock, please enter the last {unlockCharNo} characters of your password. Or chose "Logout" to just browse
                     </Text>
                     { this.props.error &&
