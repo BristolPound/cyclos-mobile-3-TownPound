@@ -37,10 +37,10 @@ class UnlockAppAlert extends React.Component {
                     { this.props.error &&
                         <View>
                             <Text style={merge(style.errorText, { paddingTop: 10 })}>
-                                You have {maxAttempts - this.props.failedAttempts} attempts left.
+                                The characters entered don't match.
                             </Text>
                             <Text style={merge(style.errorText, { paddingBottom: 10 })}>
-                                The characters entered don't match.
+                                You have {maxAttempts - this.props.failedAttempts} attempts left.
                             </Text>
                         </View>
                     }
