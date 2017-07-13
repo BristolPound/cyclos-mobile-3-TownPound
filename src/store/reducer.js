@@ -51,8 +51,6 @@ export const initialise = (store) => {
 
   _getLocationAsync()
 
-  setBaseUrl(store.getState().developerOptions.server)
-
   store.dispatch(stateInitialised())
   if (store.getState().login.loggedInUsername) {
     store.dispatch(selectMainComponent(mainComponent.returningLogin))
