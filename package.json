@@ -1,6 +1,6 @@
 {
   "name": "CityPoundSourceCode",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "dependencies": {
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.1.1",
@@ -17,7 +17,7 @@
     "mocha": "^3.4.1",
     "moment": "^2.15.0",
     "org.bristolpound.cyclos.api.directory": "git+https://gitlab.com/TownPound/cyclos/directory/directory-api-JS.git#v1.0.1",
-    "react": "16.0.0-alpha.6",
+    "react": "16.0.0-alpha.12",
     "react-native-communications": "^2.1.4",
     "react-native-fabric": "^0.4.1",
     "react-native-htmlview": "0.5.0",
@@ -26,7 +26,7 @@
     "react-native-scripts": "0.0.29",
     "react-native-scrollable-tab-view": "^0.7.4",
     "react-redux": "^4.4.5",
-    "react-test-renderer": "16.0.0-alpha.6",
+    "react-test-renderer": "16.0.0-alpha.12",
     "redux": "^3.5.2",
     "redux-persist": "^4.0.0-alpha5",
     "redux-thunk": "^2.1.0",

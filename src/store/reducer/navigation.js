@@ -2,8 +2,7 @@ import _ from 'lodash'
 import merge from '../../util/merge'
 import { openTraderModal } from './business'
 import { moveMap, selectClosestBusiness } from './business'
-import { updatePayee } from './sendMoney'
-import { selectPerson } from './person'
+import { openPersonModal } from './person'
 
 export const modalState = {
   none: 'none',
@@ -85,9 +84,7 @@ export const openDetailsModal = (user) =>
       dispatch(openTraderModal(user.id))
     } else {
       // Open Person screen
-      dispatch(selectPerson(user))
-      dispatch(showModal(modalState.personScreen))
-      dispatch(updatePayee(user.id))
+      dispatch(openPersonModal(user))
     }
   }
 

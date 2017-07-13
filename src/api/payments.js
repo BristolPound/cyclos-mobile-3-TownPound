@@ -11,3 +11,10 @@ export const makePayment = (payment, dispatch) =>
       type: results.paymentTypes[0].id,
       requiresAuthorisation: true
     }, dispatch))
+
+export const getPaymentData = (id, dispatch) =>
+  get('self/payments/data-for-perform', {
+      to: id,
+      fields: 'paymentTypes.id',
+      requiresAuthorisation: true
+  }, dispatch)
