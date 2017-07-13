@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { View, ListView, TouchableHighlight, Image } from 'react-native'
+import { View, ListView, TouchableHighlight, Image, Text } from 'react-native'
 import DefaultText from '../DefaultText'
 import Colors from '@Colors/colors'
 import Images from '@Assets/images'
@@ -10,6 +10,7 @@ import { updateStatus } from '../../store/reducer/statusMessage'
 import { switchSection, accountSections } from '../../store/reducer/account'
 import ProfileHeader from '../profileScreen/ProfileHeader'
 import styles from './AccountStyle'
+import Config from '@Config/config'
 
 const renderSeparator = (sectionID, rowID) =>
   <View style={styles.separator} key={`sep:${sectionID}:${rowID}`}/>
@@ -64,20 +65,23 @@ const Account = (props) => {
   ds = ds.cloneWithRowsAndSections(data, Object.keys(data))
 
   return (
-    <View style={styles.container}>
-      <ProfileHeader
-        name={props.details.display}
-        username={props.details.shortDisplay}
-        image={props.details.image && props.details.image.url}
-        category='person'/>
-      <ListView
-        style={styles.detailsList}
-        dataSource={ds}
-        scrollEnabled={false}
-        renderSeparator={renderSeparator}
-        renderSectionHeader={renderSectionHeader}
-        renderRow={(accountOption, i) => <AccountOption {...accountOption} index={i}/> }
-        removeClippedSubviews={false}/>
+    <View style={styles.outerContainer}>
+      <View style={styles.container}>
+        <ProfileHeader
+          name={props.details.display}
+          username={props.details.shortDisplay}
+          image={props.details.image && props.details.image.url}
+          category='person'/>
+        <ListView
+          style={styles.detailsList}
+          dataSource={ds}
+          scrollEnabled={false}
+          renderSeparator={renderSeparator}
+          renderSectionHeader={renderSectionHeader}
+          renderRow={(accountOption, i) => <AccountOption {...accountOption} index={i}/> }
+          removeClippedSubviews={false}/>
+      </View>
+      <Text style={styles.version}>Bristol Pound Mobile v{Config.APP_VERSION} </Text>
     </View>
   )
 }
