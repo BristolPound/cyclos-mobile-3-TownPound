@@ -1,8 +1,10 @@
 import React from 'react'
-import { View, Image, Dimensions } from 'react-native'
+import { View, Image, Dimensions, Text } from 'react-native'
 import Colors from '@Colors/colors'
+import Config from '@Config/config'
 import DefaultText from '../DefaultText'
 import Images from '@Assets/images'
+import { TAB_BAR_HEIGHT } from '../tabbar/TabBarStyle'
 
 const screenWidth = Dimensions.get('window').width,
   screenHeight = Dimensions.get('window').height
@@ -24,6 +26,12 @@ const styles = {
   },
   image: {
     marginBottom: 20
+  },
+  version: {
+    textAlign: 'center',
+    color: Colors.gray2,
+    position: 'absolute',
+    bottom: TAB_BAR_HEIGHT + 5,
   }
 }
 
@@ -45,11 +53,14 @@ const getImageSource = (image) => {
   }
 }
 
-const LoginToView = (props) =>
+const LoginToView = (props) => 
   <View style={styles.container}>
     <Image style={styles.image} source={getImageSource(props.image)} />
     <DefaultText style={styles.text}>{props.lineOne}</DefaultText>
     <DefaultText style={styles.text}>{props.lineTwo}</DefaultText>
+    { props.image === emptyStateImage.account && 
+      <Text style={styles.version}>Bristol Pound Mobile v{Config.APP_VERSION}</Text>
+    }
   </View>
 
 export default LoginToView

@@ -5,15 +5,25 @@ import commonStyle from '../style'
 import { isScreenSmall } from '../../util/ScreenSizes'
 
 const styles = {
+  outerContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-between'
+  },
   container: {
     flex: 1
   },
   detailsList: {
-    flex: 1,
-    ...commonStyle.shadow,
     backgroundColor: Colors.offWhite
   },
   sectionHeader: commonStyle.sectionHeader,
+  version: {
+    textAlign: 'center', 
+    backgroundColor: Colors.offWhite, 
+    color: Colors.gray2,
+    alignItems: 'flex-end',
+    paddingBottom: 5
+  },
   row: {
     container: {
       height: isScreenSmall ? 40 : 42,
