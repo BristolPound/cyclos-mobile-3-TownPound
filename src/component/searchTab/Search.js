@@ -159,6 +159,7 @@ export default class Search extends React.Component {
                        placeholder={'Search Trader'}
                        placeholderTextColor={Colors.gray4}
                        selectTextOnFocus={true}
+                       autoCorrect={false}
                        style={textInput}
                        value={input}
                        underlineColorAndroid={Colors.transparent}/>
