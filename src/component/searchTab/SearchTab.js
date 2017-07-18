@@ -67,9 +67,11 @@ class SearchTab extends React.Component {
     })
     if (nextProps.selectedBusiness !== this.props.selectedBusiness || mapMoved) {
       const componentListArray = this.createComponentListArray(nextProps)
-      this.state.componentListArray = this.listPosition
+      componentListArray = this.listPosition
         ? componentListArray.slice(0, listCroppedLength)
         : componentListArray
+
+      this.setState({ componentListArray: componentListArray})
     }
   }
 
