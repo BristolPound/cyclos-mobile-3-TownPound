@@ -291,7 +291,7 @@ const reducer = (state = initialState, action) => {
       newActiveFilters = state.activeFilters
       _.pull(newActiveFilters, action.value)
       newFilteredBusinesses = _.difference(state.filteredBusinesses, getBusinessesByExclusiveFilter(state.businessList, newActiveFilters, action.value))
-      businesses = state.filteredBusinesses.length > 0 ? state.filteredBusinesses : state.businessList
+      businesses = newFilteredBusinesses.length > 0 ? newFilteredBusinesses : state.businessList
       closestBusinesses = getClosestBusinesses(businesses, businessArea(state.mapViewport))
       state = merge(state, {
         closestBusinesses,
