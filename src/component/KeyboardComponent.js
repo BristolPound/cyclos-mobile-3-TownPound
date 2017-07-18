@@ -63,14 +63,14 @@ class KeyboardComponent extends React.Component {
     this.animateCloseKeyboard()
   }
 
-  animateOpenKeyboard(e) {
+  animateOpenKeyboard (e) {
     if (AppState.currentState === 'active') {
       animateTo(this.state.keyboardHeight, e.endCoordinates.height, 500, undefined, () => this.props.setOverlayOpen && this.props.setOverlayOpen(true))
       this.keyboardOpen = true
     }
   }
 
-  animateCloseKeyboard() {
+  animateCloseKeyboard () {
     animateTo(this.state.keyboardHeight, 0, 500, undefined, () => this.props.setOverlayOpen && this.props.setOverlayOpen(false))
     this.keyboardOpen = false
   }

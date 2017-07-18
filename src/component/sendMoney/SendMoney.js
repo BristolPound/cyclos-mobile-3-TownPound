@@ -196,7 +196,7 @@ const mapDispatchToProps = (dispatch) =>
 
 const mapStateToProps = (state) => ({
   ...state.sendMoney,
-  payee: state.business.businessList[state.sendMoney.payeeId] || state.person.selectedPerson || {},
+  payee: state.business.traderScreenBusiness || state.person.selectedPerson || {},
   balance: state.account.balance,
   loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
   connection: state.networkConnection.status
