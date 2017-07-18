@@ -3,6 +3,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import { Dimensions } from 'react-native'
 import merge from '../../util/merge'
+import { getPaymentData } from '../../api/payments'
 import { getClosestBusinesses, offsetOverlappingBusinesses, getBusinessesByFilter, getBusinessesByExclusiveFilter } from '../../util/business'
 import { addFailedAction } from './networkConnection'
 import { getBusinesses } from '../../api/users'
@@ -100,6 +101,7 @@ const initialState = {
   forceRegion: MapViewport,
   tabMode: tabModes.default,
   traderScreenBusinessId: undefined,
+  traderScreenBusiness: {},
   geolocationStatus: null,
   businessListRef: null,
 }
@@ -165,6 +167,11 @@ export const selectClosestBusiness = () => ({
   type: 'business/SELECT_CLOSEST_BUSINESS'
 })
 
+const paymentDataReceived = (result) => ({
+  type: 'business/PAYMENT_DATA',
+  data: result
+})
+
 export const geolocationChanged = (coords, dispatch) => {
     const { latitude, longitude } = coords
     dispatch(geolocationSuccess(coords))
@@ -181,6 +188,8 @@ export const geolocationFailed = () => ({
 
 export const openTraderModal = (businessId) => (dispatch, getState) => {
   dispatch(selectBusinessForModal(businessId))
+  getPaymentData(businessId, dispatch)
+    .then(result => dispatch(paymentDataReceived(result)))
   dispatch(showModal(modalState.traderScreen))
   dispatch(updatePayee(businessId))
 }
@@ -265,13 +274,15 @@ const reducer = (state = initialState, action) => {
         businessList: [],
         businessListTimestamp: null,
         closestBusinesses: [ ],
-        traderScreenBusinessId: undefined
+        traderScreenBusinessId: undefined,
+        traderScreenBusiness: {}
       })
       break
 
     case 'business/SET_TRADER_SCREEN_ID':
       state = merge(state, {
         traderScreenBusinessId: action.id,
+        traderScreenBusiness: state.businessList[action.id] || {}
       })
       break
 
@@ -318,6 +329,12 @@ const reducer = (state = initialState, action) => {
 
     case 'navigation/NAVIGATE_TO_TAB':
       state = merge(state, { tabMode: tabModes.default })
+      break
+    
+    case 'business/PAYMENT_DATA':
+      var selected = state.traderScreenBusiness
+      selected.paymentTypes = action.data.paymentTypes
+      state = merge(state, { traderScreenBusiness: selected })
   }
   return state
 }

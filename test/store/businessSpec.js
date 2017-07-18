@@ -15,6 +15,7 @@ const initialState = {
 	forceRegion: MapViewport,
 	tabMode: 'default',
 	traderScreenBusinessId: undefined,
+  	traderScreenBusiness: {},
 	geolocationStatus: null,
 	businessListRef: null
 }
@@ -43,6 +44,7 @@ describe('Business reducer', () => {
 		  	forceRegion: MapViewport,
 		  	tabMode: 'default',
 		  	traderScreenBusinessId: undefined,
+  			traderScreenBusiness: {},
 		  	geolocationStatus: null,
 		  	businessListRef: null
 		})
@@ -65,6 +67,7 @@ describe('Business reducer', () => {
 		  	forceRegion: MapViewport,
 		  	tabMode: 'default',
 		  	traderScreenBusinessId: undefined,
+  			traderScreenBusiness: {},
 		  	geolocationStatus: null,
 		  	businessListRef: null
 		})
@@ -83,6 +86,7 @@ describe('Business reducer', () => {
 			  	forceRegion: MapViewport,
 		  		tabMode: 'default',
 			  	traderScreenBusinessId: undefined,
+  				traderScreenBusiness: {},
 			  	geolocationStatus: null,
 			  	businessListRef: null
 			}, {
@@ -99,6 +103,7 @@ describe('Business reducer', () => {
 		  	forceRegion: MapViewport,
 		  	tabMode: 'default',
 		  	traderScreenBusinessId: undefined,
+  			traderScreenBusiness: {},
 		  	geolocationStatus: null,
 		  	businessListRef: null
 		})
@@ -117,6 +122,7 @@ describe('Business reducer', () => {
 			  	forceRegion: MapViewport,
 		  		tabMode: 'default',
 			  	traderScreenBusinessId: 4,
+  				traderScreenBusiness: {name: 'business'},
 			  	geolocationStatus: null,
 			  	businessListRef: null
 			}, {
@@ -142,6 +148,7 @@ describe('Business reducer', () => {
 		  	forceRegion: MapViewport,
 		  	tabMode: 'default',
 		  	traderScreenBusinessId: 1,
+  			traderScreenBusiness: {},
 		  	geolocationStatus: null,
 		  	businessListRef: null
 		})
@@ -164,6 +171,7 @@ describe('Business reducer', () => {
 		  	forceRegion: MapViewport,
 		  	tabMode: 'search',
 		  	traderScreenBusinessId: undefined,
+  			traderScreenBusiness: {},
 		  	geolocationStatus: null,
 		  	businessListRef: null
 		})
@@ -185,6 +193,7 @@ describe('Business reducer', () => {
 		  	forceRegion: MapViewport,
 		  	tabMode: 'default',
 		  	traderScreenBusinessId: undefined,
+  			traderScreenBusiness: {},
 		  	geolocationStatus: false,
 		  	businessListRef: null
 		})
@@ -207,6 +216,7 @@ describe('Business reducer', () => {
 		  	forceRegion: MapViewport,
 		  	tabMode: 'default',
 		  	traderScreenBusinessId: undefined,
+  			traderScreenBusiness: {},
 		  	geolocationStatus: 'here',
 		  	businessListRef: null
 		})
@@ -229,6 +239,7 @@ describe('Business reducer', () => {
 		  	forceRegion: MapViewport,
 		  	tabMode: 'default',
 		  	traderScreenBusinessId: undefined,
+  			traderScreenBusiness: {},
 		  	geolocationStatus: null,
 		  	businessListRef: 'here'
 		})
@@ -247,6 +258,7 @@ describe('Business reducer', () => {
 			  	forceRegion: MapViewport,
 			  	tabMode: 'search',
 			  	traderScreenBusinessId: undefined,
+  				traderScreenBusiness: {},
 			  	geolocationStatus: null,
 			  	businessListRef: null
 			}, {
