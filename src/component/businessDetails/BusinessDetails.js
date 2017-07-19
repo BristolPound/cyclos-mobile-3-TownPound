@@ -81,7 +81,7 @@ function getFields(business, goToTraderLocation) {
   // Order of display should be:
   //    access point*, special offer*, address, opening times*, phone number, email address
   // Note: access point and special offer aren't supported yet.
-    business.fields.icon && business.fields.icon == 1 && fields.push(
+    business.fields.icon == 1 && fields.push(
       businessDetail('accessPointField', Images.accesspoint, 'Access Point', () => {} )
     )
 
