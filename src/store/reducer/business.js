@@ -38,40 +38,9 @@ export const tabModes = {
   serach: 'search'
 }
 
-export const allFilters = [
-  {
-    label: 'foodanddrink',
-    text: "Food And Drink"
-  },
-  {
-    label: 'foryourbusiness',
-    text: "For your business"
-  },
-  {
-    label: 'foryourhome',
-    text: "For your home"
-  },
-  {
-    label: 'gettingaround',
-    text: "Getting around"
-  },
-  {
-    label: 'goingout',
-    text: "Going out"
-  },
-  {
-    label: 'lookingafteryou',
-    text: "Looking after you"
-  },
-  {
-    label: 'shopping',
-    text: "Shopping"
-  },
-  {
-    label: 'visitingthecity',
-    text: "Visiting " + Config.APP_CITY
-  }
-]
+function formatCategory (category) {
+    return {'id': category.id, 'label': category.label}
+}
 
 // We want the center for sorting businesses higher than the actual centre of map.
 // 1/15 of mapHeight higher than center of map, which is 22.5px higher than center of screen.
@@ -92,6 +61,7 @@ const businessArea = (viewport) =>
 
 const initialState = {
   businessList: [],
+  categories: [],
   businessListTimestamp: null,
   selectedBusinessId: undefined,
   closestBusinesses: [],
@@ -186,6 +156,11 @@ export const geolocationFailed = () => ({
   type: 'business/GEOLOCATION_FAILED'
 })
 
+const fieldsReceived = (fields) => ({
+  type: 'business/FIELDS_RECEIVED',
+  fields
+})
+
 export const openTraderModal = (businessId) => (dispatch, getState) => {
   dispatch(selectBusinessForModal(businessId))
   getPaymentData(businessId, dispatch)
@@ -199,8 +174,9 @@ export const loadBusinessList = (force = false) => (dispatch, getState) => {
     //ToDo: to load data every time! When api has changed make a call to check whether something changed since last time the data was pulled
     if (Date.now() - persistedDate > moment.duration(2, 'days') || force) {
       getBusinesses()
-        .then((businesses) => {
-          dispatch(businessListReceived(businesses))
+        .then((data) => {
+          dispatch(businessListReceived(data.directory))
+          dispatch(fieldsReceived(data.fields))
         })
         // if this request fails, the business list may not be populated. In this case, when
         // connection status changes to be connected, the list is re-fetched
@@ -221,6 +197,12 @@ const reducer = (state = initialState, action) => {
         closestBusinesses,
         businessList: offsetBusinesses,
         businessListTimestamp: new Date()
+      })
+      break
+
+    case 'business/FIELDS_RECEIVED':
+      state = merge(state, {
+        categories: _.map(action.fields.businesscategory.possibleValues.categories, formatCategory)
       })
       break
 
