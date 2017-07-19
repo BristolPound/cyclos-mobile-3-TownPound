@@ -85,6 +85,10 @@ function getFields(business, goToTraderLocation) {
       businessDetail('addressField', Images.address, addressToString(business.address), goToTraderLocation )
     )
 
+    business.fields.memberdiscount && fields.push(
+      businessDetail('discountField', Images.deal, business.fields.memberdiscount, () => {} )
+    )
+
     business.fields.businessphone && phoneDetail()
 
     business.fields.businessemail && fields.push(
@@ -107,6 +111,14 @@ function getFields(business, goToTraderLocation) {
           businessDetail('linkedinField', Images.linkedin, business.name, () => Communications.web(business.fields.linkedin))
     )
 
+    business.fields.flickr && fields.push(
+          businessDetail('flickrField', Images.flickr, business.name, () => Communications.web(business.fields.flickr))
+    )
+
+    business.fields.businessopeninghours && fields.push(
+      businessDetail('openingHoursField', Images.opening, business.fields.businessopeninghours, () => {})
+    )
+    
   return fields
 }
 
