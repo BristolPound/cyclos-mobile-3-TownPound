@@ -10,7 +10,7 @@ import Config from '@Config/config'
 
 const Field = ({icon, text, accessibilityLabel, onPress, additionalOption}) =>
   <View style={styles.field}>
-    <Image style={styles.image} source={icon}/>
+    <Image style={styles.image} source={icon} resizeMode='contain'/>
     <TouchableOpacity style={styles.item} accessibilityLabel={accessibilityLabel} onPress={onPress}>
       <MultilineText style={styles.text}>{text}</MultilineText>
     </TouchableOpacity>
@@ -81,12 +81,16 @@ function getFields(business, goToTraderLocation) {
   // Order of display should be:
   //    access point*, special offer*, address, opening times*, phone number, email address
   // Note: access point and special offer aren't supported yet.
-    business.address.location && fields.push(
-      businessDetail('addressField', Images.address, addressToString(business.address), goToTraderLocation )
+    business.fields.icon && business.fields.icon == 1 && fields.push(
+      businessDetail('accessPointField', Images.accesspoint, 'Access Point', () => {} )
     )
 
     business.fields.memberdiscount && fields.push(
       businessDetail('discountField', Images.deal, business.fields.memberdiscount, () => {} )
+    )
+
+    business.address.location && fields.push(
+      businessDetail('addressField', Images.address, addressToString(business.address), goToTraderLocation )
     )
 
     business.fields.businessphone && phoneDetail()
@@ -118,7 +122,7 @@ function getFields(business, goToTraderLocation) {
     business.fields.businessopeninghours && fields.push(
       businessDetail('openingHoursField', Images.opening, business.fields.businessopeninghours, () => {})
     )
-    
+
   return fields
 }
 
