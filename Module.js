@@ -30,7 +30,7 @@ class Module extends React.Component {
       storage: AsyncStorage,
       transforms: [
         createTransform(
-          (state) => _.pick(state, ['businessList', 'businessListTimestamp']),
+          (state) => _.pick(state, ['businessList', 'businessListTimestamp', 'categories']),
           (state) => state,
           {whitelist: ['business']}
         ),
