@@ -112,6 +112,7 @@ class SearchTab extends React.Component {
             <ComponentList
                 ref='componentList'
                 items={this.state.componentListArray}
+                refreshTabMode={() => updateTabMode(tabMode)}
                 componentForItem={ComponentForItem}
                 deselect={() => this.props.selectBusiness(undefined)}
                 onPressItem={index => this.state.componentListArray[index].id && openTraderModal(this.state.componentListArray[index].id)} />
