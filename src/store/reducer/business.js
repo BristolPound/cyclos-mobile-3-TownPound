@@ -161,10 +161,21 @@ const fieldsReceived = (fields) => ({
   fields
 })
 
+// called after login successful, so there's no need to check if the user has logged in
+export const loadPaymentData = (dispatch) => {
+  var businessId = getState().business.traderScreenBusinessId
+  if(businessId) {
+    getPaymentData(businessId, dispatch)
+      .then(result => dispatch(paymentDataReceived(result)))
+  }
+}
+
 export const openTraderModal = (businessId) => (dispatch, getState) => {
   dispatch(selectBusinessForModal(businessId))
-  getPaymentData(businessId, dispatch)
-    .then(result => dispatch(paymentDataReceived(result)))
+  if(getState().login.loginStatus == 'LOGGED_IN') {
+    getPaymentData(businessId, dispatch)
+      .then(result => dispatch(paymentDataReceived(result)))
+  }
   dispatch(showModal(modalState.traderScreen))
   dispatch(updatePayee(businessId))
 }
