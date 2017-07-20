@@ -1,6 +1,6 @@
 {
   "name": "CityPoundSourceCode",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "dependencies": {
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.1.1",
