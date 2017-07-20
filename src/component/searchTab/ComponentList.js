@@ -13,7 +13,6 @@ class ComponentList extends React.Component {
   }
 
   componentWillMount() {
-    console.log("componentWillMount")
     this.props.refreshTabMode()
   }
 
