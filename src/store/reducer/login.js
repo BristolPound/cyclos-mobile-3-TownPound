@@ -5,6 +5,7 @@ import { loadAccountDetails, resetAccount } from './account'
 import { loadTransactions, resetTransactions } from './transaction'
 import { deleteSessionToken } from '../../api/api'
 import { updateStatus, ERROR_SEVERITY, unknownError } from './statusMessage'
+import { loadPaymentData } from './business'
 import md5 from 'md5'
 
 export const LOGIN_STATUSES = {
@@ -51,6 +52,7 @@ export const login = (username, password) =>
         dispatch(loadTransactions(username === getState().login.loggedInUsername))
         dispatch(loadAccountDetails())
         dispatch(loggedIn(username, md5(password.substr(password.length - unlockCharNo))))
+        dispatch(loadPaymentData())
       })
       .catch (err => {
         if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
