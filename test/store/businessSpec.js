@@ -7,6 +7,7 @@ chai.use(chaiSubset)
 const initialState = {
 	activeFilters: [],
   	businessList: [],
+	categories: [],
   	businessListTimestamp: null,
   	selectedBusinessId: undefined,
   	closestBusinesses: [],
@@ -37,6 +38,7 @@ describe('Business reducer', () => {
 	    ).to.containSubset({
 			activeFilters: [],
 		  	businessList: [],
+			categories: [],
 		  	selectedBusinessId: undefined,
 		  	closestBusinesses: [],
   			filteredBusinesses: [],
@@ -59,6 +61,7 @@ describe('Business reducer', () => {
 	    ).to.deep.equal({
 			activeFilters: [],
 		  	businessList: [],
+			categories: [],
 		  	businessListTimestamp: null,
 		  	selectedBusinessId: 0,
 		  	closestBusinesses: [],
@@ -78,6 +81,7 @@ describe('Business reducer', () => {
 	      	reducer({
 				activeFilters: [],
 			  	businessList: [],
+				categories: [],
 			  	businessListTimestamp: null,
 			  	selectedBusinessId: 0,
 			  	closestBusinesses: [{id: 1}, {id: 4}],
@@ -95,6 +99,7 @@ describe('Business reducer', () => {
 	    ).to.deep.equal({
 			activeFilters: [],
 		  	businessList: [],
+			categories: [],
 		  	businessListTimestamp: null,
 		  	selectedBusinessId: 1,
 		  	closestBusinesses: [{id: 1}, {id: 4}],
@@ -114,6 +119,7 @@ describe('Business reducer', () => {
 	      	reducer({
 				activeFilters: [],
 			  	businessList: [{id: 0}, {id: 1}],
+				categories: [],
 			  	businessListTimestamp: null,
 			  	selectedBusinessId: undefined,
 			  	closestBusinesses: [{id: 1}, {id: 4}],
@@ -140,6 +146,7 @@ describe('Business reducer', () => {
 	    ).to.deep.equal({
 			activeFilters: [],
 		  	businessList: [],
+			categories: [],
 		  	businessListTimestamp: null,
 		  	selectedBusinessId: undefined,
 		  	closestBusinesses: [],
@@ -163,6 +170,7 @@ describe('Business reducer', () => {
 	    ).to.deep.equal({
 			activeFilters: [],
 		  	businessList: [],
+			categories: [],
 		  	businessListTimestamp: null,
 		  	selectedBusinessId: undefined,
 		  	closestBusinesses: [],
@@ -185,6 +193,7 @@ describe('Business reducer', () => {
 	    ).to.deep.equal({
 			activeFilters: [],
 		  	businessList: [],
+			categories: [],
 		  	businessListTimestamp: null,
 		  	selectedBusinessId: undefined,
 		  	closestBusinesses: [],
@@ -208,6 +217,7 @@ describe('Business reducer', () => {
 	    ).to.deep.equal({
 			activeFilters: [],
 		  	businessList: [],
+			categories: [],
 		  	businessListTimestamp: null,
 		  	selectedBusinessId: undefined,
 		  	closestBusinesses: [],
@@ -231,6 +241,7 @@ describe('Business reducer', () => {
 	    ).to.deep.equal({
 			activeFilters: [],
 		  	businessList: [],
+			categories: [],
 		  	businessListTimestamp: null,
 		  	selectedBusinessId: undefined,
 		  	closestBusinesses: [],
@@ -250,6 +261,7 @@ describe('Business reducer', () => {
 	      	reducer({
 				activeFilters: [],
 			  	businessList: [],
+				categories: [],
 			  	businessListTimestamp: null,
 			  	selectedBusinessId: undefined,
 			  	closestBusinesses: [],

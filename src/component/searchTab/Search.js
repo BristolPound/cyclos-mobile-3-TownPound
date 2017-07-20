@@ -139,6 +139,7 @@ export default class Search extends React.Component {
                     style={closeButton}
                     size={SEARCH_BAR_HEIGHT}/>
         modeComponent = <FiltersComponent
+                    allFilters={this.props.allFilters}
                     activeFilters={this.props.activeFilters}
                     removeFilter={this.props.removeFilter}
                     addFilter={this.props.addFilter}/>
