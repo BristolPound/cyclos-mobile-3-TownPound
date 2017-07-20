@@ -125,6 +125,7 @@ class SearchTab extends React.Component {
 
 const mapStateToProps = (state) => ({
   closestBusinesses: state.business.closestBusinesses.filter(b => b.id !== state.business.selectedBusinessId),
+  allFilters: state.business.categories,
   activeFilters: state.business.activeFilters,
   selectedBusiness: state.business.selectedBusinessId ? state.business.businessList[state.business.selectedBusinessId] : undefined,
   allBusinesses: state.business.businessList,
