@@ -71,7 +71,7 @@ const initialState = {
   forceRegion: MapViewport,
   tabMode: tabModes.default,
   traderScreenBusinessId: undefined,
-  traderScreenBusiness: {},
+  traderScreenBusiness: undefined,
   geolocationStatus: null,
   businessListRef: null,
 }
@@ -268,14 +268,14 @@ const reducer = (state = initialState, action) => {
         businessListTimestamp: null,
         closestBusinesses: [ ],
         traderScreenBusinessId: undefined,
-        traderScreenBusiness: {}
+        traderScreenBusiness: undefined
       })
       break
 
     case 'business/SET_TRADER_SCREEN_ID':
       state = merge(state, {
         traderScreenBusinessId: action.id,
-        traderScreenBusiness: state.businessList[action.id] || {}
+        traderScreenBusiness: state.businessList[action.id] || undefined
       })
       break
 
