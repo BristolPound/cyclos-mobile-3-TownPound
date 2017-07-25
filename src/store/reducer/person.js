@@ -4,7 +4,7 @@ import { showModal, modalState } from './navigation'
 import { updatePayee } from './sendMoney'
 
 const initialState = {
-  selectedPerson: {}
+  selectedPerson: undefined
 }
 
 const paymentDataReceived = (result) => ({
