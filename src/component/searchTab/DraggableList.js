@@ -325,7 +325,7 @@ class DraggableList extends React.Component {
           onResponderGrant={this.responderGrant.bind(this)}
           onResponderMove={this.responderMove.bind(this)}
           onResponderRelease={this.responderRelease.bind(this)}>
-        <Animated.View style={{ top: this.state.currentInnerTopOffset }} removeClippedSubviews={true}>
+        <Animated.View style={{ top: this.state.currentInnerTopOffset }} removeClippedSubviews={false}>
           {this.props.children}
         </Animated.View>
       </Animated.View>
