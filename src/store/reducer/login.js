@@ -62,6 +62,8 @@ export const login = (username, password) =>
                 dispatch(updateStatus('Account temporarily blocked', ERROR_SEVERITY.SEVERE))
               } else if (json && json.code === 'login') {
                 dispatch(updateStatus('Your details are incorrect'))
+              } else if (json && json.code === 'remoteAddressBlocked') {
+                dispatch(updateStatus('Remote address temporarily blocked', ERROR_SEVERITY.SEVERE))
               } else {
                 dispatch(unknownError(err))
               }
