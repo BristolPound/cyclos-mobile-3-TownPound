@@ -16,7 +16,7 @@
     "md5": "^2.2.1",
     "mocha": "^3.4.1",
     "moment": "^2.15.0",
-    "org.bristolpound.cyclos.api.directory": "git+https://gitlab.com/TownPound/cyclos/directory/directory-api-JS.git#v1.0.1",
+    "org.bristolpound.cyclos.api.directory": "git+https://gitlab.com/TownPound/cyclos/directory/directory-api-JS.git#v1.0.2",
     "react": "16.0.0-alpha.12",
     "react-native-communications": "^2.1.4",
     "react-native-fabric": "^0.4.1",
