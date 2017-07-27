@@ -213,7 +213,7 @@ const reducer = (state = initialState, action) => {
 
     case 'business/FIELDS_RECEIVED':
       state = merge(state, {
-        categories: _.map(action.fields.businesscategory.possibleValues.categories, formatCategory)
+        categories: _.map(_.filter(action.fields.businesscategory.possibleValues.categories, f => (!_.has(f, 'options') || !_.has(f.options, 'filter_hidden') || !f.options.filter_hidden)), formatCategory)
       })
       break
 
