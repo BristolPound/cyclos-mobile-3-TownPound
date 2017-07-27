@@ -7,6 +7,7 @@ import addressToString from '../../util/addresses'
 import styles from './BusinessDetailsStyle'
 import Images from '@Assets/images'
 import Config from '@Config/config'
+import _ from 'lodash'
 
 const Field = ({icon, text, accessibilityLabel, onPress, additionalOption}) =>
   <View style={styles.field}>
@@ -79,10 +80,14 @@ function getFields(business, goToTraderLocation) {
   }
 
   // Order of display should be:
-  //    access point*, special offer*, address, opening times*, phone number, email address
-  // Note: access point and special offer aren't supported yet.
-    business.fields.icon == 1 && fields.push(
-      businessDetail('accessPointField', Images.accesspoint, 'Access Point', () => {} )
+  //    cash point, special offer*, address, opening times*, phone number, email address
+  // Note: special offer aren't supported yet.
+    _.has(business.subCategories, 'cashpoint1') && fields.push(
+      businessDetail('cashPoint1Field', Images.cashpoint1, business.subCategories.cashpoint1 +': '+ Config.CASH_POINT_1, () => {} )
+    )
+
+    _.has(business.subCategories, 'cashpoint2') && fields.push(
+      businessDetail('cashPoint2Field', Images.cashpoint2, business.subCategories.cashpoint2 +': '+ Config.CASH_POINT_2, () => {} )
     )
 
     business.fields.memberdiscount && fields.push(
