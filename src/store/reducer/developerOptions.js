@@ -1,11 +1,12 @@
-import { setBaseUrl } from '../../api/api'
+import { getBaseUrl, setBaseUrl } from '../../api/api'
 import merge from '../../util/merge'
 import Config from '@Config/config'
 
 
 export const SERVER = {
-  STAGE: Config.STAGE_SERVER,
-  DEV: Config.DEV_SERVER
+  DEV:   getBaseUrl('development'),
+  STAGE: getBaseUrl('stageing'),
+  PROD:  getBaseUrl('release')
 }
 
 const initialState = {
