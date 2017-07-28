@@ -101,7 +101,7 @@ export default class Search extends React.Component {
         itemProps.pressable = true
         return itemProps
       }
-      const array = this.state.input == null ? [ ...coloredList.map(makePressable) ] : [ `${matches} TRADER MATCHES`, ...coloredList.map(makePressable) ]
+      const array = this.state.input == null ? [ ...coloredList.map(makePressable) ] : [ `BUSINESSES (${matches} ${matches == 1 ? "MATCH" : "MATCHES"})`, ...coloredList.map(makePressable) ]
       if (cropped) {
         array.push(`${matches - MAX_LIST_LENGTH} ADDITIONAL RESULTS NOT DISPLAYED`)
       }
@@ -157,7 +157,7 @@ export default class Search extends React.Component {
                        ref='textInput'
                        onFocus={() => tabMode!==tabModes.search && updateTabMode(tabModes.search)}
                        onChangeText={(text) => this._onChangeText(text)}
-                       placeholder={'Search Trader'}
+                       placeholder={'Search Business'}
                        placeholderTextColor={Colors.gray4}
                        selectTextOnFocus={true}
                        autoCorrect={false}
