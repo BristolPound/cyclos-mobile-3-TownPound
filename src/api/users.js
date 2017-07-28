@@ -4,7 +4,7 @@ import merge from '../util/merge'
 
 const DirectoryAPI = require('org.bristolpound.cyclos.api.directory')
 
-const directoryAPI = new DirectoryAPI(Config.CURRENT_CONFIG.DIRECTORY)
+const directoryAPI = new DirectoryAPI(Config.DIRECTORY)
 
 
 const parseShortDisplay = fullDisplay =>

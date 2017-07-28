@@ -163,7 +163,7 @@ class BusinessDetails extends React.Component {
     return (
       <View style={fields.length > 1 ? styles.moreDetails : styles.addressOnly}>
         {renderFields(fields)}
-        {(this.state.isExpanded || !Config.CURRENT_CONFIG.ALLOW_LOGIN)
+        {(this.state.isExpanded || !Config.ALLOW_LOGIN)
           ? renderExpandedDetails(expandedFields, this.props.business.fields.description)
           : ((expandedFields.length > 0 || this.props.business.fields.description)
               ? renderExpander(() => this.expandDetails())

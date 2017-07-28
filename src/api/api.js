@@ -1,7 +1,9 @@
+import _ from 'lodash'
 import {encode} from 'base-64'
 import merge from '../util/merge'
 import { throwErrorOnUnexpectedResponse } from './apiError'
 import Config from '@Config/config'
+import { flavour, default_config, configurations } from '@Config/config'
 
 let globalSessionToken = ''
 
@@ -11,21 +13,15 @@ export const setSessionToken = (newToken) => {
 
 export const deleteSessionToken = () => globalSessionToken = ''
 
-export const getBaseUrl = (flavour) => {
-    if (!flavour) {
-        flavour = Config.FLAVOUR
-    }
+export const getBaseUrl = (flavourRequested) => {
 
-    const currentConfig = (flavour == Config.CURRENT_CONFIG.FLAVOUR
-        ? Config.CURRENT_CONFIG
-        : (Config.FLAVOUR == 'release'
-        ? Config.PROD_CONFIG
-        : (Config.FLAVOUR == 'stageing'
-        ? Config.STAGE_CONFIG
-        : Config.DEV_CONFIG
-    )))
+    const selectedConfig = (!flavourRequested || flavourRequested == flavour)
+        ? Config
+        : _.has(configurations, flavourRequested)
+        ? configurations[flavourRequested]
+        : default_config
 
-    return 'https://'+currentConfig.CYCLOS.host	+'/'+currentConfig.CYCLOS.cyclosPrefix +'/'+currentConfig.CYCLOS.network +'/api/'
+    return 'https://'+selectedConfig.CYCLOS.host	+'/'+selectedConfig.CYCLOS.cyclosPrefix +'/'+selectedConfig.CYCLOS.network +'/api/'
 }
 
 let BASE_URL = getBaseUrl()

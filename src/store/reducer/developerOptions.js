@@ -5,8 +5,7 @@ import Config from '@Config/config'
 
 export const SERVER = {
   DEV:   getBaseUrl('development'),
-  STAGE: getBaseUrl('stageing'),
-  PROD:  getBaseUrl('release')
+  STAGE: getBaseUrl('staging')
 }
 
 const initialState = {

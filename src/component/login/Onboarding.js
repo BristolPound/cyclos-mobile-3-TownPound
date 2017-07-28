@@ -22,17 +22,17 @@ const renderWelcomeMessage = () => <Image source={logo} />
 const renderInfoText = () =>
   <View style={{flex: 1, alignItems: 'center'}}>
     <DefaultText style={style.infoText}>
-        If you haven't signed up for {Config.CURRENT_CONFIG.APP_CURRENCY},
+        If you haven't signed up for {Config.APP_CURRENCY},
     </DefaultText>
     <View style={{flexDirection: 'row'}}>
       <DefaultText style={style.infoText}>you can do so </DefaultText>
-      <HyperlinkText text='from our website' style={style.infoText} link={Config.CURRENT_CONFIG.APP_WEBSITE} />
+      <HyperlinkText text='from our website' style={style.infoText} link={Config.APP_WEBSITE} />
     </View>
   </View>
 
 class Onboarding extends React.Component {
   render() {
-    var logoutButtonText = Config.CURRENT_CONFIG.ALLOW_LOGIN ? "I'm just browsing" : "Start browsing"
+    var logoutButtonText = Config.ALLOW_LOGIN ? "I'm just browsing" : "Start browsing"
     return (
       <Splash loginButtonText='Log in'
         logoutButtonText={logoutButtonText}
