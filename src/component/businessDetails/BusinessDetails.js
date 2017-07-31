@@ -12,18 +12,15 @@ import _ from 'lodash'
 const Field = ({icon, text, accessibilityLabel, onPress, additionalOption}) =>
   <View style={styles.field}>
     <Image style={styles.image} source={icon} resizeMode='contain'/>
-    <TouchableOpacity style={styles.item} accessibilityLabel={accessibilityLabel} onPress={onPress}>
-      <MultilineText style={styles.text}>{text}</MultilineText>
-    </TouchableOpacity>
-    {additionalOption &&
-    <View style={{flexDirection:'row'}}>
-      <View>
-        <Text style={styles.text}>{" / "}</Text>
-      </View>
-      <TouchableOpacity style={styles.item} accessibilityLabel={accessibilityLabel} onPress={additionalOption.onPress}>
-        <MultilineText style={styles.text}>{additionalOption.text}</MultilineText>
+    <View style={styles.item}>
+      <TouchableOpacity accessibilityLabel={accessibilityLabel} onPress={onPress}>
+        <MultilineText style={styles.text}>{text}</MultilineText>
       </TouchableOpacity>
-    </View>}
+      {additionalOption &&
+      <TouchableOpacity accessibilityLabel={accessibilityLabel} onPress={onPress}>
+        <MultilineText style={styles.text}>{additionalOption.text}</MultilineText>
+      </TouchableOpacity>}
+    </View>
   </View>
 
 const renderFields = (fields) =>
