@@ -27,6 +27,7 @@ const styles = {
   text: {
     flex: 1,
     fontSize: 16,
+    marginRight: 24,
     color: Colors.gray,
     flexWrap: 'wrap',
   },
