@@ -23,6 +23,7 @@ const styles = {
   },
   item: {
     flexDirection: 'column',
+    flex: 1
   },
   text: {
     flex: 1,
