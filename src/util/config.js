@@ -45,6 +45,12 @@ _.forEach(['staging', 'development', 'production'], function(flavour) {
     secrets[flavour]    = branch
 })
 
+export const cyclosUrl = (config) => {
+    config.CYCLOS.url = 'https://'+config.CYCLOS.host	+'/'+config.CYCLOS.cyclosPrefix +'/'+config.CYCLOS.network +'/api/'
+
+    return config
+}
+
 const normaliseConfigurations = (configurations, flavour, default_config) => {
 
     const extendConfigurations = (c, f, cc) => {
@@ -58,6 +64,8 @@ const normaliseConfigurations = (configurations, flavour, default_config) => {
 
         // copy global default config
         _.defaultsDeep(result, global_default_config)
+
+        cyclosUrl(result)
 
         result['secrets']   = _.has(secrets, flavour)
                             ? secrets[flavour]
@@ -74,8 +82,12 @@ const normaliseConfigurations = (configurations, flavour, default_config) => {
 
     const result    = _.has(configurations, flavour)
                     ? configurations[flavour]
-                    : _.merge({}, default_config)
+                    : cyclosUrl(_.merge({}, default_config))
 
+    if (result.CYCLOS.channel) {
+        const channel = result.CYCLOS.channel.replace('{CHANNEL_SECRET}', result.secrets.CHANNEL_SECRET)
+        console.log({'Channel': channel})
+    }
     console.log(result)
 
     return result
