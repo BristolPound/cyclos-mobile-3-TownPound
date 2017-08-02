@@ -1,15 +1,67 @@
 import _ from 'lodash'
+import * as Config from '@Config/config'
 
-export const normaliseConfigurations = (configurations, flavour, default_config) => {
+
+// the base configuration
+export const global_default_config={
+    APP_CITY: 'Scheme Area',
+    APP_CURRENCY: 'Currency Name',
+    APP_WEBSITE: 'https://github.com/ScottLogic/CityPoundSourceCode',
+    TXT2PAY_NO: undefined,
+    CYCLOS: {
+        host: undefined,
+        cyclosPrefix: undefined,
+        network: undefined,
+        wsPrefix: undefined,
+        channel: undefined,
+    },
+    DIRECTORY: {
+        host: undefined,
+        cyclosPrefix: undefined,
+        network: undefined,
+        wsPrefix: undefined,
+    },
+    ALLOW_LOGIN: true,
+    DEFAULT_COORDINATES: { latitude: 0, longitude:  0 },
+}
+
+const default_secret={
+    CHANNEL_SECRET: '',
+}
+
+const secrets           = {}
+const importedSecrets   = _.has(Config, 'secrets')
+                        ? Config.secrets
+                        : {}
+
+_.forEach(['staging', 'development', 'production'], function(flavour) {
+
+    const branch        = _.has(importedSecrets, flavour)
+                        ? importedSecrets[flavour]
+                        : {}
+
+    _.defaultsDeep(branch, default_secret)
+
+    secrets[flavour]    = branch
+})
+
+const normaliseConfigurations = (configurations, flavour, default_config) => {
 
     const extendConfigurations = (c, f, cc) => {
         const result = {}
 
-        // copy default config
-        _.merge(result, default_config)
+        // copy flavour config
+        _.defaultsDeep(result, c)
 
         // copy default config
-        _.merge(result, c)
+        _.defaultsDeep(result, default_config)
+
+        // copy global default config
+        _.defaultsDeep(result, global_default_config)
+
+        result['secrets']   = _.has(secrets, flavour)
+                            ? secrets[flavour]
+                            : default_secret
 
         // save flavour
         result.FLAVOUR = f
@@ -20,8 +72,13 @@ export const normaliseConfigurations = (configurations, flavour, default_config)
     // extend the customisations
     _.each(configurations, extendConfigurations)
 
-    return  ( _.has(configurations, flavour)
-            ? configurations[flavour]
-            : default_config
-            )
+    const result    = _.has(configurations, flavour)
+                    ? configurations[flavour]
+                    : _.merge({}, default_config)
+
+    console.log(result)
+
+    return result
 }
+
+_.merge(Config.default, normaliseConfigurations(Config.configurations, Config.flavour, Config.default_config))
