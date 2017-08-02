@@ -30,9 +30,11 @@ const default_secret={
 }
 
 const secrets           = {}
-const importedSecrets   = _.has(Config, 'secrets')
-                        ? Config.secrets
-                        : {}
+var importedSecrets     = {}
+
+if (Config.secrets) {
+    importedSecrets     = require('@Config/secrets').default
+}
 
 _.forEach(['staging', 'development', 'production'], function(flavour) {
 
