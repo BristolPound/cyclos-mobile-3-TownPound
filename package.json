@@ -31,5 +31,8 @@
     "remote-redux-devtools": "0.5.0",
     "sinon": "^2.0.0-pre.2",
     "supercluster": "^2.3.0"
+},
+  "dev-dependencies": {
+   "jimp": "^0.2.28"
   }
 }
