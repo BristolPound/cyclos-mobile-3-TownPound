@@ -50,8 +50,27 @@ export default class Search extends React.Component {
       }
     }
 
+    // updateResults = (allBusinesses = this.props.allBusinesses) => {
+    //   const termsMatch = (field) => {
+    //     let match = true
+    //     this.state.searchTerms.forEach((term) => {
+    //       if (match && field.toLowerCase().indexOf(term.toLowerCase()) === -1) {
+    //         match = false
+    //       }
+    //     })
+    //     return match
+    //   }
+    //   const filteredBusinessList = this.state.searchTerms.length
+    //   ? _.filter(allBusinesses, business => termsMatch(business.name) || termsMatch(business.fields.username) || (business.fields.description && termsMatch(business.fields.description)))
+    //   : []
+    //   const componentListArray = this.createComponentListArray(filteredBusinessList)
+    //   this.setState({ componentListArray, searching: false })
+    // }
+
     updateResults = (allBusinesses = this.props.allBusinesses) => {
       const termsMatch = (field) => {
+        if (!field) return false
+
         let match = true
         this.state.searchTerms.forEach((term) => {
           if (match && field.toLowerCase().indexOf(term.toLowerCase()) === -1) {
@@ -60,11 +79,47 @@ export default class Search extends React.Component {
         })
         return match
       }
-      const filteredBusinessList = this.state.searchTerms.length
-      ? _.filter(allBusinesses, business => termsMatch(business.name) || termsMatch(business.fields.username) || (business.fields.description && termsMatch(business.fields.description)))
-      : []
-      const componentListArray = this.createComponentListArray(filteredBusinessList)
+
+      let initialFilteredBusinessList = []
+
+      this.state.searchTerms.length && _.forEach(allBusinesses, (business) => {
+          let rank = 0
+
+          // The name should be within the fields as well so then can just
+          // store an object with the key as 'username' etc and then can get
+          // the match by doing termsMatch(business.fields[currentField])
+          // and return the current key if true (that type of thing)
+
+          let weightings = {
+            1: business.name,
+            2: business.fields.username,
+            3: business.fields.description
+          }
+
+          _.forIn(weightings, (field, weighting) => {
+
+            // console.log("field " + field + " a")
+
+            if (termsMatch(field)) {
+              rank = weighting
+              console.log("matched for field " + field)
+              return false
+            }
+          })
+
+          rank && initialFilteredBusinessList.push({rank: rank, business: business})
+
+      })
+
+      let orderedList = _.orderBy(initialFilteredBusinessList, ['rank'])
+
+      let filteredBusinesses = _.map(orderedList, (rankedBusiness) => {
+        return rankedBusiness.business
+      })
+
+      const componentListArray = this.createComponentListArray(filteredBusinesses)
       this.setState({ componentListArray, searching: false })
+
     }
 
     debouncedUpdate = _.debounce(() => this.updateResults(), 800)
