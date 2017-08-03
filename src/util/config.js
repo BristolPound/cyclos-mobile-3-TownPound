@@ -33,7 +33,7 @@ const secrets           = {}
 var importedSecrets     = {}
 
 if (Config.secrets) {
-    importedSecrets     = require('@Config/secrets').default
+    importedSecrets     = require('../../../config/secrets').default
 }
 
 _.forEach(['staging', 'development', 'production'], function(flavour) {
