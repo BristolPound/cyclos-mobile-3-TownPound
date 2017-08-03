@@ -27,7 +27,7 @@ const BalanceMessage = ({ balance }) => {
 
 class InputComponent extends KeyboardComponent {
   getButtonColor () {
-    if (this.props.invalidInput) {
+    if (this.props.invalidInput || this.props.buttonText === 'No payment available') {
       return Colors.offWhite
     }
     return Colors.primaryBlue
