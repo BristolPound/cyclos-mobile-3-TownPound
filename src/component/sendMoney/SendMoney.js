@@ -111,9 +111,13 @@ class SendMoney extends React.Component {
         // sometimes when pressing on the 'no' on the alert triggers the onPress here
         //-> hence the !this.props.alertShouldPopUp check
           inputProps = {
-            buttonText: (this.props.payee.paymentTypes && this.props.payee.paymentTypes.length == 0 ) ? 'No payment available' : 'Send Payment',
-            onButtonPress: () => { !this.props.alertShouldPopUp && !(this.props.payee.paymentTypes && this.props.payee.paymentTypes.length == 0 ) && this.nextPage() },
+            buttonText: 'No payment available',
+            onButtonPress: () => {},
             accessibilityLabel: 'Ready'
+          }
+          if (this.props.payee.paymentTypes && this.props.payee.paymentTypes.length > 0 ) {
+            inputProps.buttonText = 'Send Payment'
+            inputProps.onButtonPress = () => { !this.props.alertShouldPopUp && this.nextPage() }
           }
           break
         case Page.EnterAmount: // provide amount
