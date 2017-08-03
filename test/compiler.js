@@ -32,6 +32,8 @@ require.extensions['.js'] = function (module, fileName) {
         return getModulePathFromSource(fileName, 'colors')
       } else if (source==='@Config/config') {
         return getModulePathFromSource(fileName, 'config')
+      } else if (source==='@Config/secrets') {
+        return getModulePathFromSource(fileName, 'secrets')
       } else {
         return source
       }
@@ -46,7 +48,7 @@ require.extensions['.js'] = function (module, fileName) {
 var getModulePathFromSource = (source, module) => {
   var res = source.split('/')
   var ind = res.indexOf('CityPoundSourceCode')
-  var toReturn = module + '/' + module;
+  var toReturn = module === 'secrets' ? 'config/' + module : module + '/' + module;
   for (i = 1; i<(res.length - ind); i++) {
     toReturn = '../' + toReturn
   }
