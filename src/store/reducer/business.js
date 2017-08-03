@@ -13,8 +13,6 @@ import { showModal, modalState } from './navigation'
 import { updatePayee } from './sendMoney'
 import Config from '@Config/config'
 
-const DEFAULT_COORDINATES = { latitude: 51.454513, longitude:  -2.58791 }
-
 // 1 pixel right adds the same to longitude as 1.69246890879 pixels up adds to latitude
 // when the map is centred at the default coordinates
 const longitudePerLatitude = 1.69246890879
@@ -27,7 +25,7 @@ export const mapHeight = height + 95
 const mapWidth = width
 
 export const MapViewport = {
-    ...DEFAULT_COORDINATES,
+    ...Config.DEFAULT_COORDINATES,
     longitudeDelta: 0.006,
     latitudeDelta: 0.006 * mapHeight / (mapWidth * longitudePerLatitude),
 }
@@ -146,7 +144,7 @@ export const geolocationChanged = (coords, dispatch) => {
     const { latitude, longitude } = coords
     dispatch(geolocationSuccess(coords))
     //furthest business is around 70km from Bristol centre
-    if (haversine(DEFAULT_COORDINATES, coords) < 75) {
+    if (haversine(Config.DEFAULT_COORDINATES, coords) < 75) {
         dispatch(moveMap({ latitude, longitude }))
         dispatch(selectClosestBusiness())
     }
