@@ -86,12 +86,6 @@ const normaliseConfigurations = (configurations, flavour, default_config) => {
                     ? configurations[flavour]
                     : cyclosUrl(_.merge({}, default_config))
 
-    if (result.CYCLOS.channel) {
-        const channel = result.CYCLOS.channel.replace('{CHANNEL_SECRET}', result.secrets.CHANNEL_SECRET)
-        console.log({'Channel': channel})
-    }
-    console.log(result)
-
     return result
 }
 
