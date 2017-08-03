@@ -170,7 +170,7 @@ export const loadPaymentData = (dispatch) => {
 
 export const openTraderModal = (businessId) => (dispatch, getState) => {
   dispatch(selectBusinessForModal(businessId))
-  if(getState().login.loginStatus == 'LOGGED_IN') {
+  if(getState().login.loginStatus == 'LOGGED_IN'&& (getState().business.businessList[businessId].fields.username !== getState().account.details.shortDisplay)) {
     getPaymentData(businessId, dispatch)
       .then(result => dispatch(paymentDataReceived(result)))
   }
