@@ -6,7 +6,7 @@ import { Clipboard } from 'react-native'
 import * as actions from '../../store/reducer/sendMoney'
 import { openLoginForm, LOGIN_STATUSES } from '../../store/reducer/login'
 import { setOverlayOpen } from '../../store/reducer/navigation'
-import InputComponent from './InputComponent'
+import InputComponent, { labels } from './InputComponent'
 import Config from '@Config/config'
 
 const Page = {
@@ -103,7 +103,7 @@ class SendMoney extends React.Component {
       inputProps = {
         buttonText: this.props.message,
         onButtonPress: () => {},
-        accessibilityLabel: 'Payment complete'
+        accessibilityLabel: labels.PAYMENT_COMPLETE
       }
     } else if (this.props.loggedIn) {
       switch (this.props.inputPage) {
@@ -111,29 +111,29 @@ class SendMoney extends React.Component {
         // sometimes when pressing on the 'no' on the alert triggers the onPress here
         //-> hence the !this.props.alertShouldPopUp check
           inputProps = {
-            buttonText: 'No payment available',
+            buttonText: labels.NO_PAYMENT_AVAILANLE,
             onButtonPress: () => {},
-            accessibilityLabel: 'Ready'
+            accessibilityLabel: labels.NO_PAYMENT_AVAILANLE
           }
           if (this.props.payee.paymentTypes && this.props.payee.paymentTypes.length > 0 ) {
-            inputProps.buttonText = 'Send Payment'
+            inputProps.buttonText = labels.SEND_PAYMENT
             inputProps.onButtonPress = () => { !this.props.alertShouldPopUp && this.nextPage() }
           }
           break
         case Page.EnterAmount: // provide amount
           inputProps = {
-            buttonText: 'Pay ' + (this.props.payee.display || this.props.payee.name || ""),
+            buttonText: labels.PAY + ' ' + (this.props.payee.display || this.props.payee.name || ""),
             onButtonPress: () => { this.nextPage() },
             input: {
               keyboardType: 'numeric',
               value: this.props.amount,
-              placeholder: 'Amount',
+              placeholder: labels.AMOUNT,
               onChangeText: amt => this.props.updateAmount(amt)
             },
             descriptionInput: {
               keyboardType: 'default',
               value: this.props.description,
-              placeholder: 'Description (optional)',
+              placeholder: labels.DESCRIPTION,
               maxLength: 100,
               onChangeText: desc => this.props.updateDescription(desc)
             },
@@ -142,12 +142,12 @@ class SendMoney extends React.Component {
             balance: this.props.balance
           }
           if (!this.props.connection) {
-            inputProps.offlinePaymentLabel = 'No internet connection (Using TXT2PAY)'
+            inputProps.offlinePaymentLabel = labels.USING_TXT2PAY
             inputProps.onButtonPress = () => { this.payByTextOnPress() }
             inputProps.pinInput = {
               keyboardType: 'numeric',
               value: this.state.pin,
-              placeholder: 'PIN',
+              placeholder: labels.PIN,
               maxLength: 4,
               onChangeText: pin => this.setState({pin: pin})
             }
@@ -155,21 +155,21 @@ class SendMoney extends React.Component {
           break
         case Page.ConfirmAmount: // provide amount
           inputProps = {
-            buttonText: 'Confirm',
+            buttonText: labels.CONFIRM,
             onButtonPress: () => { this.props.sendTransaction(); this.nextPage() },
             amount: this.props.amount,
             payee: this.props.payee.display || this.props.payee.name || "",
             description: this.props.description,
             onChangeAmount: () => { this.prevPage() },
-            accessibilityLabel: 'Confirm Amount'
+            accessibilityLabel: labels.CONFIRM
           }
           if (!this.props.connection) {
-            inputProps.offlinePaymentLabel = 'No internet connection (Using TXT2PAY)'
+            inputProps.offlinePaymentLabel = labels.USING_TXT2PAY
             inputProps.onButtonPress = () => { this.prevPage() }
             inputProps.pinInput = {
               keyboardType: 'numeric',
               value: this.state.pin,
-              placeholder: 'PIN',
+              placeholder: labels.PIN,
               maxLength: 4,
               onChangeText: pin => this.setState({pin: pin})
             }
@@ -177,17 +177,17 @@ class SendMoney extends React.Component {
           break
         case Page.MakingPayment: // in progress
           inputProps = {
-            buttonText: 'Making Payment',
+            buttonText: labels.MAKING_PAYMENT,
             loading: true,
-            accessibilityLabel: 'Making Payment'
+            accessibilityLabel: labels.MAKING_PAYMENT
           }
           break
       }
     } else {
       inputProps = {
-        buttonText: 'Log in to make payment',
+        buttonText: labels.LOGIN_FOR_PAYMENT,
         onButtonPress: () => this.props.openLoginForm(true),
-        accessibilityLabel: 'Log in to make payment'
+        accessibilityLabel: labels.LOGIN_FOR_PAYMENT
       }
     }
 
