@@ -48,7 +48,7 @@ require.extensions['.js'] = function (module, fileName) {
 var getModulePathFromSource = (source, module, submodule) => {
   var res = source.split('/')
   var ind = res.indexOf('CityPoundSourceCode')
-  var toReturn = module + '/' + (submodule === undefined ? module : submodule);
+  var toReturn = module + '/' + (submodule ? submodule : module);
   for (i = 1; i<(res.length - ind); i++) {
     toReturn = '../' + toReturn
   }
