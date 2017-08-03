@@ -12,6 +12,7 @@ import { ERROR_SEVERITY, unknownError, updateStatus } from './statusMessage'
 import { showModal, modalState } from './navigation'
 import { updatePayee } from './sendMoney'
 import Config from '@Config/config'
+import Images from '@Assets/images'
 
 // 1 pixel right adds the same to longitude as 1.69246890879 pixels up adds to latitude
 // when the map is centred at the default coordinates
@@ -38,6 +39,15 @@ export const tabModes = {
 
 function formatCategory (category) {
     return {'id': category.id, 'label': category.label}
+}
+
+function formatbusinessDisplayFields (field) {
+    return {
+        'id': field.id,
+        'hasIcon': _.has(Images, field.id),
+        'priorityView': field.options.priorityView,
+        'order': field.options.order,
+    }
 }
 
 // We want the center for sorting businesses higher than the actual centre of map.
@@ -211,7 +221,8 @@ const reducer = (state = initialState, action) => {
 
     case 'business/FIELDS_RECEIVED':
       state = merge(state, {
-        categories: _.map(_.filter(action.fields.businesscategory.possibleValues.categories, f => (!_.has(f, 'options') || !_.has(f.options, 'filter_hidden') || !f.options.filter_hidden)), formatCategory)
+        categories: _.map(_.filter(action.fields.businesscategory.possibleValues.categories, f => (!_.has(f, 'options') || !_.has(f.options, 'filter_hidden') || !f.options.filter_hidden)), formatCategory),
+        businessDisplayFields: _.orderBy(_.map(_.filter(action.fields, f => (_.has(f, 'options') && !_.has(f.options, 'visible') && f.options.visible)), formatbusinessDisplayFields), ['hasIcon', 'order'], ['asc', 'asc']),
       })
       break
 
