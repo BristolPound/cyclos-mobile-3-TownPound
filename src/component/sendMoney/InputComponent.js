@@ -18,7 +18,7 @@ export const labels = {
     ENTER_AMOUNT: 'Enter Amount',
     LOGIN_FOR_PAYMENT: 'Log in to make payment',
     MAKING_PAYMENT: 'Making Payment',
-    NO_PAYMENT_AVAILANLE: 'No payment available',
+    NO_PAYMENT_AVAILABLE: 'No payment available',
     PAY: 'Pay',
     PAYMENT_COMPLETE: 'Payment complete',
     PIN: 'PIN',
@@ -43,7 +43,7 @@ const BalanceMessage = ({ balance }) => {
 
 class InputComponent extends KeyboardComponent {
   getButtonColor () {
-    if (this.props.invalidInput || this.props.buttonText === labels.NO_PAYMENT_AVAILANLE) {
+    if (this.props.invalidInput || this.props.buttonText === labels.NO_PAYMENT_AVAILABLE) {
       return Colors.offWhite
     }
     return Colors.primaryBlue
