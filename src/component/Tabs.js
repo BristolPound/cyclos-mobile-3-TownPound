@@ -18,6 +18,7 @@ import DeveloperOptions from './DeveloperOptions'
 import Colors from '@Colors/colors'
 import Config from '@Config/config'
 import Modal from './Modal'
+import SecondModal from './SecondModal'
 import PaymentConfirmation from './PaymentConfirmation'
 import ContinuePaymentAlert from './ContinuePaymentAlert'
 
@@ -92,9 +93,9 @@ const Tabs = (props) =>
     <Modal visible={props.modalVisible} hideModal={() => {!props.confirmationOpen && props.hideModal() && props.resetForm()}} modalOpened={props.modalOpened}>
       {componentForModalState(props.modalState)}
     </Modal>
-    <Modal visible={props.confirmationOpen} hideModal={() => {props.closeConfirmation() && props.updatePage(0)}}>
+    <SecondModal visible={props.confirmationOpen} hideModal={() => {props.closeConfirmation() && props.updatePage(0)}}>
       <PaymentConfirmation />
-    </Modal>
+    </SecondModal>
     {props.alertShouldPopUp && props.loggedIn && <ContinuePaymentAlert />}
   </View>
 
