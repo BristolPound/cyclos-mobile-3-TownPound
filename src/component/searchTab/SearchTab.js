@@ -130,6 +130,7 @@ const mapStateToProps = (state) => ({
   activeFilters: state.business.activeFilters,
   selectedBusiness: state.business.selectedBusinessId ? state.business.businessList[state.business.selectedBusinessId] : undefined,
   allBusinesses: state.business.businessList,
+  businessSearchFields: state.business.businessSearchFields,
   tabMode: state.business.tabMode,
   mapViewport: state.business.mapViewport,
   geolocationStatus: state.business.geolocationStatus

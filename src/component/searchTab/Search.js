@@ -39,30 +39,6 @@ const ComponentForItem = (item) => {
 }
 
 
-export const searchRanks = {
-  1: "username",
-  2: "name",
-  3: "address",
-  4: "phone",
-  5: "email",
-  6: "website",
-  7: "facebook",
-  8: "twitter",
-  9: "linkedin"
-}
-
-export const searchPaths = {
-  username: "$.fields.username",
-  name: "$.name",
-  address: "$.address.addressLine1",
-  phone: "$.fields.businessphone",
-  email: "$.fields.businessemail",
-  website: "$.fields.businesswebsite",
-  facebook: "$.fields.facebook",
-  twitter: "$.fields.twitter",
-  linkedin: "$.fields.linkedin"
-}
-
 export default class Search extends React.Component {
     constructor(props) {
       super(props)
@@ -90,16 +66,16 @@ export default class Search extends React.Component {
 
     updateResults = (allBusinesses = this.props.allBusinesses) => {
 
-      let rankedFilteredBusinessList = []
+      const rankedFilteredBusinessList = []
 
       this.state.searchTerms.length && _.forEach(allBusinesses, (business) => {
-          let rank = this.getRank(business)
+          const rank = this.getRank(business)
           rank && rankedFilteredBusinessList.push({rank: rank, business: business})
       })
 
-      let orderedRanks = _.orderBy(rankedFilteredBusinessList, ['rank'])
+      const orderedRanks = _.orderBy(rankedFilteredBusinessList, ['rank'])
 
-      let filteredBusinesses = _.map(orderedRanks, (rankedBusiness) => {
+      const filteredBusinesses = _.map(orderedRanks, (rankedBusiness) => {
         return rankedBusiness.business
       })
 
@@ -110,9 +86,9 @@ export default class Search extends React.Component {
 
     getRank(business) {
       let rank = 0
-      _.forIn(searchRanks, (field, weighting) => {
-        if (this.termsMatch(jp(searchPaths[field], business))) {
-          rank = weighting
+      _.forEach(this.props.businessSearchFields, (searchField) => {
+        if (this.termsMatch(jp(searchField.path, business))) {
+          rank = searchField.rank
           return false
         }
       })
