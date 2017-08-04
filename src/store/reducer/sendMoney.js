@@ -175,7 +175,7 @@ const reducer = (state = initialState, action) => {
       }
       if (action.message !== 'Session expired') {
         stateToUpdate.amount = ''
-        stateToUpdate.description: '',
+        stateToUpdate.description = ''
         stateToUpdate.inputPage = Page.PaymentComplete
       }
       state = merge(state, stateToUpdate)
