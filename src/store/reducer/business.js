@@ -168,6 +168,10 @@ export const loadPaymentData = (dispatch) => {
   }
 }
 
+export const resetTraderScreen = () => ({
+  type: 'business/RESET_TRADER_SCREEN_ID'
+})
+
 export const openTraderModal = (businessId) => (dispatch, getState) => {
   dispatch(selectBusinessForModal(businessId))
   if(getState().login.loginStatus == 'LOGGED_IN'&& (getState().business.businessList[businessId].fields.username !== getState().account.details.shortDisplay)) {
@@ -299,6 +303,13 @@ const reducer = (state = initialState, action) => {
         closestBusinesses,
         activeFilters: newActiveFilters,
         filteredBusinesses: newFilteredBusinesses
+      })
+      break
+      
+    case 'business/RESET_TRADER_SCREEN_ID':
+      state = merge(state, {
+        traderScreenBusinessId: undefined,
+        traderScreenBusiness: undefined
       })
       break
 

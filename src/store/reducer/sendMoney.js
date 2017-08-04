@@ -93,6 +93,7 @@ export const sendTransaction = () =>
       }, dispatch)
       .then((result) => {
         dispatch(loadMoreTransactions())
+        dispatch(updatePayee(result.toUser.id))
         dispatch(transactionComplete(true, 'Transaction complete', amount, moment(result.date).format('MMMM Do YYYY, h:mm:ss a'), result.transactionNumber))
       })
       .catch(err => {
