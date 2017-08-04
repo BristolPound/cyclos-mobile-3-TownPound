@@ -40,6 +40,14 @@ function formatCategory (category) {
     return {'id': category.id, 'label': category.label}
 }
 
+function formatbusinessSearchFields (field) {
+    return {
+        'id': field.id,
+        'rank': field.options.search.rank ?: 999,
+        'path': field.options.search.path ?: '$.fields.' + field.id,
+    }
+}
+
 // We want the center for sorting businesses higher than the actual centre of map.
 // 1/15 of mapHeight higher than center of map, which is 22.5px higher than center of screen.
 // So in total around 60 - 70 px higher than screen centre
@@ -211,7 +219,9 @@ const reducer = (state = initialState, action) => {
 
     case 'business/FIELDS_RECEIVED':
       state = merge(state, {
-        categories: _.map(_.filter(action.fields.businesscategory.possibleValues.categories, f => (!_.has(f, 'options') || !_.has(f.options, 'filter_hidden') || !f.options.filter_hidden)), formatCategory)
+        categories: _.map(_.filter(action.fields.businesscategory.possibleValues.categories, f => (!_.has(f, 'options') || !_.has(f.options, 'filter_hidden') || !f.options.filter_hidden)), formatCategory),
+        businessSearchFields: _.orderBy(_.map(_.filter(action.fields, f => (_.has(f, 'options') && !_.has(f.options, 'search'))), formatbusinessSearchFields), ['rank']),
+      }),
       })
       break
 
