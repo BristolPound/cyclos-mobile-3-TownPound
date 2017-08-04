@@ -127,6 +127,7 @@ const reducer = (state = initialState, action) => {
     case 'sendMoney/RESET_PAYMENT':
       state = merge(state, {
         amount: '',
+        description: '',
         amountPaid: '',
         loading: false,
         success: undefined,
@@ -175,6 +176,7 @@ const reducer = (state = initialState, action) => {
       }
       if (action.message !== 'Session expired') {
         stateToUpdate.amount = ''
+        stateToUpdate.description = ''
         stateToUpdate.inputPage = Page.PaymentComplete
       }
       state = merge(state, stateToUpdate)
