@@ -17,6 +17,7 @@ import { addColorCodes } from '../../util/business'
 import searchTabStyle, { maxExpandedHeight, SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN } from './SearchTabStyle'
 import { ROW_HEIGHT } from './BusinessListStyle'
 import Images from '@Assets/images'
+import jp from '@f5io/jsonpath'
 
 const { searchBar, textInput, searchHeaderText, closeButton, nearbyButton, fixedScrollableListContainer } = searchTabStyle.searchTab
 
@@ -37,6 +38,31 @@ const ComponentForItem = (item) => {
   return <BusinessListItem business={item}/>
 }
 
+
+export const searchRanks = {
+  1: "username",
+  2: "name",
+  3: "address",
+  4: "phone",
+  5: "email",
+  6: "website",
+  7: "facebook",
+  8: "twitter",
+  9: "linkedin"
+}
+
+export const searchPaths = {
+  username: "$.fields.username",
+  name: "$.name",
+  address: "$.address.addressLine1",
+  phone: "$.fields.businessphone",
+  email: "$.fields.businessemail",
+  website: "$.fields.businesswebsite",
+  facebook: "$.fields.facebook",
+  twitter: "$.fields.twitter",
+  linkedin: "$.fields.linkedin"
+}
+
 export default class Search extends React.Component {
     constructor(props) {
       super(props)
@@ -49,23 +75,6 @@ export default class Search extends React.Component {
         this.setState({ searchTerms: [], input: null, componentListArray: [], searching: false })
       }
     }
-
-    // updateResults = (allBusinesses = this.props.allBusinesses) => {
-    //   const termsMatch = (field) => {
-    //     let match = true
-    //     this.state.searchTerms.forEach((term) => {
-    //       if (match && field.toLowerCase().indexOf(term.toLowerCase()) === -1) {
-    //         match = false
-    //       }
-    //     })
-    //     return match
-    //   }
-    //   const filteredBusinessList = this.state.searchTerms.length
-    //   ? _.filter(allBusinesses, business => termsMatch(business.name) || termsMatch(business.fields.username) || (business.fields.description && termsMatch(business.fields.description)))
-    //   : []
-    //   const componentListArray = this.createComponentListArray(filteredBusinessList)
-    //   this.setState({ componentListArray, searching: false })
-    // }
 
     termsMatch = (field) => {
       if (!field) return false
@@ -84,15 +93,13 @@ export default class Search extends React.Component {
       let rankedFilteredBusinessList = []
 
       this.state.searchTerms.length && _.forEach(allBusinesses, (business) => {
-          let rank = getRank(business)
-
-          rank && initialFilteredBusinessList.push({rank: rank, business: business})
-
+          let rank = this.getRank(business)
+          rank && rankedFilteredBusinessList.push({rank: rank, business: business})
       })
 
-      let orderedRanks = _.orderBy(initialFilteredBusinessList, ['rank'])
+      let orderedRanks = _.orderBy(rankedFilteredBusinessList, ['rank'])
 
-      let filteredBusinesses = _.map(orderedList, (rankedBusiness) => {
+      let filteredBusinesses = _.map(orderedRanks, (rankedBusiness) => {
         return rankedBusiness.business
       })
 
@@ -103,29 +110,12 @@ export default class Search extends React.Component {
 
     getRank(business) {
       let rank = 0
-
-      // The name should be within the fields as well so then can just
-      // store an object with the key as 'username' etc and then can get
-      // the match by doing termsMatch(business.fields[currentField])
-      // and return the current key if true (that type of thing)
-
-      let weightings = {
-        1: business.name,
-        2: business.fields.username,
-        3: business.fields.description,
-        4: business.fields.website,
-        5: business.fields.businessphone,
-        6: business.fields.email
-      }
-
-      _.forIn(weightings, (field, weighting) => {
-        if (termsMatch(field)) {
+      _.forIn(searchRanks, (field, weighting) => {
+        if (this.termsMatch(jp(searchPaths[field], business))) {
           rank = weighting
-          console.log("matched for field " + field)
           return false
         }
       })
-
       return rank
     }
 
