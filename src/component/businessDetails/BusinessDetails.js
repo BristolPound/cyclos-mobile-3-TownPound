@@ -7,22 +7,20 @@ import addressToString from '../../util/addresses'
 import styles from './BusinessDetailsStyle'
 import Images from '@Assets/images'
 import Config from '@Config/config'
+import _ from 'lodash'
 
 const Field = ({icon, text, accessibilityLabel, onPress, additionalOption}) =>
   <View style={styles.field}>
-    <Image style={styles.image} source={icon}/>
-    <TouchableOpacity style={styles.item} accessibilityLabel={accessibilityLabel} onPress={onPress}>
-      <MultilineText style={styles.text}>{text}</MultilineText>
-    </TouchableOpacity>
-    {additionalOption &&
-    <View style={{flexDirection:'row'}}>
-      <View>
-        <Text style={styles.text}>{" / "}</Text>
-      </View>
-      <TouchableOpacity style={styles.item} accessibilityLabel={accessibilityLabel} onPress={additionalOption.onPress}>
-        <MultilineText style={styles.text}>{additionalOption.text}</MultilineText>
+    <Image style={styles.image} source={icon} resizeMode='contain'/>
+    <View style={styles.item}>
+      <TouchableOpacity accessibilityLabel={accessibilityLabel} onPress={onPress}>
+        <MultilineText style={styles.text}>{text}</MultilineText>
       </TouchableOpacity>
-    </View>}
+      {additionalOption &&
+      <TouchableOpacity accessibilityLabel={accessibilityLabel} onPress={onPress}>
+        <MultilineText style={styles.text}>{additionalOption.text}</MultilineText>
+      </TouchableOpacity>}
+    </View>
   </View>
 
 const renderFields = (fields) =>
@@ -79,8 +77,20 @@ function getFields(business, goToTraderLocation) {
   }
 
   // Order of display should be:
-  //    access point*, special offer*, address, opening times*, phone number, email address
-  // Note: access point and special offer aren't supported yet.
+  //    cash point, special offer*, address, opening times*, phone number, email address
+  // Note: special offer aren't supported yet.
+    _.has(business.subCategories, 'cashpoint1') && fields.push(
+      businessDetail('cashPoint1Field', Images.cashpoint1, business.subCategories.cashpoint1 +': '+ Config.CASH_POINT_1, () => {} )
+    )
+
+    _.has(business.subCategories, 'cashpoint2') && fields.push(
+      businessDetail('cashPoint2Field', Images.cashpoint2, business.subCategories.cashpoint2 +': '+ Config.CASH_POINT_2, () => {} )
+    )
+
+    business.fields.memberdiscount && fields.push(
+      businessDetail('discountField', Images.deal, business.fields.memberdiscount, () => {} )
+    )
+
     business.address.location && fields.push(
       businessDetail('addressField', Images.address, addressToString(business.address), goToTraderLocation )
     )
@@ -105,6 +115,14 @@ function getFields(business, goToTraderLocation) {
 
     business.fields.linkedin && fields.push(
           businessDetail('linkedinField', Images.linkedin, business.name, () => Communications.web(business.fields.linkedin))
+    )
+
+    business.fields.flickr && fields.push(
+          businessDetail('flickrField', Images.flickr, business.name, () => Communications.web(business.fields.flickr))
+    )
+
+    business.fields.businessopeninghours && fields.push(
+      businessDetail('openingHoursField', Images.opening, business.fields.businessopeninghours, () => {})
     )
 
   return fields
