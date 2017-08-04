@@ -64,7 +64,7 @@ export default class Search extends React.Component {
       const filteredBusinessList = this.state.searchTerms.length
       ? _.filter(allBusinesses, business => termsMatch(business.name) || termsMatch(business.fields.username) || (business.fields.description && termsMatch(business.fields.description)))
       : []
-      
+
       const filteredContactList = this.state.searchTerms.length
       ? _.filter(contactList, contact => (contact.name && termsMatch(contact.name)) || (contact.username && termsMatch(contact.username)))
       : []
@@ -120,11 +120,11 @@ export default class Search extends React.Component {
       }
 
       const getMatchesText = (matches, category) => {
-        return matches === 1 ? matches + category + ' MATCH' : matches + category + ' MATCHES' 
+        return matches === 1 ? matches + category + ' MATCH' : matches + category + ' MATCHES'
       }
 
-      const array = this.state.input == null 
-        ? [ ...coloredContactList.map(setPressableAndCategory), ...coloredTraderList.map(makePressable) ] 
+      const array = this.state.input == null
+        ? [ ...coloredContactList.map(setPressableAndCategory), ...coloredTraderList.map(makePressable) ]
         : ( this.props.loggedIn
             ? [ getMatchesText(contactMatches, ' CONTACT'), ...coloredContactList.map(setPressableAndCategory), getMatchesText(matches, ' BUSINESS'), ...coloredTraderList.map(makePressable) ]
             : [ getMatchesText(matches, ' BUSINESS'), ...coloredTraderList.map(makePressable) ]
@@ -166,6 +166,7 @@ export default class Search extends React.Component {
                     style={closeButton}
                     size={SEARCH_BAR_HEIGHT}/>
         modeComponent = <FiltersComponent
+                    allFilters={this.props.allFilters}
                     activeFilters={this.props.activeFilters}
                     removeFilter={this.props.removeFilter}
                     addFilter={this.props.addFilter}/>
@@ -186,6 +187,7 @@ export default class Search extends React.Component {
                        placeholder={this.props.loggedIn ? 'Search Business or Contact' : 'Search Business'}
                        placeholderTextColor={Colors.gray4}
                        selectTextOnFocus={true}
+                       autoCorrect={false}
                        style={textInput}
                        value={input}
                        underlineColorAndroid={Colors.transparent}/>

@@ -3,6 +3,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import { Dimensions } from 'react-native'
 import merge from '../../util/merge'
+import { getPaymentData } from '../../api/payments'
 import { getClosestBusinesses, offsetOverlappingBusinesses, getBusinessesByFilter, getBusinessesByExclusiveFilter } from '../../util/business'
 import { addFailedAction } from './networkConnection'
 import { getBusinesses } from '../../api/users'
@@ -11,8 +12,6 @@ import { ERROR_SEVERITY, unknownError, updateStatus } from './statusMessage'
 import { showModal, modalState } from './navigation'
 import { updatePayee } from './sendMoney'
 import Config from '@Config/config'
-
-const DEFAULT_COORDINATES = { latitude: 51.454513, longitude:  -2.58791 }
 
 // 1 pixel right adds the same to longitude as 1.69246890879 pixels up adds to latitude
 // when the map is centred at the default coordinates
@@ -26,7 +25,7 @@ export const mapHeight = height + 95
 const mapWidth = width
 
 export const MapViewport = {
-    ...DEFAULT_COORDINATES,
+    ...Config.DEFAULT_COORDINATES,
     longitudeDelta: 0.006,
     latitudeDelta: 0.006 * mapHeight / (mapWidth * longitudePerLatitude),
 }
@@ -37,40 +36,9 @@ export const tabModes = {
   serach: 'search'
 }
 
-export const allFilters = [
-  {
-    label: 'foodanddrink',
-    text: "Food And Drink"
-  },
-  {
-    label: 'foryourbusiness',
-    text: "For your business"
-  },
-  {
-    label: 'foryourhome',
-    text: "For your home"
-  },
-  {
-    label: 'gettingaround',
-    text: "Getting around"
-  },
-  {
-    label: 'goingout',
-    text: "Going out"
-  },
-  {
-    label: 'lookingafteryou',
-    text: "Looking after you"
-  },
-  {
-    label: 'shopping',
-    text: "Shopping"
-  },
-  {
-    label: 'visitingthecity',
-    text: "Visiting " + Config.APP_CITY
-  }
-]
+function formatCategory (category) {
+    return {'id': category.id, 'label': category.label}
+}
 
 // We want the center for sorting businesses higher than the actual centre of map.
 // 1/15 of mapHeight higher than center of map, which is 22.5px higher than center of screen.
@@ -91,6 +59,7 @@ const businessArea = (viewport) =>
 
 const initialState = {
   businessList: [],
+  categories: [],
   businessListTimestamp: null,
   selectedBusinessId: undefined,
   closestBusinesses: [],
@@ -100,6 +69,7 @@ const initialState = {
   forceRegion: MapViewport,
   tabMode: tabModes.default,
   traderScreenBusinessId: undefined,
+  traderScreenBusiness: undefined,
   geolocationStatus: null,
   businessListRef: null,
 }
@@ -165,11 +135,16 @@ export const selectClosestBusiness = () => ({
   type: 'business/SELECT_CLOSEST_BUSINESS'
 })
 
+const paymentDataReceived = (result) => ({
+  type: 'business/PAYMENT_DATA',
+  data: result
+})
+
 export const geolocationChanged = (coords, dispatch) => {
     const { latitude, longitude } = coords
     dispatch(geolocationSuccess(coords))
     //furthest business is around 70km from Bristol centre
-    if (haversine(DEFAULT_COORDINATES, coords) < 75) {
+    if (haversine(Config.DEFAULT_COORDINATES, coords) < 75) {
         dispatch(moveMap({ latitude, longitude }))
         dispatch(selectClosestBusiness())
     }
@@ -179,8 +154,26 @@ export const geolocationFailed = () => ({
   type: 'business/GEOLOCATION_FAILED'
 })
 
+const fieldsReceived = (fields) => ({
+  type: 'business/FIELDS_RECEIVED',
+  fields
+})
+
+// called after login successful, so there's no need to check if the user has logged in
+export const loadPaymentData = (dispatch) => {
+  var businessId = getState().business.traderScreenBusinessId
+  if(businessId) {
+    getPaymentData(businessId, dispatch)
+      .then(result => dispatch(paymentDataReceived(result)))
+  }
+}
+
 export const openTraderModal = (businessId) => (dispatch, getState) => {
   dispatch(selectBusinessForModal(businessId))
+  if(getState().login.loginStatus == 'LOGGED_IN'&& (getState().business.businessList[businessId].fields.username !== getState().account.details.shortDisplay)) {
+    getPaymentData(businessId, dispatch)
+      .then(result => dispatch(paymentDataReceived(result)))
+  }
   dispatch(showModal(modalState.traderScreen))
   dispatch(updatePayee(businessId))
 }
@@ -190,8 +183,9 @@ export const loadBusinessList = (force = false) => (dispatch, getState) => {
     //ToDo: to load data every time! When api has changed make a call to check whether something changed since last time the data was pulled
     if (Date.now() - persistedDate > moment.duration(2, 'days') || force) {
       getBusinesses()
-        .then((businesses) => {
-          dispatch(businessListReceived(businesses))
+        .then((data) => {
+          dispatch(businessListReceived(data.directory))
+          dispatch(fieldsReceived(data.fields))
         })
         // if this request fails, the business list may not be populated. In this case, when
         // connection status changes to be connected, the list is re-fetched
@@ -212,6 +206,12 @@ const reducer = (state = initialState, action) => {
         closestBusinesses,
         businessList: offsetBusinesses,
         businessListTimestamp: new Date()
+      })
+      break
+
+    case 'business/FIELDS_RECEIVED':
+      state = merge(state, {
+        categories: _.map(_.filter(action.fields.businesscategory.possibleValues.categories, f => (!_.has(f, 'options') || !_.has(f.options, 'filter_hidden') || !f.options.filter_hidden)), formatCategory)
       })
       break
 
@@ -265,13 +265,15 @@ const reducer = (state = initialState, action) => {
         businessList: [],
         businessListTimestamp: null,
         closestBusinesses: [ ],
-        traderScreenBusinessId: undefined
+        traderScreenBusinessId: undefined,
+        traderScreenBusiness: undefined
       })
       break
 
     case 'business/SET_TRADER_SCREEN_ID':
       state = merge(state, {
         traderScreenBusinessId: action.id,
+        traderScreenBusiness: state.businessList[action.id] || undefined
       })
       break
 
@@ -291,7 +293,7 @@ const reducer = (state = initialState, action) => {
       newActiveFilters = state.activeFilters
       _.pull(newActiveFilters, action.value)
       newFilteredBusinesses = _.difference(state.filteredBusinesses, getBusinessesByExclusiveFilter(state.businessList, newActiveFilters, action.value))
-      businesses = state.filteredBusinesses.length > 0 ? state.filteredBusinesses : state.businessList
+      businesses = newFilteredBusinesses.length > 0 ? newFilteredBusinesses : state.businessList
       closestBusinesses = getClosestBusinesses(businesses, businessArea(state.mapViewport))
       state = merge(state, {
         closestBusinesses,
@@ -318,6 +320,12 @@ const reducer = (state = initialState, action) => {
 
     case 'navigation/NAVIGATE_TO_TAB':
       state = merge(state, { tabMode: tabModes.default })
+      break
+
+    case 'business/PAYMENT_DATA':
+      var selected = state.traderScreenBusiness
+      selected.paymentTypes = action.data.paymentTypes
+      state = merge(state, { traderScreenBusiness: selected })
   }
   return state
 }

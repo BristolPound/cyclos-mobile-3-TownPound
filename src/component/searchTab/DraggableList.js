@@ -257,10 +257,11 @@ class DraggableList extends React.Component {
   }
 
   slideAndScrollTo(innerTopOffset) {
+    const velocity = this.velocity || DEFAULT_VELOCITY
     animateTo(
       this.state.currentOuterTopOffset,
       this.props.topOffset[0],
-      (this.props.topOffset[0] - this.state.currentOuterTopOffset._value) / this.velocity,
+      (this.props.topOffset[0] - this.state.currentOuterTopOffset._value) / velocity,
       innerTopOffset ? Easing.linear : undefined,
       () => {
         this.updatePosition(0)
@@ -324,7 +325,7 @@ class DraggableList extends React.Component {
           onResponderGrant={this.responderGrant.bind(this)}
           onResponderMove={this.responderMove.bind(this)}
           onResponderRelease={this.responderRelease.bind(this)}>
-        <Animated.View style={{ top: this.state.currentInnerTopOffset }} removeClippedSubviews={true}>
+        <Animated.View style={{ top: this.state.currentInnerTopOffset }} removeClippedSubviews={false}>
           {this.props.children}
         </Animated.View>
       </Animated.View>

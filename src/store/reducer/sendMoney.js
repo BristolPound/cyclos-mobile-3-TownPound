@@ -114,7 +114,7 @@ export const sendTransaction = () =>
               if (json && json.code === 'dailyAmountExceeded') {
                 dispatch(transactionComplete(false, 'Daily amount has been exceeded.', 0, null, null))
               } else if (json && json.code === 'insufficientBalance') {
-                dispatch(transactionComplete(false, 'Insufficient balance.', 0, null, null))
+                dispatch(transactionComplete(false, 'Payment failed.', 0, null, null))
               } else {
                 dispatch(transactionComplete(false, 'Error on sending transaction.', 0, null, null))
               }
