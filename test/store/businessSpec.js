@@ -7,6 +7,7 @@ chai.use(chaiSubset)
 const initialState = {
 	activeFilters: [],
   	businessList: [],
+	categories: [],
   	businessListTimestamp: null,
   	selectedBusinessId: undefined,
   	closestBusinesses: [],
@@ -15,6 +16,7 @@ const initialState = {
 	forceRegion: MapViewport,
 	tabMode: 'default',
 	traderScreenBusinessId: undefined,
+  	traderScreenBusiness: undefined,
 	geolocationStatus: null,
 	businessListRef: null
 }
@@ -36,6 +38,7 @@ describe('Business reducer', () => {
 	    ).to.containSubset({
 			activeFilters: [],
 		  	businessList: [],
+			categories: [],
 		  	selectedBusinessId: undefined,
 		  	closestBusinesses: [],
   			filteredBusinesses: [],
@@ -43,6 +46,7 @@ describe('Business reducer', () => {
 		  	forceRegion: MapViewport,
 		  	tabMode: 'default',
 		  	traderScreenBusinessId: undefined,
+  			traderScreenBusiness: undefined,
 		  	geolocationStatus: null,
 		  	businessListRef: null
 		})
@@ -57,6 +61,7 @@ describe('Business reducer', () => {
 	    ).to.deep.equal({
 			activeFilters: [],
 		  	businessList: [],
+			categories: [],
 		  	businessListTimestamp: null,
 		  	selectedBusinessId: 0,
 		  	closestBusinesses: [],
@@ -65,6 +70,7 @@ describe('Business reducer', () => {
 		  	forceRegion: MapViewport,
 		  	tabMode: 'default',
 		  	traderScreenBusinessId: undefined,
+  			traderScreenBusiness: undefined,
 		  	geolocationStatus: null,
 		  	businessListRef: null
 		})
@@ -75,6 +81,7 @@ describe('Business reducer', () => {
 	      	reducer({
 				activeFilters: [],
 			  	businessList: [],
+				categories: [],
 			  	businessListTimestamp: null,
 			  	selectedBusinessId: 0,
 			  	closestBusinesses: [{id: 1}, {id: 4}],
@@ -83,6 +90,7 @@ describe('Business reducer', () => {
 			  	forceRegion: MapViewport,
 		  		tabMode: 'default',
 			  	traderScreenBusinessId: undefined,
+  				traderScreenBusiness: undefined,
 			  	geolocationStatus: null,
 			  	businessListRef: null
 			}, {
@@ -91,6 +99,7 @@ describe('Business reducer', () => {
 	    ).to.deep.equal({
 			activeFilters: [],
 		  	businessList: [],
+			categories: [],
 		  	businessListTimestamp: null,
 		  	selectedBusinessId: 1,
 		  	closestBusinesses: [{id: 1}, {id: 4}],
@@ -99,6 +108,7 @@ describe('Business reducer', () => {
 		  	forceRegion: MapViewport,
 		  	tabMode: 'default',
 		  	traderScreenBusinessId: undefined,
+  			traderScreenBusiness: undefined,
 		  	geolocationStatus: null,
 		  	businessListRef: null
 		})
@@ -109,6 +119,7 @@ describe('Business reducer', () => {
 	      	reducer({
 				activeFilters: [],
 			  	businessList: [{id: 0}, {id: 1}],
+				categories: [],
 			  	businessListTimestamp: null,
 			  	selectedBusinessId: undefined,
 			  	closestBusinesses: [{id: 1}, {id: 4}],
@@ -117,6 +128,7 @@ describe('Business reducer', () => {
 			  	forceRegion: MapViewport,
 		  		tabMode: 'default',
 			  	traderScreenBusinessId: 4,
+  				traderScreenBusiness: {name: 'business'},
 			  	geolocationStatus: null,
 			  	businessListRef: null
 			}, {
@@ -134,6 +146,7 @@ describe('Business reducer', () => {
 	    ).to.deep.equal({
 			activeFilters: [],
 		  	businessList: [],
+			categories: [],
 		  	businessListTimestamp: null,
 		  	selectedBusinessId: undefined,
 		  	closestBusinesses: [],
@@ -142,6 +155,7 @@ describe('Business reducer', () => {
 		  	forceRegion: MapViewport,
 		  	tabMode: 'default',
 		  	traderScreenBusinessId: 1,
+  			traderScreenBusiness: undefined,
 		  	geolocationStatus: null,
 		  	businessListRef: null
 		})
@@ -156,6 +170,7 @@ describe('Business reducer', () => {
 	    ).to.deep.equal({
 			activeFilters: [],
 		  	businessList: [],
+			categories: [],
 		  	businessListTimestamp: null,
 		  	selectedBusinessId: undefined,
 		  	closestBusinesses: [],
@@ -164,6 +179,7 @@ describe('Business reducer', () => {
 		  	forceRegion: MapViewport,
 		  	tabMode: 'search',
 		  	traderScreenBusinessId: undefined,
+  			traderScreenBusiness: undefined,
 		  	geolocationStatus: null,
 		  	businessListRef: null
 		})
@@ -177,6 +193,7 @@ describe('Business reducer', () => {
 	    ).to.deep.equal({
 			activeFilters: [],
 		  	businessList: [],
+			categories: [],
 		  	businessListTimestamp: null,
 		  	selectedBusinessId: undefined,
 		  	closestBusinesses: [],
@@ -185,6 +202,7 @@ describe('Business reducer', () => {
 		  	forceRegion: MapViewport,
 		  	tabMode: 'default',
 		  	traderScreenBusinessId: undefined,
+  			traderScreenBusiness: undefined,
 		  	geolocationStatus: false,
 		  	businessListRef: null
 		})
@@ -199,6 +217,7 @@ describe('Business reducer', () => {
 	    ).to.deep.equal({
 			activeFilters: [],
 		  	businessList: [],
+			categories: [],
 		  	businessListTimestamp: null,
 		  	selectedBusinessId: undefined,
 		  	closestBusinesses: [],
@@ -207,6 +226,7 @@ describe('Business reducer', () => {
 		  	forceRegion: MapViewport,
 		  	tabMode: 'default',
 		  	traderScreenBusinessId: undefined,
+  			traderScreenBusiness: undefined,
 		  	geolocationStatus: 'here',
 		  	businessListRef: null
 		})
@@ -221,6 +241,7 @@ describe('Business reducer', () => {
 	    ).to.deep.equal({
 			activeFilters: [],
 		  	businessList: [],
+			categories: [],
 		  	businessListTimestamp: null,
 		  	selectedBusinessId: undefined,
 		  	closestBusinesses: [],
@@ -229,6 +250,7 @@ describe('Business reducer', () => {
 		  	forceRegion: MapViewport,
 		  	tabMode: 'default',
 		  	traderScreenBusinessId: undefined,
+  			traderScreenBusiness: undefined,
 		  	geolocationStatus: null,
 		  	businessListRef: 'here'
 		})
@@ -239,6 +261,7 @@ describe('Business reducer', () => {
 	      	reducer({
 				activeFilters: [],
 			  	businessList: [],
+				categories: [],
 			  	businessListTimestamp: null,
 			  	selectedBusinessId: undefined,
 			  	closestBusinesses: [],
@@ -247,6 +270,7 @@ describe('Business reducer', () => {
 			  	forceRegion: MapViewport,
 			  	tabMode: 'search',
 			  	traderScreenBusinessId: undefined,
+  				traderScreenBusiness: undefined,
 			  	geolocationStatus: null,
 			  	businessListRef: null
 			}, {

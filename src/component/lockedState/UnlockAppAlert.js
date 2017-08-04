@@ -31,16 +31,16 @@ class UnlockAppAlert extends React.Component {
             <View style={style.wrapper}>
                 <View style={style.container}>
                     <Text style={style.instructionText}>
-                        To protect your privacy, we have locked the login area.
+                        For your privacy, the app was locked.
                         To unlock, please enter the last {unlockCharNo} characters of your password. Or chose "Logout" to just browse
                     </Text>
                     { this.props.error &&
                         <View>
                             <Text style={merge(style.errorText, { paddingTop: 10 })}>
-                                You have {maxAttempts - this.props.failedAttempts} attempts left.
+                                The characters entered don't match.
                             </Text>
                             <Text style={merge(style.errorText, { paddingBottom: 10 })}>
-                                The characters entered don't match.
+                                You have {maxAttempts - this.props.failedAttempts} attempts left.
                             </Text>
                         </View>
                     }

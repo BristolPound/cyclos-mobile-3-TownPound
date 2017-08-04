@@ -11,10 +11,26 @@ import Autocomplete from 'react-native-autocomplete-input'
 import styles from './InputComponentStyle'
 import Images from '@Assets/images'
 
+export const labels = {
+    AMOUNT: 'Amount',
+    CONFIRM: 'Confirm',
+    CURRENT_BALANCE: 'CURRENT BALANCE',
+    DESCRIPTION: 'Description (optional)',
+    ENTER_AMOUNT: 'Enter Amount',
+    LOGIN_FOR_PAYMENT: 'Log in to make payment',
+    MAKING_PAYMENT: 'Making Payment',
+    NO_PAYMENT_AVAILABLE: 'No payment available',
+    PAY: 'Pay',
+    PAYMENT_COMPLETE: 'Payment complete',
+    PIN: 'PIN',
+    SEND_PAYMENT: 'Send Payment',
+    USING_TXT2PAY: 'No internet connection (Using TXT2PAY)',
+}
+
 const BalanceMessage = ({ balance }) => {
   return (
     <View style={styles.balanceContainer}>
-      <DefaultText style={commonStyle.sectionHeader.text}>CURRENT BALANCE</DefaultText>
+      <DefaultText style={commonStyle.sectionHeader.text}>{labels.CURRENT_BALANCE}</DefaultText>
       <View style={styles.priceContainer}>
         <Image source={Images.balanceSymbol}/>
         <Price prefix=''
@@ -33,7 +49,7 @@ class InputComponent extends KeyboardComponent {
   }
 
   getButtonColor () {
-    if (this.props.invalidInput) {
+    if (this.props.invalidInput || this.props.buttonText === labels.NO_PAYMENT_AVAILABLE) {
       return Colors.offWhite
     }
     return Colors.primaryBlue
@@ -50,11 +66,10 @@ class InputComponent extends KeyboardComponent {
     })
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.accessibilityLabel !== 'Enter Amount') {
+  componentWillUpdate(nextProps) {
+    if (nextProps.accessibilityLabel !== labels.ENTER_AMOUNT) {
       animateTo(this.state.keyboardHeight, 0, 50)
     }
-
 
     if (nextProps.descriptionInput && (nextProps.descriptionInput != this.props.descriptionInput)) {
       this.setState({
@@ -123,7 +138,7 @@ class InputComponent extends KeyboardComponent {
     return (
           <Animated.View style={{backgroundColor: 'white', bottom: this.state.keyboardHeight }} accessibilityLabel={accessibilityLabel}>
 
-          {accessibilityLabel === 'Payment complete'
+          {accessibilityLabel === labels.PAYMENT_COMPLETE
             ? button
             : <TouchableOpacity onPress={invalidInput ? undefined : newOnButtonPress}>
                 {button}

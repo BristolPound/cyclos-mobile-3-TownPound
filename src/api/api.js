@@ -1,9 +1,11 @@
+import _ from 'lodash'
 import {encode} from 'base-64'
 import merge from '../util/merge'
+import cyclosUrl from '../util/config'
 import { throwErrorOnUnexpectedResponse } from './apiError'
 import Config from '@Config/config'
+import { flavour, default_config, configurations } from '@Config/config'
 
-let BASE_URL = Config.BASE_URL
 let globalSessionToken = ''
 
 export const setSessionToken = (newToken) => {
@@ -12,24 +14,45 @@ export const setSessionToken = (newToken) => {
 
 export const deleteSessionToken = () => globalSessionToken = ''
 
+export const getBaseUrl = (flavourRequested) => {
+
+    const selectedConfig = (!flavourRequested || flavourRequested == flavour)
+        ? Config
+        : _.has(configurations, flavourRequested)
+        ? configurations[flavourRequested]
+        : cyclosUrl(_.merge({}, default_config))
+
+    return selectedConfig.CYCLOS.url
+}
+
+let BASE_URL = getBaseUrl()
+
 export const setBaseUrl = newUrl => {
   BASE_URL = newUrl
 }
 
-const httpHeaders = (requiresAuthorisation) => {
+const httpCommonHeaders = () => {
   const headers = new Headers()
+  headers.append('Accept', 'application/json')
+  headers.append('Content-Type', 'application/json')
+  if (Config.CYCLOS.channel) {
+      const channel = Config.CYCLOS.channel.replace('{CHANNEL_SECRET}', Config.secrets.CHANNEL_SECRET)
+      headers.append('Channel', channel)
+  }
+  return headers
+}
+
+const httpHeaders = (requiresAuthorisation) => {
+  const headers = httpCommonHeaders()
   if (globalSessionToken && requiresAuthorisation) {
     headers.append('Session-Token', globalSessionToken)
   }
-  headers.append('Accept', 'application/json')
-  headers.append('Content-Type', 'application/json')
   return headers
 }
 
 const basicAuthHeaders = (username, password) => {
-  const headers = new Headers()
+  const headers = httpCommonHeaders()
   headers.append('Authorization', 'Basic ' + encode(username + ':' + password))
-  headers.append('Accept', 'application/json')
   return headers
 }
 

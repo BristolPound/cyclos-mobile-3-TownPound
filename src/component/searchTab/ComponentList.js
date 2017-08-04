@@ -12,6 +12,11 @@ class ComponentList extends React.Component {
     }
   }
 
+  componentWillMount() {
+    this.props.refreshTabMode()
+  }
+
+
   captureChildLayout(event, index) {
     const {x, y, width, height} = event.nativeEvent.layout
     this.layoutInfo[index] = {
