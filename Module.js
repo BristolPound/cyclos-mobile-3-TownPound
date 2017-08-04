@@ -6,6 +6,8 @@ import { composeWithDevTools } from 'remote-redux-devtools'
 import { persistStore, autoRehydrate, createTransform } from 'redux-persist'
 import { AsyncStorage } from 'react-native'
 import _ from 'lodash'
+// initialise config, as long it is not implemented in the store
+import config from './src/util/config'
 import Root from './src/component/Root'
 import { reducer, initialise } from './src/store/reducer'
 
@@ -30,7 +32,7 @@ class Module extends React.Component {
       storage: AsyncStorage,
       transforms: [
         createTransform(
-          (state) => _.pick(state, ['businessList', 'businessListTimestamp']),
+          (state) => _.pick(state, ['businessList', 'businessListTimestamp', 'categories']),
           (state) => state,
           {whitelist: ['business']}
         ),

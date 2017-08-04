@@ -6,7 +6,7 @@ describe('Person reducer', () => {
 	it('should return the initial state', () => {
 	    expect(
 	      	reducer(undefined, {})
-	    ).to.deep.equal( {selectedPerson: {}} )
+	    ).to.deep.equal( {selectedPerson: undefined} )
 	})
 
 	it('should handle SELECT_PERSON', () => {

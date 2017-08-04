@@ -4,7 +4,7 @@ import merge from '../util/merge'
 
 const DirectoryAPI = require('org.bristolpound.cyclos.api.directory')
 
-const directoryAPI = new DirectoryAPI(Config.CURRENT_CONFIG)
+const directoryAPI = new DirectoryAPI(Config.DIRECTORY)
 
 
 const parseShortDisplay = fullDisplay =>
@@ -12,7 +12,7 @@ const parseShortDisplay = fullDisplay =>
 
 export const getBusinesses = () =>
 	directoryAPI.staticDirectory()
-	.then(data => data.directory)
+	.then(data => data)
 
 export const getAccountDetails = (dispatch) =>
   get('users/self', {
