@@ -89,11 +89,9 @@ class InputComponent extends KeyboardComponent {
     return (
           <Animated.View style={{backgroundColor: 'white', bottom: this.state.keyboardHeight }} accessibilityLabel={accessibilityLabel}>
 
-          {accessibilityLabel === labels.PAYMENT_COMPLETE
-            ? button
-            : <TouchableOpacity onPress={invalidInput ? undefined : onButtonPress}>
-                {button}
-              </TouchableOpacity>}
+          <TouchableOpacity onPress={invalidInput ? undefined : onButtonPress}>
+             {button}
+          </TouchableOpacity>
 
           {input
             ? <View>
