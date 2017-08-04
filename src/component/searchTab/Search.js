@@ -17,6 +17,7 @@ import { addColorCodes } from '../../util/business'
 import searchTabStyle, { maxExpandedHeight, SEARCH_BAR_HEIGHT, SEARCH_BAR_MARGIN } from './SearchTabStyle'
 import { ROW_HEIGHT } from './BusinessListStyle'
 import Images from '@Assets/images'
+import jp from '@f5io/jsonpath'
 
 const { searchBar, textInput, searchHeaderText, closeButton, nearbyButton, fixedScrollableListContainer } = searchTabStyle.searchTab
 
@@ -37,6 +38,31 @@ const ComponentForItem = (item) => {
   return <BusinessListItem business={item}/>
 }
 
+
+export const searchRanks = {
+  1: "username",
+  2: "name",
+  3: "address",
+  4: "phone",
+  5: "email",
+  6: "website",
+  7: "facebook",
+  8: "twitter",
+  9: "linkedin"
+}
+
+export const searchPaths = {
+  username: "$.fields.username",
+  name: "$.name",
+  address: "$.address.addressLine1",
+  phone: "$.fields.businessphone",
+  email: "$.fields.businessemail",
+  website: "$.fields.businesswebsite",
+  facebook: "$.fields.facebook",
+  twitter: "$.fields.twitter",
+  linkedin: "$.fields.linkedin"
+}
+
 export default class Search extends React.Component {
     constructor(props) {
       super(props)
@@ -50,21 +76,47 @@ export default class Search extends React.Component {
       }
     }
 
+    termsMatch = (field) => {
+      if (!field) return false
+
+      let match = true
+      this.state.searchTerms.forEach((term) => {
+        if (match && field.toLowerCase().indexOf(term.toLowerCase()) === -1) {
+          match = false
+        }
+      })
+      return match
+    }
+
     updateResults = (allBusinesses = this.props.allBusinesses) => {
-      const termsMatch = (field) => {
-        let match = true
-        this.state.searchTerms.forEach((term) => {
-          if (match && field.toLowerCase().indexOf(term.toLowerCase()) === -1) {
-            match = false
-          }
-        })
-        return match
-      }
-      const filteredBusinessList = this.state.searchTerms.length
-      ? _.filter(allBusinesses, business => termsMatch(business.name) || termsMatch(business.fields.username) || (business.fields.description && termsMatch(business.fields.description)))
-      : []
-      const componentListArray = this.createComponentListArray(filteredBusinessList)
+
+      let rankedFilteredBusinessList = []
+
+      this.state.searchTerms.length && _.forEach(allBusinesses, (business) => {
+          let rank = this.getRank(business)
+          rank && rankedFilteredBusinessList.push({rank: rank, business: business})
+      })
+
+      let orderedRanks = _.orderBy(rankedFilteredBusinessList, ['rank'])
+
+      let filteredBusinesses = _.map(orderedRanks, (rankedBusiness) => {
+        return rankedBusiness.business
+      })
+
+      const componentListArray = this.createComponentListArray(filteredBusinesses)
       this.setState({ componentListArray, searching: false })
+
+    }
+
+    getRank(business) {
+      let rank = 0
+      _.forIn(searchRanks, (field, weighting) => {
+        if (this.termsMatch(jp(searchPaths[field], business))) {
+          rank = weighting
+          return false
+        }
+      })
+      return rank
     }
 
     debouncedUpdate = _.debounce(() => this.updateResults(), 800)
