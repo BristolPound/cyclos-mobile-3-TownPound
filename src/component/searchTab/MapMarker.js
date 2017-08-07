@@ -13,17 +13,17 @@ const getClusterDetails = (pointCount, selected) => {
   var marginLeft
   switch (true) {
     case (pointCount > 99):
-      image = selected ? Images.selectedOver99 : Images.clusterOver99
+      image = selected ? Images.cluster.selected_000 : Images.cluster.normal_000
       marginTop = isScreenSmall ? 4 : 3
       marginLeft = 14.5
       break;
     case (pointCount > 9):
-      image = selected ? Images.selectedOver9 : Images.clusterOver9
+      image = selected ? Images.cluster.selected_00 : Images.cluster.normal_00
       marginTop = isScreenSmall ? 3 : 2
       marginLeft = 13
       break;
     default:
-      image = selected ? Images.selectedCluster : Images.cluster
+      image = selected ? Images.cluster.selected_0 : Images.cluster.normal_0
       marginTop = isScreenSmall ? 2 : 1
       marginLeft = 13.5
       break;
@@ -49,7 +49,7 @@ const MapMarker = ({ coordinate, selected, onPress, pointCount }) => {
     </Marker>
   }
 
-  const marker = selected ? Images.selectedTrader : Images.marker
+  const marker = selected ? Images.marker.selected : Images.marker.account
   return <Marker
       coordinate={coordinate}
       onPress={onPress}
