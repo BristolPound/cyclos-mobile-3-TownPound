@@ -9,7 +9,16 @@ import Images from '@Assets/images'
 import Config from '@Config/config'
 import _ from 'lodash'
 
-const Field = ({icon, text, accessibilityLabel, onPress, additionalOption}) =>
+const Field = ({icon, text, accessibilityLabel, onPress, additionalOption, label}) => {
+  if (icon) {
+    return fieldWithIcon(icon, text, accessibilityLabel, onPress, additionalOption)
+  }
+  else {
+    return fieldWithoutIcon(label, text, accessibilityLabel)
+  }
+}
+
+const fieldWithIcon = (icon, text, accessibilityLabel, onPress, additionalOption) =>
   <View style={styles.field}>
     <Image style={styles.image} source={icon} resizeMode='contain'/>
     <View style={styles.item}>
@@ -22,6 +31,19 @@ const Field = ({icon, text, accessibilityLabel, onPress, additionalOption}) =>
       </TouchableOpacity>}
     </View>
   </View>
+
+const fieldWithoutIcon = (label, text, accessibilityLabel) => {
+
+  console.log(label)
+  return (
+    <Text>
+      Other field type - {label}
+    </Text>
+  )
+
+}
+
+
 
 const renderFields = (fields) =>
   <View>
@@ -60,21 +82,22 @@ const renderDescription = (description) => {
 }
 
 
+const businessDetail = (key, icon, text, onPress, additionalOption = null, label = '') =>
+  ({ key, icon, text, onPress, additionalOption, label })
 
+const phoneDetail = (business) => {
+  let phoneNumbers = business.fields.businessphone.split("/")
+  let additionalNumber = phoneNumbers.length == 2
+  ? {text: phoneNumbers[1].trim(), onPress: () => Communications.phonecall(phoneNumbers[1].trim(), true)}
+  : null
 
-function getFields(business, goToTraderLocation) {
-  const fields = [],
-      businessDetail = (key, icon, text, onPress, additionalOption = null) => ({ key, icon, text, onPress, additionalOption })
+  return businessDetail('phoneField', Images.phone, phoneNumbers[0].trim(), () => Communications.phonecall(phoneNumbers[0].trim(), true), additionalNumber)
 
-  const phoneDetail = () => {
-    let phoneNumbers = business.fields.businessphone.split("/")
-    let additionalNumber = phoneNumbers.length == 2
-      ? {text: phoneNumbers[1].trim(), onPress: () => Communications.phonecall(phoneNumbers[1].trim(), true)}
-      : null
-    fields.push(
-      businessDetail('phoneField', Images.phone, phoneNumbers[0].trim(), () => Communications.phonecall(phoneNumbers[0].trim(), true), additionalNumber)
-    )
-  }
+}
+
+function getFields(business, goToTraderLocation, orderedFields) {
+  const fields = []
+  const priorityFields = []
 
   // Order of display should be:
   //    cash point, special offer*, address, opening times*, phone number, email address
@@ -87,46 +110,100 @@ function getFields(business, goToTraderLocation) {
       businessDetail('cashPoint2Field', Images.cashpoint2, business.subCategories.cashpoint2 +': '+ Config.CASH_POINT_2, () => {} )
     )
 
-    business.fields.memberdiscount && fields.push(
-      businessDetail('discountField', Images.deal, business.fields.memberdiscount, () => {} )
-    )
+    // business.fields.memberdiscount && fields.push(
+    //   businessDetail('discountField', Images.deal, business.fields.memberdiscount, () => {} )
+    // )
+    //
+    // business.address.location && fields.push(
+    //   businessDetail('addressField', Images.address, addressToString(business.address), goToTraderLocation )
+    // )
+    //
+    // business.fields.businessphone && fields.push(phoneDetail())
+    //
+    // business.fields.businessemail && fields.push(
+    //   businessDetail('emailField', Images.email, business.fields.businessemail, () => Communications.email([business.fields.businessemail], null, null, null, null))
+    // )
+    //
+    // business.fields.facebook && fields.push(
+    //   businessDetail('facebookField', Images.facebook, business.name, () => Communications.web(business.fields.facebook))
+    // )
+    //
+    // business.fields.businesswebsite && fields.push(
+    //       businessDetail('websiteField', Images.website, business.fields.businesswebsite, () => Communications.web(business.fields.businesswebsite))
+    // )
+    //
+    // business.fields.twitter && fields.push(
+    //       businessDetail('twitterField', Images.twitter, business.fields.twitter.split("@").join(""), () => Communications.web("https://www.twitter.com/" + business.fields.twitter.split("@").join("")))
+    // )
+    //
+    // business.fields.linkedin && fields.push(
+    //       businessDetail('linkedinField', Images.linkedin, business.name, () => Communications.web(business.fields.linkedin))
+    // )
+    //
+    // business.fields.flickr && fields.push(
+    //       businessDetail('flickrField', Images.flickr, business.name, () => Communications.web(business.fields.flickr))
+    // )
+    //
+    // business.fields.businessopeninghours && fields.push(
+    //   businessDetail('openingHoursField', Images.opening, business.fields.businessopeninghours, () => {})
+    // )
 
-    business.address.location && fields.push(
-      businessDetail('addressField', Images.address, addressToString(business.address), goToTraderLocation )
-    )
+    const pushToMain = (fieldMetadata) => {
+      fieldMetadata.id != "businessTeaser" &&
+        fields.push(getBusinessesDetail(business, fieldMetadata, goToTraderLocation))
+    }
 
-    business.fields.businessphone && phoneDetail()
+    const pushToPriority = (fieldMetadata) => {
+      console.log("the priorityView is " + fieldMetadata.priorityView + " for " + fieldMetadata.label)
+      fieldMetadata.priorityView &&
+        priorityFields.push(getBusinessesDetail(business, fieldMetadata, goToTraderLocation))
+    }
 
-    business.fields.businessemail && fields.push(
-      businessDetail('emailField', Images.email, business.fields.businessemail, () => Communications.email([business.fields.businessemail], null, null, null, null))
-    )
 
-    business.fields.facebook && fields.push(
-      businessDetail('facebookField', Images.facebook, business.name, () => Communications.web(business.fields.facebook))
-    )
+    _.forEach(orderedFields, (fieldMetadata) => {
+      if (_.has(business.fields, fieldMetadata.id)) {
+        pushToMain(fieldMetadata)
+        pushToPriority(fieldMetadata)
+      }
+    })
 
-    business.fields.businesswebsite && fields.push(
-          businessDetail('websiteField', Images.website, business.fields.businesswebsite, () => Communications.web(business.fields.businesswebsite))
-    )
 
-    business.fields.twitter && fields.push(
-          businessDetail('twitterField', Images.twitter, business.fields.twitter.split("@").join(""), () => Communications.web("https://www.twitter.com/" + business.fields.twitter.split("@").join("")))
-    )
-
-    business.fields.linkedin && fields.push(
-          businessDetail('linkedinField', Images.linkedin, business.name, () => Communications.web(business.fields.linkedin))
-    )
-
-    business.fields.flickr && fields.push(
-          businessDetail('flickrField', Images.flickr, business.name, () => Communications.web(business.fields.flickr))
-    )
-
-    business.fields.businessopeninghours && fields.push(
-      businessDetail('openingHoursField', Images.opening, business.fields.businessopeninghours, () => {})
-    )
-
-  return fields
+  return { fields, priorityFields }
 }
+
+const getBusinessesDetail = (business, fieldMetadata, goToTraderLocation) => {
+
+  let businessField = business.fields[fieldMetadata.id]
+  let icon = fieldMetadata.iconURL || Images[fieldMetadata.id]
+  let accessibilityLabel = fieldMetadata.id.concat("Field")
+  let text, callback
+  // These are the 'exceptions' when a different type of callback is needed
+  switch (fieldMetadata.id) {
+    case "twitter":
+      callback = () => Communications.web("https://www.twitter.com/" + businessField.split("@").join(""))
+      break
+    case "businessemail":
+      callback = () => Communications.email([businessField], null, null, null, null)
+      break
+    case "businessphone":
+      // Checks for multiple phone numbers etc. May change if an array is
+      // returned from api instead of a slash separated value
+      return phoneDetail(business)
+    case "addresses":
+      // Just return the first address for now
+      return businessDetail('addressField', Images.address, addressToString(businessField[0]), goToTraderLocation )
+    default:
+      text = businessField
+      callback = icon
+        ? () => Communications.web(businessField)
+        : () => {}
+  }
+
+
+  return businessDetail(accessibilityLabel, icon, businessField, callback, null, fieldMetadata.label)
+
+}
+
 
 const renderExpandedDetails = (expandedFields, description) => {
   return (
@@ -148,24 +225,26 @@ class BusinessDetails extends React.Component {
     this.setState({isExpanded: true})
   }
 
-  render() {
-    const fields = getFields(this.props.business, this.props.goToTraderLocation)
-    let expandedFields = []
 
-    if(fields.length > 2) {
-      expandedFields = fields.slice(2)
-      fields.length = 2
-    }
+  render() {
+    const { business, goToTraderLocation, orderedFields } = this.props
+    const { fields, priorityFields } = getFields(business, goToTraderLocation, orderedFields)
+    // let expandedFields = []
+
+    console.log("the priorityFields are " + priorityFields[0])
+    // if(fields.length > 2) {
+    //   expandedFields = fields.slice(2)
+    //   fields.length = 2
+    // }
 
     return (
       <View style={fields.length > 1 ? styles.moreDetails : styles.addressOnly}>
-        {renderFields(fields)}
         {(this.state.isExpanded || !Config.ALLOW_LOGIN)
-          ? renderExpandedDetails(expandedFields, this.props.business.fields.description)
-          : ((expandedFields.length > 0 || this.props.business.fields.description)
-              ? renderExpander(() => this.expandDetails())
-              : undefined
-            )
+          ? renderFields(fields)
+          : renderFields(priorityFields)
+        }
+        {(fields.length > 0 || priorityFields.length > 0)
+          && renderExpander(this.expandDetails.bind(this))
         }
       </View>
     )
