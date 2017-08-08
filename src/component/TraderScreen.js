@@ -38,7 +38,10 @@ const TraderScreen = (props) => {
             isModal={true}
             showMap={props.modalOpen}
             goToTraderLocation={() => goToTraderLocation()}/>
-        <BusinessDetails business={props.trader} goToTraderLocation={() => goToTraderLocation()}/>
+        <BusinessDetails
+            business={props.trader}
+            goToTraderLocation={() => goToTraderLocation()}
+            orderedFields={props.orderedFields}/>
         <DefaultText style={{height: 0}}></DefaultText>
         <TransactionList
           listData={props.transactions}
@@ -57,6 +60,7 @@ const getTransactionsForSelectedBusiness = (state) => {
 // Redux Setup
 const mapStateToProps = (state) => ({
     trader: state.business.businessList[state.business.traderScreenBusinessId] || {},
+    orderedFields: state.business.orderedFields,
     transactions: getTransactionsForSelectedBusiness(state),
     modalOpen: state.navigation.modalOpen
 })

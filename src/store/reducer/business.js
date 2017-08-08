@@ -12,6 +12,7 @@ import { ERROR_SEVERITY, unknownError, updateStatus } from './statusMessage'
 import { showModal, modalState } from './navigation'
 import { updatePayee } from './sendMoney'
 import Config from '@Config/config'
+import Images from '@Assets/images'
 
 // 1 pixel right adds the same to longitude as 1.69246890879 pixels up adds to latitude
 // when the map is centred at the default coordinates
@@ -40,6 +41,30 @@ function formatCategory (category) {
     return {'id': category.id, 'label': category.label}
 }
 
+function getOrderedFields (fields) {
+  console.log(fields)
+  let displayableFields = _.filter(fields, (f) => {
+    return (f.options && f.options.display)
+  })
+
+  // Check whether has icon or will do
+  let formattedFields = _.map(displayableFields, (f) => (
+    {
+      hasIcon: (_.has(Images, f.id) || f.options.display.iconURL) ? true : false,
+      id: f.id,
+      order: f.options.display.order,
+      priorityView: f.options.display.priorityView,
+      label: f.label
+    }
+  ))
+
+  let orderedFields = _.orderBy(formattedFields, ['hasIcon', 'order'], ['desc', 'asc'])
+
+  // console.log(orderedFields)
+
+  return orderedFields
+}
+
 // We want the center for sorting businesses higher than the actual centre of map.
 // 1/15 of mapHeight higher than center of map, which is 22.5px higher than center of screen.
 // So in total around 60 - 70 px higher than screen centre
@@ -59,6 +84,7 @@ const businessArea = (viewport) =>
 
 const initialState = {
   businessList: [],
+  orderedFields: [],
   categories: [],
   businessListTimestamp: null,
   selectedBusinessId: undefined,
@@ -181,7 +207,7 @@ export const openTraderModal = (businessId) => (dispatch, getState) => {
 export const loadBusinessList = (force = false) => (dispatch, getState) => {
     const persistedDate = getState().business.businessListTimestamp
     //ToDo: to load data every time! When api has changed make a call to check whether something changed since last time the data was pulled
-    if (Date.now() - persistedDate > moment.duration(2, 'days') || force) {
+    if (true || Date.now() - persistedDate > moment.duration(2, 'days') || force) {
       getBusinesses()
         .then((data) => {
           dispatch(businessListReceived(data.directory))
@@ -211,6 +237,7 @@ const reducer = (state = initialState, action) => {
 
     case 'business/FIELDS_RECEIVED':
       state = merge(state, {
+        orderedFields: getOrderedFields(action.fields),
         categories: _.map(_.filter(action.fields.businesscategory.possibleValues.categories, f => (!_.has(f, 'options') || !_.has(f.options, 'filter_hidden') || !f.options.filter_hidden)), formatCategory)
       })
       break
