@@ -77,7 +77,7 @@ class Splash  extends React.Component {
                   style={style.loginButton.container}
                   onPress={this.props.connection ? () => this.props.openLoginForm(true) : undefined}
                   underlayColor={Colors.offWhite}>
-                <DefaultText style={merge(style.loginButton.text, { color: this.props.connection ? Colors.primaryBlue2 : Colors.offWhite })}>
+                <DefaultText style={merge(style.loginButton.text, { color: this.props.connection ? Colors.primaryBlue : Colors.offWhite })}>
                   {this.props.connection ? this.props.loginButtonText : 'No internet connection'}
                 </DefaultText>
               </TouchableHighlight>
@@ -85,7 +85,7 @@ class Splash  extends React.Component {
               <TouchableHighlight
                   style={style.skipButton.container}
                   onPress={this.props.logout}
-                  underlayColor={Colors.primaryBlue3}>
+                  underlayColor={Colors.primaryBlue}>
                 <DefaultText style={style.skipButton.text}>{this.props.logoutButtonText}</DefaultText>
               </TouchableHighlight>
               { Config.ALLOW_LOGIN && this.props.renderInfoText(this.props) }
