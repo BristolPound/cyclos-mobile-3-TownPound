@@ -21,7 +21,7 @@ const style = {
   background: {
     ...absolutePosition(),
     height: Dimensions.get('window').height,
-    backgroundColor: Colors.primaryBlue2
+    backgroundColor: Colors.primaryBlue
   },
   loginButton: {
     container: {
