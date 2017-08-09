@@ -160,8 +160,8 @@ const fieldsReceived = (fields) => ({
 })
 
 // called after login successful, so there's no need to check if the user has logged in
-export const loadPaymentData = (dispatch) => {
-  var businessId = getState().business.traderScreenBusinessId
+export const loadPaymentData = () => (dispatch, getState) => {
+  const businessId = getState().business.traderScreenBusinessId
   if(businessId) {
     getPaymentData(businessId, dispatch)
       .then(result => dispatch(paymentDataReceived(result)))
