@@ -4,8 +4,7 @@ import merge from '../util/merge'
 
 const DirectoryAPI = require('org.bristolpound.cyclos.api.directory')
 
-const directoryAPI = new DirectoryAPI(Config.DIRECTORY)
-
+const directoryAPI = new DirectoryAPI(merge(Config.DIRECTORY, {apiVersion: '0.3'}))
 
 const parseShortDisplay = fullDisplay =>
   fullDisplay.includes('(') ? fullDisplay.substring(fullDisplay.indexOf('(') + 1, fullDisplay.indexOf(')')) : fullDisplay

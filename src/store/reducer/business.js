@@ -54,11 +54,13 @@ function getOrderedFields (fields) {
       id: f.id,
       order: f.options.display.order,
       priorityView: f.options.display.priorityView,
-      label: f.label
+      label: f.label,
+      type: f.type,
+      displayType: f.options.display.type
     }
   ))
 
-  let orderedFields = _.orderBy(formattedFields, ['hasIcon', 'order'], ['desc', 'asc'])
+  let orderedFields = _.orderBy(formattedFields, ['hasIcon', 'order'], ['desc', 'desc'])
 
   // console.log(orderedFields)
 
