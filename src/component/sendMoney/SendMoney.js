@@ -115,7 +115,7 @@ class SendMoney extends React.Component {
             onButtonPress: () => {},
             accessibilityLabel: labels.NO_PAYMENT_AVAILABLE
           }
-          if (this.props.payee.paymentTypes && this.props.payee.paymentTypes.length > 0 ) {
+          if (this.props.paymentTypes && this.props.paymentTypes.length > 0 ) {
             inputProps.buttonText = labels.SEND_PAYMENT
             inputProps.onButtonPress = () => { !this.props.alertShouldPopUp && this.nextPage() }
           }
@@ -198,12 +198,18 @@ class SendMoney extends React.Component {
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators({ ...actions, openLoginForm, setOverlayOpen, closeConfirmation }, dispatch)
 
-const mapStateToProps = (state) => ({
-  ...state.sendMoney,
-  payee: state.business.traderScreenBusiness || state.person.selectedPerson || {},
-  balance: state.account.balance,
-  loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
-  connection: state.networkConnection.status
-})
+const mapStateToProps = (state) => {
+  const payee = state.business.traderScreenBusiness || state.person.selectedPerson || {}
+  const paymentTypes = payee && payee.paymentTypes || undefined
+
+  return {
+    ...state.sendMoney,
+    payee,
+    paymentTypes,
+    balance: state.account.balance,
+    loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
+    connection: state.networkConnection.status
+  }
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendMoney)
