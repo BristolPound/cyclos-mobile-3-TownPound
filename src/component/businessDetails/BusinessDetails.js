@@ -95,7 +95,7 @@ const phoneDetail = (business) => {
 
 }
 
-function getFields(business, goToTraderLocation, orderedFields) {
+function getFields(business, goToTraderLocation, orderedFields, expanded) {
   const fields = []
   const priorityFields = []
 
@@ -148,22 +148,21 @@ function getFields(business, goToTraderLocation, orderedFields) {
     //   businessDetail('openingHoursField', Images.opening, business.fields.businessopeninghours, () => {})
     // )
 
-    const pushToMain = (fieldMetadata) => {
+    const pushMain = (fieldMetadata) => {
       fieldMetadata.id != "businessTeaser" &&
         fields.push(getBusinessesDetail(business, fieldMetadata, goToTraderLocation))
     }
 
-    const pushToPriority = (fieldMetadata) => {
+    const pushPriority = (fieldMetadata) => {
       console.log("the priorityView is " + fieldMetadata.priorityView + " for " + fieldMetadata.label)
       fieldMetadata.priorityView &&
-        priorityFields.push(getBusinessesDetail(business, fieldMetadata, goToTraderLocation))
+        fields.push(getBusinessesDetail(business, fieldMetadata, goToTraderLocation))
     }
 
 
     _.forEach(orderedFields, (fieldMetadata) => {
       if (_.has(business.fields, fieldMetadata.id)) {
-        pushToMain(fieldMetadata)
-        pushToPriority(fieldMetadata)
+        expanded ? pushMain(fieldMetadata) : pushPriority(fieldMetadata)
       }
     })
 
@@ -176,27 +175,64 @@ const getBusinessesDetail = (business, fieldMetadata, goToTraderLocation) => {
   let businessField = business.fields[fieldMetadata.id]
   let icon = fieldMetadata.iconURL || Images[fieldMetadata.id]
   let accessibilityLabel = fieldMetadata.id.concat("Field")
-  let text, callback
+  let callback
   // These are the 'exceptions' when a different type of callback is needed
-  switch (fieldMetadata.id) {
-    case "twitter":
-      callback = () => Communications.web("https://www.twitter.com/" + businessField.split("@").join(""))
+  // switch (fieldMetadata.id) {
+  //   case "twitter":
+  //     callback = () => Communications.web("https://www.twitter.com/" + businessField.split("@").join(""))
+  //     break
+  //   case "businessemail":
+  //     callback = () => Communications.email([businessField], null, null, null, null)
+  //     break
+  //   case "businessphone":
+  //     // Checks for multiple phone numbers etc. May change if an array is
+  //     // returned from api instead of a slash separated value
+  //     return phoneDetail(business)
+  //   case "addresses":
+  //     // Just return the first address for now
+  //     return businessDetail('addressField', Images.address, addressToString(businessField[0]), goToTraderLocation )
+  //   default:
+  //     text = businessField
+  //     callback = icon
+  //       ? () => Communications.web(businessField)
+  //       : () => {}
+  // }
+
+  const handleString = () => {
+    switch (fieldMetadata.displayType) {
+      case "EMAIL":
+        callback = () => Communications.email([businessField], null, null, null, null)
+        break
+      case "TWITTER":
+        callback = () => Communications.web("https://www.twitter.com/" + businessField.split("@").join(""))
+        break
+      default:
+        callback = null
+    }
+  }
+
+
+  switch (fieldMetadata.type) {
+    case "STRING":
+      if (fieldMetadata.displayType == "PHONE") {
+        return phoneDetail(business)
+      }
+      else {
+        handleString()
+      }
       break
-    case "businessemail":
-      callback = () => Communications.email([businessField], null, null, null, null)
+    case "URL":
+      callback = () => Communications.web(businessField)
       break
-    case "businessphone":
-      // Checks for multiple phone numbers etc. May change if an array is
-      // returned from api instead of a slash separated value
-      return phoneDetail(business)
-    case "addresses":
-      // Just return the first address for now
-      return businessDetail('addressField', Images.address, addressToString(businessField[0]), goToTraderLocation )
+    case "ADDRESS":
+      businessField = addressToString(businessField[0])
+      callback = goToTraderLocation
+      break
+    case "TEXT":
+      callback = null
+      break
     default:
-      text = businessField
-      callback = icon
-        ? () => Communications.web(businessField)
-        : () => {}
+      callback = null
   }
 
 
@@ -219,19 +255,36 @@ class BusinessDetails extends React.Component {
   constructor(props) {
     super(props)
     this.state = { isExpanded: props.isExpanded }
+    this.expandDetails = this.expandDetails.bind(this)
   }
 
   expandDetails() {
-    this.setState({isExpanded: true})
+    const newExpanded = !this.state.isExpanded
+    this.setState({isExpanded: newExpanded})
+  }
+
+  renderExpander() {
+    return(
+      <View style={{paddingTop: 12}}>
+        <View style={styles.separator}/>
+        <TouchableOpacity
+          onPress={this.expandDetails}
+          accessiblityLabel='View Full Details'>
+          <View>
+            <Text style={styles.minorButtonText}>{this.state.isExpanded ? "COLLAPSE" : "EXPAND"} DETAILS</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    )
   }
 
 
   render() {
+    const expanded = this.state.isExpanded
     const { business, goToTraderLocation, orderedFields } = this.props
-    const { fields, priorityFields } = getFields(business, goToTraderLocation, orderedFields)
+    const { fields } = getFields(business, goToTraderLocation, orderedFields, expanded)
     // let expandedFields = []
 
-    console.log("the priorityFields are " + priorityFields[0])
     // if(fields.length > 2) {
     //   expandedFields = fields.slice(2)
     //   fields.length = 2
@@ -239,12 +292,9 @@ class BusinessDetails extends React.Component {
 
     return (
       <View style={fields.length > 1 ? styles.moreDetails : styles.addressOnly}>
-        {(this.state.isExpanded || !Config.ALLOW_LOGIN)
-          ? renderFields(fields)
-          : renderFields(priorityFields)
-        }
-        {(fields.length > 0 || priorityFields.length > 0)
-          && renderExpander(this.expandDetails.bind(this))
+        {renderFields(fields)}
+        {(fields.length > 0)
+          && this.renderExpander()
         }
       </View>
     )
