@@ -10,12 +10,17 @@ const styles = {
   separator: {
     ...border(['bottom', 'top'], Colors.gray5, StyleSheet.hairlineWidth)
   },
-  field: {
+  fieldIcon: {
     ...margin(18, 24, 0, 24),
     flexDirection: 'row',
     paddingTop: 1,
     backgroundColor: Colors.white,
     justifyContent: 'flex-start'
+  },
+  fieldNoIcon: {
+    ...margin(18, 24, 0, 24),
+    paddingTop: 1,
+    backgroundColor: Colors.white
   },
   image: {
     ...dimensions(18, 20),

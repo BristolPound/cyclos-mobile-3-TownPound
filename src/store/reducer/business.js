@@ -42,7 +42,6 @@ function formatCategory (category) {
 }
 
 function getOrderedFields (fields) {
-  console.log(fields)
   let displayableFields = _.filter(fields, (f) => {
     return (f.options && f.options.display)
   })
@@ -50,7 +49,7 @@ function getOrderedFields (fields) {
   // Check whether has icon or will do
   let formattedFields = _.map(displayableFields, (f) => (
     {
-      hasIcon: (_.has(Images, f.id) || f.options.display.iconURL) ? true : false,
+      hasIcon: (_.has(Images.businessDetails, f.id) || f.options.display.iconURL) ? true : false,
       id: f.id,
       order: f.options.display.order,
       priorityView: f.options.display.priorityView,
@@ -60,9 +59,7 @@ function getOrderedFields (fields) {
     }
   ))
 
-  let orderedFields = _.orderBy(formattedFields, ['hasIcon', 'order'], ['desc', 'desc'])
-
-  // console.log(orderedFields)
+  let orderedFields = _.orderBy(formattedFields, ['hasIcon', 'order'], ['desc', 'asc'])
 
   return orderedFields
 }
