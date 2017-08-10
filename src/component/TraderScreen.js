@@ -9,6 +9,7 @@ import { sectionHeight } from '../util/StyleUtils'
 import { resetForm, updateRecentDescriptions } from '../store/reducer/sendMoney'
 import { goToLocation, hideModal, closeConfirmation } from '../store/reducer/navigation'
 import { isIncorrectLocation } from '../util/business'
+import { resetTraderScreen } from '../store/reducer/business'
 import DefaultText from './DefaultText'
 import categories from '../util/categories'
 
@@ -34,7 +35,7 @@ const TraderScreen = (props) => {
             image={props.trader.image.url}
             category={categories.shop}
             address={props.trader.address}
-            onPressClose={() => {props.hideModal(); props.closeConfirmation(); props.resetForm()}}
+            onPressClose={() => {props.hideModal(); props.closeConfirmation(); props.resetForm(); props.resetTraderScreen()}}
             isModal={true}
             showMap={props.modalOpen}
             goToTraderLocation={() => goToTraderLocation()}/>

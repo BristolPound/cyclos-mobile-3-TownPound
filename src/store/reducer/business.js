@@ -185,13 +185,17 @@ const fieldsReceived = (fields) => ({
 })
 
 // called after login successful, so there's no need to check if the user has logged in
-export const loadPaymentData = (dispatch) => {
-  var businessId = getState().business.traderScreenBusinessId
+export const loadPaymentData = () => (dispatch, getState) => {
+  const businessId = getState().business.traderScreenBusinessId
   if(businessId) {
     getPaymentData(businessId, dispatch)
       .then(result => dispatch(paymentDataReceived(result)))
   }
 }
+
+export const resetTraderScreen = () => ({
+  type: 'business/RESET_TRADER_SCREEN_ID'
+})
 
 export const openTraderModal = (businessId) => (dispatch, getState) => {
   dispatch(selectBusinessForModal(businessId))
@@ -325,6 +329,13 @@ const reducer = (state = initialState, action) => {
         closestBusinesses,
         activeFilters: newActiveFilters,
         filteredBusinesses: newFilteredBusinesses
+      })
+      break
+      
+    case 'business/RESET_TRADER_SCREEN_ID':
+      state = merge(state, {
+        traderScreenBusinessId: undefined,
+        traderScreenBusiness: undefined
       })
       break
 
