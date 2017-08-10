@@ -13,20 +13,20 @@ export const global_default_config={
         cyclosPrefix: undefined,
         network: undefined,
         wsPrefix: undefined,
-        channel: undefined,
+        channel: undefined
     },
     DIRECTORY: {
         host: undefined,
         cyclosPrefix: undefined,
         network: undefined,
-        wsPrefix: undefined,
+        wsPrefix: undefined
     },
     ALLOW_LOGIN: true,
-    DEFAULT_COORDINATES: { latitude: 0, longitude:  0 },
+    DEFAULT_COORDINATES: { latitude: 0, longitude: 0 }
 }
 
 const default_secret={
-    CHANNEL_SECRET: '',
+    CHANNEL_SECRET: ''
 }
 
 const secrets           = {}
@@ -36,7 +36,7 @@ if (Config.secrets) {
     importedSecrets     = require('../../../config/secrets').default
 }
 
-_.forEach(['staging', 'development', 'production'], function(flavour) {
+_.forEach(['staging', 'development', 'production'], function (flavour) {
 
     const branch        = _.has(importedSecrets, flavour)
                         ? importedSecrets[flavour]
