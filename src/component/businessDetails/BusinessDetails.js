@@ -9,40 +9,70 @@ import Images from '@Assets/images'
 import Config from '@Config/config'
 import _ from 'lodash'
 
-const Field = ({icon, text, accessibilityLabel, onPress, additionalOption, label}) => {
-  if (icon) {
-    return fieldWithIcon(icon, text, accessibilityLabel, onPress, additionalOption)
+const Field = (props) => {
+  if (props.icon) {
+    return FieldWithIcon(props)
   }
   else {
-    return fieldWithoutIcon(label, text, accessibilityLabel)
+    return FieldWithoutIcon(props)
   }
 }
 
-const fieldWithIcon = (icon, text, accessibilityLabel, onPress, additionalOption) =>
-  <View style={styles.field}>
-    <Image style={styles.image} source={icon} resizeMode='contain'/>
-    <View style={styles.item}>
-      <TouchableOpacity accessibilityLabel={accessibilityLabel} onPress={onPress}>
-        <MultilineText style={styles.text}>{text}</MultilineText>
-      </TouchableOpacity>
-      {additionalOption &&
-      <TouchableOpacity accessibilityLabel={accessibilityLabel} onPress={onPress}>
-        <MultilineText style={styles.text}>{additionalOption.text}</MultilineText>
-      </TouchableOpacity>}
+const FieldWithIcon = (props) => {
+
+  const { icon, text, accessibilityLabel, onPress, additionalOption } = props
+
+  return (
+    <View style={styles.fieldIcon}>
+      <Image style={styles.image} source={icon} resizeMode='contain'/>
+      <View style={styles.item}>
+        {renderFieldText(props)}
+        {additionalOption && renderFieldText({...props, text: additionalOption.text})}
+      </View>
     </View>
+  )
+}
+
+
+const FieldWithoutIcon = (props) =>
+  <View style={styles.fieldNoIcon}>
+    <Text>{props.label}:</Text>
+    {renderFieldText(props)}
   </View>
 
-const fieldWithoutIcon = (label, text, accessibilityLabel) => {
 
-  console.log(label)
+const renderFieldText = (props) => {
   return (
-    <Text>
-      Other field type - {label}
-    </Text>
+    Array.isArray(props.text)
+    ? (_.map(props.text, (textItem, index) => {
+      return (
+        <FieldText key={index} {...props} text={textItem}/>
+      )
+    }))
+    : (
+      <FieldText {...props}/>
+    )
+  )
+}
+
+const FieldText = (props) => {
+  const { accessibilityLabel, text, onPress } = props
+
+  return (
+    <TouchableOpacity
+    accessibilityLabel={accessibilityLabel}
+    disabled={!onPress}
+    onPress={onPress}
+    >
+      <MultilineText
+        style={styles.text}
+      >
+      {text}
+      </MultilineText>
+    </TouchableOpacity>
   )
 
 }
-
 
 
 const renderFields = (fields) =>
@@ -56,6 +86,7 @@ const renderFields = (fields) =>
     ))}
   </View>
 
+
 const renderExpander = (expandDetailsFn) =>
   <View style={{paddingTop: 12}}>
     <View style={styles.separator}/>
@@ -67,6 +98,7 @@ const renderExpander = (expandDetailsFn) =>
       </View>
     </TouchableOpacity>
   </View>
+
 
 const renderDescription = (description) => {
   return (
@@ -85,86 +117,48 @@ const renderDescription = (description) => {
 const businessDetail = (key, icon, text, onPress, additionalOption = null, label = '') =>
   ({ key, icon, text, onPress, additionalOption, label })
 
+
+// This is a temporary solution and eventually will be superceded once the
+// api returns an array of phone numbers instead of a slash separated setString
+// (will use a new solution for both this and multiple addresses to render them all)
 const phoneDetail = (business) => {
   let phoneNumbers = business.fields.businessphone.split("/")
   let additionalNumber = phoneNumbers.length == 2
   ? {text: phoneNumbers[1].trim(), onPress: () => Communications.phonecall(phoneNumbers[1].trim(), true)}
   : null
 
-  return businessDetail('phoneField', Images.phone, phoneNumbers[0].trim(), () => Communications.phonecall(phoneNumbers[0].trim(), true), additionalNumber)
+  return businessDetail('phoneField', Images.businessDetails.businessphone, phoneNumbers[0].trim(), () => Communications.phonecall(phoneNumbers[0].trim(), true), additionalNumber)
 
 }
 
 function getFields(business, goToTraderLocation, orderedFields, expanded) {
   const fields = []
-  const priorityFields = []
 
-  // Order of display should be:
-  //    cash point, special offer*, address, opening times*, phone number, email address
+  // Order of display already worked out in orderedFields based on Config
   // Note: special offer aren't supported yet.
-    _.has(business.subCategories, 'cashpoint1') && fields.push(
-      businessDetail('cashPoint1Field', Images.cashpoint1, business.subCategories.cashpoint1 +': '+ Config.CASH_POINT_1, () => {} )
-    )
+  _.has(business.subCategories, 'cashpoint1') && fields.push(
+    businessDetail('cashPoint1Field', Images.cashpoint1, business.subCategories.cashpoint1 +': '+ Config.CASH_POINT_1, () => {} )
+  )
 
-    _.has(business.subCategories, 'cashpoint2') && fields.push(
-      businessDetail('cashPoint2Field', Images.cashpoint2, business.subCategories.cashpoint2 +': '+ Config.CASH_POINT_2, () => {} )
-    )
+  _.has(business.subCategories, 'cashpoint2') && fields.push(
+    businessDetail('cashPoint2Field', Images.cashpoint2, business.subCategories.cashpoint2 +': '+ Config.CASH_POINT_2, () => {} )
+  )
 
-    // business.fields.memberdiscount && fields.push(
-    //   businessDetail('discountField', Images.deal, business.fields.memberdiscount, () => {} )
-    // )
-    //
-    // business.address.location && fields.push(
-    //   businessDetail('addressField', Images.address, addressToString(business.address), goToTraderLocation )
-    // )
-    //
-    // business.fields.businessphone && fields.push(phoneDetail())
-    //
-    // business.fields.businessemail && fields.push(
-    //   businessDetail('emailField', Images.email, business.fields.businessemail, () => Communications.email([business.fields.businessemail], null, null, null, null))
-    // )
-    //
-    // business.fields.facebook && fields.push(
-    //   businessDetail('facebookField', Images.facebook, business.name, () => Communications.web(business.fields.facebook))
-    // )
-    //
-    // business.fields.businesswebsite && fields.push(
-    //       businessDetail('websiteField', Images.website, business.fields.businesswebsite, () => Communications.web(business.fields.businesswebsite))
-    // )
-    //
-    // business.fields.twitter && fields.push(
-    //       businessDetail('twitterField', Images.twitter, business.fields.twitter.split("@").join(""), () => Communications.web("https://www.twitter.com/" + business.fields.twitter.split("@").join("")))
-    // )
-    //
-    // business.fields.linkedin && fields.push(
-    //       businessDetail('linkedinField', Images.linkedin, business.name, () => Communications.web(business.fields.linkedin))
-    // )
-    //
-    // business.fields.flickr && fields.push(
-    //       businessDetail('flickrField', Images.flickr, business.name, () => Communications.web(business.fields.flickr))
-    // )
-    //
-    // business.fields.businessopeninghours && fields.push(
-    //   businessDetail('openingHoursField', Images.opening, business.fields.businessopeninghours, () => {})
-    // )
+  const pushMain = (fieldMetadata) => {
+    fieldMetadata.id != "businessTeaser" &&
+      fields.push(getBusinessesDetail(business, fieldMetadata, goToTraderLocation))
+  }
 
-    const pushMain = (fieldMetadata) => {
-      fieldMetadata.id != "businessTeaser" &&
-        fields.push(getBusinessesDetail(business, fieldMetadata, goToTraderLocation))
+  const pushPriority = (fieldMetadata) => {
+    fieldMetadata.priorityView &&
+      fields.push(getBusinessesDetail(business, fieldMetadata, goToTraderLocation))
+  }
+
+  _.forEach(orderedFields, (fieldMetadata) => {
+    if (_.has(business.fields, fieldMetadata.id)) {
+      expanded ? pushMain(fieldMetadata) : pushPriority(fieldMetadata)
     }
-
-    const pushPriority = (fieldMetadata) => {
-      console.log("the priorityView is " + fieldMetadata.priorityView + " for " + fieldMetadata.label)
-      fieldMetadata.priorityView &&
-        fields.push(getBusinessesDetail(business, fieldMetadata, goToTraderLocation))
-    }
-
-
-    _.forEach(orderedFields, (fieldMetadata) => {
-      if (_.has(business.fields, fieldMetadata.id)) {
-        expanded ? pushMain(fieldMetadata) : pushPriority(fieldMetadata)
-      }
-    })
+  })
 
 
   return { fields, priorityFields }
@@ -173,30 +167,10 @@ function getFields(business, goToTraderLocation, orderedFields, expanded) {
 const getBusinessesDetail = (business, fieldMetadata, goToTraderLocation) => {
 
   let businessField = business.fields[fieldMetadata.id]
-  let icon = fieldMetadata.iconURL || Images[fieldMetadata.id]
+  let icon = fieldMetadata.iconURL || Images.businessDetails[fieldMetadata.id]
   let accessibilityLabel = fieldMetadata.id.concat("Field")
   let callback
   // These are the 'exceptions' when a different type of callback is needed
-  // switch (fieldMetadata.id) {
-  //   case "twitter":
-  //     callback = () => Communications.web("https://www.twitter.com/" + businessField.split("@").join(""))
-  //     break
-  //   case "businessemail":
-  //     callback = () => Communications.email([businessField], null, null, null, null)
-  //     break
-  //   case "businessphone":
-  //     // Checks for multiple phone numbers etc. May change if an array is
-  //     // returned from api instead of a slash separated value
-  //     return phoneDetail(business)
-  //   case "addresses":
-  //     // Just return the first address for now
-  //     return businessDetail('addressField', Images.address, addressToString(businessField[0]), goToTraderLocation )
-  //   default:
-  //     text = businessField
-  //     callback = icon
-  //       ? () => Communications.web(businessField)
-  //       : () => {}
-  // }
 
   const handleString = () => {
     switch (fieldMetadata.displayType) {
@@ -210,7 +184,6 @@ const getBusinessesDetail = (business, fieldMetadata, goToTraderLocation) => {
         callback = null
     }
   }
-
 
   switch (fieldMetadata.type) {
     case "STRING":
@@ -283,12 +256,6 @@ class BusinessDetails extends React.Component {
     const expanded = this.state.isExpanded
     const { business, goToTraderLocation, orderedFields } = this.props
     const { fields } = getFields(business, goToTraderLocation, orderedFields, expanded)
-    // let expandedFields = []
-
-    // if(fields.length > 2) {
-    //   expandedFields = fields.slice(2)
-    //   fields.length = 2
-    // }
 
     return (
       <View style={fields.length > 1 ? styles.moreDetails : styles.addressOnly}>
