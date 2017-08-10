@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Clipboard } from 'react-native'
 import * as actions from '../../store/reducer/sendMoney'
 import { openLoginForm, LOGIN_STATUSES } from '../../store/reducer/login'
-import { setOverlayOpen } from '../../store/reducer/navigation'
+import { setOverlayOpen, closeConfirmation } from '../../store/reducer/navigation'
 import InputComponent, { labels } from './InputComponent'
 import Config from '@Config/config'
 
@@ -102,7 +102,7 @@ class SendMoney extends React.Component {
     if (this.props.inputPage === Page.PaymentComplete) {
       inputProps = {
         buttonText: this.props.message,
-        onButtonPress: () => {},
+        onButtonPress: () => {this.props.closeConfirmation() && this.props.updatePage(0)},
         accessibilityLabel: labels.PAYMENT_COMPLETE
       }
     } else if (this.props.loggedIn) {
@@ -193,14 +193,20 @@ class SendMoney extends React.Component {
 }
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ ...actions, openLoginForm, setOverlayOpen }, dispatch)
+  bindActionCreators({ ...actions, openLoginForm, setOverlayOpen, closeConfirmation }, dispatch)
 
-const mapStateToProps = (state) => ({
-  ...state.sendMoney,
-  payee: state.business.traderScreenBusiness || state.person.selectedPerson || {},
-  balance: state.account.balance,
-  loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
-  connection: state.networkConnection.status
-})
+const mapStateToProps = (state) => {
+  const payee = state.business.traderScreenBusiness || state.person.selectedPerson || {}
+  const paymentTypes = payee && payee.paymentTypes || undefined
+
+  return {
+    ...state.sendMoney,
+    payee,
+    paymentTypes,
+    balance: state.account.balance,
+    loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
+    connection: state.networkConnection.status
+  }
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendMoney)
