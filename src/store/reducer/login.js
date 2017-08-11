@@ -19,6 +19,8 @@ export const unlockCharNo = 3
 const initialState = {
   loginStatus: LOGIN_STATUSES.LOGGED_OUT,
   loginFormOpen: false,
+  privacyPolicyOpen: false,
+  acceptedUsernames: {},
   // logged in username state stores the username on successful login
   loggedInUsername: '',
   loggedInName: '',
@@ -44,15 +46,35 @@ export const openLoginForm = (open = true) => ({
   open
 })
 
+export const openPrivacyPolicy = () => ({
+  type: 'login/OPEN_PRIVACY_POLICY'
+})
+
+export storeAcceptedUsername = (username) => ({
+  type: 'login/STORE_ACCEPTED_USERNAME',
+  username
+})
+
+export const continueLogin = (username) => {
+  (dispatch, getState) => {
+    dispatch(storeAcceptedUsername(username))
+    dispatch(loadTransactions(username === getState().login.loggedInUsername))
+    dispatch(loadAccountDetails())
+    dispatch(loggedIn(username, md5(password.substr(password.length - unlockCharNo))))
+    dispatch(loadPaymentData())
+  }
+}
+
 export const login = (username, password) =>
   (dispatch, getState) => {
     dispatch(loginInProgress())
     authenticate(username, password, dispatch)
       .then(() => {
-        dispatch(loadTransactions(username === getState().login.loggedInUsername))
-        dispatch(loadAccountDetails())
-        dispatch(loggedIn(username, md5(password.substr(password.length - unlockCharNo))))
-        dispatch(loadPaymentData())
+        dispatch(openPrivacyPolicy())
+        // dispatch(loadTransactions(username === getState().login.loggedInUsername))
+        // dispatch(loadAccountDetails())
+        // dispatch(loggedIn(username, md5(password.substr(password.length - unlockCharNo))))
+        // dispatch(loadPaymentData())
       })
       .catch (err => {
         if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
@@ -101,6 +123,20 @@ const reducer = (state = initialState, action) => {
     case 'login/OPEN_LOGIN_FORM':
       state = merge(state, {
         loginFormOpen: action.open
+      })
+      break
+    case 'login/OPEN_PRIVACY_POLICY':
+      state = merge(state, {
+        privacyPolicyOpen: true
+      })
+      break
+    case 'login/STORE_ACCEPTED_USERNAME'
+      const username = action.username
+      const newAcceptedUsernames = merge(state.acceptedUsernames)
+      newAcceptedUsernames[username] = true
+      state = merge(state, {
+        privacyPolicyOpen: false,
+        acceptedUsernames: newAcceptedUsernames
       })
       break
     case 'account/ACCOUNT_DETAILS_RECEIVED':

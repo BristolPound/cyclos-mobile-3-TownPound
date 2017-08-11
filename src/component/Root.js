@@ -114,6 +114,7 @@ class Root extends React.Component {
           <LoginOverlay/>
           {(this.props.modalOpen && !this.props.loginFormOpen) && Config.ALLOW_LOGIN && (this.props.userShortDisplay !== this.props.payeeShortDisplay) ? <SendMoney /> : undefined}
           <Login/>
+          <PrivacyPolicy/>
           <StatusMessage/>
           {this.props.coverApp
               && <AppCover unlockOpened={this.props.passToUnlock!=='' && this.state.askToUnlock}/> }
