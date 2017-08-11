@@ -12,6 +12,7 @@ import { ERROR_SEVERITY, unknownError, updateStatus } from './statusMessage'
 import { showModal, modalState } from './navigation'
 import { updatePayee } from './sendMoney'
 import Config from '@Config/config'
+import Images from '@Assets/images'
 
 // 1 pixel right adds the same to longitude as 1.69246890879 pixels up adds to latitude
 // when the map is centred at the default coordinates
@@ -40,6 +41,29 @@ function formatCategory (category) {
     return {'id': category.id, 'label': category.label}
 }
 
+function getOrderedFields (fields) {
+  let displayableFields = _.filter(fields, (f) => {
+    return (f.options && f.options.display)
+  })
+
+  // Check whether has icon or will do
+  let formattedFields = _.map(displayableFields, (f) => (
+    {
+      hasIcon: (_.has(Images.businessDetails, f.id) || f.options.display.iconURL) ? true : false,
+      id: f.id,
+      order: f.options.display.order,
+      priorityView: f.options.display.priorityView,
+      label: f.label,
+      type: f.type,
+      displayType: f.options.display.type
+    }
+  ))
+
+  let orderedFields = _.orderBy(formattedFields, ['hasIcon', 'order'], ['desc', 'asc'])
+
+  return orderedFields
+}
+
 // We want the center for sorting businesses higher than the actual centre of map.
 // 1/15 of mapHeight higher than center of map, which is 22.5px higher than center of screen.
 // So in total around 60 - 70 px higher than screen centre
@@ -59,6 +83,7 @@ const businessArea = (viewport) =>
 
 const initialState = {
   businessList: [],
+  orderedFields: [],
   categories: [],
   businessListTimestamp: null,
   selectedBusinessId: undefined,
@@ -160,13 +185,17 @@ const fieldsReceived = (fields) => ({
 })
 
 // called after login successful, so there's no need to check if the user has logged in
-export const loadPaymentData = (dispatch) => {
-  var businessId = getState().business.traderScreenBusinessId
+export const loadPaymentData = () => (dispatch, getState) => {
+  const businessId = getState().business.traderScreenBusinessId
   if(businessId) {
     getPaymentData(businessId, dispatch)
       .then(result => dispatch(paymentDataReceived(result)))
   }
 }
+
+export const resetTraderScreen = () => ({
+  type: 'business/RESET_TRADER_SCREEN_ID'
+})
 
 export const openTraderModal = (businessId) => (dispatch, getState) => {
   dispatch(selectBusinessForModal(businessId))
@@ -211,6 +240,7 @@ const reducer = (state = initialState, action) => {
 
     case 'business/FIELDS_RECEIVED':
       state = merge(state, {
+        orderedFields: getOrderedFields(action.fields),
         categories: _.map(_.filter(action.fields.businesscategory.possibleValues.categories, f => (!_.has(f, 'options') || !_.has(f.options, 'filter_hidden') || !f.options.filter_hidden)), formatCategory)
       })
       break
@@ -299,6 +329,13 @@ const reducer = (state = initialState, action) => {
         closestBusinesses,
         activeFilters: newActiveFilters,
         filteredBusinesses: newFilteredBusinesses
+      })
+      break
+
+    case 'business/RESET_TRADER_SCREEN_ID':
+      state = merge(state, {
+        traderScreenBusinessId: undefined,
+        traderScreenBusiness: undefined
       })
       break
 

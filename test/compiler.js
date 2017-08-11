@@ -3,13 +3,17 @@ var path = require('path');
 var babel = require('babel-core');
 var origJs = require.extensions['.js'];
 
+require.extensions['.png'] = function(module, filename) {
+  return module._compile("test", filename);
+}
+
 
 require.extensions['.js'] = function (module, fileName) {
   var isAReactNativeModule = fileName.indexOf('node_modules/react-native/Libraries/react-native/react-native-implementation.js') >= 0;
   if (isAReactNativeModule) {
     fileName = path.resolve('./CityPoundSourceCode/test/mocks/react-native.js');
   }
-  
+
   if (fileName.indexOf('node_modules/') >= 0) {
     return (origJs || require.extensions['.js'])(module, fileName);
   }
@@ -24,15 +28,23 @@ require.extensions['.js'] = function (module, fileName) {
       "react-native"
     ],
     "plugins": [
-      "transform-object-rest-spread"
+      "transform-object-rest-spread",
+      [
+        "transform-assets-import-to-string",
+        {
+          "extensions": ['.png', '.jpg'],
+        }
+      ]
     ],
     "sourceMaps": false,
     'resolveModuleSource': function(source) {
       if(source==='@Colors/colors') {
         return getModulePathFromSource(fileName, 'colors')
+      } else if (source==='@Assets/images') {
+        return getModulePathFromSource(fileName, 'assets', 'images')
       } else if (source==='@Config/config') {
         return getModulePathFromSource(fileName, 'config')
-    } else if (source==='@Config/secrets') {
+      } else if (source==='@Config/secrets') {
         return getModulePathFromSource(fileName, 'config', 'secrets')
       } else {
         return source
@@ -54,4 +66,3 @@ var getModulePathFromSource = (source, module, submodule) => {
   }
   return toReturn
 }
-

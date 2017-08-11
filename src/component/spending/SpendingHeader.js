@@ -13,7 +13,7 @@ export const toMonthString = month => isSameMonth(month, new Date()) ? 'This Mon
 
 const MonthOption = ({ monthTotal, isSelected, highlight }) => {
   const basicPriceStyle = (color, size) => ({ color, size })
-  const priceProps = isSelected ? basicPriceStyle(Colors.primaryBlue, 32) : basicPriceStyle(Colors.primaryBlue2, 28)
+  const priceProps = isSelected ? basicPriceStyle(Colors.darkBlue, 32) : basicPriceStyle(Colors.primaryBlue, 28)
 
   const basicTextStyle = (color, paddingBottom) => ({ color, paddingBottom })
   const textStyle = isSelected ? basicTextStyle(Colors.gray, 4) : basicTextStyle(Colors.gray2, 2)

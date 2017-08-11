@@ -9,6 +9,7 @@ import { sectionHeight } from '../util/StyleUtils'
 import { resetForm, updateRecentDescriptions } from '../store/reducer/sendMoney'
 import { goToLocation, hideModal, closeConfirmation } from '../store/reducer/navigation'
 import { isIncorrectLocation } from '../util/business'
+import { resetTraderScreen } from '../store/reducer/business'
 import DefaultText from './DefaultText'
 import categories from '../util/categories'
 
@@ -34,11 +35,14 @@ const TraderScreen = (props) => {
             image={props.trader.image.url}
             category={categories.shop}
             address={props.trader.address}
-            onPressClose={() => {props.hideModal(); props.closeConfirmation(); props.resetForm()}}
+            onPressClose={() => {props.hideModal(); props.closeConfirmation(); props.resetForm(); props.resetTraderScreen()}}
             isModal={true}
             showMap={props.modalOpen}
             goToTraderLocation={() => goToTraderLocation()}/>
-        <BusinessDetails business={props.trader} goToTraderLocation={() => goToTraderLocation()}/>
+        <BusinessDetails
+            business={props.trader}
+            goToTraderLocation={() => goToTraderLocation()}
+            orderedFields={props.orderedFields}/>
         <DefaultText style={{height: 0}}></DefaultText>
         <TransactionList
           listData={props.transactions}
@@ -57,6 +61,7 @@ const getTransactionsForSelectedBusiness = (state) => {
 // Redux Setup
 const mapStateToProps = (state) => ({
     trader: state.business.businessList[state.business.traderScreenBusinessId] || {},
+    orderedFields: state.business.orderedFields,
     transactions: getTransactionsForSelectedBusiness(state),
     modalOpen: state.navigation.modalOpen
 })
