@@ -1,4 +1,4 @@
-import React from'React'
+import React from 'React'
 import { View, TextInput, TouchableOpacity, Text } from 'react-native'
 import DefaultText from '../DefaultText'
 import Colors from '@Colors/colors'
