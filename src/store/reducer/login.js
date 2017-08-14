@@ -20,6 +20,7 @@ const initialState = {
   loginStatus: LOGIN_STATUSES.LOGGED_OUT,
   loginFormOpen: false,
   privacyPolicyOpen: false,
+  privacyPolicyAccepted: false,
   acceptedUsernames: {},
   // logged in username state stores the username on successful login
   loggedInUsername: '',
@@ -50,31 +51,50 @@ export const openPrivacyPolicy = () => ({
   type: 'login/OPEN_PRIVACY_POLICY'
 })
 
-export storeAcceptedUsername = (username) => ({
+const privacyPolicyAccepted = (accepted) => ({
+  type: 'login/PRIVACY_POLICY_ACCEPTED',
+  accepted
+})
+
+const storeAcceptedUsername = (username) => ({
   type: 'login/STORE_ACCEPTED_USERNAME',
   username
 })
 
-export const continueLogin = (username) => {
+export const acceptPrivacyPolicy = (accepted, username, password) =>
   (dispatch, getState) => {
-    dispatch(storeAcceptedUsername(username))
-    dispatch(loadTransactions(username === getState().login.loggedInUsername))
-    dispatch(loadAccountDetails())
-    dispatch(loggedIn(username, md5(password.substr(password.length - unlockCharNo))))
-    dispatch(loadPaymentData())
+    if (accepted) {
+      dispatch(privacyPolicyAccepted(true))
+      dispatch(login(username, password))
+    }
+    else {
+      dispatch(privacyPolicyAccepted(false))
+    }
   }
-}
+
+
+export const beginLogin = (username, password) =>
+  (dispatch, getState) => {
+    let acceptedUsernames = getState().login.acceptedUsernames
+    if (acceptedUsernames && acceptedUsernames[username]) {
+      dispatch(login(username, password))
+    }
+    else {
+      dispatch(openPrivacyPolicy())
+    }
+  }
+
 
 export const login = (username, password) =>
   (dispatch, getState) => {
     dispatch(loginInProgress())
     authenticate(username, password, dispatch)
       .then(() => {
-        dispatch(openPrivacyPolicy())
-        // dispatch(loadTransactions(username === getState().login.loggedInUsername))
-        // dispatch(loadAccountDetails())
-        // dispatch(loggedIn(username, md5(password.substr(password.length - unlockCharNo))))
-        // dispatch(loadPaymentData())
+        dispatch(loadTransactions(username === getState().login.loggedInUsername))
+        dispatch(loadAccountDetails())
+        dispatch(loggedIn(username, md5(password.substr(password.length - unlockCharNo))))
+        dispatch(loadPaymentData())
+        getState().login.privacyPolicyAccepted && dispatch(storeAcceptedUsername(username))
       })
       .catch (err => {
         if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
@@ -99,6 +119,7 @@ export const logout = () => dispatch => {
   dispatch(loggedOut())
   dispatch(resetTransactions())
   dispatch(resetAccount())
+  dispatch(privacyPolicyAccepted(false))
 }
 
 const reducer = (state = initialState, action) => {
@@ -130,12 +151,18 @@ const reducer = (state = initialState, action) => {
         privacyPolicyOpen: true
       })
       break
-    case 'login/STORE_ACCEPTED_USERNAME'
+    case 'login/PRIVACY_POLICY_ACCEPTED':
+      state = merge(state, {
+        privacyPolicyOpen: false,
+        privacyPolicyAccepted: action.accepted
+      })
+      break
+    case 'login/STORE_ACCEPTED_USERNAME':
       const username = action.username
       const newAcceptedUsernames = merge(state.acceptedUsernames)
       newAcceptedUsernames[username] = true
       state = merge(state, {
-        privacyPolicyOpen: false,
+        privacyPolicyAccepted: false,
         acceptedUsernames: newAcceptedUsernames
       })
       break
