@@ -1,6 +1,7 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Dimensions } from 'react-native'
 import Colors from '@Colors/colors'
 import { border, absolutePosition } from '../../util/StyleUtils'
+import { screenWidth, screenHeight } from '../../util/ScreenSizes'
 
 const style = {
   wrapper: {
@@ -10,10 +11,14 @@ const style = {
     alignItems: 'center',
     justifyContent: 'center'
   },
+  separator: {
+    ...border(['bottom', 'top'], Colors.gray, StyleSheet.hairlineWidth)
+  },
   header: {
     backgroundColor: Colors.primaryBlue,
     flexDirection: 'row',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    padding: 10,
   },
   headerText: {
     flex: 1,
@@ -24,18 +29,25 @@ const style = {
   container: {
     backgroundColor: Colors.offWhite,
     marginBottom: 100,
-    // padding: 5,
+    width: screenWidth * 0.9,
+    height: screenHeight * 0.5,
     elevation: 5,
     shadowOffset:{width: 5, height: 5},
     shadowColor: Colors.offBlack,
     shadowOpacity: 0.5
   },
+  instructionWrapper: {
+    flex: 1,
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginTop: 10,
+    marginBottom: 10,
+  },
   instructionText: {
-      fontSize: 16,
-      color: Colors.gray,
-      padding: 10,
-      textAlign: 'center',
-      marginBottom: 7
+    p: {
+      fontSize: 14,
+      color: Colors.gray
+    }
   },
   buttonRow: {
     flexDirection: 'row',
@@ -57,6 +69,7 @@ const style = {
     textAlign: 'center',
     color: 'white'
   }
+
 }
 
 export default style
