@@ -76,7 +76,8 @@ export const acceptPrivacyPolicy = (accepted, username, password) =>
 export const beginLogin = (username, password) =>
   (dispatch, getState) => {
     let acceptedUsernames = getState().login.acceptedUsernames
-    if (acceptedUsernames && acceptedUsernames[username]) {
+    const hashedUsername = md5(username)
+    if (acceptedUsernames && acceptedUsernames[hashedUsername]) {
       dispatch(login(username, password))
     }
     else {
@@ -159,8 +160,9 @@ const reducer = (state = initialState, action) => {
       break
     case 'login/STORE_ACCEPTED_USERNAME':
       const username = action.username
+      const hashedUsername = md5(username)
       const newAcceptedUsernames = merge(state.acceptedUsernames)
-      newAcceptedUsernames[username] = true
+      newAcceptedUsernames[hashedUsername] = true
       state = merge(state, {
         privacyPolicyAccepted: false,
         acceptedUsernames: newAcceptedUsernames
