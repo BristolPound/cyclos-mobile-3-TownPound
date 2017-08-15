@@ -44,6 +44,9 @@ const style = {
     marginBottom: 10,
   },
   instructionText: {
+    div: {
+      textAlign: 'center'
+    },
     p: {
       fontSize: 14,
       color: Colors.gray

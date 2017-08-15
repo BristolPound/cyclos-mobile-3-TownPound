@@ -14,6 +14,7 @@ class PrivacyPolicy extends React.Component {
     super()
   }
 
+
   render() {
     return (
       <View style={style.wrapper}>
@@ -25,7 +26,7 @@ class PrivacyPolicy extends React.Component {
           </View>
           <View style={style.separator}/>
           <ScrollView style={style.instructionWrapper}>
-            <HTMLView stylesheet={style.instructionText} value={privacyPolicy.replace(/\\n/g, '')} onLinkPress={url => Linking.openURL(url)} />
+            <HTMLView stylesheet={style.instructionText} value={privacyPolicy.replace(/\\n/g, '')} onLinkPress={url => Linking.openURL(url)}/>
           </ScrollView>
           <View style={style.buttonRow}>
             <TouchableOpacity
