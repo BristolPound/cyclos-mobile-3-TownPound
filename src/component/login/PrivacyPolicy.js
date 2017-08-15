@@ -1,9 +1,12 @@
 import React from 'React'
-import { View, TouchableOpacity, Text } from 'react-native'
+import { View, TouchableOpacity, Text, ScrollView, Linking } from 'react-native'
+import { MultilineText } from '../DefaultText'
 import DefaultText from '@Colors/colors'
 import style from './PrivacyPolicyStyle'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
+import { privacyPolicy } from '@Config/config'
+import HTMLView from 'react-native-htmlview'
 
 
 class PrivacyPolicy extends React.Component {
@@ -20,15 +23,10 @@ class PrivacyPolicy extends React.Component {
               Data permissions and privacy policy
             </Text>
           </View>
-          <Text style={style.instructionText}>
-          By using the Bristol Pound mobile application, you are giving your consent to the terms of this privacy policy and to the collection, processing and storage of your personal information for the purposes set forth herein. If you do not agree to this privacy policy, we ask that you desist from using the application as a way of opting out.
-
-We reserve the right, at our discretion, to change this privacy policy at any time. Such change will be effective 30 days following posting of the revised privacy policy, and your continued use of the Services thereafter means that you accept those changes.
-
-The Bristol Pound mobile application collects information for the purposes of improving the services we offer, and for effectively promoting services to you. The application collects data as aggregated, non-personally-identifiable information. This includes transaction dates and times, user types, approximate geolocations, usage patterns and data about the functioning of the application. Information about personal payments is not stored, nor is personally identifiable information about your transaction history or personal shopping habits. All payment data is pulled from and stored on the online banking server run by the Bristol Credit Union (BCU), and is covered under your separate data protection agreement directly with the BCU.
-
-Your rights to access data stored about you remain as per our data protection policy at https://bristolpound.org/data-protection-pledge.
-          </Text>
+          <View style={style.separator}/>
+          <ScrollView style={style.instructionWrapper}>
+            <HTMLView stylesheet={style.instructionText} value={privacyPolicy.replace(/\\n/g, '')} onLinkPress={url => Linking.openURL(url)} />
+          </ScrollView>
           <View style={style.buttonRow}>
             <TouchableOpacity
               style={merge(style.buttonContainer, {backgroundColor: Colors.primaryBlue})}
