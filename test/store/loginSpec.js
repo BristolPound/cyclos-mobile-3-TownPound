@@ -9,10 +9,13 @@ const LOGIN_STATUSES = {
 
 const initialState = {
   	loginStatus: LOGIN_STATUSES.LOGGED_OUT,
+    acceptedUsernames: {},
+    privacyPolicyAccepted: false,
+    privacyPolicyOpen: false,
   	loginFormOpen: false,
   	loggedInUsername: '',
   	loggedInName: '',
-	passToUnlock: ''
+	  passToUnlock: ''
 }
 
 describe('Login reducer', () => {
@@ -44,6 +47,9 @@ describe('Login reducer', () => {
 	      	})
 	    ).to.deep.equal({
 		  	loginStatus: LOGIN_STATUSES.LOGGED_OUT,
+        acceptedUsernames: {},
+        privacyPolicyAccepted: false,
+        privacyPolicyOpen: false,
 		  	loginFormOpen: false,
 		  	loggedInUsername: '',
   			loggedInName: '',
@@ -58,6 +64,9 @@ describe('Login reducer', () => {
 	      	})
 	    ).to.deep.equal({
 		  	loginStatus: LOGIN_STATUSES.LOGIN_IN_PROGRESS,
+        acceptedUsernames: {},
+        privacyPolicyAccepted: false,
+        privacyPolicyOpen: false,
 		  	loginFormOpen: false,
 		  	loggedInUsername: '',
   			loggedInName: '',
@@ -73,6 +82,9 @@ describe('Login reducer', () => {
 	      	})
 	    ).to.deep.equal({
 		  	loginStatus: LOGIN_STATUSES.LOGGED_OUT,
+        acceptedUsernames: {},
+        privacyPolicyAccepted: false,
+        privacyPolicyOpen: false,
 		  	loginFormOpen: true,
 		  	loggedInUsername: '',
   			loggedInName: '',
