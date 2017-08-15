@@ -6,8 +6,9 @@ import DefaultText from '../DefaultText'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import animateTo from '../../util/animateTo'
-import { login } from '../../store/reducer/login'
+import { beginLogin, acceptPrivacyPolicy } from '../../store/reducer/login'
 import KeyboardComponent from '../KeyboardComponent'
+import PrivacyPolicy from './PrivacyPolicy'
 import styles from './LoginStyle'
 
 // Cyclos doesn't like special characters or empty usernames :(
@@ -37,8 +38,8 @@ class Login extends KeyboardComponent {
     }
   }
 
-  login() {
-    this.props.login(this.state.username, this.state.password)
+  beginLogin() {
+    this.props.beginLogin(this.state.username, this.state.password)
   }
 
   passwordUpdated(newPassword) {
@@ -51,12 +52,13 @@ class Login extends KeyboardComponent {
 
   render() {
     let loginButtonText = 'Log in'
+    const { acceptPrivacyPolicy } = this.props
     const loginView = (
       <Animated.View style={merge(styles.outerContainer, { bottom: this.state.keyboardHeight })}>
         <Animated.View style={merge(styles.loginContainer, { bottom: this.state.bottom })}>
           <TouchableOpacity style={{ ...styles.loginButton, backgroundColor: detailsValid(this.state.username, this.state.password) ? Colors.primaryBlue : Colors.offWhite }}
               accessibilityLabel={'Login Button'}
-              onPress={() => detailsValid(this.state.username, this.state.password) && this.login()}>
+              onPress={() => detailsValid(this.state.username, this.state.password) && this.beginLogin()}>
             <DefaultText style={{ ...styles.loginButtonText, color: detailsValid(this.state.username, this.state.password) ? 'white' : 'black' }}>
               {loginButtonText}
             </DefaultText>
@@ -78,7 +80,7 @@ class Login extends KeyboardComponent {
               accessibilityLabel={'Input Password'}
               autoFocus={this.state.username !== ''}
               onChangeText={(text) => this.passwordUpdated(text)}
-              onSubmitEditing={() => this.login()}
+              onSubmitEditing={() => this.beginLogin()}
               placeholder={'Password'}
               placeholderTextColor={Colors.gray4}
               secureTextEntry={true}
@@ -87,12 +89,22 @@ class Login extends KeyboardComponent {
         </Animated.View>
       </Animated.View>
     )
-    return this.props.loginFormOpen ? loginView : <View style={{ height: 0 }}/>
+    return (
+      this.props.loginFormOpen
+        ? this.props.privacyPolicyOpen
+          ? <PrivacyPolicy
+              acceptCallback={() =>
+                acceptPrivacyPolicy(true, this.state.username, this.state.password)}
+              rejectCallback={() => acceptPrivacyPolicy(false)}
+            />
+          : loginView
+        : <View style={{ height: 0 }}/>
+      )
   }
 }
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ login }, dispatch)
+  bindActionCreators({ beginLogin, acceptPrivacyPolicy }, dispatch)
 
 const mapStateToProps = (state) => ({...state.login})
 
