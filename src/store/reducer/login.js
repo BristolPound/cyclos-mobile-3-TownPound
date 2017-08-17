@@ -7,6 +7,7 @@ import { deleteSessionToken } from '../../api/api'
 import { updateStatus, ERROR_SEVERITY, unknownError } from './statusMessage'
 import { loadPaymentData } from './business'
 import md5 from 'md5'
+import CryptoJS from 'crypto-js'
 
 export const LOGIN_STATUSES = {
   LOGGED_IN: 'LOGGED_IN',
@@ -22,8 +23,10 @@ const initialState = {
   privacyPolicyOpen: false,
   privacyPolicyAccepted: false,
   acceptedUsernames: {},
+  storePassword: false,
   // logged in username state stores the username on successful login
   loggedInUsername: '',
+  encryptedPassword: {},
   loggedInName: '',
   passToUnlock: ''
 }
@@ -45,6 +48,15 @@ export const loggedOut = () => ({
 export const openLoginForm = (open = true) => ({
   type: 'login/OPEN_LOGIN_FORM',
   open
+})
+
+export const setStorePassword = () => ({
+  type: 'login/STORE_PASSWORD'
+})
+
+export const storeEncryptedPassword = (password) => ({
+  type: 'login/STORE_ENCRYPTED_PASSWORD',
+  password
 })
 
 export const openPrivacyPolicy = () => ({
@@ -96,6 +108,7 @@ export const login = (username, password) =>
         dispatch(loggedIn(username, md5(password.substr(password.length - unlockCharNo))))
         dispatch(loadPaymentData())
         getState().login.privacyPolicyAccepted && dispatch(storeAcceptedUsername(username))
+        getState().login.storePassword && dispatch(storeEncryptedPassword(password))
       })
       .catch (err => {
         if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
@@ -138,8 +151,23 @@ const reducer = (state = initialState, action) => {
         loginFormOpen: false
       })
       break
+    case 'login/STORE_PASSWORD':
+      var newStorePassword = !state.storePassword
+      var newEncryptedPassword = !newStorePassword
+        ? ''
+        : state.encryptedPassword
+      state = merge(state, {
+        storePassword: newStorePassword,
+        encryptedPassword: newEncryptedPassword
+      })
+      break
     case 'login/LOGGED_OUT':
-      state = merge(state, { loginStatus: LOGIN_STATUSES.LOGGED_OUT, passToUnlock: '' })
+      state = merge(state, {
+        loginStatus: LOGIN_STATUSES.LOGGED_OUT,
+        passToUnlock: '',
+        storePassword: false,
+        encryptedPassword: ''
+      })
       deleteSessionToken()
       break
     case 'login/OPEN_LOGIN_FORM':
@@ -156,6 +184,12 @@ const reducer = (state = initialState, action) => {
       state = merge(state, {
         privacyPolicyOpen: false,
         privacyPolicyAccepted: action.accepted
+      })
+      break
+    case 'login/STORE_ENCRYPTED_PASSWORD':
+      var encryptedPassword = CryptoJS.AES.encrypt(action.password, 'test key')
+      state = merge(state, {
+        encryptedPassword: encryptedPassword
       })
       break
     case 'login/STORE_ACCEPTED_USERNAME':
