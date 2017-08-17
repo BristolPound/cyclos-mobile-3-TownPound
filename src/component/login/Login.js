@@ -1,15 +1,19 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { View, TouchableOpacity, TextInput, Animated } from 'react-native'
+import { View, TouchableOpacity, TextInput, Image, Animated } from 'react-native'
 import DefaultText from '../DefaultText'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import animateTo from '../../util/animateTo'
-import { beginLogin, acceptPrivacyPolicy } from '../../store/reducer/login'
+import { beginLogin, acceptPrivacyPolicy, setStorePassword } from '../../store/reducer/login'
 import KeyboardComponent from '../KeyboardComponent'
 import PrivacyPolicy from './PrivacyPolicy'
 import styles from './LoginStyle'
+import Images from '@Assets/images'
+import Checkbox from 'react-native-check-box'
+import decrypt from '../../util/decrypt'
+
 
 // Cyclos doesn't like special characters or empty usernames :(
 const detailsValid = (username, password) => username && !username.match(/\W/) && password && password.indexOf(' ') === -1
@@ -18,7 +22,11 @@ class Login extends KeyboardComponent {
   constructor(props) {
     super()
     this.state.username = props.loggedInUsername
+    if (props.storePassword && props.encryptedPassword) {
+      this.state.password = decrypt(props.encryptedPassword, 'test key')
+    }
   }
+
 
   selectPasswordField() {
     this.passwordInputRef.focus()
@@ -48,6 +56,10 @@ class Login extends KeyboardComponent {
 
   usernameUpdated(newUsername) {
     this.setState({ username: newUsername })
+  }
+
+  setStorePassword() {
+    this.props.setStorePassword()
   }
 
   render() {
@@ -83,9 +95,22 @@ class Login extends KeyboardComponent {
               onSubmitEditing={() => this.beginLogin()}
               placeholder={'Password'}
               placeholderTextColor={Colors.gray4}
+              value={this.state.password}
               secureTextEntry={true}
               selectTextOnFocus={true}
               underlineColorAndroid={Colors.transparent} />
+          <View style={styles.separator}/>
+          <View style={styles.storePasswordContainer}>
+            <Checkbox
+              style={styles.checkbox}
+              onClick={() => this.setStorePassword()}
+              isChecked={this.props.storePassword}
+              leftText={"Store Password"}
+              checkedImage={<Image source={Images.check_box} style={styles.checkboxImage}/>}
+              unCheckedImage={<Image source={Images.check_box_blank} style={styles.checkboxImage}/>}
+              leftTextStyle={styles.checkboxLeftText}
+            />
+          </View>
         </Animated.View>
       </Animated.View>
     )
@@ -104,7 +129,7 @@ class Login extends KeyboardComponent {
 }
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ beginLogin, acceptPrivacyPolicy }, dispatch)
+  bindActionCreators({ beginLogin, acceptPrivacyPolicy, setStorePassword }, dispatch)
 
 const mapStateToProps = (state) => ({...state.login})
 
