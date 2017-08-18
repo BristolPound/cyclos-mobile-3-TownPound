@@ -1,6 +1,6 @@
 import merge from '../../util/merge'
 import { authenticate } from '../../api/api'
-import ApiError, { UNAUTHORIZED_ACCESS } from '../../api/apiError'
+import { isApiError, UNAUTHORIZED_ACCESS } from '../../api/apiError'
 import { loadAccountDetails, resetAccount } from './account'
 import { loadTransactions, resetTransactions } from './transaction'
 import { deleteSessionToken } from '../../api/api'
@@ -14,6 +14,12 @@ export const LOGIN_STATUSES = {
   LOGIN_IN_PROGRESS: 'LOGIN_IN_PROGRESS'
 }
 
+const AUTH_FAILURES = {
+  WRONG_CREDENTIALS: 'WRONG_CREDENTIALS',
+  SESSION_EXPIRED: 'SESSION_EXPIRED',
+  ACCOUNT_TEMPORATILY_BLOCKED: 'ACCOUNT_TEMPORATILY_BLOCKED',
+  ADDRESS_TEMPORATILY_BLOCKED: 'ADDRESS_TEMPORATILY_BLOCKED',
+}
 export const unlockCharNo = 3
 
 const initialState = {
@@ -27,6 +33,8 @@ const initialState = {
   loggedInName: '',
   passToUnlock: ''
 }
+
+let currentLoginStatus = initialState.loginStatus
 
 export const loginInProgress = () => ({
   type: 'login/LOGIN_IN_PROGRESS'
@@ -90,30 +98,24 @@ export const login = (username, password) =>
   (dispatch, getState) => {
     dispatch(loginInProgress())
     authenticate(username, password, dispatch)
-      .then(() => {
-        dispatch(loadTransactions(username === getState().login.loggedInUsername))
-        dispatch(loadAccountDetails())
-        dispatch(loggedIn(username, md5(password.substr(password.length - unlockCharNo))))
-        dispatch(loadPaymentData())
-        getState().login.privacyPolicyAccepted && dispatch(storeAcceptedUsername(username))
-      })
-      .catch (err => {
-        if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
-          err.response.json()
-            .then(json => {
-              if (json && json.passwordStatus === 'temporarilyBlocked') {
-                dispatch(updateStatus('Account temporarily blocked', ERROR_SEVERITY.SEVERE))
-              } else if (json && json.code === 'login') {
-                dispatch(updateStatus('Your details are incorrect'))
-              } else if (json && json.code === 'remoteAddressBlocked') {
-                dispatch(updateStatus('Remote address temporarily blocked', ERROR_SEVERITY.SEVERE))
-              } else {
-                dispatch(unknownError(err))
-              }
-            })
-            .catch(() => dispatch(unknownError(err)))
-        }
-      })
+    .then((sessionToken) => {
+      dispatch(loadTransactions(username === getState().login.loggedInUsername))
+      dispatch(loadAccountDetails())
+      dispatch(loggedIn(username, md5(password.substr(password.length - unlockCharNo))))
+      dispatch(loadPaymentData())
+      getState().login.privacyPolicyAccepted && dispatch(storeAcceptedUsername(username))
+    })
+    .catch(err => {
+      console.log("error on auth")
+      if (!isApiError(err, UNAUTHORIZED_ACCESS)) {
+        console.log("no APIError")
+        dispatch(unknownError(err))
+      }
+      else {
+        console.log("APIError")
+      }
+      //dispatch(loggedOut())
+    })
   }
 
 export const logout = () => dispatch => {
@@ -122,6 +124,82 @@ export const logout = () => dispatch => {
   dispatch(resetAccount())
   dispatch(privacyPolicyAccepted(false))
 }
+
+export const getLoginStatus = () => {
+  return currentLoginStatus
+}
+
+export const isLoggedIn = () => {
+  return (getLoginStatus() == LOGIN_STATUSES.LOGGED_IN)
+}
+
+export const openLoginFormIfUnauthorised = (dispatch, err) => {
+  if (isApiError(err, UNAUTHORIZED_ACCESS)) {
+    dispatch(openLoginForm(true))
+  } else {
+    dispatch(unknownError(err))
+  }
+}
+
+export const logoutIfUnauthorised = (dispatch, err, errorOptions) => {
+
+  return err.response.json()
+
+  .then(json => {
+    switch (true) {
+      case !json:
+        return
+
+      case (json.passwordStatus === 'temporarilyBlocked'):
+        return AUTH_FAILURES.ACCOUNT_TEMPORATILY_BLOCKED
+
+      case (json.code === 'login' || json.code === 'loggedOut'):
+          return ( isLoggedIn() ? AUTH_FAILURES.SESSION_EXPIRED : AUTH_FAILURES.WRONG_CREDENTIALS)
+
+      case (json.code === 'remoteAddressBlocked'):
+        return AUTH_FAILURES.ADDRESS_TEMPORATILY_BLOCKED
+    }
+  },() => {})
+
+  .then(authError => {
+
+    if (errorOptions
+      && errorOptions.logoutOnUnauthorised
+      && (authError == AUTH_FAILURES.SESSION_EXPIRED || authError == AUTH_FAILURES.ACCOUNT_TEMPORATILY_BLOCKED)
+      && isLoggedIn()
+    )
+    {
+      setTimeout(() => {
+        dispatch(logout())
+      }, 500)
+      if (!errorOptions.failGracefullyOnLogout) err.type = FAIL_GRACEFULLY
+    }
+
+    console.log(authError)
+
+    switch (authError) {
+      case AUTH_FAILURES.WRONG_CREDENTIALS:
+        dispatch(updateStatus('Your details are incorrect'))
+        break;
+      case AUTH_FAILURES.SESSION_EXPIRED:
+        dispatch(updateStatus('Your session has expired'))
+        break;
+      case AUTH_FAILURES.ACCOUNT_TEMPORATILY_BLOCKED:
+        dispatch(updateStatus('Account temporarily blocked', ERROR_SEVERITY.SEVERE))
+        break;
+      case AUTH_FAILURES.ADDRESS_TEMPORATILY_BLOCKED:
+        dispatch(updateStatus('Network address temporarily blocked', ERROR_SEVERITY.SEVERE))
+        break;
+      default:
+        dispatch(unknownError(err))
+    }
+
+    err.authError = authError
+
+    return err
+  })
+}
+
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -174,6 +252,7 @@ const reducer = (state = initialState, action) => {
       })
       break
   }
+  currentLoginStatus = state.loginStatus
   return state
 }
 

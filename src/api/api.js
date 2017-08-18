@@ -59,17 +59,17 @@ const basicAuthHeaders = (username, password) => {
 const querystring = params =>
   Object.keys(params).map(key => key + '=' + params[key]).join('&')
 
-const processResponse = (dispatch, expectedResponse = 200) => (response) => {
-  throwErrorOnUnexpectedResponse(response, expectedResponse)
+const processResponse = (dispatch, apiMethod = '', errorOptions = {}, expectedResponse = 200) => (response) => {
+  throwErrorOnUnexpectedResponse(dispatch, apiMethod, errorOptions, response, expectedResponse)
   return response.json()
 }
 
 
-export const get = (url, params, dispatch) => {
+export const get = (url, params, dispatch, errorOptions = {}) => {
   const apiMethod = BASE_URL + url + (params ? '?' + querystring(params) : '')
   return fetch(apiMethod, {headers: httpHeaders(params.requiresAuthorisation)})
     // if the API request was successful, dispatch a message that indicates we have good API connectivity
-    .then(processResponse(dispatch))
+    .then(processResponse(dispatch, apiMethod, errorOptions))
 }
 
 // Will continually load pages of a get request until successCriteria is met.
@@ -96,18 +96,22 @@ export const getPages = (config) => {
   })
 }
 
-export const post = (url, params, dispatch, expectedResponse = 201) =>
-  fetch(BASE_URL + url, merge({ headers: httpHeaders(params.requiresAuthorisation) },
+export const post = (url, params, dispatch, expectedResponse = 201, errorOptions = {}) => {
+  const apiMethod = BASE_URL + url
+  return fetch(apiMethod, merge({ headers: httpHeaders(params.requiresAuthorisation) },
 		{ method: 'POST', body: JSON.stringify(params) }))
-    .then(processResponse(dispatch, expectedResponse))
+  .then(processResponse(dispatch, apiMethod, errorOptions, expectedResponse))
+}
 
-export const authenticate = (username, password, dispatch) =>
-  fetch(BASE_URL + 'auth/session', {
+export const authenticate = (username, password, dispatch) => {
+  const apiMethod = BASE_URL + 'auth/session'
+  return fetch(apiMethod, {
     headers: basicAuthHeaders(username, password),
     method: 'POST'
   })
-  .then(processResponse(dispatch))
+  .then(processResponse(dispatch, apiMethod, {logoutOnUnauthorised: false}))
   .then((results) => {
     globalSessionToken = results.sessionToken
     return results.sessionToken
   })
+}

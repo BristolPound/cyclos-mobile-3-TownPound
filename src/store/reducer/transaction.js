@@ -6,7 +6,7 @@ import { calculateMonthlyTotalSpent,
 import { addColorCodes } from '../../util/business'
 import { getTransactions, getAccountBalance } from '../../api/accounts'
 import { updateStatus, unknownError } from './statusMessage'
-import { loggedOut, openLoginForm } from './login'
+import { loggedOut, openLoginFormIfUnauthorised } from './login'
 import { UNAUTHORIZED_ACCESS } from '../../api/apiError'
 import { accountBalanceReceived } from './account'
 
@@ -61,15 +61,7 @@ const failedToLoadTransactions = () => ({
 
 const handleError = (dispatch) => (err) => {
   dispatch(failedToLoadTransactions())
-  if (err.type === UNAUTHORIZED_ACCESS) {
-    dispatch(updateStatus('Your session has expired'))
-    setTimeout(() => {
-      dispatch(loggedOut())
-      dispatch(openLoginForm(true))
-    }, 500)
-  } else {
-    dispatch(unknownError(err))
-  }
+  openLoginFormIfUnauthorised(dispatch, err)
 }
 
 const loadTransactionsSuccessCriteria = (transactions) =>
