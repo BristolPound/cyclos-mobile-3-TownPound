@@ -7,7 +7,7 @@ import { getPaymentData } from '../../api/payments'
 import { getClosestBusinesses, offsetOverlappingBusinesses, getBusinessesByFilter, getBusinessesByExclusiveFilter } from '../../util/business'
 import { addFailedAction } from './networkConnection'
 import { getBusinesses } from '../../api/users'
-import { UNEXPECTED_DATA } from '../../api/apiError'
+import { isApiError, FAIL_GRACEFULLY } from '../../api/apiError'
 import { ERROR_SEVERITY, unknownError, updateStatus } from './statusMessage'
 import { showModal, modalState } from './navigation'
 import { updatePayee } from './sendMoney'
@@ -159,12 +159,21 @@ const fieldsReceived = (fields) => ({
   fields
 })
 
+const getBusinessPaymentData = (businessId, dispatch) =>
+  getPaymentData(businessId, dispatch, {logoutOnUnauthorised: true, failGracefullyOnLogout: true})
+  .then(
+    result => dispatch(paymentDataReceived(result))
+  , err => {
+    if (!isApiError(err, FAIL_GRACEFULLY)) {
+      dispatch(unknownError(err))
+    }
+  })
+
 // called after login successful, so there's no need to check if the user has logged in
 export const loadPaymentData = () => (dispatch, getState) => {
   const businessId = getState().business.traderScreenBusinessId
   if(businessId) {
-    getPaymentData(businessId, dispatch)
-      .then(result => dispatch(paymentDataReceived(result)))
+    getBusinessPaymentData(businessId, dispatch)
   }
 }
 
@@ -175,8 +184,7 @@ export const resetTraderScreen = () => ({
 export const openTraderModal = (businessId) => (dispatch, getState) => {
   dispatch(selectBusinessForModal(businessId))
   if(getState().login.loginStatus == 'LOGGED_IN'&& (getState().business.businessList[businessId].fields.username !== getState().account.details.shortDisplay)) {
-    getPaymentData(businessId, dispatch)
-      .then(result => dispatch(paymentDataReceived(result)))
+    getBusinessPaymentData(businessId, dispatch)
   }
   dispatch(showModal(modalState.traderScreen))
   dispatch(updatePayee(businessId))
@@ -305,7 +313,7 @@ const reducer = (state = initialState, action) => {
         filteredBusinesses: newFilteredBusinesses
       })
       break
-      
+
     case 'business/RESET_TRADER_SCREEN_ID':
       state = merge(state, {
         traderScreenBusinessId: undefined,
