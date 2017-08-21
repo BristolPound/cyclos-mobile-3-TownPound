@@ -23,6 +23,7 @@ class Login extends KeyboardComponent {
     super()
     this.state.username = props.loggedInUsername
     if (props.storePassword && props.encryptedPassword) {
+      console.log("encrypted password detected")
       this.state.password = decrypt(props.encryptedPassword, 'test key')
     }
   }

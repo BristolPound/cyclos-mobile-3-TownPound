@@ -32,6 +32,7 @@
     "redux-thunk": "^2.1.0",
     "remote-redux-devtools": "0.5.0",
     "sinon": "^2.0.0-pre.2",
-    "supercluster": "^2.3.0"
+    "supercluster": "^2.3.0",
+    "uuid": "^3.1.0"
   }
 }
