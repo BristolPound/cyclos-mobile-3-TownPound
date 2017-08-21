@@ -1,4 +1,5 @@
 import merge from '../../util/merge'
+import module_exists from '../../util/module_exists'
 import { authenticate } from '../../api/api'
 import ApiError, { UNAUTHORIZED_ACCESS } from '../../api/apiError'
 import { loadAccountDetails, resetAccount } from './account'
@@ -8,6 +9,7 @@ import { updateStatus, ERROR_SEVERITY, unknownError } from './statusMessage'
 import { loadPaymentData } from './business'
 import md5 from 'md5'
 import CryptoJS from 'crypto-js'
+import uuidv4 from 'uuid/v4'
 
 export const LOGIN_STATUSES = {
   LOGGED_IN: 'LOGGED_IN',
@@ -26,8 +28,11 @@ const initialState = {
   storePassword: false,
   // logged in username state stores the username on successful login
   loggedInUsername: '',
-  encryptedPassword: {},
   loggedInName: '',
+  encryptedPassword: {},
+  AUID: '',
+  // never stored
+  encryptionKey: '',
   passToUnlock: ''
 }
 
@@ -45,6 +50,10 @@ export const loggedOut = () => ({
   type: 'login/LOGGED_OUT'
 })
 
+export const generateAUID = () => ({
+  type: 'login/GENERATE_AUID'
+})
+
 export const openLoginForm = (open = true) => ({
   type: 'login/OPEN_LOGIN_FORM',
   open
@@ -54,12 +63,17 @@ export const setStorePassword = () => ({
   type: 'login/STORE_PASSWORD'
 })
 
-export const storeEncryptedPassword = (password) => ({
+export const setEncryptionKey = (passSubstring) => ({
+  type: 'login/SET_ENCRYPTION_KEY',
+  passSubstring
+})
+
+const storeEncryptedPassword = (password) => ({
   type: 'login/STORE_ENCRYPTED_PASSWORD',
   password
 })
 
-export const openPrivacyPolicy = () => ({
+const openPrivacyPolicy = () => ({
   type: 'login/OPEN_PRIVACY_POLICY'
 })
 
@@ -84,7 +98,6 @@ export const acceptPrivacyPolicy = (accepted, username, password) =>
     }
   }
 
-
 export const beginLogin = (username, password) =>
   (dispatch, getState) => {
     let acceptedUsernames = getState().login.acceptedUsernames
@@ -108,7 +121,10 @@ export const login = (username, password) =>
         dispatch(loggedIn(username, md5(password.substr(password.length - unlockCharNo))))
         dispatch(loadPaymentData())
         getState().login.privacyPolicyAccepted && dispatch(storeAcceptedUsername(username))
-        getState().login.storePassword && dispatch(storeEncryptedPassword(password))
+        if (getState().login.storePassword) {
+          dispatch(setEncryptionKey(password.substr(password.length - unlockCharNo)))
+          dispatch(storeEncryptedPassword(password))
+        }
       })
       .catch (err => {
         if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
@@ -187,9 +203,33 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'login/STORE_ENCRYPTED_PASSWORD':
+      console.log("storing password")
       var encryptedPassword = CryptoJS.AES.encrypt(action.password, 'test key')
       state = merge(state, {
         encryptedPassword: encryptedPassword
+      })
+      break
+    case 'login/SET_ENCRYPTION_KEY':
+      console.log(" setting encryption ")
+      var passSubstring = action.passSubstring
+      console.log("pass sub is " + passSubstring)
+      console.log(module_exists('@Config/secfrets'))
+      var x = require('@Config/secrets')
+      console.log(x)
+      var secretEncryptionPart = module_exists('@Config/secrets')
+        ? require('@Config/secrets').default.encryptionComponent
+        : 'test key'
+      console.log(secretEncryptionPart)
+      var encryptionKey = state.AUID + secretEncryptionPart + passSubstring
+      console.log(encryptionKey)
+      state = merge(state, {
+        encryptionKey: encryptionKey
+      })
+      break
+    case 'login/GENERATE_AUID':
+      var newAUID = uuidv4()
+      state = merge(state, {
+        AUID: newAUID
       })
       break
     case 'login/STORE_ACCEPTED_USERNAME':

@@ -5,7 +5,7 @@ import transaction from './reducer/transaction'
 import business, { loadBusinessList, geolocationChanged, geolocationFailed } from './reducer/business'
 import person from './reducer/person'
 import navigation, { selectMainComponent, mainComponent, stateInitialised } from './reducer/navigation'
-import login from './reducer/login'
+import login, { generateAUID } from './reducer/login'
 import sendMoney from './reducer/sendMoney'
 import account from './reducer/account'
 import networkConnection, {connectivityChanged} from './reducer/networkConnection'
@@ -54,5 +54,9 @@ export const initialise = (store) => {
   store.dispatch(stateInitialised())
   if (store.getState().login.loggedInUsername) {
     store.dispatch(selectMainComponent(mainComponent.returningLogin))
+  }
+  if (!store.getState().login.AUID) {
+    console.log("calling generate auid")
+    store.dispatch(generateAUID())
   }
 }
