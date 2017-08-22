@@ -24,6 +24,7 @@ const initialState = {
   loginFormOpen: false,
   privacyPolicyOpen: false,
   privacyPolicyAccepted: false,
+  askToUnlock: false,
   acceptedUsernames: {},
   storePassword: false,
   // logged in username state stores the username on successful login
