@@ -42,14 +42,14 @@ class Module extends React.Component {
           {whitelist: ['transaction']}
         ),
         createTransform(
-          (state) => _.pick(state, ['loggedInUsername', 'loggedInName', 'acceptedUsernames', 'storePassword', 'encryptedPassword', 'AUID']),
+          (state) => _.pick(state, ['loggedInUsername', 'loggedInName', 'acceptedUsernames', 'encryptedPassword', 'storePassword', 'AUID']),
           (state) => ({
             // this 'auto fills' the username field
             loggedInUsername: state.loggedInUsername,
             loggedInName: state.loggedInName,
             acceptedUsernames: state.acceptedUsernames,
-            storePassword: state.storePassword,
             encryptedPassword: state.encryptedPassword,
+            storePassword: state.storePassword,
             AUID: state.AUID
           }),
           {whitelist: ['login']}

@@ -20,6 +20,16 @@ const style = {
     justifyContent: 'center',
     padding: 10,
   },
+  errorText: {
+      fontSize: 13,
+      color: Colors.red,
+      textAlign: 'center'
+  },
+  form: {
+      ...border(['bottom', 'top'],
+      Colors.gray5,
+      StyleSheet.hairlineWidth)
+  },
   headerText: {
     flex: 1,
     color: 'white',
@@ -44,6 +54,11 @@ const style = {
     marginBottom: 10,
   },
   instructionText: {
+    fontSize: 14,
+    color: Colors.gray,
+    textAlign: 'center'
+  },
+  instructionTextHTML: {
     div: {
       textAlign: 'center'
     },
@@ -67,10 +82,26 @@ const style = {
     marginRight: 5,
     marginLeft: 5,
   },
+  pinEntry: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 50,
+  },
   buttonText: {
     fontSize: 18,
     textAlign: 'center',
     color: 'white'
+  },
+  textInput: {
+    width: screenWidth * 0.7,
+    padding: 10,
+    textAlign: 'center',
+    borderColor: Colors.primaryBlue,
+    borderWidth: 2,
+    borderRadius: 5,
+    fontSize: 18,
+    marginBottom: 10,
   }
 
 }

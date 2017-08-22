@@ -117,12 +117,13 @@ class Root extends React.Component {
           <StatusMessage/>
           {this.props.coverApp
               && <AppCover unlockOpened={this.props.passToUnlock!=='' && this.state.askToUnlock}/> }
-          {this.props.passToUnlock!=='' && this.state.askToUnlock
-              && <UnlockAppAlert
-                  checkPass={(pass) => this.checkPass(pass)}
-                  error={this.state.unlockError}
-                  failedAttempts={this.state.failedAttempts}
-                  logout={() => this.logoutPress()} />
+          {(this.props.passToUnlock !== '' || this.props.storePassword) && this.state.askToUnlock
+              &&  <UnlockAppAlert
+                    checkPass={(pass) => this.checkPass(pass)}
+                    error={this.state.unlockError}
+                    failedAttempts={this.state.failedAttempts}
+                    logout={() => this.logoutPress()}
+                  />
           }
         </View>
       )
