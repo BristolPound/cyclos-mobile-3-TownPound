@@ -59,13 +59,14 @@ export const openLoginForm = (open = true) => ({
   open
 })
 
-export const setStorePassword = () => ({
-  type: 'login/STORE_PASSWORD'
+export const setStorePassword = (storePassword = true) => ({
+  type: 'login/SET_STORE_PASSWORD',
+  storePassword
 })
 
-export const setEncryptionKey = (passSubstring) => ({
+export const setEncryptionKey = (userCode) => ({
   type: 'login/SET_ENCRYPTION_KEY',
-  passSubstring
+  userCode
 })
 
 const storeEncryptedPassword = (password) => ({
@@ -76,6 +77,18 @@ const storeEncryptedPassword = (password) => ({
 const openPrivacyPolicy = () => ({
   type: 'login/OPEN_PRIVACY_POLICY'
 })
+
+export const openPasswordDisclaimer = (open = true) => ({
+  type: 'login/OPEN_PASSWORD_DISCLAIMER',
+  open
+})
+
+export const acceptPasswordDisclaimer = (enteredPIN) =>
+  (dispatch, getState) => {
+    dispatch(setStorePassword())
+    dispatch(setEncryptionKey(enteredPIN))
+    dispatch(openPasswordDisclaimer(false))
+  }
 
 const privacyPolicyAccepted = (accepted) => ({
   type: 'login/PRIVACY_POLICY_ACCEPTED',
@@ -122,7 +135,7 @@ export const login = (username, password) =>
         dispatch(loadPaymentData())
         getState().login.privacyPolicyAccepted && dispatch(storeAcceptedUsername(username))
         if (getState().login.storePassword) {
-          dispatch(setEncryptionKey(password.substr(password.length - unlockCharNo)))
+          // dispatch(setEncryptionKey(password.substr(password.length - unlockCharNo)))
           dispatch(storeEncryptedPassword(password))
         }
       })
@@ -167,11 +180,11 @@ const reducer = (state = initialState, action) => {
         loginFormOpen: false
       })
       break
-    case 'login/STORE_PASSWORD':
-      var newStorePassword = !state.storePassword
-      var newEncryptedPassword = !newStorePassword
-        ? ''
-        : state.encryptedPassword
+    case 'login/SET_STORE_PASSWORD':
+      var newStorePassword = action.storePassword
+      var newEncryptedPassword = newStorePassword
+        ? state.encryptedPassword
+        : ''
       state = merge(state, {
         storePassword: newStorePassword,
         encryptedPassword: newEncryptedPassword
@@ -182,13 +195,19 @@ const reducer = (state = initialState, action) => {
         loginStatus: LOGIN_STATUSES.LOGGED_OUT,
         passToUnlock: '',
         storePassword: false,
-        encryptedPassword: ''
+        encryptedPassword: '',
+        encryptionKey: '',
       })
       deleteSessionToken()
       break
     case 'login/OPEN_LOGIN_FORM':
       state = merge(state, {
         loginFormOpen: action.open
+      })
+      break
+    case 'login/OPEN_PASSWORD_DISCLAIMER':
+      state = merge(state, {
+        passwordDisclaimerOpen: action.open
       })
       break
     case 'login/OPEN_PRIVACY_POLICY':
@@ -211,8 +230,8 @@ const reducer = (state = initialState, action) => {
       break
     case 'login/SET_ENCRYPTION_KEY':
       console.log(" setting encryption ")
-      var passSubstring = action.passSubstring
-      console.log("pass sub is " + passSubstring)
+      var userCode = action.userCode
+      console.log("user code is " + userCode)
       console.log(module_exists('@Config/secfrets'))
       var x = require('@Config/secrets')
       console.log(x)
@@ -220,7 +239,7 @@ const reducer = (state = initialState, action) => {
         ? require('@Config/secrets').default.encryptionComponent
         : 'test key'
       console.log(secretEncryptionPart)
-      var encryptionKey = state.AUID + secretEncryptionPart + passSubstring
+      var encryptionKey = state.AUID + secretEncryptionPart + userCode
       console.log(encryptionKey)
       state = merge(state, {
         encryptionKey: encryptionKey

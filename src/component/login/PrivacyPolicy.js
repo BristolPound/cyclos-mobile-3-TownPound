@@ -2,7 +2,7 @@ import React from 'React'
 import { View, TouchableOpacity, Text, ScrollView, Linking } from 'react-native'
 import { MultilineText } from '../DefaultText'
 import DefaultText from '@Colors/colors'
-import style from './PrivacyPolicyStyle'
+import style from './PolicyStyle'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import { privacyPolicy } from '@Config/config'
@@ -26,7 +26,7 @@ class PrivacyPolicy extends React.Component {
           </View>
           <View style={style.separator}/>
           <ScrollView style={style.instructionWrapper}>
-            <HTMLView stylesheet={style.instructionText} value={privacyPolicy.replace(/\\n/g, '')} onLinkPress={url => Linking.openURL(url)}/>
+            <HTMLView stylesheet={style.instructionTextHTML} value={privacyPolicy.replace(/\\n/g, '')} onLinkPress={url => Linking.openURL(url)}/>
           </ScrollView>
           <View style={style.buttonRow}>
             <TouchableOpacity

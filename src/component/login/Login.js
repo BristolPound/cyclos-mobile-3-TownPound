@@ -6,9 +6,10 @@ import DefaultText from '../DefaultText'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import animateTo from '../../util/animateTo'
-import { beginLogin, acceptPrivacyPolicy, setStorePassword } from '../../store/reducer/login'
+import { beginLogin, acceptPrivacyPolicy, setStorePassword, acceptPasswordDisclaimer, openPasswordDisclaimer } from '../../store/reducer/login'
 import KeyboardComponent from '../KeyboardComponent'
 import PrivacyPolicy from './PrivacyPolicy'
+import PasswordDisclaimer from './PasswordDisclaimer'
 import styles from './LoginStyle'
 import Images from '@Assets/images'
 import Checkbox from 'react-native-check-box'
@@ -59,13 +60,26 @@ class Login extends KeyboardComponent {
     this.setState({ username: newUsername })
   }
 
-  setStorePassword() {
-    this.props.setStorePassword()
+  // setStorePassword() {
+  //   this.props.setStorePassword()
+  // }
+
+  checkedStorePassword() {
+    if (this.props.storePassword) {
+      this.props.setStorePassword(false)
+    }
+    else {
+      this.props.openPasswordDisclaimer()
+    }
   }
 
   render() {
     let loginButtonText = 'Log in'
-    const { acceptPrivacyPolicy } = this.props
+    const {
+      acceptPrivacyPolicy,
+      acceptPasswordDisclaimer,
+      openPasswordDisclaimer
+    } = this.props
     const loginView = (
       <Animated.View style={merge(styles.outerContainer, { bottom: this.state.keyboardHeight })}>
         <Animated.View style={merge(styles.loginContainer, { bottom: this.state.bottom })}>
@@ -104,7 +118,7 @@ class Login extends KeyboardComponent {
           <View style={styles.storePasswordContainer}>
             <Checkbox
               style={styles.checkbox}
-              onClick={() => this.setStorePassword()}
+              onClick={() => this.checkedStorePassword()}
               isChecked={this.props.storePassword}
               leftText={"Store Password"}
               checkedImage={<Image source={Images.check_box} style={styles.checkboxImage}/>}
@@ -123,14 +137,26 @@ class Login extends KeyboardComponent {
                 acceptPrivacyPolicy(true, this.state.username, this.state.password)}
               rejectCallback={() => acceptPrivacyPolicy(false)}
             />
-          : loginView
+          : this.props.passwordDisclaimerOpen
+            ? <PasswordDisclaimer
+                acceptCallback={(enteredPIN) =>
+                  acceptPasswordDisclaimer(enteredPIN)}
+                rejectCallback={() => openPasswordDisclaimer(false)}
+              />
+            : loginView
         : <View style={{ height: 0 }}/>
       )
   }
 }
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ beginLogin, acceptPrivacyPolicy, setStorePassword }, dispatch)
+  bindActionCreators({
+    beginLogin,
+    acceptPrivacyPolicy,
+    setStorePassword,
+    acceptPasswordDisclaimer,
+    openPasswordDisclaimer
+  }, dispatch)
 
 const mapStateToProps = (state) => ({...state.login})
 

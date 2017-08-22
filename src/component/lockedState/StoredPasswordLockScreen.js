@@ -3,42 +3,61 @@ import { View, TextInput, TouchableOpacity, Text } from 'react-native'
 import DefaultText from '../DefaultText'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
-import style from './UnlockAppAlertStyle'
+import style from './StoredPasswordLockStyle'
 import { unlockCharNo } from '../../store/reducer/login'
 
 export const maxAttempts = 3;
 
-const passwordValid = (password) => password && password.indexOf(' ') === -1 && password.length === unlockCharNo
 
-class UnlockAppAlert extends React.Component {
+class StoredPasswordLockScreen extends React.Component {
     constructor() {
         super()
         this.state = {
-            pass: ''
+            enteredPIN: ''
         }
     }
 
-    _onChangeText (value) {
-        this.setState({pass: value })
-        if (!this.props.storePassword && value.length === unlockCharNo) {
-            this.props.checkPass(value)
-            this.setState({pass: '' })
-            return
-        }
+    updateEnteredPIN(enteredPIN) {
+      this.setState({
+        enteredPIN: enteredPIN
+      })
+    }
+
+    getButtonColor() {
+      if (this.inputValid()) {
+        return Colors.primaryBlue
+      }
+      else {
+        return Colors.gray5
+      }
+    }
+
+    getButtonTextColor() {
+      return this.getButtonColor() === Colors.gray5 ? 'black' : 'white'
+    }
+
+    inputValid() {
+      var len = this.state.enteredPIN.length
+      if (len >= 4 && len <= 6) {
+        return true
+      }
+
+      return false
     }
 
     render() {
+        let maxPinLength = 6
         return (
             <View style={style.wrapper}>
                 <View style={style.container}>
                     <Text style={style.instructionText}>
                         For your privacy, the app was locked.
-                        To unlock, please enter the last {unlockCharNo} characters of your password. Or chose "Logout" to just browse
+                        To unlock, please enter the PIN you specified when agreeing to "Simplified Login". Or chose "Logout" to just browse.
                     </Text>
                     { this.props.error &&
                         <View>
                             <Text style={merge(style.errorText, { paddingTop: 10 })}>
-                                The characters entered don't match.
+                                The PIN you entered was incorrect. If you have forgotten the PIN, choose "Logout".
                             </Text>
                             <Text style={merge(style.errorText, { paddingBottom: 10 })}>
                                 You have {maxAttempts - this.props.failedAttempts} attempts left.
@@ -47,18 +66,29 @@ class UnlockAppAlert extends React.Component {
                     }
                     <View style={style.form}/>
                     <TextInput
-                        placeholder={'Unlock code'}
+                        placeholder="Enter PIN"
                         autoFocus={true}
-                        value={this.state.pass}
+                        value={this.state.enteredPIN}
                         maxLength={unlockCharNo}
-                        accessibilityLabel={'Unlock code'}
+                        accessibilityLabel={'Unlock PIN'}
                         style={style.input}
+                        keyboardType='numeric'
+                        maxLength={maxPinLength}
                         placeholderTextColor={Colors.gray4}
                         secureTextEntry={true}
                         underlineColorAndroid={Colors.transparent}
-                        onChangeText={(value) => this._onChangeText(value)}>
+                        onChangeText={(value) => this.updateEnteredPIN(value)}>
                     </TextInput>
-                    <View style={{flexDirection: 'row'}}>
+                    <View style={style.buttonRow}>
+                        <TouchableOpacity
+                          disabled={!this.inputValid()}
+                          style={merge(style.buttonContainer, {backgroundColor: this.getButtonColor()})}
+                          onPress={() => this.props.unlock()}
+                        >
+                          <Text style={merge(style.buttonText, {color: this.getButtonTextColor()})}>
+                            Unlock
+                          </Text>
+                        </TouchableOpacity>
                         <TouchableOpacity
                             style={merge(style.buttonContainer, { backgroundColor: Colors.primaryBlue, flex: 1, marginRight: 2 })}
                             onPress={() => this.props.logout && this.props.logout()}>
@@ -73,4 +103,4 @@ class UnlockAppAlert extends React.Component {
     }
 }
 
-export default UnlockAppAlert
+export default StoredPasswordLockScreen
