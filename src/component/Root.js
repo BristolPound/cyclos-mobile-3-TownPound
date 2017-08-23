@@ -12,12 +12,12 @@ import StatusMessage from './StatusMessage'
 import Colors from '@Colors/colors'
 import Config from '@Config/config'
 import SendMoney from './sendMoney/SendMoney'
-import AppCover from './lockedState/AppCover'
+// import AppCover from './lockedState/AppCover'
 import md5 from 'md5'
 import { logout } from '../store/reducer/login'
 import { closeConfirmation, setCoverApp, navigateToTab, hideModal, setOverlayOpen } from '../store/reducer/navigation'
 import { updatePage, resetPayment, resetForm } from '../store/reducer/sendMoney'
-import UnlockAppAlert, {maxAttempts} from './lockedState/UnlockAppAlert'
+// import UnlockAppAlert, {maxAttempts} from './lockedState/UnlockAppAlert'
 import LockScreen from './lockedState/LockScreen'
 
 class Root extends React.Component {
@@ -116,8 +116,6 @@ class Root extends React.Component {
           {(this.props.modalOpen && !this.props.loginFormOpen) && Config.ALLOW_LOGIN && (this.props.userShortDisplay !== this.props.payeeShortDisplay) ? <SendMoney /> : undefined}
           <Login/>
           <StatusMessage/>
-          {this.props.coverApp
-              && <AppCover unlockOpened={this.props.passToUnlock!=='' && this.state.askToUnlock}/> }
           <LockScreen/>
         </View>
       )

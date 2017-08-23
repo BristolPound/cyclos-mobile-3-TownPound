@@ -1,4 +1,5 @@
 import merge from '../../util/merge'
+import decrypt from '../../util/decrypt'
 import module_exists from '../../util/module_exists'
 import { authenticate } from '../../api/api'
 import ApiError, { UNAUTHORIZED_ACCESS } from '../../api/apiError'
@@ -59,6 +60,39 @@ export const openLoginForm = (open = true) => ({
   type: 'login/OPEN_LOGIN_FORM',
   open
 })
+
+export const storedPasswordUnlock = (code) =>
+  (dispatch, getState) => {
+    var username, encryptedPassword, encryptionKey, password
+
+    username = getState().login.loggedInUsername
+    encryptedPassword = getState().login.encryptedPassword
+    console.log("encrypted password is " + encryptedPassword)
+    encryptionKey = getState().login.encryptionKey
+    console.log("encryptionKey is " + encryptionKey)
+    dispatch(setEncryptionKey(code))
+    encryptionKey = getState().login.encryptionKey
+    console.log("encryptionKey is " + encryptionKey)
+    password = decrypt(encryptedPassword, encryptionKey)
+    console.log("password is " + password)
+
+    return authenticate(username, password, dispatch)
+      .then(() => {
+        console.log("authenticated")
+        return true
+      })
+      .catch(() => {
+        console.log("failed")
+        return false
+      })
+  }
+
+// export const checkUnlockCode = (code) =>
+//   (dispatch, getState) => {
+//     dispatch(setEncryptionKey(code))
+//     var key = getState().login.encryptionKey
+//
+//   }
 
 export const setStorePassword = (storePassword = true) => ({
   type: 'login/SET_STORE_PASSWORD',
@@ -135,7 +169,8 @@ export const login = (username, password) =>
         dispatch(loggedIn(username, md5(password.substr(password.length - unlockCharNo))))
         dispatch(loadPaymentData())
         getState().login.privacyPolicyAccepted && dispatch(storeAcceptedUsername(username))
-        if (getState().login.storePassword) {
+        // Store the password if they've accepted the agreement and it's not stored already
+        if (getState().login.storePassword && getState().login.encryptedPassword === '') {
           // dispatch(setEncryptionKey(password.substr(password.length - unlockCharNo)))
           dispatch(storeEncryptedPassword(password))
         }
@@ -224,7 +259,7 @@ const reducer = (state = initialState, action) => {
       break
     case 'login/STORE_ENCRYPTED_PASSWORD':
       console.log("storing password")
-      var encryptedPassword = CryptoJS.AES.encrypt(action.password, 'test key')
+      var encryptedPassword = CryptoJS.AES.encrypt(action.password, state.encryptionKey)
       state = merge(state, {
         encryptedPassword: encryptedPassword
       })
@@ -232,15 +267,16 @@ const reducer = (state = initialState, action) => {
     case 'login/SET_ENCRYPTION_KEY':
       console.log(" setting encryption ")
       var userCode = action.userCode
-      console.log("user code is " + userCode)
-      console.log(module_exists('@Config/secfrets'))
+      // console.log("user code is " + userCode)
+      // console.log(module_exists('@Config/secfrets'))
       var x = require('@Config/secrets')
-      console.log(x)
+      // console.log(x)
       var secretEncryptionPart = module_exists('@Config/secrets')
         ? require('@Config/secrets').default.encryptionComponent
         : 'test key'
-      console.log(secretEncryptionPart)
+      // console.log(secretEncryptionPart)
       var encryptionKey = state.AUID + secretEncryptionPart + userCode
+      // Now hash this ?
       console.log(encryptionKey)
       state = merge(state, {
         encryptionKey: encryptionKey

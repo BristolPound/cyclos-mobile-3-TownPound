@@ -44,10 +44,10 @@ const style = {
     elevation: 5,
     shadowOffset:{width: 5, height: 5},
     shadowColor: Colors.offBlack,
-    shadowOpacity: 0.5
+    shadowOpacity: 0.5,
+    borderRadius: 5
   },
   instructionWrapper: {
-    flex: 1,
     paddingLeft: 10,
     paddingRight: 10,
     marginTop: 10,
@@ -83,10 +83,8 @@ const style = {
     marginLeft: 5,
   },
   pinEntry: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flex: 1,
     justifyContent: 'center',
-    height: 50,
   },
   buttonText: {
     fontSize: 18,
@@ -94,14 +92,15 @@ const style = {
     color: 'white'
   },
   textInput: {
-    width: screenWidth * 0.7,
     padding: 10,
     textAlign: 'center',
     borderColor: Colors.primaryBlue,
     borderWidth: 2,
     borderRadius: 5,
     fontSize: 18,
-    marginBottom: 10,
+    marginLeft: 40,
+    marginRight: 40,
+    height: 50
   }
 
 }

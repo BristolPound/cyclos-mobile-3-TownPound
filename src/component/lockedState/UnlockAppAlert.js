@@ -31,10 +31,22 @@ class UnlockAppAlert extends React.Component {
         return (
             <View style={style.wrapper}>
                 <View style={style.container}>
+                    <View style={style.header}>
+                      <Text style={style.headerText}>
+                        Unlock App
+                      </Text>
+                    </View>
                     <Text style={style.instructionText}>
                         For your privacy, the app was locked.
                         To unlock, please enter the last {unlockCharNo} characters of your password. Or chose "Logout" to just browse
                     </Text>
+                    { this.props.noInternet &&
+                      <View>
+                          <Text style={merge(style.errorText, { paddingTop: 10 })}>
+                              No internet available right now, log out just to browse
+                          </Text>
+                      </View>
+                    }
                     { this.props.error &&
                         <View>
                             <Text style={merge(style.errorText, { paddingTop: 10 })}>
@@ -46,21 +58,23 @@ class UnlockAppAlert extends React.Component {
                         </View>
                     }
                     <View style={style.form}/>
-                    <TextInput
-                        placeholder={'Unlock code'}
-                        autoFocus={true}
-                        value={this.state.pass}
-                        maxLength={unlockCharNo}
-                        accessibilityLabel={'Unlock code'}
-                        style={style.input}
-                        placeholderTextColor={Colors.gray4}
-                        secureTextEntry={true}
-                        underlineColorAndroid={Colors.transparent}
-                        onChangeText={(value) => this._onChangeText(value)}>
-                    </TextInput>
-                    <View style={{flexDirection: 'row'}}>
+                    <View style={style.pinEntry}>
+                      <TextInput
+                          placeholder={'Unlock code'}
+                          autoFocus={true}
+                          value={this.state.pass}
+                          maxLength={unlockCharNo}
+                          accessibilityLabel={'Unlock code'}
+                          style={style.textInput}
+                          placeholderTextColor={Colors.gray4}
+                          secureTextEntry={true}
+                          underlineColorAndroid={Colors.transparent}
+                          onChangeText={(value) => this._onChangeText(value)}>
+                      </TextInput>
+                    </View>
+                    <View style={style.buttonRow}>
                         <TouchableOpacity
-                            style={merge(style.buttonContainer, { backgroundColor: Colors.primaryBlue, flex: 1, marginRight: 2 })}
+                            style={merge(style.buttonContainer, { backgroundColor: Colors.primaryBlue})}
                             onPress={() => this.props.logout && this.props.logout()}>
                             <DefaultText style={merge(style.buttonText, { color: 'white' })}>
                                 Logout
