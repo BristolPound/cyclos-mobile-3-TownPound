@@ -50,10 +50,24 @@ class StoredPasswordLockScreen extends React.Component {
         return (
             <View style={style.wrapper}>
                 <View style={style.container}>
-                    <Text style={style.instructionText}>
-                        For your privacy, the app was locked.
-                        To unlock, please enter the PIN you specified when agreeing to "Simplified Login". Or chose "Logout" to just browse.
-                    </Text>
+                    <View style={style.header}>
+                      <Text style={style.headerText}>
+                        Unlock App
+                      </Text>
+                    </View>
+                    <View style={style.instructionWrapper}>
+                      <Text style={style.instructionText}>
+                          For your privacy, the app was locked.
+                          To unlock, please enter the PIN you specified when agreeing to "Simplified Login". Or chose "Logout" to just browse.
+                      </Text>
+                    </View>
+                    { this.props.noInternet &&
+                      <View>
+                          <Text style={merge(style.errorText, { paddingTop: 10 })}>
+                              No internet available right now, log out just to browse
+                          </Text>
+                      </View>
+                    }
                     { this.props.error &&
                         <View>
                             <Text style={merge(style.errorText, { paddingTop: 10 })}>
@@ -65,32 +79,34 @@ class StoredPasswordLockScreen extends React.Component {
                         </View>
                     }
                     <View style={style.form}/>
-                    <TextInput
-                        placeholder="Enter PIN"
-                        autoFocus={true}
-                        value={this.state.enteredPIN}
-                        maxLength={unlockCharNo}
-                        accessibilityLabel={'Unlock PIN'}
-                        style={style.input}
-                        keyboardType='numeric'
-                        maxLength={maxPinLength}
-                        placeholderTextColor={Colors.gray4}
-                        secureTextEntry={true}
-                        underlineColorAndroid={Colors.transparent}
-                        onChangeText={(value) => this.updateEnteredPIN(value)}>
-                    </TextInput>
+                    <View style={style.pinEntry}>
+                      <TextInput
+                          placeholder="Enter PIN"
+                          autoFocus={true}
+                          value={this.state.enteredPIN}
+                          maxLength={unlockCharNo}
+                          accessibilityLabel={'Unlock PIN'}
+                          style={style.textInput}
+                          keyboardType='numeric'
+                          maxLength={maxPinLength}
+                          placeholderTextColor={Colors.gray4}
+                          secureTextEntry={true}
+                          underlineColorAndroid={Colors.transparent}
+                          onChangeText={(value) => this.updateEnteredPIN(value)}>
+                      </TextInput>
+                    </View>
                     <View style={style.buttonRow}>
                         <TouchableOpacity
                           disabled={!this.inputValid()}
                           style={merge(style.buttonContainer, {backgroundColor: this.getButtonColor()})}
-                          onPress={() => this.props.unlock()}
+                          onPress={() => this.props.unlock(this.state.enteredPIN)}
                         >
                           <Text style={merge(style.buttonText, {color: this.getButtonTextColor()})}>
                             Unlock
                           </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            style={merge(style.buttonContainer, { backgroundColor: Colors.primaryBlue, flex: 1, marginRight: 2 })}
+                            style={merge(style.buttonContainer, { backgroundColor: Colors.primaryBlue})}
                             onPress={() => this.props.logout && this.props.logout()}>
                             <DefaultText style={merge(style.buttonText, { color: 'white' })}>
                                 Logout

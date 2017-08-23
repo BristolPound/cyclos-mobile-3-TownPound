@@ -66,6 +66,7 @@ class PrivacyPolicy extends React.Component {
           <View style={style.pinEntry}>
             <TextInput
               style={style.textInput}
+              autoFocus={true}
               value={this.state.enteredPIN}
               onChangeText={(enteredPIN) => this.updateEnteredPIN(enteredPIN)}
               placeholder="Enter an Unlock Pin"

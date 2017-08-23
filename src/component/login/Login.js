@@ -6,13 +6,14 @@ import DefaultText from '../DefaultText'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import animateTo from '../../util/animateTo'
-import { beginLogin, acceptPrivacyPolicy, setStorePassword, acceptPasswordDisclaimer, openPasswordDisclaimer } from '../../store/reducer/login'
+import { beginLogin, LOGIN_STATUSES, acceptPrivacyPolicy, setStorePassword, acceptPasswordDisclaimer, openPasswordDisclaimer } from '../../store/reducer/login'
 import KeyboardComponent from '../KeyboardComponent'
 import PrivacyPolicy from './PrivacyPolicy'
 import PasswordDisclaimer from './PasswordDisclaimer'
 import styles from './LoginStyle'
 import Images from '@Assets/images'
 import Checkbox from 'react-native-check-box'
+import LockScreen from '../lockedState/LockScreen'
 import decrypt from '../../util/decrypt'
 
 
@@ -23,10 +24,10 @@ class Login extends KeyboardComponent {
   constructor(props) {
     super()
     this.state.username = props.loggedInUsername
-    if (props.storePassword && props.encryptedPassword) {
-      console.log("encrypted password detected")
-      this.state.password = decrypt(props.encryptedPassword, 'test key')
-    }
+    // if (props.storePassword && props.encryptedPassword) {
+    //   console.log("encrypted password detected")
+    //   this.state.password = decrypt(props.encryptedPassword, 'test key')
+    // }
   }
 
 
@@ -130,21 +131,23 @@ class Login extends KeyboardComponent {
       </Animated.View>
     )
     return (
-      this.props.loginFormOpen
-        ? this.props.privacyPolicyOpen
-          ? <PrivacyPolicy
-              acceptCallback={() =>
-                acceptPrivacyPolicy(true, this.state.username, this.state.password)}
-              rejectCallback={() => acceptPrivacyPolicy(false)}
-            />
-          : this.props.passwordDisclaimerOpen
-            ? <PasswordDisclaimer
-                acceptCallback={(enteredPIN) =>
-                  acceptPasswordDisclaimer(enteredPIN)}
-                rejectCallback={() => openPasswordDisclaimer(false)}
-              />
-            : loginView
-        : <View style={{ height: 0 }}/>
+      this.props.storePassword && this.props.encryptedPassword && this.props.loginStatus === LOGIN_STATUSES.LOGGED_OUT
+        ? <LockScreen postUnlock={() => this.beginLogin()} loginReplacement={true}/>
+        : this.props.loginFormOpen
+            ? this.props.privacyPolicyOpen
+              ? <PrivacyPolicy
+                  acceptCallback={() =>
+                    acceptPrivacyPolicy(true, this.state.username, this.state.password)}
+                  rejectCallback={() => acceptPrivacyPolicy(false)}
+                />
+              : this.props.passwordDisclaimerOpen
+                ? <PasswordDisclaimer
+                    acceptCallback={(enteredPIN) =>
+                      acceptPasswordDisclaimer(enteredPIN)}
+                    rejectCallback={() => openPasswordDisclaimer(false)}
+                  />
+                : loginView
+            : <View style={{ height: 0 }}/>
       )
   }
 }
