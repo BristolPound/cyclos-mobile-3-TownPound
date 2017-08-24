@@ -6,7 +6,7 @@ import DefaultText from '../DefaultText'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import animateTo from '../../util/animateTo'
-import { beginLogin, LOGIN_STATUSES, acceptPrivacyPolicy, setStorePassword, acceptPasswordDisclaimer, openPasswordDisclaimer } from '../../store/reducer/login'
+import { beginLogin, unlockAndLogin, LOGIN_STATUSES, acceptPrivacyPolicy, setStorePassword, acceptPasswordDisclaimer, openPasswordDisclaimer } from '../../store/reducer/login'
 import KeyboardComponent from '../KeyboardComponent'
 import PrivacyPolicy from './PrivacyPolicy'
 import PasswordDisclaimer from './PasswordDisclaimer'
@@ -132,7 +132,7 @@ class Login extends KeyboardComponent {
     )
     return (
       this.props.storePassword && this.props.encryptedPassword && this.props.loginStatus === LOGIN_STATUSES.LOGGED_OUT
-        ? <LockScreen postUnlock={() => this.beginLogin()} loginReplacement={true}/>
+        ? <LockScreen postUnlock={this.props.unlockAndLogin} loginReplacement={true}/>
         : this.props.loginFormOpen
             ? this.props.privacyPolicyOpen
               ? <PrivacyPolicy
@@ -158,7 +158,8 @@ const mapDispatchToProps = (dispatch) =>
     acceptPrivacyPolicy,
     setStorePassword,
     acceptPasswordDisclaimer,
-    openPasswordDisclaimer
+    openPasswordDisclaimer,
+    unlockAndLogin
   }, dispatch)
 
 const mapStateToProps = (state) => ({...state.login})

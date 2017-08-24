@@ -79,11 +79,20 @@ export const storedPasswordUnlock = (code) =>
     return authenticate(username, password, dispatch)
       .then(() => {
         console.log("authenticated")
-        return true
+        return {success: true}
       })
-      .catch(() => {
-        console.log("failed")
-        return false
+      .catch (err => {
+        if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
+          err.response.json()
+            .then(json => {
+              if (json && json.code === 'login') {
+                return {success: false, authError: true}
+              } else {
+                return {success: false, authError: false}
+              }
+            })
+            .catch(() => dispatch(unknownError(err)))
+        }
       })
   }
 
@@ -146,6 +155,19 @@ export const acceptPrivacyPolicy = (accepted, username, password) =>
     }
   }
 
+export const unlockAndLogin = () =>
+  (dispatch, getState) => {
+    var username, encryptedPassword, encryptionKey, password
+
+    username = getState().login.loggedInUsername
+    encryptedPassword = getState().login.encryptedPassword
+    encryptionKey = getState().login.encryptionKey
+    password = decrypt(encryptedPassword, encryptionKey)
+
+    dispatch(login(username, password))
+  }
+
+
 export const beginLogin = (username, password) =>
   (dispatch, getState) => {
     let acceptedUsernames = getState().login.acceptedUsernames
@@ -171,7 +193,6 @@ export const login = (username, password) =>
         getState().login.privacyPolicyAccepted && dispatch(storeAcceptedUsername(username))
         // Store the password if they've accepted the agreement and it's not stored already
         if (getState().login.storePassword && getState().login.encryptedPassword === '') {
-          // dispatch(setEncryptionKey(password.substr(password.length - unlockCharNo)))
           dispatch(storeEncryptedPassword(password))
         }
       })
@@ -269,7 +290,7 @@ const reducer = (state = initialState, action) => {
       var userCode = action.userCode
       // console.log("user code is " + userCode)
       // console.log(module_exists('@Config/secfrets'))
-      var x = require('@Config/secrets')
+      // var x = require('@Config/secrets')
       // console.log(x)
       var secretEncryptionPart = module_exists('@Config/secrets')
         ? require('@Config/secrets').default.encryptionComponent
