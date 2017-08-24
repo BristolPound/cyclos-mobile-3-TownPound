@@ -45,6 +45,15 @@ class StoredPasswordLockScreen extends React.Component {
       return false
     }
 
+    unlockAttempt() {
+      this.props.unlock(this.state.enteredPIN)
+        .then(sucess => {
+          if (!success) {
+            this.setState({enteredPIN: ''})
+          }
+        })
+    }
+
     render() {
         let maxPinLength = 6
         return (
@@ -99,7 +108,7 @@ class StoredPasswordLockScreen extends React.Component {
                         <TouchableOpacity
                           disabled={!this.inputValid()}
                           style={merge(style.buttonContainer, {backgroundColor: this.getButtonColor()})}
-                          onPress={() => this.props.unlock(this.state.enteredPIN)}
+                          onPress={() => this.unlockAttempt()}
                         >
                           <Text style={merge(style.buttonText, {color: this.getButtonTextColor()})}>
                             Unlock

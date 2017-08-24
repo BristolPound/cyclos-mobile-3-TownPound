@@ -3,6 +3,7 @@ import { View, AppState } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { authenticate } from '../../api/api'
+import md5 from 'md5'
 import { logout, storedPasswordUnlock, LOGIN_STATUSES } from '../../store/reducer/login'
 import AppCover from './AppCover'
 import { closeConfirmation, setCoverApp, navigateToTab, hideModal, setOverlayOpen } from '../../store/reducer/navigation'
@@ -11,6 +12,7 @@ import { updatePage, resetPayment, resetForm } from '../../store/reducer/sendMon
 import StoredPasswordLockScreen from './StoredPasswordLockScreen'
 import style from './StoredPasswordLockStyle'
 import decrypt from '../../util/decrypt'
+import moment from 'moment'
 
 
 class LockScreen extends React.Component {
@@ -21,7 +23,9 @@ class LockScreen extends React.Component {
       appState: AppState.currentState,
       unlockError: false,
       failedAttempts: 0,
-      noInternet: false
+      noInternet: false,
+      lockTimeStamp: null,
+      headerMessage: ''
     }
   }
 
@@ -36,12 +40,18 @@ class LockScreen extends React.Component {
   _handleAppStateChange = (nextAppState) => {
     if (nextAppState.match(/inactive|background/) && this.state.appState === 'active') {
       this.props.setCoverApp(true)
-      this.setState({ appState: nextAppState})
+      this.setState(
+        { appState: nextAppState,
+          lockTimeStamp: moment()
+        }
+      )
     } else if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-      if (this.props.passToUnlock !== '' || this.props.loginStatus === LOGIN_STATUSES.LOGGED_IN) {
+      var diff = moment().diff(this.state.lockTimeStamp, 'seconds')
+      console.log("the difference is " + diff)
+      if ((diff >= 5) && (this.props.passToUnlock !== '' || this.props.loginStatus === LOGIN_STATUSES.LOGGED_IN)) {
         this.setState({askToUnlock: true, appState: nextAppState})
       } else {
-        this.props.setCoverApp(false)
+        // this.props.setCoverApp(false)
         this.setState({appState: nextAppState})
       }
     } else {
@@ -77,9 +87,8 @@ class LockScreen extends React.Component {
   unlock() {
     this.props.setCoverApp(false)
     this.setState({askToUnlock: false, unlockError: false, failedAttempts: 0})
-    if (this.props.postUnlock) {
-      this.props.postUnlock()
-    }
+
+    this.props.postUnlock && this.props.postUnlock()
   }
 
   failedAttempt() {
@@ -93,30 +102,45 @@ class LockScreen extends React.Component {
     }
   }
 
-  storedPasswordUnlock(code) {
-    // this.props.setEncryptionKey(code)
-    // console.log("the encryptionKey is " + this.props.encryptionKey)
-    // this.checkEncryptionKey()
+  setHeader(set, message) {
+    if (set) {
+      this.setState({headerMessage: message})
+    }
+    else {
+      this.setState({headerMessage: ''})
+    }
+  }
 
+  storedPasswordUnlock(code) {
     // If no internet then set state noInternet to true and return
     // else set it to false and carry on
+    if (!this.props.connection) {
+      this.setState({noInternet: true})
+      return
+    }
+    else {
+      this.setState({noInternet: false})
+    }
 
-    this.props.storedPasswordUnlock(code)
-      .then((success) => {
-        success
+    this.setHeader(true, "Unlocking...")
+
+    return (this.props.storedPasswordUnlock(code)
+      .then((successObject) => {
+        this.setHeader(false)
+        successObject.success
           ? this.unlock()
-          : this.failedAttempt()
+          : successObject.authError
+            ? this.failedAttempt()
+            : this.setHeader(true, "Temporarily Blocked")
+
+        return successObject.success
       })
       .catch(() => {
-        this.failedAttempt()
+        this.setHeader(true, "Unknown Error")
+        return false
       })
 
-    // if (this.props.storedPasswordUnlock(code)) {
-    //   this.unlock()
-    // }
-    // else {
-    //   this.failedAttempt()
-    // }
+    )
   }
 
   // checkEncryptionKey() {
@@ -143,6 +167,7 @@ class LockScreen extends React.Component {
                 failedAttempts={this.state.failedAttempts}
                 logout={() => this.logoutPress()}
                 noInternet={this.state.noInternet}
+                headerMessage={this.state.headerMessage}
               />
           :   <UnlockAppAlert
                 checkPass={(pass) => this.checkPass(pass)}
@@ -178,7 +203,8 @@ const mapStateToProps = (state) => ({
   storePassword: state.login.storePassword,
   loginStatus: state.login.loginStatus,
   encryptedPassword: state.login.encryptedPassword,
-  encryptionKey: state.login.encryptionKey
+  encryptionKey: state.login.encryptionKey,
+  connection: state.networkConnection.status
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(LockScreen)

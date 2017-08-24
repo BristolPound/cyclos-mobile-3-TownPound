@@ -33,7 +33,7 @@ class UnlockAppAlert extends React.Component {
                 <View style={style.container}>
                     <View style={style.header}>
                       <Text style={style.headerText}>
-                        Unlock App
+                        {this.props.headerMessage || "Unlock App"}
                       </Text>
                     </View>
                     <Text style={style.instructionText}>
@@ -60,7 +60,7 @@ class UnlockAppAlert extends React.Component {
                     <View style={style.form}/>
                     <View style={style.pinEntry}>
                       <TextInput
-                          placeholder={'Unlock code'}
+                          placeholder={'Last three characters of password'}
                           autoFocus={true}
                           value={this.state.pass}
                           maxLength={unlockCharNo}
