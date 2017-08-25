@@ -47,8 +47,8 @@ class StoredPasswordLockScreen extends React.Component {
 
     unlockAttempt() {
       this.props.unlock(this.state.enteredPIN)
-        .then((successObject) => {
-          if (!successObject.success) {
+        .then((success) => {
+          if (!success) {
             this.setState({enteredPIN: ''})
           }
         })
@@ -61,7 +61,7 @@ class StoredPasswordLockScreen extends React.Component {
                 <View style={style.container}>
                     <View style={style.header}>
                       <Text style={style.headerText}>
-                        Unlock App
+                        {this.props.headerMessage || "Unlock App"}
                       </Text>
                     </View>
                     <View style={style.instructionWrapper}>
@@ -106,7 +106,7 @@ class StoredPasswordLockScreen extends React.Component {
                     </View>
                     <View style={style.buttonRow}>
                         <TouchableOpacity
-                          disabled={!this.inputValid()}
+                          disabled={!this.inputValid() || this.props.headerMessage !== ''}
                           style={merge(style.buttonContainer, {backgroundColor: this.getButtonColor()})}
                           onPress={() => this.unlockAttempt()}
                         >
@@ -127,5 +127,6 @@ class StoredPasswordLockScreen extends React.Component {
         )
     }
 }
+// <Overlay overlayVisible={this.state.headerMessage ? true : false}/>
 
 export default StoredPasswordLockScreen
