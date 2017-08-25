@@ -123,9 +123,11 @@ class LockScreen extends React.Component {
     }
 
     this.setHeader(true, "Unlocking...")
+    console.log("unlocking...")
 
     return (this.props.storedPasswordUnlock(code)
       .then((successObject) => {
+        console.log("success obj success is " + successObject.success)
         this.setHeader(false)
         successObject.success
           ? this.unlock()
@@ -133,13 +135,12 @@ class LockScreen extends React.Component {
             ? this.failedAttempt()
             : this.setHeader(true, "Temporarily Blocked")
 
-        return successObject.success
+        return successObject
       })
       .catch(() => {
         this.setHeader(true, "Unknown Error")
         return false
       })
-
     )
   }
 
