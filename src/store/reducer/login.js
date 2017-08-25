@@ -79,20 +79,27 @@ export const storedPasswordUnlock = (code) =>
     return authenticate(username, password, dispatch)
       .then(() => {
         console.log("authenticated")
-        return {success: true}
+        var successObject = {success: true}
+        return successObject
       })
       .catch (err => {
+        var successObject = {success: false}
         if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
           err.response.json()
             .then(json => {
+              console.log("processed json")
               if (json && json.code === 'login') {
-                return {success: false, authError: true}
+                successObject.authError = true
               } else {
-                return {success: false, authError: false}
+                successObject.authError = false
               }
             })
-            .catch(() => dispatch(unknownError(err)))
+            .catch(() => {
+              console.log("error in processing json")
+              dispatch(unknownError(err))
+            })
         }
+        return successObject
       })
   }
 

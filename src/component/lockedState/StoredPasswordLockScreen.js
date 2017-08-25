@@ -47,8 +47,8 @@ class StoredPasswordLockScreen extends React.Component {
 
     unlockAttempt() {
       this.props.unlock(this.state.enteredPIN)
-        .then(sucess => {
-          if (!success) {
+        .then((successObject) => {
+          if (!successObject.success) {
             this.setState({enteredPIN: ''})
           }
         })
