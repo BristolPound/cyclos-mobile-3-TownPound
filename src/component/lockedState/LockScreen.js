@@ -13,6 +13,8 @@ import StoredPasswordLockScreen from './StoredPasswordLockScreen'
 import style from './StoredPasswordLockStyle'
 import decrypt from '../../util/decrypt'
 import moment from 'moment'
+import Colors from '@Colors/colors'
+import { Overlay } from '../common/Overlay'
 
 
 class LockScreen extends React.Component {
@@ -69,10 +71,14 @@ class LockScreen extends React.Component {
     }
   }
 
+  resetState(){
+    this.setState({askToUnlock: false, unlockError: false, failedAttempts: 0, headerMessage: ''})
+  }
+
   logout () {
     this.props.logout()
     this.props.closeConfirmation()
-    this.setState({askToUnlock: false, unlockError: false, failedAttempts: 0})
+    this.resetState()
     this.props.setCoverApp(false)
   }
 
@@ -86,13 +92,15 @@ class LockScreen extends React.Component {
 
   unlock() {
     this.props.setCoverApp(false)
-    this.setState({askToUnlock: false, unlockError: false, failedAttempts: 0})
+    this.resetState()
 
     this.props.postUnlock && this.props.postUnlock()
   }
 
   failedAttempt() {
+    console.log("failed attempt")
     var failedAttempts = this.state.failedAttempts + 1
+    this.setHeader(false)
     if (failedAttempts < maxAttempts) {
       this.setState({unlockError: true, failedAttempts})
     }
@@ -104,10 +112,22 @@ class LockScreen extends React.Component {
 
   setHeader(set, message) {
     if (set) {
-      this.setState({headerMessage: message})
+      this.setState({ headerMessage: message })
     }
     else {
-      this.setState({headerMessage: ''})
+      this.setState({ headerMessage: '' })
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.statusMessage !== this.props.statusMessage) {
+      console.log("status message of " + nextProps.statusMessage)
+
+      nextProps.statusMessage == 'Incorrect Unlock'
+        && this.failedAttempt()
+
+      nextProps.statusMessage == 'Temporarily blocked'
+        && this.logout()
     }
   }
 
@@ -115,7 +135,8 @@ class LockScreen extends React.Component {
     // If no internet then set state noInternet to true and return
     // else set it to false and carry on
     if (!this.props.connection) {
-      this.setState({noInternet: true})
+      this.setState({ noInternet: true })
+      this.setHeader(false)
       return
     }
     else {
@@ -126,31 +147,19 @@ class LockScreen extends React.Component {
     console.log("unlocking...")
 
     return (this.props.storedPasswordUnlock(code)
-      .then((successObject) => {
-        console.log("success obj success is " + successObject.success)
+      .then((success) => {
+        console.log("success is " + success)
         this.setHeader(false)
-        successObject.success
-          ? this.unlock()
-          : successObject.authError
-            ? this.failedAttempt()
-            : this.setHeader(true, "Temporarily Blocked")
+        success && this.unlock()
 
-        return successObject
+        return success
       })
       .catch(() => {
-        this.setHeader(true, "Unknown Error")
         return false
       })
     )
   }
 
-  // checkEncryptionKey() {
-  //   console.log("the encryptionKey is " + this.props.encryptionKey)
-  //   var username = this.props.loggedInUsername
-  //   var password = decrypt(this.props.encryptedPassword, this.props.encryptionKey)
-  //
-  //   console.log(password)
-  // }
 
   render() {
     if (!this.state.askToUnlock && !this.props.loginReplacement) {
@@ -161,6 +170,9 @@ class LockScreen extends React.Component {
         {this.props.coverApp
             && <AppCover unlockOpened={this.props.passToUnlock!=='' && this.state.askToUnlock}/>
         }
+        <Overlay overlayVisible={this.state.headerMessage ? true : false}
+                 onPress={() => console.log("hello")}
+                 underlayColor={Colors.transparent}/>
         {this.props.storePassword
           ?   <StoredPasswordLockScreen
                 unlock={this.storedPasswordUnlock.bind(this)}
@@ -205,7 +217,8 @@ const mapStateToProps = (state) => ({
   loginStatus: state.login.loginStatus,
   encryptedPassword: state.login.encryptedPassword,
   encryptionKey: state.login.encryptionKey,
-  connection: state.networkConnection.status
+  connection: state.networkConnection.status,
+  statusMessage: state.statusMessage.message
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(LockScreen)

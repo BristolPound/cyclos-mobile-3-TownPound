@@ -33,7 +33,7 @@ class UnlockAppAlert extends React.Component {
                 <View style={style.container}>
                     <View style={style.header}>
                       <Text style={style.headerText}>
-                        {this.props.headerMessage || "Unlock App"}
+                        Unlock App
                       </Text>
                     </View>
                     <Text style={style.instructionText}>

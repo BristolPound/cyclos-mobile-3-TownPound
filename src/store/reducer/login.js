@@ -10,6 +10,7 @@ import { updateStatus, ERROR_SEVERITY, unknownError } from './statusMessage'
 import { loadPaymentData } from './business'
 import md5 from 'md5'
 import CryptoJS from 'crypto-js'
+// import Crypter from 'cryptr'
 import uuidv4 from 'uuid/v4'
 
 export const LOGIN_STATUSES = {
@@ -73,25 +74,30 @@ export const storedPasswordUnlock = (code) =>
     dispatch(setEncryptionKey(code))
     encryptionKey = getState().login.encryptionKey
     console.log("encryptionKey is " + encryptionKey)
+    // var cryptr = new Crypter(encryptionKey)
+    // password = cryptr.decrypt(encryptedPassword)
     password = decrypt(encryptedPassword, encryptionKey)
     console.log("password is " + password)
 
     return authenticate(username, password, dispatch)
       .then(() => {
         console.log("authenticated")
-        var successObject = {success: true}
-        return successObject
+        return true
       })
       .catch (err => {
-        var successObject = {success: false}
         if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
           err.response.json()
             .then(json => {
-              console.log("processed json")
-              if (json && json.code === 'login') {
-                successObject.authError = true
-              } else {
-                successObject.authError = false
+              console.log("processed json and code is " + json.code)
+              if (json && ['login', 'missingAuthorization'].includes(json.code)) {
+                console.log("setting auth error to true")
+                dispatch(updateStatus('Incorrect Unlock', ERROR_SEVERITY.SEVERE))
+              }
+              else if (json && ['temporarilyBlocked', 'remoteAddressBlocked'].includes(json.code)){
+                dispatch(updateStatus('Temporarily blocked', ERROR_SEVERITY.SEVERE))
+              }
+              else {
+                dispatch(unknownError(err))
               }
             })
             .catch(() => {
@@ -99,16 +105,10 @@ export const storedPasswordUnlock = (code) =>
               dispatch(unknownError(err))
             })
         }
-        return successObject
+        return false
       })
   }
 
-// export const checkUnlockCode = (code) =>
-//   (dispatch, getState) => {
-//     dispatch(setEncryptionKey(code))
-//     var key = getState().login.encryptionKey
-//
-//   }
 
 export const setStorePassword = (storePassword = true) => ({
   type: 'login/SET_STORE_PASSWORD',
@@ -120,9 +120,10 @@ export const setEncryptionKey = (userCode) => ({
   userCode
 })
 
-const storeEncryptedPassword = (password) => ({
+const storeEncryptedPassword = (password, encryptionKey) => ({
   type: 'login/STORE_ENCRYPTED_PASSWORD',
-  password
+  password,
+  encryptionKey
 })
 
 const openPrivacyPolicy = () => ({
@@ -200,7 +201,7 @@ export const login = (username, password) =>
         getState().login.privacyPolicyAccepted && dispatch(storeAcceptedUsername(username))
         // Store the password if they've accepted the agreement and it's not stored already
         if (getState().login.storePassword && getState().login.encryptedPassword === '') {
-          dispatch(storeEncryptedPassword(password))
+          dispatch(storeEncryptedPassword(password, getState().login.encryptionKey))
         }
       })
       .catch (err => {
@@ -208,7 +209,7 @@ export const login = (username, password) =>
           console.log("the error is " + err)
           err.response.json()
             .then(json => {
-              console.log("able to process response and it is " + json)
+              console.log("able to process response and it is " + json.code)
               if (json && json.passwordStatus === 'temporarilyBlocked') {
                 dispatch(updateStatus('Account temporarily blocked', ERROR_SEVERITY.SEVERE))
               } else if (json && json.code === 'login') {
@@ -291,26 +292,30 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'login/STORE_ENCRYPTED_PASSWORD':
-      console.log("storing password")
-      var encryptedPassword = CryptoJS.AES.encrypt(action.password, state.encryptionKey)
+      // console.log("storing password")
+      // var cryptr = new Cryptr(action.encryptionKey)
+      // var newEncryptedPassword = cryptr.encrypt(action.password)
+      var newEncryptedPassword = CryptoJS.DES.encrypt(action.password, action.encryptionKey)
       state = merge(state, {
-        encryptedPassword: encryptedPassword
+        encryptedPassword: newEncryptedPassword
       })
       break
     case 'login/SET_ENCRYPTION_KEY':
-      console.log(" setting encryption ")
+      // console.log(" setting encryption ")
       var userCode = action.userCode
       // console.log("user code is " + userCode)
       // console.log(module_exists('@Config/secfrets'))
       // var x = require('@Config/secrets')
       // console.log(x)
-      var secretEncryptionPart = module_exists('@Config/secrets')
-        ? require('@Config/secrets').default.encryptionComponent
-        : 'test key'
+      // var secretEncryptionPart = module_exists('@Config/secrets')
+      //   ? require('@Config/secrets').default.encryptionComponent
+      //   : 'test key'
+      // var secretEncryptionPart = 'test key'
       // console.log(secretEncryptionPart)
-      var encryptionKey = state.AUID + secretEncryptionPart + userCode
+      // var encryptionKey = state.AUID + secretEncryptionPart + userCode
+      var encryptionKey = userCode
       // Now hash this ?
-      console.log(encryptionKey)
+      // console.log(encryptionKey)
       state = merge(state, {
         encryptionKey: encryptionKey
       })
