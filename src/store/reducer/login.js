@@ -205,8 +205,10 @@ export const login = (username, password) =>
       })
       .catch (err => {
         if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
+          console.log("the error is " + err)
           err.response.json()
             .then(json => {
+              console.log("able to process response and it is " + json)
               if (json && json.passwordStatus === 'temporarilyBlocked') {
                 dispatch(updateStatus('Account temporarily blocked', ERROR_SEVERITY.SEVERE))
               } else if (json && json.code === 'login') {
@@ -217,7 +219,10 @@ export const login = (username, password) =>
                 dispatch(unknownError(err))
               }
             })
-            .catch(() => dispatch(unknownError(err)))
+            .catch(() => {
+              console.log("not able to process response")
+              dispatch(unknownError(err))
+            })
         }
       })
   }
