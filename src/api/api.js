@@ -59,8 +59,8 @@ const basicAuthHeaders = (username, password) => {
 const querystring = params =>
   Object.keys(params).map(key => key + '=' + params[key]).join('&')
 
-const processResponse = (dispatch, apiMethod = '', expectedResponse = 200) => (response) => {
-  throwErrorOnUnexpectedResponse(response, apiMethod, expectedResponse)
+const processResponse = (dispatch, expectedResponse = 200) => (response) => {
+  throwErrorOnUnexpectedResponse(response, expectedResponse)
   return response.json()
 }
 
@@ -69,7 +69,7 @@ export const get = (url, params, dispatch) => {
   const apiMethod = BASE_URL + url + (params ? '?' + querystring(params) : '')
   return fetch(apiMethod, {headers: httpHeaders(params.requiresAuthorisation)})
     // if the API request was successful, dispatch a message that indicates we have good API connectivity
-    .then(processResponse(dispatch, apiMethod))
+    .then(processResponse(dispatch))
 }
 
 // Will continually load pages of a get request until successCriteria is met.
@@ -96,22 +96,18 @@ export const getPages = (config) => {
   })
 }
 
-export const post = (url, params, dispatch, expectedResponse = 201) => {
-  const apiMethod = BASE_URL + url
-  return fetch(apiMethod, merge({ headers: httpHeaders(params.requiresAuthorisation) },
+export const post = (url, params, dispatch, expectedResponse = 201) =>
+  fetch(BASE_URL + url, merge({ headers: httpHeaders(params.requiresAuthorisation) },
 		{ method: 'POST', body: JSON.stringify(params) }))
-  .then(processResponse(dispatch, apiMethod, expectedResponse))
-}
+    .then(processResponse(dispatch, expectedResponse))
 
-export const authenticate = (username, password, dispatch) => {
-  const apiMethod = BASE_URL + 'auth/session'
-  return fetch(apiMethod, {
+export const authenticate = (username, password, dispatch) =>
+  fetch(BASE_URL + 'auth/session', {
     headers: basicAuthHeaders(username, password),
     method: 'POST'
   })
-  .then(processResponse(dispatch, apiMethod))
+  .then(processResponse(dispatch))
   .then((results) => {
     globalSessionToken = results.sessionToken
     return results.sessionToken
   })
-}
