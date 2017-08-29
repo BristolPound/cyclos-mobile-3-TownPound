@@ -1,5 +1,7 @@
 import merge from '../../util/merge'
-import decrypt from '../../util/decrypt'
+// import decrypt from '../../util/decrypt'
+import { encrypt, decrypt } from '../../util/encryptionUtil'
+// import { encrypt, decrypt } from 'react-native-simple-encryption'
 import module_exists from '../../util/module_exists'
 import { authenticate } from '../../api/api'
 import ApiError, { UNAUTHORIZED_ACCESS } from '../../api/apiError'
@@ -9,7 +11,9 @@ import { deleteSessionToken } from '../../api/api'
 import { updateStatus, ERROR_SEVERITY, unknownError } from './statusMessage'
 import { loadPaymentData } from './business'
 import md5 from 'md5'
-import CryptoJS from 'crypto-js'
+// import CryptoJS from 'crypto-js'
+// import CryptoJS from 'cryptojs'
+
 // import Crypter from 'cryptr'
 import uuidv4 from 'uuid/v4'
 
@@ -32,7 +36,7 @@ const initialState = {
   // logged in username state stores the username on successful login
   loggedInUsername: '',
   loggedInName: '',
-  encryptedPassword: {},
+  encryptedPassword: '',
   AUID: '',
   // never stored
   encryptionKey: '',
@@ -76,6 +80,7 @@ export const storedPasswordUnlock = (code) =>
     console.log("encryptionKey is " + encryptionKey)
     // var cryptr = new Crypter(encryptionKey)
     // password = cryptr.decrypt(encryptedPassword)
+    // password = decrypt(encryptedPassword, encryptionKey)
     password = decrypt(encryptedPassword, encryptionKey)
     console.log("password is " + password)
 
@@ -170,6 +175,7 @@ export const unlockAndLogin = () =>
     username = getState().login.loggedInUsername
     encryptedPassword = getState().login.encryptedPassword
     encryptionKey = getState().login.encryptionKey
+    // password = decrypt(encryptedPassword, encryptionKey)
     password = decrypt(encryptedPassword, encryptionKey)
 
     dispatch(login(username, password))
@@ -293,9 +299,11 @@ const reducer = (state = initialState, action) => {
       break
     case 'login/STORE_ENCRYPTED_PASSWORD':
       // console.log("storing password")
+      // var newEncryptedPassword = encrypt(action.password, action.encryptionKey)
+      var newEncryptedPassword = encrypt(action.password, action.encryptionKey)
       // var cryptr = new Cryptr(action.encryptionKey)
       // var newEncryptedPassword = cryptr.encrypt(action.password)
-      var newEncryptedPassword = CryptoJS.DES.encrypt(action.password, action.encryptionKey)
+      // var newEncryptedPassword = CryptoJS.DES.encrypt(action.password, action.encryptionKey)
       state = merge(state, {
         encryptedPassword: newEncryptedPassword
       })

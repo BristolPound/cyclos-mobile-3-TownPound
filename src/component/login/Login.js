@@ -14,7 +14,7 @@ import styles from './LoginStyle'
 import Images from '@Assets/images'
 import Checkbox from 'react-native-check-box'
 import LockScreen from '../lockedState/LockScreen'
-import decrypt from '../../util/decrypt'
+// import decrypt from '../../util/decrypt'
 
 
 // Cyclos doesn't like special characters or empty usernames :(

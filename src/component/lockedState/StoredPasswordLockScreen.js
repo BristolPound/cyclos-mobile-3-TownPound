@@ -3,7 +3,7 @@ import { View, TextInput, TouchableOpacity, Text } from 'react-native'
 import DefaultText from '../DefaultText'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
-import style from './StoredPasswordLockStyle'
+import style from './LockStyle'
 import { unlockCharNo } from '../../store/reducer/login'
 
 export const maxAttempts = 3;

@@ -3,7 +3,7 @@ import { View, TextInput, TouchableOpacity, Text } from 'react-native'
 import DefaultText from '../DefaultText'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
-import style from './UnlockAppAlertStyle'
+import style from './LockStyle'
 import { unlockCharNo } from '../../store/reducer/login'
 
 export const maxAttempts = 3;
@@ -36,10 +36,12 @@ class UnlockAppAlert extends React.Component {
                         Unlock App
                       </Text>
                     </View>
-                    <Text style={style.instructionText}>
-                        For your privacy, the app was locked.
-                        To unlock, please enter the last {unlockCharNo} characters of your password. Or chose "Logout" to just browse
-                    </Text>
+                    <View style={style.instructionWrapper}>
+                      <Text style={style.instructionText}>
+                          For your privacy, the app was locked.
+                          To unlock, please enter the last {unlockCharNo} characters of your password. Or chose "Logout" to just browse
+                      </Text>
+                    </View>
                     { this.props.noInternet &&
                       <View>
                           <Text style={merge(style.errorText, { paddingTop: 10 })}>
