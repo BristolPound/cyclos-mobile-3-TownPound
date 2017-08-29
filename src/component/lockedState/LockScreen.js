@@ -11,7 +11,6 @@ import UnlockAppAlert, {maxAttempts} from './UnlockAppAlert'
 import { updatePage, resetPayment, resetForm } from '../../store/reducer/sendMoney'
 import StoredPasswordLockScreen from './StoredPasswordLockScreen'
 import style from './StoredPasswordLockStyle'
-import decrypt from '../../util/decrypt'
 import moment from 'moment'
 import Colors from '@Colors/colors'
 import { Overlay } from '../common/Overlay'
@@ -53,7 +52,7 @@ class LockScreen extends React.Component {
       if ((diff >= 5) && (this.props.passToUnlock !== '' || this.props.loginStatus === LOGIN_STATUSES.LOGGED_IN)) {
         this.setState({askToUnlock: true, appState: nextAppState})
       } else {
-        // this.props.setCoverApp(false)
+        this.props.setCoverApp(false)
         this.setState({appState: nextAppState})
       }
     } else {

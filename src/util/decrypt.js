@@ -1,4 +1,5 @@
-import CryptoJS from 'crypto-js'
+// import CryptoJS from 'crypto-js'
+import CryptoJS from 'cryptojs'
 import util from 'util'
 
 const decrypt = (toDecrypt, key) => {
