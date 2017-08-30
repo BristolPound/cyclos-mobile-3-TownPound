@@ -7,6 +7,8 @@ import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 // import { passwordDisclaimer } from '@Config/config'
 
+let PIN_LENGTH = 4
+
 
 class PrivacyPolicy extends React.Component {
   constructor() {
@@ -37,7 +39,7 @@ class PrivacyPolicy extends React.Component {
 
   inputValid() {
     var len = this.state.enteredPIN.length
-    if (len >= 4 && len <= 6) {
+    if (len == PIN_LENGTH) {
       return true
     }
 
@@ -45,8 +47,8 @@ class PrivacyPolicy extends React.Component {
   }
 
 
+
   render() {
-    let maxPinLength = 6
 
     return (
       <View style={style.wrapper}>
@@ -72,7 +74,7 @@ class PrivacyPolicy extends React.Component {
               placeholder="Enter an Unlock Pin"
               keyboardType='numeric'
               secureTextEntry={true}
-              maxLength={maxPinLength}
+              maxLength={PIN_LENGTH}
             />
           </View>
           <View style={style.buttonRow}>

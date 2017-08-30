@@ -48,7 +48,6 @@ class LockScreen extends React.Component {
       )
     } else if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       var diff = moment().diff(this.state.lockTimeStamp, 'seconds')
-      console.log("the difference is " + diff)
       if ((diff >= 5) && (this.props.passToUnlock !== '' || this.props.loginStatus === LOGIN_STATUSES.LOGGED_IN)) {
         this.setState({askToUnlock: true, appState: nextAppState})
       } else {
@@ -97,7 +96,6 @@ class LockScreen extends React.Component {
   }
 
   failedAttempt() {
-    console.log("failed attempt")
     var failedAttempts = this.state.failedAttempts + 1
     this.setHeader(false)
     if (failedAttempts < maxAttempts) {
@@ -119,15 +117,19 @@ class LockScreen extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    // If a failed unlock attmept was noticed, deduct an attempt
     if (nextProps.statusMessage !== this.props.statusMessage) {
-      console.log("status message of " + nextProps.statusMessage)
-
       nextProps.statusMessage == 'Incorrect Unlock'
         && this.failedAttempt()
-
       nextProps.statusMessage == 'Temporarily blocked'
         && this.logout()
     }
+
+    if (nextProps.storePassword !== this.props.storePassword
+      && !nextProps.storePassword) {
+        this.resetState()
+      }
+
   }
 
   storedPasswordUnlock(code) {
@@ -143,11 +145,9 @@ class LockScreen extends React.Component {
     }
 
     this.setHeader(true, "Unlocking...")
-    console.log("unlocking...")
 
     return (this.props.storedPasswordUnlock(code)
       .then((success) => {
-        console.log("success is " + success)
         this.setHeader(false)
         success && this.unlock()
 
@@ -170,7 +170,7 @@ class LockScreen extends React.Component {
             && <AppCover unlockOpened={this.props.passToUnlock!=='' && this.state.askToUnlock}/>
         }
         <Overlay overlayVisible={this.state.headerMessage ? true : false}
-                 onPress={() => console.log("hello")}
+                 onPress={() => {}}
                  underlayColor={Colors.transparent}/>
         {this.props.storePassword
           ?   <StoredPasswordLockScreen

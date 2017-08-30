@@ -1,19 +1,16 @@
 import merge from '../../util/merge'
 // import decrypt from '../../util/decrypt'
 import { encrypt, decrypt } from '../../util/encryptionUtil'
-// import { encrypt, decrypt } from 'react-native-simple-encryption'
 import module_exists from '../../util/module_exists'
-import { authenticate } from '../../api/api'
+import { authenticate, deleteSessionToken, checkPin } from '../../api/api'
 import ApiError, { UNAUTHORIZED_ACCESS } from '../../api/apiError'
 import { loadAccountDetails, resetAccount } from './account'
 import { loadTransactions, resetTransactions } from './transaction'
-import { deleteSessionToken } from '../../api/api'
 import { updateStatus, ERROR_SEVERITY, unknownError } from './statusMessage'
 import { loadPaymentData } from './business'
 import md5 from 'md5'
 // import CryptoJS from 'crypto-js'
 // import CryptoJS from 'cryptojs'
-
 // import Crypter from 'cryptr'
 import uuidv4 from 'uuid/v4'
 
@@ -72,17 +69,12 @@ export const storedPasswordUnlock = (code) =>
 
     username = getState().login.loggedInUsername
     encryptedPassword = getState().login.encryptedPassword
-    console.log("encrypted password is " + encryptedPassword)
     encryptionKey = getState().login.encryptionKey
-    console.log("encryptionKey is " + encryptionKey)
     dispatch(setEncryptionKey(code))
     encryptionKey = getState().login.encryptionKey
-    console.log("encryptionKey is " + encryptionKey)
-    // var cryptr = new Crypter(encryptionKey)
-    // password = cryptr.decrypt(encryptedPassword)
-    // password = decrypt(encryptedPassword, encryptionKey)
+    console.log("decrypting with " + encryptionKey)
     password = decrypt(encryptedPassword, encryptionKey)
-    console.log("password is " + password)
+    console.log("decrypted password is " + password + " after being " + encryptedPassword)
 
     return authenticate(username, password, dispatch)
       .then(() => {
@@ -93,9 +85,7 @@ export const storedPasswordUnlock = (code) =>
         if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
           err.response.json()
             .then(json => {
-              console.log("processed json and code is " + json.code)
               if (json && ['login', 'missingAuthorization'].includes(json.code)) {
-                console.log("setting auth error to true")
                 dispatch(updateStatus('Incorrect Unlock', ERROR_SEVERITY.SEVERE))
               }
               else if (json && ['temporarilyBlocked', 'remoteAddressBlocked'].includes(json.code)){
@@ -106,7 +96,6 @@ export const storedPasswordUnlock = (code) =>
               }
             })
             .catch(() => {
-              console.log("error in processing json")
               dispatch(unknownError(err))
             })
         }
@@ -120,15 +109,18 @@ export const setStorePassword = (storePassword = true) => ({
   storePassword
 })
 
+export const flipStorePassword = () => ({
+  type: 'login/FLIP_STORE_PASSWORD'
+})
+
 export const setEncryptionKey = (userCode) => ({
   type: 'login/SET_ENCRYPTION_KEY',
   userCode
 })
 
-const storeEncryptedPassword = (password, encryptionKey) => ({
+const storeEncryptedPassword = (password) => ({
   type: 'login/STORE_ENCRYPTED_PASSWORD',
-  password,
-  encryptionKey
+  password
 })
 
 const openPrivacyPolicy = () => ({
@@ -140,12 +132,34 @@ export const openPasswordDisclaimer = (open = true) => ({
   open
 })
 
-export const acceptPasswordDisclaimer = (enteredPIN) =>
+export const acceptPasswordDisclaimer = (accepted, enteredPIN, username, password) =>
   (dispatch, getState) => {
-    dispatch(setStorePassword())
-    dispatch(setEncryptionKey(enteredPIN))
+    // dispatch(setStorePassword())
+    if (accepted) {
+      // dispatch(storeEncryptedPassword(password))
+      checkPin(enteredPIN)
+        .then((success) => {
+          if (success) {
+            console.log("CORRECT CYCLOS PIN RETURNED")
+            dispatch(setEncryptionKey(enteredPIN))
+            dispatch(login(username, password))
+          }
+          else {
+            // TODO: implement a failure method if wrong cyclos pin entered
+          }
+        })
+        .catch((err) => {
+          // TODO: implement a failure method if wrong cyclos pin entered
+        })
+    }
+    else {
+      dispatch(setStorePassword(false))
+      dispatch(login(username, password))
+    }
+
     dispatch(openPasswordDisclaimer(false))
   }
+
 
 const privacyPolicyAccepted = (accepted) => ({
   type: 'login/PRIVACY_POLICY_ACCEPTED',
@@ -161,7 +175,7 @@ export const acceptPrivacyPolicy = (accepted, username, password) =>
   (dispatch, getState) => {
     if (accepted) {
       dispatch(privacyPolicyAccepted(true))
-      dispatch(login(username, password))
+      dispatch(simplifyLogin(username, password))
     }
     else {
       dispatch(privacyPolicyAccepted(false))
@@ -175,7 +189,6 @@ export const unlockAndLogin = () =>
     username = getState().login.loggedInUsername
     encryptedPassword = getState().login.encryptedPassword
     encryptionKey = getState().login.encryptionKey
-    // password = decrypt(encryptedPassword, encryptionKey)
     password = decrypt(encryptedPassword, encryptionKey)
 
     dispatch(login(username, password))
@@ -187,10 +200,22 @@ export const beginLogin = (username, password) =>
     let acceptedUsernames = getState().login.acceptedUsernames
     const hashedUsername = md5(username)
     if (acceptedUsernames && acceptedUsernames[hashedUsername]) {
-      dispatch(login(username, password))
+      dispatch(simplifyLogin(username, password))
     }
     else {
       dispatch(openPrivacyPolicy())
+    }
+  }
+
+const simplifyLogin = (username, password) =>
+  (dispatch, getState) => {
+    // If store password was checked, open the disclaimer before loggin in
+    if (getState().login.storePassword && getState().login.encryptedPassword === '') {
+      dispatch(openPasswordDisclaimer(true))
+    }
+    // Otherwise just log in
+    else {
+      dispatch(login(username, password))
     }
   }
 
@@ -207,15 +232,13 @@ export const login = (username, password) =>
         getState().login.privacyPolicyAccepted && dispatch(storeAcceptedUsername(username))
         // Store the password if they've accepted the agreement and it's not stored already
         if (getState().login.storePassword && getState().login.encryptedPassword === '') {
-          dispatch(storeEncryptedPassword(password, getState().login.encryptionKey))
+          dispatch(storeEncryptedPassword(password))
         }
       })
       .catch (err => {
         if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
-          console.log("the error is " + err)
           err.response.json()
             .then(json => {
-              console.log("able to process response and it is " + json.code)
               if (json && json.passwordStatus === 'temporarilyBlocked') {
                 dispatch(updateStatus('Account temporarily blocked', ERROR_SEVERITY.SEVERE))
               } else if (json && json.code === 'login') {
@@ -227,7 +250,6 @@ export const login = (username, password) =>
               }
             })
             .catch(() => {
-              console.log("not able to process response")
               dispatch(unknownError(err))
             })
         }
@@ -258,6 +280,17 @@ const reducer = (state = initialState, action) => {
       break
     case 'login/SET_STORE_PASSWORD':
       var newStorePassword = action.storePassword
+
+      var newEncryptedPassword = newStorePassword
+        ? state.encryptedPassword
+        : ''
+      state = merge(state, {
+        storePassword: newStorePassword,
+        encryptedPassword: newEncryptedPassword
+      })
+      break
+    case 'login/FLIP_STORE_PASSWORD':
+      var newStorePassword = !state.storePassword
       var newEncryptedPassword = newStorePassword
         ? state.encryptedPassword
         : ''
@@ -298,32 +331,20 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'login/STORE_ENCRYPTED_PASSWORD':
-      // console.log("storing password")
-      // var newEncryptedPassword = encrypt(action.password, action.encryptionKey)
-      var newEncryptedPassword = encrypt(action.password, action.encryptionKey)
-      // var cryptr = new Cryptr(action.encryptionKey)
-      // var newEncryptedPassword = cryptr.encrypt(action.password)
-      // var newEncryptedPassword = CryptoJS.DES.encrypt(action.password, action.encryptionKey)
+      var newEncryptedPassword = encrypt(action.password, state.encryptionKey)
+      console.log("encrypted password stored is " + newEncryptedPassword)
       state = merge(state, {
         encryptedPassword: newEncryptedPassword
       })
       break
     case 'login/SET_ENCRYPTION_KEY':
-      // console.log(" setting encryption ")
       var userCode = action.userCode
-      // console.log("user code is " + userCode)
-      // console.log(module_exists('@Config/secfrets'))
-      // var x = require('@Config/secrets')
-      // console.log(x)
-      // var secretEncryptionPart = module_exists('@Config/secrets')
-      //   ? require('@Config/secrets').default.encryptionComponent
-      //   : 'test key'
-      // var secretEncryptionPart = 'test key'
-      // console.log(secretEncryptionPart)
-      // var encryptionKey = state.AUID + secretEncryptionPart + userCode
-      var encryptionKey = userCode
-      // Now hash this ?
-      // console.log(encryptionKey)
+      var secretEncryptionPart = module_exists('@Config/secrets')
+        ? require('@Config/secrets').default.encryptionComponent
+        : 'test key'
+      var encryptionKey = userCode + state.AUID + secretEncryptionPart
+
+      console.log("encryption key is " + encryptionKey)
       state = merge(state, {
         encryptionKey: encryptionKey
       })

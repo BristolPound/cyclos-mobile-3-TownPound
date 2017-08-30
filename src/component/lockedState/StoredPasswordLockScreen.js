@@ -127,6 +127,5 @@ class StoredPasswordLockScreen extends React.Component {
         )
     }
 }
-// <Overlay overlayVisible={this.state.headerMessage ? true : false}/>
 
 export default StoredPasswordLockScreen
