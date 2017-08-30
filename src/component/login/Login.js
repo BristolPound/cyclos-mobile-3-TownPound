@@ -145,7 +145,7 @@ class Login extends KeyboardComponent {
                       // login(username, password)
                     }
                     rejectCallback={() =>
-                      acceptPasswordDisclaimer(false)
+                      acceptPasswordDisclaimer(false, null, username, password)
                       // login(username, password)
                     }
                   />
