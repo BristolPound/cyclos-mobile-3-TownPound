@@ -6,7 +6,7 @@ import DefaultText from '../DefaultText'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import animateTo from '../../util/animateTo'
-import { beginLogin, unlockAndLogin, LOGIN_STATUSES, acceptPrivacyPolicy, setStorePassword, acceptPasswordDisclaimer, openPasswordDisclaimer } from '../../store/reducer/login'
+import { beginLogin, unlockAndLogin, login, LOGIN_STATUSES, acceptPrivacyPolicy, flipStorePassword, acceptPasswordDisclaimer, openPasswordDisclaimer } from '../../store/reducer/login'
 import KeyboardComponent from '../KeyboardComponent'
 import PrivacyPolicy from './PrivacyPolicy'
 import PasswordDisclaimer from './PasswordDisclaimer'
@@ -24,10 +24,6 @@ class Login extends KeyboardComponent {
   constructor(props) {
     super()
     this.state.username = props.loggedInUsername
-    // if (props.storePassword && props.encryptedPassword) {
-    //   console.log("encrypted password detected")
-    //   this.state.password = decrypt(props.encryptedPassword, 'test key')
-    // }
   }
 
 
@@ -65,13 +61,14 @@ class Login extends KeyboardComponent {
   //   this.props.setStorePassword()
   // }
 
-  checkedStorePassword() {
-    if (this.props.storePassword) {
-      this.props.setStorePassword(false)
-    }
-    else {
-      this.props.openPasswordDisclaimer()
-    }
+  flipStorePassword() {
+    // if (this.props.storePassword) {
+    //   this.props.setStorePassword(false)
+    // }
+    // else {
+    //   this.props.openPasswordDisclaimer()
+    // }
+    this.props.flipStorePassword()
   }
 
   render() {
@@ -81,6 +78,7 @@ class Login extends KeyboardComponent {
       acceptPasswordDisclaimer,
       openPasswordDisclaimer
     } = this.props
+    const { username, password } = this.state
     const loginView = (
       <Animated.View style={merge(styles.outerContainer, { bottom: this.state.keyboardHeight })}>
         <Animated.View style={merge(styles.loginContainer, { bottom: this.state.bottom })}>
@@ -119,7 +117,7 @@ class Login extends KeyboardComponent {
           <View style={styles.storePasswordContainer}>
             <Checkbox
               style={styles.checkbox}
-              onClick={() => this.checkedStorePassword()}
+              onClick={() => this.flipStorePassword()}
               isChecked={this.props.storePassword}
               leftText={"Store Password"}
               checkedImage={<Image source={Images.check_box} style={styles.checkboxImage}/>}
@@ -143,8 +141,13 @@ class Login extends KeyboardComponent {
               : this.props.passwordDisclaimerOpen
                 ? <PasswordDisclaimer
                     acceptCallback={(enteredPIN) =>
-                      acceptPasswordDisclaimer(enteredPIN)}
-                    rejectCallback={() => openPasswordDisclaimer(false)}
+                      acceptPasswordDisclaimer(true, enteredPIN, username, password)
+                      // login(username, password)
+                    }
+                    rejectCallback={() =>
+                      acceptPasswordDisclaimer(false)
+                      // login(username, password)
+                    }
                   />
                 : loginView
             : <View style={{ height: 0 }}/>
@@ -156,9 +159,10 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators({
     beginLogin,
     acceptPrivacyPolicy,
-    setStorePassword,
+    flipStorePassword,
     acceptPasswordDisclaimer,
     openPasswordDisclaimer,
+    login,
     unlockAndLogin
   }, dispatch)
 

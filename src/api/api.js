@@ -31,6 +31,10 @@ export const setBaseUrl = newUrl => {
   BASE_URL = newUrl
 }
 
+export const checkPin = (PIN) => {
+  return Promise.resolve(true)
+}
+
 const httpCommonHeaders = () => {
   const headers = new Headers()
   headers.append('Accept', 'application/json')
