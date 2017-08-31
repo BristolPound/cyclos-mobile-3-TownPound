@@ -339,9 +339,10 @@ const reducer = (state = initialState, action) => {
       break
     case 'login/SET_ENCRYPTION_KEY':
       var userCode = action.userCode
-      var secretEncryptionPart = module_exists('@Config/secrets')
-        ? require('@Config/secrets').default.encryptionComponent
-        : 'test key'
+      // var secretEncryptionPart = module_exists('@Config/secrets')
+      //   ? require('@Config/secrets').default.encryptionComponent
+      //   : 'test key'
+      var secretEncryptionPart = "1234"
       var encryptionKey = userCode + state.AUID + secretEncryptionPart
 
       console.log("encryption key is " + encryptionKey)
