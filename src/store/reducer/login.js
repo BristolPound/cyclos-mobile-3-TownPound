@@ -63,14 +63,14 @@ export const openLoginForm = (open = true) => ({
   open
 })
 
-export const storedPasswordUnlock = (code) =>
+export const reauthorise = (code) =>
   (dispatch, getState) => {
     var username, encryptedPassword, encryptionKey, password
 
     username = getState().login.loggedInUsername
     encryptedPassword = getState().login.encryptedPassword
     encryptionKey = getState().login.encryptionKey
-    dispatch(setEncryptionKey(code))
+    code && dispatch(setEncryptionKey(code))
     encryptionKey = getState().login.encryptionKey
     console.log("decrypting with " + encryptionKey)
     password = decrypt(encryptedPassword, encryptionKey)
@@ -113,7 +113,11 @@ export const flipStorePassword = () => ({
   type: 'login/FLIP_STORE_PASSWORD'
 })
 
-export const setEncryptionKey = (unlockCode) => ({
+export const clearEncryptionKey = () => ({
+  type: 'login/CLEAR_ENCRYPTION_KEY'
+})
+
+const setEncryptionKey = (unlockCode) => ({
   type: 'login/SET_ENCRYPTION_KEY',
   unlockCode
 })
@@ -132,6 +136,27 @@ export const openPasswordDisclaimer = (open = true) => ({
   open
 })
 
+export const authoriseCyclosPin = (PIN) =>
+
+  (dispatch, getState) => {
+    return checkPin(PIN)
+      .then((success) => {
+        if (success) {
+          console.log("CORRECT CYCLOS PIN ENTERED")
+          dispatch(setEncryptionKey(PIN))
+          return true
+        }
+        else {
+          console.log("Incorrect CYCLOS PIN")
+          return false
+        }
+      })
+      .catch((err) => {
+        return false
+      })
+  }
+
+
 export const acceptPasswordDisclaimer = (accepted, enteredPIN, username, password) =>
   (dispatch, getState) => {
     // dispatch(setStorePassword())
@@ -140,16 +165,19 @@ export const acceptPasswordDisclaimer = (accepted, enteredPIN, username, passwor
       checkPin(enteredPIN)
         .then((success) => {
           if (success) {
-            console.log("CORRECT CYCLOS PIN RETURNED")
+            console.log("CORRECT CYCLOS PIN ENTERED")
             dispatch(setEncryptionKey(enteredPIN))
             dispatch(login(username, password))
           }
           else {
             // TODO: implement a failure method if wrong cyclos pin entered
+            console.log("Incorrect CYCLOS PIN")
+            dispatch(setStorePassword(false))
           }
         })
         .catch((err) => {
           // TODO: implement a failure method if wrong cyclos pin entered
+          dispatch(setStorePassword(false))
         })
     }
     else {
@@ -335,6 +363,11 @@ const reducer = (state = initialState, action) => {
       console.log("encrypted password stored is " + newEncryptedPassword)
       state = merge(state, {
         encryptedPassword: newEncryptedPassword
+      })
+      break
+    case 'login/CLEAR_ENCRYPTION_KEY':
+      state = merge(state, {
+        encryptionKey: ''
       })
       break
     case 'login/SET_ENCRYPTION_KEY':
