@@ -1,20 +1,21 @@
 import React from 'React'
-import { View, TextInput, TouchableOpacity, Text } from 'react-native'
+import { View, TextInput, TouchableOpacity, Text, Animated } from 'react-native'
 import DefaultText from '../DefaultText'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import style from './LockStyle'
 import { unlockCharNo } from '../../store/reducer/login'
+import KeyboardComponent from '../KeyboardComponent'
 
 export const maxAttempts = 3;
 
+const PIN_LENGTH = 4
 
-class StoredPasswordLockScreen extends React.Component {
+
+class StoredPasswordLockScreen extends KeyboardComponent {
     constructor() {
-        super()
-        this.state = {
-            enteredPIN: ''
-        }
+      super()
+      this.state.enteredPIN = ''
     }
 
     updateEnteredPIN(enteredPIN) {
@@ -38,7 +39,7 @@ class StoredPasswordLockScreen extends React.Component {
 
     inputValid() {
       var len = this.state.enteredPIN.length
-      if (len >= 4 && len <= 6) {
+      if (len === PIN_LENGTH) {
         return true
       }
 
@@ -47,17 +48,18 @@ class StoredPasswordLockScreen extends React.Component {
 
     unlockAttempt() {
       this.props.unlock(this.state.enteredPIN)
-        .then((success) => {
-          if (!success) {
-            this.setState({enteredPIN: ''})
-          }
-        })
+
+    }
+
+    componentWillReceiveProps(nextProps) {
+      if (nextProps.failedAttempts > this.props.failedAttempts) {
+        this.setState({enteredPIN: ''})
+      }
     }
 
     render() {
-        let maxPinLength = 6
         return (
-            <View style={style.wrapper}>
+            <Animated.View style={merge(style.outerContainer, {bottom: this.state.keyboardHeight})}>
                 <View style={style.container}>
                     <View style={style.header}>
                       <Text style={style.headerText}>
@@ -69,35 +71,34 @@ class StoredPasswordLockScreen extends React.Component {
                           For your privacy, the app was locked.
                           To unlock, please enter the PIN you specified when agreeing to "Simplified Login". Or chose "Logout" to just browse.
                       </Text>
-                    </View>
-                    { this.props.noInternet &&
-                      <View>
-                          <Text style={merge(style.errorText, { paddingTop: 10 })}>
-                              No internet available right now, log out just to browse
-                          </Text>
-                      </View>
-                    }
-                    { this.props.error &&
+                      { this.props.noInternet &&
                         <View>
                             <Text style={merge(style.errorText, { paddingTop: 10 })}>
-                                The PIN you entered was incorrect. If you have forgotten the PIN, choose "Logout".
-                            </Text>
-                            <Text style={merge(style.errorText, { paddingBottom: 10 })}>
-                                You have {maxAttempts - this.props.failedAttempts} attempts left.
+                                No internet available right now, log out just to browse
                             </Text>
                         </View>
-                    }
+                      }
+                      { this.props.error &&
+                          <View>
+                              <Text style={merge(style.errorText, { paddingTop: 10 })}>
+                                  The PIN you entered was incorrect. If you have forgotten the PIN, choose "Logout".
+                              </Text>
+                              <Text style={merge(style.errorText, { paddingBottom: 10 })}>
+                                  You have {maxAttempts - this.props.failedAttempts} attempts left.
+                              </Text>
+                          </View>
+                      }
+                    </View>
                     <View style={style.form}/>
                     <View style={style.pinEntry}>
                       <TextInput
                           placeholder="Enter PIN"
                           autoFocus={true}
                           value={this.state.enteredPIN}
-                          maxLength={unlockCharNo}
                           accessibilityLabel={'Unlock PIN'}
                           style={style.textInput}
                           keyboardType='numeric'
-                          maxLength={maxPinLength}
+                          maxLength={PIN_LENGTH}
                           placeholderTextColor={Colors.gray4}
                           secureTextEntry={true}
                           underlineColorAndroid={Colors.transparent}
@@ -123,7 +124,7 @@ class StoredPasswordLockScreen extends React.Component {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </View>
+            </Animated.View>
         )
     }
 }

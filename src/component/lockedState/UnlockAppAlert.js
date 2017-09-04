@@ -1,21 +1,20 @@
 import React from 'React'
-import { View, TextInput, TouchableOpacity, Text } from 'react-native'
+import { View, TextInput, TouchableOpacity, Text, Animated } from 'react-native'
 import DefaultText from '../DefaultText'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import style from './LockStyle'
 import { unlockCharNo } from '../../store/reducer/login'
+import KeyboardComponent from '../KeyboardComponent'
 
 export const maxAttempts = 3;
 
 const passwordValid = (password) => password && password.indexOf(' ') === -1 && password.length === unlockCharNo
 
-class UnlockAppAlert extends React.Component {
+class UnlockAppAlert extends KeyboardComponent {
     constructor() {
         super()
-        this.state = {
-            pass: ''
-        }
+        this.state.pass = ''
     }
 
     _onChangeText (value) {
@@ -29,7 +28,7 @@ class UnlockAppAlert extends React.Component {
 
     render() {
         return (
-            <View style={style.wrapper}>
+            <Animated.View style={merge(style.outerContainer, {bottom: this.state.keyboardHeight})}>
                 <View style={style.container}>
                     <View style={style.header}>
                       <Text style={style.headerText}>
@@ -84,7 +83,7 @@ class UnlockAppAlert extends React.Component {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </View>
+            </Animated.View>
         )
     }
 }

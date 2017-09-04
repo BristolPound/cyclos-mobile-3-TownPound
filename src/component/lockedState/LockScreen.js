@@ -151,7 +151,7 @@ class LockScreen extends React.Component {
 
     this.setHeader(true, "Unlocking...")
 
-    return (this.props.storedPasswordUnlock(code)
+    this.props.storedPasswordUnlock(code)
       .then((success) => {
         this.setHeader(false)
         success && this.unlock()
@@ -161,7 +161,6 @@ class LockScreen extends React.Component {
       .catch(() => {
         return false
       })
-    )
   }
 
 
