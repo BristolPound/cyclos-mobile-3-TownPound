@@ -128,7 +128,12 @@ class LockScreen extends React.Component {
     if (nextProps.storePassword !== this.props.storePassword
       && !nextProps.storePassword) {
         this.resetState()
-      }
+    }
+
+    if (nextProps.loginStatus !== this.props.loginStatus
+      && nextProps.loginStatus == LOGIN_STATUSES.LOGGED_IN) {
+        this.resetState()
+    }
 
   }
 
