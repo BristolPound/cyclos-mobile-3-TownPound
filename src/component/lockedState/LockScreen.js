@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { authenticate } from '../../api/api'
 import md5 from 'md5'
-import { logout, storedPasswordUnlock, LOGIN_STATUSES } from '../../store/reducer/login'
+import { logout, reauthorise, LOGIN_STATUSES, clearEncryptionKey } from '../../store/reducer/login'
 import AppCover from './AppCover'
 import { closeConfirmation, setCoverApp, navigateToTab, hideModal, setOverlayOpen } from '../../store/reducer/navigation'
 import UnlockAppAlert, {maxAttempts} from './UnlockAppAlert'
@@ -26,7 +26,8 @@ class LockScreen extends React.Component {
       failedAttempts: 0,
       noInternet: false,
       lockTimeStamp: null,
-      headerMessage: ''
+      headerMessage: '',
+      reauthOnConnection: false
     }
   }
 
@@ -49,7 +50,8 @@ class LockScreen extends React.Component {
     } else if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       var diff = moment().diff(this.state.lockTimeStamp, 'seconds')
       if ((diff >= 5) && (this.props.passToUnlock !== '' || this.props.loginStatus === LOGIN_STATUSES.LOGGED_IN)) {
-        this.setState({askToUnlock: true, appState: nextAppState})
+        this.setState({askToUnlock: true, appState: nextAppState, reauthOnConnection: false})
+        this.props.clearEncryptionKey()
       } else {
         this.props.setCoverApp(false)
         this.setState({appState: nextAppState})
@@ -70,7 +72,13 @@ class LockScreen extends React.Component {
   }
 
   resetState(){
-    this.setState({askToUnlock: false, unlockError: false, failedAttempts: 0, headerMessage: ''})
+    this.setState({
+      askToUnlock: false,
+      unlockError: false,
+      failedAttempts: 0,
+      headerMessage: '',
+      reauthOnConnection: false
+    })
   }
 
   logout () {
@@ -92,7 +100,6 @@ class LockScreen extends React.Component {
     this.props.setCoverApp(false)
     this.resetState()
 
-    this.props.postUnlock && this.props.postUnlock()
   }
 
   failedAttempt() {
@@ -117,7 +124,7 @@ class LockScreen extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // If a failed unlock attmept was noticed, deduct an attempt
+    // Listen for failed attmepts and deduct an attempt if needed
     if (nextProps.statusMessage !== this.props.statusMessage) {
       nextProps.statusMessage == 'Incorrect Unlock'
         && this.failedAttempt()
@@ -135,32 +142,105 @@ class LockScreen extends React.Component {
         this.resetState()
     }
 
+    if (nextProps.connection && !this.props.connection
+      && this.state.reauthOnConnection) {
+        this.reauthorise()
+      }
+
+  }
+
+  checkPin(code) {
+    var hashedPIN = md5(code)
+    if (hashedPIN === this.props.unlockCode) {
+      return true
+    }
+
+    return false
+  }
+
+  reauthorise(code = null) {
+    this.props.reauthorise(code)
+      .then((success) => {
+        console.log("reauthorised")
+      })
+      .catch(() => {
+        this.logout()
+      })
+  }
+
+  setAuthTimer(code) {
+    // If internet returns after disconnection, reauthorise
+    this.setState({reauthOnConnection: true})
+
+    // Set timer to reauthorise if there's internet connection
+    if (this.props.connection) {
+      setTimeout(() => this.reauthorise(code), 200)
+    }
+  }
+
+  loginReplacementMethod(code) {
+    this.props.authoriseCyclosPin(code)
+      .then((success) => {
+        if (success) {
+          this.unlock()
+          this.props.postUnlock() // login after authorising the PIN
+        }
+        else {
+          this.failedAttempt()
+        }
+      })
+      .catch((err) => {
+        return false
+      })
+
   }
 
   storedPasswordUnlock(code) {
     // If no internet then set state noInternet to true and return
     // else set it to false and carry on
-    if (!this.props.connection) {
-      this.setState({ noInternet: true })
-      this.setHeader(false)
-      return
-    }
-    else {
-      this.setState({noInternet: false})
-    }
 
     this.setHeader(true, "Unlocking...")
 
-    this.props.storedPasswordUnlock(code)
-      .then((success) => {
-        this.setHeader(false)
-        success && this.unlock()
+    // If being used as a login replacement, perform full log in using
+    // different auth method
+    // This will be changed to check the pin against cyclos
+    if (this.props.loginReplacement) {
+      this.loginReplacementMethod(code)
+      return
+    }
 
-        return success
-      })
-      .catch(() => {
-        return false
-      })
+    if (this.checkPin(code)) {
+      this.unlock()
+      this.setAuthTimer(code)
+    }
+    else {
+      this.failedAttempt()
+    }
+
+    this.setHeader(false)
+
+
+    // if (!this.props.connection) {
+    //   this.setState({ noInternet: true })
+    //   this.setHeader(false)
+    //   return
+    // }
+    // else {
+    //   this.setState({noInternet: false})
+    // }
+    //
+    // this.setHeader(true, "Unlocking...")
+    //
+    // this.props.reauthorise(code)
+    //   .then((success) => {
+    //     this.setHeader(false)
+    //     success && this.unlock()
+    //
+    //     return success
+    //   })
+    //   .catch(() => {
+    //     return false
+    //   })
   }
 
 
@@ -178,7 +258,7 @@ class LockScreen extends React.Component {
                  underlayColor={Colors.transparent}/>
         {this.props.storePassword
           ?   <StoredPasswordLockScreen
-                unlock={this.storedPasswordUnlock.bind(this)}
+                storedPasswordUnlock={this.storedPasswordUnlock.bind(this)}
                 error={this.state.unlockError}
                 failedAttempts={this.state.failedAttempts}
                 logout={() => this.logoutPress()}
@@ -209,7 +289,8 @@ const mapDispatchToProps = (dispatch) =>
     setOverlayOpen,
     resetPayment,
     resetForm,
-    storedPasswordUnlock
+    reauthorise,
+    clearEncryptionKey
   }, dispatch)
 
 
@@ -220,6 +301,7 @@ const mapStateToProps = (state) => ({
   loginStatus: state.login.loginStatus,
   encryptedPassword: state.login.encryptedPassword,
   encryptionKey: state.login.encryptionKey,
+  unlockCode: state.login.unlockCode,
   connection: state.networkConnection.status,
   statusMessage: state.statusMessage.message
 })

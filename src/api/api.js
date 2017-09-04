@@ -32,7 +32,12 @@ export const setBaseUrl = newUrl => {
 }
 
 export const checkPin = (PIN) => {
-  return Promise.resolve(true)
+  if (PIN !== '0000') {
+    return Promise.resolve(true)
+  }
+  else {
+    return Promise.resolve(false)
+  }
 }
 
 const httpCommonHeaders = () => {

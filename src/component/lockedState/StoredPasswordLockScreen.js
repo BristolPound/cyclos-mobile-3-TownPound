@@ -47,8 +47,7 @@ class StoredPasswordLockScreen extends KeyboardComponent {
     }
 
     unlockAttempt() {
-      this.props.unlock(this.state.enteredPIN)
-
+      this.props.storedPasswordUnlock(this.state.enteredPIN)
     }
 
     componentWillReceiveProps(nextProps) {
