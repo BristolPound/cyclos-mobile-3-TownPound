@@ -113,9 +113,9 @@ export const flipStorePassword = () => ({
   type: 'login/FLIP_STORE_PASSWORD'
 })
 
-export const setEncryptionKey = (userCode) => ({
+export const setEncryptionKey = (unlockCode) => ({
   type: 'login/SET_ENCRYPTION_KEY',
-  userCode
+  unlockCode
 })
 
 const storeEncryptedPassword = (password) => ({
@@ -338,16 +338,17 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'login/SET_ENCRYPTION_KEY':
-      var userCode = action.userCode
+      var unlockCode = action.unlockCode
       // var secretEncryptionPart = module_exists('@Config/secrets')
       //   ? require('@Config/secrets').default.encryptionComponent
       //   : 'test key'
       var secretEncryptionPart = "1234"
-      var encryptionKey = userCode + state.AUID + secretEncryptionPart
+      var encryptionKey = unlockCode + state.AUID + secretEncryptionPart
 
       console.log("encryption key is " + encryptionKey)
       state = merge(state, {
-        encryptionKey: encryptionKey
+        encryptionKey: encryptionKey,
+        unlockCode: md5(action.unlockCode)
       })
       break
     case 'login/GENERATE_AUID':

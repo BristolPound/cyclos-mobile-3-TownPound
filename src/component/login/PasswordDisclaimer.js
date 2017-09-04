@@ -1,21 +1,20 @@
 import React from 'React'
-import { View, TouchableOpacity, Text, TextInput, ScrollView } from 'react-native'
+import { View, TouchableOpacity, Text, TextInput, ScrollView, Animated } from 'react-native'
 import { MultilineText } from '../DefaultText'
 import DefaultText from '@Colors/colors'
 import style from './PolicyStyle'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
+import KeyboardComponent from '../KeyboardComponent'
 // import { passwordDisclaimer } from '@Config/config'
 
 let PIN_LENGTH = 4
 
 
-class PrivacyPolicy extends React.Component {
+class PrivacyPolicy extends KeyboardComponent {
   constructor() {
     super()
-    this.state = {
-      enteredPIN: ''
-    }
+    this.state.enteredPIN = ''
   }
 
   updateEnteredPIN(enteredPIN) {
@@ -51,7 +50,7 @@ class PrivacyPolicy extends React.Component {
   render() {
 
     return (
-      <View style={style.wrapper}>
+      <Animated.View style={merge(style.outerContainer, {bottom: this.state.bottom})}>
         <View style={style.container}>
           <View style={style.header}>
             <Text style={style.headerText}>
@@ -97,7 +96,7 @@ class PrivacyPolicy extends React.Component {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </Animated.View>
     )
   }
 }

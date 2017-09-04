@@ -1,11 +1,11 @@
 import { StyleSheet, Dimensions } from 'react-native'
 import Colors from '@Colors/colors'
-import { border, absolutePosition } from '../../util/StyleUtils'
+import { border, horizontalAbsolutePosition } from '../../util/StyleUtils'
 import { screenWidth, screenHeight } from '../../util/ScreenSizes'
 
 const style = {
-  wrapper: {
-    ...absolutePosition(),
+  outerContainer: {
+    ...horizontalAbsolutePosition(0, 0),
     backgroundColor: 'transparent',
     flex: 1,
     alignItems: 'center',
@@ -38,9 +38,9 @@ const style = {
   },
   container: {
     backgroundColor: Colors.offWhite,
-    marginBottom: 100,
+    // marginBottom: 10,
     width: screenWidth * 0.9,
-    height: screenHeight * 0.5,
+    // height: screenHeight * 0.5,
     elevation: 5,
     shadowOffset:{width: 5, height: 5},
     shadowColor: Colors.offBlack,
@@ -61,7 +61,7 @@ const style = {
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: 7
+    marginBottom: 7,
   },
   buttonContainer: {
     height: 40,
@@ -76,6 +76,8 @@ const style = {
   pinEntry: {
     flex: 1,
     justifyContent: 'center',
+    marginTop: 10,
+    marginBottom: 10
   },
   buttonText: {
     fontSize: 18,

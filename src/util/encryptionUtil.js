@@ -1,4 +1,3 @@
-// import CryptoJS from '../bundledCryptoJS'
 import CryptoJS from 'crypto-js'
 import {
   encrypt as simpleEncrypt,
@@ -11,11 +10,12 @@ import {
 export function encrypt(text, key) {
   var encryptedText
 
-  if (__DEV__) {
+  if (!__DEV__) {
     encryptedText = simpleEncrypt(key, text)
   }
   else {
     encryptedText = CryptoJS.AES.encrypt(text, key)
+    encryptedText = encryptedText.toString()
   }
 
   return encryptedText
@@ -24,7 +24,7 @@ export function encrypt(text, key) {
 export function decrypt(text, key) {
   var decryptedText
 
-  if (__DEV__) {
+  if (!__DEV__) {
     console.log("decrypting in dev mode")
     decryptedText = simpleDecrypt(key, text)
   }
