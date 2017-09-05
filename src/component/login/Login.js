@@ -6,7 +6,10 @@ import DefaultText from '../DefaultText'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import animateTo from '../../util/animateTo'
-import { beginLogin, unlockAndLogin, login, LOGIN_STATUSES, acceptPrivacyPolicy, flipStorePassword, acceptPasswordDisclaimer, openPasswordDisclaimer } from '../../store/reducer/login'
+import { beginLogin, unlockAndLogin, login,
+    LOGIN_STATUSES, acceptPrivacyPolicy, flipStorePassword,
+    acceptPasswordDisclaimer, authenticateCyclosPIN
+} from '../../store/reducer/login'
 import KeyboardComponent from '../KeyboardComponent'
 import PrivacyPolicy from './PrivacyPolicy'
 import PasswordDisclaimer from './PasswordDisclaimer'
@@ -57,6 +60,28 @@ class Login extends KeyboardComponent {
     this.setState({ username: newUsername })
   }
 
+  acceptQuickLoginCallback(PIN) {
+    // Fall back if no connection
+    if (!this.props.connection) {
+      this.props.acceptPasswordDisclaimer(false)
+      return
+    }
+
+    const { username, password } = this.state
+
+    this.props.authenticateCyclosPIN(PIN)
+      .then((success) => {
+        if (success) {
+          this.props.acceptPasswordDisclaimer(true, PIN, username, password)
+        }
+        else {
+          // Fall back if cannot validate PIN
+          this.props.acceptPasswordDisclaimer(false)
+        }
+      })
+
+  }
+
   // setStorePassword() {
   //   this.props.setStorePassword()
   // }
@@ -76,7 +101,6 @@ class Login extends KeyboardComponent {
     const {
       acceptPrivacyPolicy,
       acceptPasswordDisclaimer,
-      openPasswordDisclaimer
     } = this.props
     const { username, password } = this.state
     const loginView = (
@@ -140,13 +164,11 @@ class Login extends KeyboardComponent {
                 />
               : this.props.passwordDisclaimerOpen
                 ? <PasswordDisclaimer
-                    acceptCallback={(enteredPIN) =>
-                      acceptPasswordDisclaimer(true, enteredPIN, username, password)
-                      // login(username, password)
+                    acceptCallback={(PIN) =>
+                      this.acceptQuickLoginCallback(PIN)
                     }
                     rejectCallback={() =>
                       acceptPasswordDisclaimer(false, null, username, password)
-                      // login(username, password)
                     }
                   />
                 : loginView
@@ -161,11 +183,16 @@ const mapDispatchToProps = (dispatch) =>
     acceptPrivacyPolicy,
     flipStorePassword,
     acceptPasswordDisclaimer,
-    openPasswordDisclaimer,
+    authenticateCyclosPIN,
     login,
     unlockAndLogin
   }, dispatch)
 
-const mapStateToProps = (state) => ({...state.login})
+const mapStateToProps = (state) => (
+  {
+    ...state.login,
+    connection: state.networkConnection.status
+  }
+)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)

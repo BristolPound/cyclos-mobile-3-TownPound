@@ -10,7 +10,7 @@ import {
 export function encrypt(text, key) {
   var encryptedText
 
-  if (!__DEV__) {
+  if (__DEV__) {
     encryptedText = simpleEncrypt(key, text)
   }
   else {
@@ -24,7 +24,7 @@ export function encrypt(text, key) {
 export function decrypt(text, key) {
   var decryptedText
 
-  if (!__DEV__) {
+  if (__DEV__) {
     console.log("decrypting in dev mode")
     decryptedText = simpleDecrypt(key, text)
   }

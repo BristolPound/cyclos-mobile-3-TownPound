@@ -63,6 +63,9 @@ export const openLoginForm = (open = true) => ({
   open
 })
 
+// Decrypts the password and reauthorises with new session token
+// if no new PIN is passed in, just uses the current encryptionKey (if need to
+// reauthorise whilst still in the app for whatever reason)
 export const reauthorise = (code) =>
   (dispatch, getState) => {
     var username, encryptedPassword, encryptionKey, password
@@ -136,7 +139,7 @@ export const openPasswordDisclaimer = (open = true) => ({
   open
 })
 
-export const authoriseCyclosPin = (PIN) =>
+export const authenticateCyclosPIN = (PIN) =>
 
   (dispatch, getState) => {
     return checkPin(PIN)
@@ -157,32 +160,35 @@ export const authoriseCyclosPin = (PIN) =>
   }
 
 
+
+
+
 export const acceptPasswordDisclaimer = (accepted, enteredPIN, username, password) =>
   (dispatch, getState) => {
     // dispatch(setStorePassword())
     if (accepted) {
       // dispatch(storeEncryptedPassword(password))
-      checkPin(enteredPIN)
-        .then((success) => {
-          if (success) {
-            console.log("CORRECT CYCLOS PIN ENTERED")
-            dispatch(setEncryptionKey(enteredPIN))
+      // checkPin(enteredPIN)
+      //   .then((success) => {
+      //     if (success) {
+      //       console.log("CORRECT CYCLOS PIN ENTERED")
+            // dispatch(setEncryptionKey(enteredPIN))
             dispatch(login(username, password))
-          }
-          else {
-            // TODO: implement a failure method if wrong cyclos pin entered
-            console.log("Incorrect CYCLOS PIN")
-            dispatch(setStorePassword(false))
-          }
-        })
-        .catch((err) => {
-          // TODO: implement a failure method if wrong cyclos pin entered
-          dispatch(setStorePassword(false))
-        })
+        //   }
+        //   else {
+        //     // TODO: implement a failure method if wrong cyclos pin entered
+        //     console.log("Incorrect CYCLOS PIN")
+        //     dispatch(setStorePassword(false))
+        //   }
+        // })
+        // .catch((err) => {
+        //   // TODO: implement a failure method if wrong cyclos pin entered
+        //   dispatch(setStorePassword(false))
+        // })
     }
     else {
       dispatch(setStorePassword(false))
-      dispatch(login(username, password))
+      // dispatch(login(username, password))
     }
 
     dispatch(openPasswordDisclaimer(false))
@@ -281,6 +287,7 @@ export const login = (username, password) =>
               dispatch(unknownError(err))
             })
         }
+        dispatch(setStorePassword(false))
       })
   }
 

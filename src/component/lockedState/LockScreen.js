@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { authenticate } from '../../api/api'
 import md5 from 'md5'
-import { logout, reauthorise, LOGIN_STATUSES, clearEncryptionKey } from '../../store/reducer/login'
+import { logout, reauthorise, authenticateCyclosPIN, LOGIN_STATUSES, clearEncryptionKey } from '../../store/reducer/login'
 import AppCover from './AppCover'
 import { closeConfirmation, setCoverApp, navigateToTab, hideModal, setOverlayOpen } from '../../store/reducer/navigation'
 import UnlockAppAlert, {maxAttempts} from './UnlockAppAlert'
@@ -174,12 +174,12 @@ class LockScreen extends React.Component {
 
     // Set timer to reauthorise if there's internet connection
     if (this.props.connection) {
-      setTimeout(() => this.reauthorise(code), 200)
+      setTimeout(() => this.reauthorise(code), 1200)
     }
   }
 
   loginReplacementMethod(code) {
-    this.props.authoriseCyclosPin(code)
+    this.props.authenticateCyclosPIN(code)
       .then((success) => {
         if (success) {
           this.unlock()
@@ -289,6 +289,7 @@ const mapDispatchToProps = (dispatch) =>
     setOverlayOpen,
     resetPayment,
     resetForm,
+    authenticateCyclosPIN,
     reauthorise,
     clearEncryptionKey
   }, dispatch)
