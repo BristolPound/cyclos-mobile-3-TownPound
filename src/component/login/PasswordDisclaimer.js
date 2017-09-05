@@ -11,7 +11,7 @@ import KeyboardComponent from '../KeyboardComponent'
 let PIN_LENGTH = 4
 
 
-class PrivacyPolicy extends KeyboardComponent {
+class PasswordDisclaimer extends KeyboardComponent {
   constructor() {
     super()
     this.state.enteredPIN = ''
@@ -55,6 +55,8 @@ class PrivacyPolicy extends KeyboardComponent {
   //
   //     })
   // }
+
+
 
 
 
@@ -115,4 +117,4 @@ class PrivacyPolicy extends KeyboardComponent {
   }
 }
 
-export default PrivacyPolicy
+export default PasswordDisclaimer
