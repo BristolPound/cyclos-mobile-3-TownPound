@@ -7,6 +7,7 @@ import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import { privacyPolicy } from '@Config/config'
 import HTMLView from 'react-native-htmlview'
+import { screenHeight } from '../../util/ScreenSizes'
 
 
 class PrivacyPolicy extends React.Component {
@@ -17,8 +18,8 @@ class PrivacyPolicy extends React.Component {
 
   render() {
     return (
-      <View style={style.wrapper}>
-        <View style={style.container}>
+      <View style={style.outerContainer}>
+        <View style={merge(style.container, {height: screenHeight * 0.4, marginTop: 100})}>
           <View style={style.header}>
             <Text style={style.headerText}>
               Data permissions and privacy policy

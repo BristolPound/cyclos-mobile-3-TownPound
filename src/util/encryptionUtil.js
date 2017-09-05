@@ -4,8 +4,6 @@ import {
   decrypt as simpleDecrypt
 } from 'react-native-simple-encryption'
 
-// TODO this needs to be sorted out to use proper encryption in prod mode
-// and the simple in dev mode
 
 export function encrypt(text, key) {
   var encryptedText

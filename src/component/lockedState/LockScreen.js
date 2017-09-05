@@ -4,7 +4,9 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { authenticate } from '../../api/api'
 import md5 from 'md5'
-import { logout, reauthorise, authenticateCyclosPIN, LOGIN_STATUSES, clearEncryptionKey } from '../../store/reducer/login'
+import { logout, reauthorise, authenticateCyclosPIN,
+  LOGIN_STATUSES, clearEncryptionKey, setEncryptionKey
+} from '../../store/reducer/login'
 import AppCover from './AppCover'
 import { closeConfirmation, setCoverApp, navigateToTab, hideModal, setOverlayOpen } from '../../store/reducer/navigation'
 import UnlockAppAlert, {maxAttempts} from './UnlockAppAlert'
@@ -14,6 +16,7 @@ import style from './StoredPasswordLockStyle'
 import moment from 'moment'
 import Colors from '@Colors/colors'
 import { Overlay } from '../common/Overlay'
+import NetworkConnection from '../NetworkConnection'
 
 
 class LockScreen extends React.Component {
@@ -125,12 +128,12 @@ class LockScreen extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     // Listen for failed attmepts and deduct an attempt if needed
-    if (nextProps.statusMessage !== this.props.statusMessage) {
-      nextProps.statusMessage == 'Incorrect Unlock'
-        && this.failedAttempt()
-      nextProps.statusMessage == 'Temporarily blocked'
-        && this.logout()
-    }
+    // if (nextProps.statusMessage !== this.props.statusMessage) {
+    //   nextProps.statusMessage == 'Incorrect Unlock'
+    //     && this.failedAttempt()
+    //   nextProps.statusMessage == 'Temporarily blocked'
+    //     && this.logout()
+    // }
 
     if (nextProps.storePassword !== this.props.storePassword
       && !nextProps.storePassword) {
@@ -170,12 +173,16 @@ class LockScreen extends React.Component {
 
   setAuthTimer(code) {
     // If internet returns after disconnection, reauthorise
-    this.setState({reauthOnConnection: true})
 
     // Set timer to reauthorise if there's internet connection
     if (this.props.connection) {
-      setTimeout(() => this.reauthorise(code), 1200)
+      setTimeout(() => this.reauthorise(code), 200)
     }
+    // Otherwise just set the encryption key and wait for internet to return
+    else {
+      this.props.setEncryptionKey(code)
+    }
+    this.setState({reauthOnConnection: true})
   }
 
   loginReplacementMethod(code) {
@@ -218,29 +225,6 @@ class LockScreen extends React.Component {
     }
 
     this.setHeader(false)
-
-
-    // if (!this.props.connection) {
-    //   this.setState({ noInternet: true })
-    //   this.setHeader(false)
-    //   return
-    // }
-    // else {
-    //   this.setState({noInternet: false})
-    // }
-    //
-    // this.setHeader(true, "Unlocking...")
-    //
-    // this.props.reauthorise(code)
-    //   .then((success) => {
-    //     this.setHeader(false)
-    //     success && this.unlock()
-    //
-    //     return success
-    //   })
-    //   .catch(() => {
-    //     return false
-    //   })
   }
 
 
@@ -273,6 +257,7 @@ class LockScreen extends React.Component {
                 noInternet={this.state.noInternet}
               />
         }
+        <NetworkConnection top={true}/>
       </View>
     )
   }
@@ -291,7 +276,8 @@ const mapDispatchToProps = (dispatch) =>
     resetForm,
     authenticateCyclosPIN,
     reauthorise,
-    clearEncryptionKey
+    clearEncryptionKey,
+    setEncryptionKey
   }, dispatch)
 
 
