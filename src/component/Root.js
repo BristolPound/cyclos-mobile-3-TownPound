@@ -24,67 +24,8 @@ class Root extends React.Component {
 
   constructor () {
     super()
-    // this.state = {
-    //   appState: AppState.currentState,
-    //   unlockError: false,
-    //   failedAttempts: 0
-    // }
   }
 
-  // componentDidMount () {
-  //   AppState.addEventListener('change', this._handleAppStateChange)
-  // }
-  //
-  // componentWillUnmount () {
-  //   AppState.removeEventListener('change', this._handleAppStateChange)
-  // }
-
-  // _handleAppStateChange = (nextAppState) => {
-  //   if (nextAppState.match(/inactive|background/) && this.state.appState === 'active') {
-  //     this.props.setCoverApp(true)
-  //     this.setState({ appState: nextAppState})
-  //   } else if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-  //     if (this.props.passToUnlock!=='') {
-  //       this.setState({askToUnlock: true, appState: nextAppState})
-  //     } else {
-  //       this.props.setCoverApp(false)
-  //       this.setState({appState: nextAppState})
-  //     }
-  //   } else {
-  //     this.setState({appState: nextAppState})
-  //   }
-  // }
-
-  // checkPass (pass) {
-  //   var encodedPass = md5(pass)
-  //   if (encodedPass === this.props.passToUnlock) {
-  //     this.props.setCoverApp(false)
-  //     this.setState({askToUnlock: false, unlockError: false, failedAttempts: 0})
-  //   } else {
-  //     var failedAttempts = this.state.failedAttempts + 1
-  //     if(failedAttempts < maxAttempts) {
-  //       this.setState({unlockError: true, failedAttempts})
-  //     } else {
-  //       this.props.resetPayment()
-  //       this.logout()
-  //     }
-  //   }
-  // }
-  //
-  // logout () {
-  //   this.props.logout()
-  //   this.props.closeConfirmation()
-  //   this.setState({askToUnlock: false, unlockError: false, failedAttempts: 0})
-  //   this.props.setCoverApp(false)
-  // }
-  //
-  // logoutPress () {
-  //   this.props.navigateToTab(0)
-  //   this.props.resetForm()
-  //   this.props.setOverlayOpen(false)
-  //   this.props.hideModal()
-  //   this.logout()
-  // }
 
   render () {
       // The app is rendered before the state has been loaded via redux-persist. This state property allows

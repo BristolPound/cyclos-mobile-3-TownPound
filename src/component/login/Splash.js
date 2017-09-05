@@ -10,6 +10,7 @@ import PLATFORM from '../../util/Platforms'
 import style from './SplashStyle'
 import Images from '@Assets/images'
 import Config from '@Config/config'
+import NetworkConnection from '../NetworkConnection'
 
 const background = Images.background
 const screenWidth = Dimensions.get('window').width
@@ -92,6 +93,7 @@ class Splash  extends React.Component {
             </View>
           : undefined
         }
+        <NetworkConnection top={true}/>
       </View>
     )
   }

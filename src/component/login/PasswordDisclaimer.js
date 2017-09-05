@@ -6,7 +6,6 @@ import style from './PolicyStyle'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import KeyboardComponent from '../KeyboardComponent'
-// import { passwordDisclaimer } from '@Config/config'
 
 let PIN_LENGTH = 4
 
@@ -38,27 +37,12 @@ class PasswordDisclaimer extends KeyboardComponent {
 
   inputValid() {
     var len = this.state.enteredPIN.length
-    if (len == PIN_LENGTH) {
+    if (len == PIN_LENGTH && this.props.connection) {
       return true
     }
 
     return false
   }
-
-  // Add a method to check if pin was correct cyclos pin
-  // if so then call full acceptPasswordDisclaimer, if not
-  // then fall back to initial login page
-
-  // acceptPIN(PIN) {
-  //   this.props.acceptCallback()
-  //     .then((success) => {
-  //
-  //     })
-  // }
-
-
-
-
 
   render() {
 
@@ -107,7 +91,7 @@ class PasswordDisclaimer extends KeyboardComponent {
               onPress={this.props.rejectCallback}
             >
               <Text style={merge(style.buttonText, {color: Colors.primaryBlue})}>
-                Reject
+                Cancel
               </Text>
             </TouchableOpacity>
           </View>

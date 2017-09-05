@@ -1,5 +1,4 @@
 import merge from '../../util/merge'
-// import decrypt from '../../util/decrypt'
 import { encrypt, decrypt } from '../../util/encryptionUtil'
 import module_exists from '../../util/module_exists'
 import { authenticate, deleteSessionToken, checkPin } from '../../api/api'
@@ -9,9 +8,6 @@ import { loadTransactions, resetTransactions } from './transaction'
 import { updateStatus, ERROR_SEVERITY, unknownError } from './statusMessage'
 import { loadPaymentData } from './business'
 import md5 from 'md5'
-// import CryptoJS from 'crypto-js'
-// import CryptoJS from 'cryptojs'
-// import Crypter from 'cryptr'
 import uuidv4 from 'uuid/v4'
 
 export const LOGIN_STATUSES = {
@@ -26,7 +22,7 @@ const initialState = {
   loginStatus: LOGIN_STATUSES.LOGGED_OUT,
   loginFormOpen: false,
   privacyPolicyOpen: false,
-  privacyPolicyAccepted: false,
+  // privacyPolicyAccepted: false,
   askToUnlock: false,
   acceptedUsernames: {},
   storePassword: false,
@@ -66,13 +62,13 @@ export const openLoginForm = (open = true) => ({
 // Decrypts the password and reauthorises with new session token
 // if no new PIN is passed in, just uses the current encryptionKey (if need to
 // reauthorise whilst still in the app for whatever reason)
-export const reauthorise = (code) =>
+export const reauthorise = (code = null) =>
   (dispatch, getState) => {
     var username, encryptedPassword, encryptionKey, password
 
     username = getState().login.loggedInUsername
     encryptedPassword = getState().login.encryptedPassword
-    encryptionKey = getState().login.encryptionKey
+
     code && dispatch(setEncryptionKey(code))
     encryptionKey = getState().login.encryptionKey
     console.log("decrypting with " + encryptionKey)
@@ -120,7 +116,7 @@ export const clearEncryptionKey = () => ({
   type: 'login/CLEAR_ENCRYPTION_KEY'
 })
 
-const setEncryptionKey = (unlockCode) => ({
+export const setEncryptionKey = (unlockCode) => ({
   type: 'login/SET_ENCRYPTION_KEY',
   unlockCode
 })
@@ -130,8 +126,9 @@ const storeEncryptedPassword = (password) => ({
   password
 })
 
-const openPrivacyPolicy = () => ({
-  type: 'login/OPEN_PRIVACY_POLICY'
+const openPrivacyPolicy = (open = true) => ({
+  type: 'login/OPEN_PRIVACY_POLICY',
+  open
 })
 
 export const openPasswordDisclaimer = (open = true) => ({
@@ -159,39 +156,18 @@ export const authenticateCyclosPIN = (PIN) =>
       })
   }
 
-
-
-
-
 export const acceptPasswordDisclaimer = (accepted, enteredPIN, username, password) =>
   (dispatch, getState) => {
-    // dispatch(setStorePassword())
     if (accepted) {
-      // dispatch(storeEncryptedPassword(password))
-      // checkPin(enteredPIN)
-      //   .then((success) => {
-      //     if (success) {
-      //       console.log("CORRECT CYCLOS PIN ENTERED")
-            // dispatch(setEncryptionKey(enteredPIN))
-            dispatch(login(username, password))
-        //   }
-        //   else {
-        //     // TODO: implement a failure method if wrong cyclos pin entered
-        //     console.log("Incorrect CYCLOS PIN")
-        //     dispatch(setStorePassword(false))
-        //   }
-        // })
-        // .catch((err) => {
-        //   // TODO: implement a failure method if wrong cyclos pin entered
-        //   dispatch(setStorePassword(false))
-        // })
-    }
-    else {
-      dispatch(setStorePassword(false))
-      // dispatch(login(username, password))
+      dispatch(login(username, password))
     }
 
     dispatch(openPasswordDisclaimer(false))
+
+    // If no connection, close login screen fully
+    if (!getState().networkConnection.status) {
+      dispatch(openLoginForm(false))
+    }
   }
 
 
@@ -208,12 +184,11 @@ const storeAcceptedUsername = (username) => ({
 export const acceptPrivacyPolicy = (accepted, username, password) =>
   (dispatch, getState) => {
     if (accepted) {
-      dispatch(privacyPolicyAccepted(true))
+      dispatch(storeAcceptedUsername(username))
       dispatch(simplifyLogin(username, password))
     }
-    else {
-      dispatch(privacyPolicyAccepted(false))
-    }
+
+    dispatch(openPrivacyPolicy(false))
   }
 
 export const unlockAndLogin = () =>
@@ -233,6 +208,7 @@ export const beginLogin = (username, password) =>
   (dispatch, getState) => {
     let acceptedUsernames = getState().login.acceptedUsernames
     const hashedUsername = md5(username)
+    // If they've previously accepted the policy, continue on
     if (acceptedUsernames && acceptedUsernames[hashedUsername]) {
       dispatch(simplifyLogin(username, password))
     }
@@ -263,7 +239,7 @@ export const login = (username, password) =>
         dispatch(loadAccountDetails())
         dispatch(loggedIn(username, md5(password.substr(password.length - unlockCharNo))))
         dispatch(loadPaymentData())
-        getState().login.privacyPolicyAccepted && dispatch(storeAcceptedUsername(username))
+        // getState().login.privacyPolicyAccepted && dispatch(storeAcceptedUsername(username))
         // Store the password if they've accepted the agreement and it's not stored already
         if (getState().login.storePassword && getState().login.encryptedPassword === '') {
           dispatch(storeEncryptedPassword(password))
@@ -276,7 +252,7 @@ export const login = (username, password) =>
               if (json && json.passwordStatus === 'temporarilyBlocked') {
                 dispatch(updateStatus('Account temporarily blocked', ERROR_SEVERITY.SEVERE))
               } else if (json && json.code === 'login') {
-                dispatch(updateStatus('Your details are incorrect'))
+                dispatch(updateStatus('Username and Password do not match'))
               } else if (json && json.code === 'remoteAddressBlocked') {
                 dispatch(updateStatus('Remote address temporarily blocked', ERROR_SEVERITY.SEVERE))
               } else {
@@ -295,7 +271,7 @@ export const logout = () => dispatch => {
   dispatch(loggedOut())
   dispatch(resetTransactions())
   dispatch(resetAccount())
-  dispatch(privacyPolicyAccepted(false))
+  // dispatch(privacyPolicyAccepted(false))
 }
 
 const reducer = (state = initialState, action) => {
@@ -356,15 +332,15 @@ const reducer = (state = initialState, action) => {
       break
     case 'login/OPEN_PRIVACY_POLICY':
       state = merge(state, {
-        privacyPolicyOpen: true
+        privacyPolicyOpen: action.open
       })
       break
-    case 'login/PRIVACY_POLICY_ACCEPTED':
-      state = merge(state, {
-        privacyPolicyOpen: false,
-        privacyPolicyAccepted: action.accepted
-      })
-      break
+    // case 'login/PRIVACY_POLICY_ACCEPTED':
+    //   state = merge(state, {
+    //     privacyPolicyOpen: false,
+    //     privacyPolicyAccepted: action.accepted
+    //   })
+    //   break
     case 'login/STORE_ENCRYPTED_PASSWORD':
       var newEncryptedPassword = encrypt(action.password, state.encryptionKey)
       console.log("encrypted password stored is " + newEncryptedPassword)
@@ -403,7 +379,7 @@ const reducer = (state = initialState, action) => {
       const newAcceptedUsernames = merge(state.acceptedUsernames)
       newAcceptedUsernames[hashedUsername] = true
       state = merge(state, {
-        privacyPolicyAccepted: false,
+        // privacyPolicyAccepted: false,
         acceptedUsernames: newAcceptedUsernames
       })
       break
