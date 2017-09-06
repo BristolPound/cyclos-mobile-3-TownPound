@@ -8,11 +8,11 @@ import merge from '../../util/merge'
 import animateTo from '../../util/animateTo'
 import { beginLogin, unlockAndLogin, login,
     LOGIN_STATUSES, acceptPrivacyPolicy, flipStorePassword,
-    acceptPasswordDisclaimer, authenticateCyclosPIN, setStorePassword
+    acceptQuickUnlockDisclaimer, authenticateCyclosPIN, setStorePassword
 } from '../../store/reducer/login'
 import KeyboardComponent from '../KeyboardComponent'
 import PrivacyPolicy from './PrivacyPolicy'
-import PasswordDisclaimer from './PasswordDisclaimer'
+import QuickUnlockDisclaimer from './QuickUnlockDisclaimer'
 import styles from './LoginStyle'
 import Images from '@Assets/images'
 import Checkbox from 'react-native-check-box'
@@ -72,7 +72,7 @@ class Login extends KeyboardComponent {
   acceptQuickLoginCallback(PIN) {
     // Fall back if no connection
     if (!this.props.connection) {
-      this.props.acceptPasswordDisclaimer(false)
+      this.props.acceptQuickUnlockDisclaimer(false)
       return
     }
 
@@ -81,18 +81,18 @@ class Login extends KeyboardComponent {
     this.props.authenticateCyclosPIN(PIN)
       .then((success) => {
         if (success) {
-          this.props.acceptPasswordDisclaimer(true, username, password)
+          this.props.acceptQuickUnlockDisclaimer(true, username, password)
         }
         else {
           // Fall back if cannot validate PIN
-          this.props.acceptPasswordDisclaimer(false)
+          this.props.acceptQuickUnlockDisclaimer(false)
         }
       })
 
   }
 
   cancelQuickLoginCallback() {
-    this.props.acceptPasswordDisclaimer(false)
+    this.props.acceptQuickUnlockDisclaimer(false)
     this.props.setStorePassword(false)
   }
 
@@ -169,8 +169,8 @@ class Login extends KeyboardComponent {
                     acceptPrivacyPolicy(true, this.state.username, this.state.password)}
                   rejectCallback={() => acceptPrivacyPolicy(false)}
                 />
-              : this.props.passwordDisclaimerOpen
-                ? <PasswordDisclaimer
+              : this.props.quickUnlockDisclaimerOpen
+                ? <QuickUnlockDisclaimer
                     acceptCallback={(PIN) => this.acceptQuickLoginCallback(PIN)}
                     rejectCallback={() => this.cancelQuickLoginCallback()}
                     connection={this.props.connection}
@@ -186,7 +186,7 @@ const mapDispatchToProps = (dispatch) =>
     beginLogin,
     acceptPrivacyPolicy,
     flipStorePassword,
-    acceptPasswordDisclaimer,
+    acceptQuickUnlockDisclaimer,
     authenticateCyclosPIN,
     setStorePassword,
     login,

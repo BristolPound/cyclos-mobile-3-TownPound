@@ -22,18 +22,15 @@ const initialState = {
   loginStatus: LOGIN_STATUSES.LOGGED_OUT,
   loginFormOpen: false,
   privacyPolicyOpen: false,
-  // privacyPolicyAccepted: false,
   askToUnlock: false,
   acceptedUsernames: {},
   storePassword: false,
-  // logged in username state stores the username on successful login
   loggedInUsername: '',
   loggedInName: '',
   encryptedPassword: '',
+  quickUnlockDisclaimerOpen: false,
   AUID: '',
-  // never stored
   encryptionKey: '',
-  passToUnlock: '',
   unlockCode: ''
 }
 
@@ -41,10 +38,9 @@ export const loginInProgress = () => ({
   type: 'login/LOGIN_IN_PROGRESS'
 })
 
-const loggedIn = (username, passToUnlock) => ({
+const loggedIn = (username) => ({
   type: 'login/LOGGED_IN',
-  username,
-  passToUnlock
+  username
 })
 
 export const loggedOut = () => ({
@@ -65,20 +61,14 @@ export const openLoginForm = (open = true) => ({
 // reauthorise whilst still in the app for whatever reason)
 export const reauthorise = (code = null) =>
   (dispatch, getState) => {
-    var username, encryptedPassword, encryptionKey, password
-
-    username = getState().login.loggedInUsername
-    encryptedPassword = getState().login.encryptedPassword
-
+    var username = getState().login.loggedInUsername
+    var encryptedPassword = getState().login.encryptedPassword
     code && dispatch(setEncryptionKey(code))
-    encryptionKey = getState().login.encryptionKey
-    console.log("decrypting with " + encryptionKey)
-    password = decrypt(encryptedPassword, encryptionKey)
-    console.log("decrypted password is " + password + " after being " + encryptedPassword)
+    var encryptionKey = getState().login.encryptionKey
+    var password = decrypt(encryptedPassword, encryptionKey)
 
     return authenticate(username, password, dispatch)
       .then(() => {
-        console.log("authenticated")
         return true
       })
       .catch (err => {
@@ -132,7 +122,7 @@ const openPrivacyPolicy = (open = true) => ({
   open
 })
 
-export const openPasswordDisclaimer = (open = true) => ({
+export const openQuickUnlockDisclaimer = (open = true) => ({
   type: 'login/OPEN_PASSWORD_DISCLAIMER',
   open
 })
@@ -143,12 +133,10 @@ export const authenticateCyclosPIN = (PIN) =>
     return checkPin(PIN)
       .then((success) => {
         if (success) {
-          console.log("CORRECT CYCLOS PIN ENTERED")
           dispatch(setEncryptionKey(PIN))
           return true
         }
         else {
-          console.log("Incorrect CYCLOS PIN")
           return false
         }
       })
@@ -157,13 +145,13 @@ export const authenticateCyclosPIN = (PIN) =>
       })
   }
 
-export const acceptPasswordDisclaimer = (accepted, username, password) =>
+export const acceptQuickUnlockDisclaimer = (accepted, username, password) =>
   (dispatch, getState) => {
     if (accepted) {
       dispatch(login(username, password))
     }
 
-    dispatch(openPasswordDisclaimer(false))
+    dispatch(openQuickUnlockDisclaimer(false))
 
     // If no connection, close login screen fully
     if (!getState().networkConnection.status) {
@@ -222,7 +210,7 @@ const simplifyLogin = (username, password) =>
   (dispatch, getState) => {
     // If store password was checked, open the disclaimer before loggin in
     if (getState().login.storePassword && getState().login.encryptedPassword === '') {
-      dispatch(openPasswordDisclaimer(true))
+      dispatch(openQuickUnlockDisclaimer(true))
     }
     // Otherwise just log in
     else {
@@ -240,7 +228,6 @@ export const login = (username, password) =>
         dispatch(loadAccountDetails())
         dispatch(loggedIn(username, md5(password.substr(password.length - unlockCharNo))))
         dispatch(loadPaymentData())
-        // getState().login.privacyPolicyAccepted && dispatch(storeAcceptedUsername(username))
         // Store the password if they've accepted the agreement and it's not stored already
         if (getState().login.storePassword && getState().login.encryptedPassword === '') {
           dispatch(storeEncryptedPassword(password))
@@ -271,7 +258,6 @@ export const logout = () => dispatch => {
   dispatch(loggedOut())
   dispatch(resetTransactions())
   dispatch(resetAccount())
-  // dispatch(privacyPolicyAccepted(false))
 }
 
 const reducer = (state = initialState, action) => {
@@ -279,8 +265,7 @@ const reducer = (state = initialState, action) => {
     case 'login/LOGGED_IN':
       state = merge(state, {
         loggedInUsername: action.username,
-        loginStatus: LOGIN_STATUSES.LOGGED_IN,
-        passToUnlock: action.passToUnlock
+        loginStatus: LOGIN_STATUSES.LOGGED_IN
       })
       break
     case 'login/LOGIN_IN_PROGRESS':
@@ -313,7 +298,6 @@ const reducer = (state = initialState, action) => {
     case 'login/LOGGED_OUT':
       state = merge(state, {
         loginStatus: LOGIN_STATUSES.LOGGED_OUT,
-        passToUnlock: '',
         unlockCode: '',
         encryptedPassword: '',
         encryptionKey: '',
@@ -327,7 +311,7 @@ const reducer = (state = initialState, action) => {
       break
     case 'login/OPEN_PASSWORD_DISCLAIMER':
       state = merge(state, {
-        passwordDisclaimerOpen: action.open
+        quickUnlockDisclaimerOpen: action.open
       })
       break
     case 'login/OPEN_PRIVACY_POLICY':
@@ -335,15 +319,8 @@ const reducer = (state = initialState, action) => {
         privacyPolicyOpen: action.open
       })
       break
-    // case 'login/PRIVACY_POLICY_ACCEPTED':
-    //   state = merge(state, {
-    //     privacyPolicyOpen: false,
-    //     privacyPolicyAccepted: action.accepted
-    //   })
-    //   break
     case 'login/STORE_ENCRYPTED_PASSWORD':
       var newEncryptedPassword = encrypt(action.password, state.encryptionKey)
-      console.log("encrypted password stored is " + newEncryptedPassword)
       state = merge(state, {
         encryptedPassword: newEncryptedPassword
       })
@@ -355,13 +332,9 @@ const reducer = (state = initialState, action) => {
       break
     case 'login/SET_ENCRYPTION_KEY':
       var unlockCode = action.unlockCode
-      // var secretEncryptionPart = module_exists('@Config/secrets')
-      //   ? require('@Config/secrets').default.encryptionComponent
-      //   : 'test key'
-      var secretEncryptionPart = "1234"
+      var secretEncryptionPart = "1234" // Will get conditionally from secrets file
       var encryptionKey = unlockCode + state.AUID + secretEncryptionPart
 
-      console.log("encryption key is " + encryptionKey)
       state = merge(state, {
         encryptionKey: encryptionKey,
         unlockCode: md5(action.unlockCode)
@@ -379,7 +352,6 @@ const reducer = (state = initialState, action) => {
       const newAcceptedUsernames = merge(state.acceptedUsernames)
       newAcceptedUsernames[hashedUsername] = true
       state = merge(state, {
-        // privacyPolicyAccepted: false,
         acceptedUsernames: newAcceptedUsernames
       })
       break

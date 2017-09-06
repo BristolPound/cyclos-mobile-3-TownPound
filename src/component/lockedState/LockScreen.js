@@ -46,20 +46,14 @@ class LockScreen extends React.Component {
   _handleAppStateChange = (nextAppState) => {
     if (nextAppState.match(/inactive|background/) && this.state.appState === 'active') {
       this.props.setCoverApp(true)
-      this.setState({
-          // appState: nextAppState,
-          lockTimeStamp: moment()
-        }
-      )
+      this.setState({lockTimeStamp: moment()})
     }
     else if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       var diff = moment().diff(this.state.lockTimeStamp, 'seconds')
-      console.log("diff is " + diff)
       if (diff >= MINIMISE_TIMEOUT) {
         if (this.props.unlockCode !== '' && this.props.loginStatus === LOGIN_STATUSES.LOGGED_IN) {
           this.setState({
               askToUnlock: true,
-              // appState: nextAppState,
               reauthOnConnection: false
           })
           this.props.clearEncryptionKey()
@@ -71,24 +65,13 @@ class LockScreen extends React.Component {
       }
       else {
         this.props.setCoverApp(false)
-        // this.setState({appState: nextAppState})
       }
     }
     else {
-      // this.setState({appState: nextAppState})
     }
     this.setState({appState: nextAppState})
   }
 
-  checkPass (pass) {
-    var encodedPass = md5(pass)
-    if (encodedPass === this.props.passToUnlock) {
-      this.unlock()
-    }
-    else {
-      this.failedAttempt()
-    }
-  }
 
   resetState(){
     this.setState({
@@ -143,14 +126,6 @@ class LockScreen extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // Listen for failed attmepts and deduct an attempt if needed
-    // if (nextProps.statusMessage !== this.props.statusMessage) {
-    //   nextProps.statusMessage == 'Incorrect Unlock'
-    //     && this.failedAttempt()
-    //   nextProps.statusMessage == 'Temporarily blocked'
-    //     && this.logout()
-    // }
-
     if (nextProps.storePassword !== this.props.storePassword
       && !nextProps.storePassword) {
         this.resetState()
@@ -180,7 +155,9 @@ class LockScreen extends React.Component {
   reauthorise(code = null) {
     this.props.reauthorise(code)
       .then((success) => {
-        console.log("reauthorised")
+        if (success) {
+          return true
+        }
       })
       .catch(() => {
         this.logout()
@@ -208,9 +185,6 @@ class LockScreen extends React.Component {
           this.unlock()
           this.props.postUnlock() // login after authorising the PIN
         }
-        // else {
-        //   this.failedAttempt()
-        // }
       })
       .catch((err) => {
         return false
@@ -219,14 +193,8 @@ class LockScreen extends React.Component {
   }
 
   storedPasswordUnlock(code) {
-    // If no internet then set state noInternet to true and return
-    // else set it to false and carry on
-
-    this.setHeader(true, "Unlocking...")
-
     // If being used as a login replacement, perform full log in using
     // different auth method
-    // This will be changed to check the pin against cyclos
     if (this.props.loginReplacement) {
       this.loginReplacementMethod(code)
       return
@@ -293,7 +261,6 @@ const mapDispatchToProps = (dispatch) =>
 
 const mapStateToProps = (state) => ({
   ...state.navigation,
-  passToUnlock: state.login.passToUnlock,
   storePassword: state.login.storePassword,
   loginStatus: state.login.loginStatus,
   encryptedPassword: state.login.encryptedPassword,

@@ -23,7 +23,7 @@ const style = {
     left: 0,
     right: 0,
     backgroundColor: Colors.orange,
-    alignItems:'center',
+    alignItems: 'center',
     justifyContent: 'center'
   },
   text: {
