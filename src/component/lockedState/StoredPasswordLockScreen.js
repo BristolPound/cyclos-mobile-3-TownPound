@@ -39,7 +39,7 @@ class StoredPasswordLockScreen extends KeyboardComponent {
 
     inputValid() {
       var len = this.state.enteredPIN.length
-      if (len === PIN_LENGTH) {
+      if (len === PIN_LENGTH && !this.props.disabledUnlock) {
         return true
       }
 
@@ -70,7 +70,7 @@ class StoredPasswordLockScreen extends KeyboardComponent {
                           For your privacy, the app was locked.
                           To unlock, please enter the PIN you specified when agreeing to "Simplified Login". Or chose "Logout" to just browse.
                       </Text>
-                      { this.props.noInternet &&
+                      { this.props.disabledUnlock &&
                         <View>
                             <Text style={merge(style.errorText, { paddingTop: 10 })}>
                                 No internet available right now, log out just to browse
