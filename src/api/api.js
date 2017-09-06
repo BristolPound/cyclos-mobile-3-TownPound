@@ -34,8 +34,7 @@ export const setBaseUrl = newUrl => {
 export const checkPin = (PIN) => {
   if (PIN !== '0000') {
     return Promise.resolve(true)
-  }
-  else {
+  }  else {
     return Promise.resolve(false)
   }
 }

@@ -10,7 +10,7 @@ import KeyboardComponent from '../KeyboardComponent'
 let PIN_LENGTH = 4
 
 
-class PasswordDisclaimer extends KeyboardComponent {
+class QuickUnlockDisclaimer extends KeyboardComponent {
   constructor() {
     super()
     this.state.enteredPIN = ''
@@ -101,4 +101,4 @@ class PasswordDisclaimer extends KeyboardComponent {
   }
 }
 
-export default PasswordDisclaimer
+export default QuickUnlockDisclaimer
