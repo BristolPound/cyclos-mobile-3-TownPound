@@ -33,7 +33,8 @@ const initialState = {
   AUID: '',
   // never stored
   encryptionKey: '',
-  passToUnlock: ''
+  passToUnlock: '',
+  unlockCode: ''
 }
 
 export const loginInProgress = () => ({
@@ -252,7 +253,7 @@ export const login = (username, password) =>
               if (json && json.passwordStatus === 'temporarilyBlocked') {
                 dispatch(updateStatus('Account temporarily blocked', ERROR_SEVERITY.SEVERE))
               } else if (json && json.code === 'login') {
-                dispatch(updateStatus('Username and Password do not match'))
+                dispatch(updateStatus('Username and Password do not match', ERROR_SEVERITY.SEVERE))
               } else if (json && json.code === 'remoteAddressBlocked') {
                 dispatch(updateStatus('Remote address temporarily blocked', ERROR_SEVERITY.SEVERE))
               } else {
@@ -313,6 +314,7 @@ const reducer = (state = initialState, action) => {
       state = merge(state, {
         loginStatus: LOGIN_STATUSES.LOGGED_OUT,
         passToUnlock: '',
+        unlockCode: '',
         encryptedPassword: '',
         encryptionKey: '',
       })
