@@ -156,7 +156,7 @@ export const authenticateCyclosPIN = (PIN) =>
       })
   }
 
-export const acceptPasswordDisclaimer = (accepted, enteredPIN, username, password) =>
+export const acceptPasswordDisclaimer = (accepted, username, password) =>
   (dispatch, getState) => {
     if (accepted) {
       dispatch(login(username, password))
@@ -263,7 +263,6 @@ export const login = (username, password) =>
               dispatch(unknownError(err))
             })
         }
-        dispatch(setStorePassword(false))
       })
   }
 
@@ -314,7 +313,6 @@ const reducer = (state = initialState, action) => {
       state = merge(state, {
         loginStatus: LOGIN_STATUSES.LOGGED_OUT,
         passToUnlock: '',
-        storePassword: false,
         encryptedPassword: '',
         encryptionKey: '',
       })

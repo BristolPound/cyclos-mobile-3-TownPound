@@ -19,6 +19,7 @@ import { closeConfirmation, setCoverApp, navigateToTab, hideModal, setOverlayOpe
 import { updatePage, resetPayment, resetForm } from '../store/reducer/sendMoney'
 // import UnlockAppAlert, {maxAttempts} from './lockedState/UnlockAppAlert'
 import LockScreen from './lockedState/LockScreen'
+import NetworkConnection from './NetworkConnection'
 
 class Root extends React.Component {
 
@@ -56,6 +57,7 @@ class Root extends React.Component {
           <LoginOverlay/>
           {(this.props.modalOpen && !this.props.loginFormOpen) && Config.ALLOW_LOGIN && (this.props.userShortDisplay !== this.props.payeeShortDisplay) ? <SendMoney /> : undefined}
           <Login/>
+          {this.props.loginFormOpen && <NetworkConnection top={true}/>}
           <StatusMessage/>
           <LockScreen/>
         </View>

@@ -19,6 +19,8 @@ import { Overlay } from '../common/Overlay'
 import NetworkConnection from '../NetworkConnection'
 
 
+const MINIMISE_TIMEOUT = 5
+
 class LockScreen extends React.Component {
 
   constructor(props) {
@@ -27,7 +29,6 @@ class LockScreen extends React.Component {
       appState: AppState.currentState,
       unlockError: false,
       failedAttempts: 0,
-      noInternet: false,
       lockTimeStamp: null,
       headerMessage: '',
       reauthOnConnection: false
@@ -50,16 +51,24 @@ class LockScreen extends React.Component {
           lockTimeStamp: moment()
         }
       )
-    } else if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+    }
+    else if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       var diff = moment().diff(this.state.lockTimeStamp, 'seconds')
-      if ((diff >= 5) && (this.props.passToUnlock !== '' || this.props.loginStatus === LOGIN_STATUSES.LOGGED_IN)) {
-        this.setState({askToUnlock: true, appState: nextAppState, reauthOnConnection: false})
-        this.props.clearEncryptionKey()
-      } else {
+      if (diff >= MINIMISE_TIMEOUT) {
+        if (this.props.unlockCode !== '' && this.props.loginStatus === LOGIN_STATUSES.LOGGED_IN)) {
+          this.setState({askToUnlock: true, appState: nextAppState, reauthOnConnection: false})
+          this.props.clearEncryptionKey()
+        }
+        else {
+          this.logout()
+        }
+      }
+      else {
         this.props.setCoverApp(false)
         this.setState({appState: nextAppState})
       }
-    } else {
+    }
+    else {
       this.setState({appState: nextAppState})
     }
   }
@@ -192,9 +201,9 @@ class LockScreen extends React.Component {
           this.unlock()
           this.props.postUnlock() // login after authorising the PIN
         }
-        else {
-          this.failedAttempt()
-        }
+        // else {
+        //   this.failedAttempt()
+        // }
       })
       .catch((err) => {
         return false
@@ -246,16 +255,10 @@ class LockScreen extends React.Component {
                 error={this.state.unlockError}
                 failedAttempts={this.state.failedAttempts}
                 logout={() => this.logoutPress()}
-                noInternet={this.state.noInternet}
+                disabledUnlock={this.props.loginReplacement && !this.props.connection}
                 headerMessage={this.state.headerMessage}
               />
-          :   <UnlockAppAlert
-                checkPass={(pass) => this.checkPass(pass)}
-                error={this.state.unlockError}
-                failedAttempts={this.state.failedAttempts}
-                logout={() => this.logoutPress()}
-                noInternet={this.state.noInternet}
-              />
+          :   null
         }
         <NetworkConnection top={true}/>
       </View>

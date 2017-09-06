@@ -8,7 +8,7 @@ import merge from '../../util/merge'
 import animateTo from '../../util/animateTo'
 import { beginLogin, unlockAndLogin, login,
     LOGIN_STATUSES, acceptPrivacyPolicy, flipStorePassword,
-    acceptPasswordDisclaimer, authenticateCyclosPIN
+    acceptPasswordDisclaimer, authenticateCyclosPIN, setStorePassword
 } from '../../store/reducer/login'
 import KeyboardComponent from '../KeyboardComponent'
 import PrivacyPolicy from './PrivacyPolicy'
@@ -81,7 +81,7 @@ class Login extends KeyboardComponent {
     this.props.authenticateCyclosPIN(PIN)
       .then((success) => {
         if (success) {
-          this.props.acceptPasswordDisclaimer(true, PIN, username, password)
+          this.props.acceptPasswordDisclaimer(true, username, password)
         }
         else {
           // Fall back if cannot validate PIN
@@ -89,6 +89,11 @@ class Login extends KeyboardComponent {
         }
       })
 
+  }
+
+  cancelQuickLoginCallback() {
+    this.props.acceptPasswordDisclaimer(false)
+    this.props.setStorePassword(false)
   }
 
 
@@ -100,7 +105,6 @@ class Login extends KeyboardComponent {
     let loginButtonText = 'Log in'
     const {
       acceptPrivacyPolicy,
-      acceptPasswordDisclaimer,
     } = this.props
     const { username, password } = this.state
     const loginView = (
@@ -167,13 +171,9 @@ class Login extends KeyboardComponent {
                 />
               : this.props.passwordDisclaimerOpen
                 ? <PasswordDisclaimer
-                    acceptCallback={(PIN) =>
-                      this.acceptQuickLoginCallback(PIN)
-                    }
+                    acceptCallback={(PIN) => this.acceptQuickLoginCallback(PIN)}
+                    rejectCallback={() => this.cancelQuickLoginCallback()}
                     connection={this.props.connection}
-                    rejectCallback={() =>
-                      acceptPasswordDisclaimer(false, null, username, password)
-                    }
                   />
                 : loginView
             : <View style={{ height: 0 }}/>
@@ -188,6 +188,7 @@ const mapDispatchToProps = (dispatch) =>
     flipStorePassword,
     acceptPasswordDisclaimer,
     authenticateCyclosPIN,
+    setStorePassword,
     login,
     unlockAndLogin
   }, dispatch)

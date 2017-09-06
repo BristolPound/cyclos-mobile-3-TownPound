@@ -1,6 +1,8 @@
 import React from 'react';
 import { StyleSheet, TouchableHighlight, View } from 'react-native'
+import NetworkConnection from '../NetworkConnection'
 import Colors from '@Colors/colors'
+
 
 const overlayStyle =  {
     visible: {
