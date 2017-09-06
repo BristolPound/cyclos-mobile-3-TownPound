@@ -19,7 +19,7 @@ import { Overlay } from '../common/Overlay'
 import NetworkConnection from '../NetworkConnection'
 
 
-const MINIMISE_TIMEOUT = 5
+const MINIMISE_TIMEOUT = 3
 
 class LockScreen extends React.Component {
 
@@ -46,31 +46,38 @@ class LockScreen extends React.Component {
   _handleAppStateChange = (nextAppState) => {
     if (nextAppState.match(/inactive|background/) && this.state.appState === 'active') {
       this.props.setCoverApp(true)
-      this.setState(
-        { appState: nextAppState,
+      this.setState({
+          // appState: nextAppState,
           lockTimeStamp: moment()
         }
       )
     }
     else if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       var diff = moment().diff(this.state.lockTimeStamp, 'seconds')
+      console.log("diff is " + diff)
       if (diff >= MINIMISE_TIMEOUT) {
-        if (this.props.unlockCode !== '' && this.props.loginStatus === LOGIN_STATUSES.LOGGED_IN)) {
-          this.setState({askToUnlock: true, appState: nextAppState, reauthOnConnection: false})
+        if (this.props.unlockCode !== '' && this.props.loginStatus === LOGIN_STATUSES.LOGGED_IN) {
+          this.setState({
+              askToUnlock: true,
+              // appState: nextAppState,
+              reauthOnConnection: false
+          })
           this.props.clearEncryptionKey()
         }
         else {
+          this.props.setCoverApp(false)
           this.logout()
         }
       }
       else {
         this.props.setCoverApp(false)
-        this.setState({appState: nextAppState})
+        // this.setState({appState: nextAppState})
       }
     }
     else {
-      this.setState({appState: nextAppState})
+      // this.setState({appState: nextAppState})
     }
+    this.setState({appState: nextAppState})
   }
 
   checkPass (pass) {
@@ -244,7 +251,7 @@ class LockScreen extends React.Component {
     return (
       <View style={style.wrapper}>
         {this.props.coverApp
-            && <AppCover unlockOpened={this.props.passToUnlock!=='' && this.state.askToUnlock}/>
+            && <AppCover/>
         }
         <Overlay overlayVisible={this.state.headerMessage ? true : false}
                  onPress={() => {}}

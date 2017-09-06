@@ -1,7 +1,7 @@
 import merge from '../../util/merge'
 
 const initialState = {
-  status: false,
+  status: true,
   // a queue of network-related actions that failed. WHen network connection recovers
   // resumes, these can be re-tried
   failedActionsQueue: []

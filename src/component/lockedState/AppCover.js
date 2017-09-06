@@ -15,12 +15,14 @@ const style = {
     bottom: 0,
     top: 0,
     flex: 1,
+    padding: 45,
+    justifyContent: 'center',
     alignItems: 'center',
     height: Dimensions.get('window').height
 }
 
 const AppCover = (props) =>
-    <View style={merge(style, props.unlockOpened ? { padding: 45 } : { justifyContent: 'center'})}>
+    <View style={merge(style, {backgroundColor: Colors.primaryBlue})}>
         <Image source={background} style={style} />
         <Image source={logo} />
     </View>
