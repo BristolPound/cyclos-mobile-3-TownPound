@@ -58,13 +58,15 @@ class LockScreen extends React.Component {
           })
           this.props.clearEncryptionKey()
         }
-        else {
+        else if (this.props.loginStatus === LOGIN_STATUSES.LOGGED_IN) {
           this.props.setCoverApp(false)
           this.logout()
         }
       }
       else {
-        this.props.setCoverApp(false)
+        if (!this.state.askToUnlock) {
+          this.props.setCoverApp(false)
+        }
       }
     }
     else {
