@@ -6,6 +6,7 @@ import style from './PolicyStyle'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import KeyboardComponent from '../KeyboardComponent'
+import { screenHeight } from '../../util/ScreenSizes'
 
 let PIN_LENGTH = 4
 
