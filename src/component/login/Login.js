@@ -18,12 +18,14 @@ import Images from '@Assets/images'
 import Checkbox from 'react-native-check-box'
 import LockScreen from '../lockedState/LockScreen'
 import NetworkConnection from '../NetworkConnection'
+import { screenHeight } from '../../util/ScreenSizes'
 
 
 class Login extends KeyboardComponent {
   constructor(props) {
     super()
     this.state.username = props.loggedInUsername
+    this.state.maxKeyboardHeight = 0
   }
 
 
@@ -168,12 +170,14 @@ class Login extends KeyboardComponent {
                   acceptCallback={() =>
                     acceptPrivacyPolicy(true, this.state.username, this.state.password)}
                   rejectCallback={() => acceptPrivacyPolicy(false)}
+                  bottom={this.state.maxKeyboardHeight}
                 />
               : this.props.quickUnlockDisclaimerOpen
                 ? <QuickUnlockDisclaimer
                     acceptCallback={(PIN) => this.acceptQuickLoginCallback(PIN)}
                     rejectCallback={() => this.cancelQuickLoginCallback()}
                     connection={this.props.connection}
+                    bottom={this.state.maxKeyboardHeight}
                   />
                 : loginView
             : <View style={{ height: 0 }}/>
@@ -196,7 +200,8 @@ const mapDispatchToProps = (dispatch) =>
 const mapStateToProps = (state) => (
   {
     ...state.login,
-    connection: state.networkConnection.status
+    connection: state.networkConnection.status,
+    keyboardHeight: state.navigation.keyboardHeight
   }
 )
 

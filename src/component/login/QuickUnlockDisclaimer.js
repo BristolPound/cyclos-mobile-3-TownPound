@@ -10,10 +10,12 @@ import KeyboardComponent from '../KeyboardComponent'
 let PIN_LENGTH = 4
 
 
-class QuickUnlockDisclaimer extends KeyboardComponent {
+class QuickUnlockDisclaimer extends React.Component {
   constructor() {
     super()
-    this.state.enteredPIN = ''
+    this.state = {
+      enteredPIN: ''
+    }
   }
 
   updateEnteredPIN(enteredPIN) {
@@ -45,9 +47,9 @@ class QuickUnlockDisclaimer extends KeyboardComponent {
   }
 
   render() {
-
+    var bottom = this.props.bottom || screenHeight / 2
     return (
-      <Animated.View style={merge(style.outerContainer, {bottom: this.state.keyboardHeight})}>
+      <Animated.View style={merge(style.outerContainer, {bottom: bottom})}>
         <View style={style.container}>
           <View style={style.header}>
             <Text style={style.headerText}>

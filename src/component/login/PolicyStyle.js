@@ -7,7 +7,7 @@ const style = {
   outerContainer: {
     ...horizontalAbsolutePosition(0, 0),
     backgroundColor: 'transparent',
-    flex: 1,
+    // flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -30,7 +30,7 @@ const style = {
     backgroundColor: Colors.offWhite,
     // marginBottom: 100,
     width: screenWidth * 0.9,
-    // height: screenHeight * 0.5,
+    height: screenHeight * 0.5,
     elevation: 5,
     shadowOffset:{width: 5, height: 5},
     shadowColor: Colors.offBlack,
