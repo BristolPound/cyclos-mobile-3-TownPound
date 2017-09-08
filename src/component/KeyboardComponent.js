@@ -65,8 +65,12 @@ class KeyboardComponent extends React.Component {
 
   animateOpenKeyboard (e) {
     if (AppState.currentState === 'active') {
-      animateTo(this.state.keyboardHeight, e.endCoordinates.height, 500, undefined, () => this.props.setOverlayOpen && this.props.setOverlayOpen(true))
+      var newKeyboardHeight = e.endCoordinates.height
+      animateTo(this.state.keyboardHeight, newKeyboardHeight, 500, undefined, () => this.props.setOverlayOpen && this.props.setOverlayOpen(true))
       this.keyboardOpen = true
+      if (newKeyboardHeight > this.state.maxKeyboardHeight) {
+        this.setState({maxKeyboardHeight: newKeyboardHeight})
+      }
     }
   }
 
