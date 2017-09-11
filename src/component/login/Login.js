@@ -78,7 +78,7 @@ class Login extends KeyboardComponent {
 
     const { username, password } = this.state
 
-    this.props.authenticateCyclosPIN(PIN)
+    this.props.authenticateCyclosPIN(username, PIN)
       .then((success) => {
         if (success) {
           this.props.acceptQuickUnlockDisclaimer(true, username, password)

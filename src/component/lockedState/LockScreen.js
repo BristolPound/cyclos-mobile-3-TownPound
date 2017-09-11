@@ -181,7 +181,7 @@ class LockScreen extends React.Component {
   }
 
   loginReplacementMethod(code) {
-    this.props.authenticateCyclosPIN(code)
+    this.props.authenticateCyclosPIN(this.props.loggedInUsername, code)
       .then((success) => {
         if (success) {
           this.unlock()
@@ -264,6 +264,7 @@ const mapDispatchToProps = (dispatch) =>
 const mapStateToProps = (state) => ({
   ...state.navigation,
   storePassword: state.login.storePassword,
+  loggedInUsername: state.login.loggedInUsername,
   loginStatus: state.login.loginStatus,
   encryptedPassword: state.login.encryptedPassword,
   encryptionKey: state.login.encryptionKey,

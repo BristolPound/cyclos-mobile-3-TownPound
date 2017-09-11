@@ -2,7 +2,7 @@ import merge from '../../util/merge'
 import { encrypt, decrypt } from '../../util/encryptionUtil'
 import module_exists from '../../util/module_exists'
 import { authenticate, deleteSessionToken, checkPin } from '../../api/api'
-import ApiError, { UNAUTHORIZED_ACCESS } from '../../api/apiError'
+import APIError, { UNAUTHORIZED_ACCESS } from '../../api/apiError'
 import { loadAccountDetails, resetAccount } from './account'
 import { loadTransactions, resetTransactions } from './transaction'
 import { updateStatus, ERROR_SEVERITY, unknownError } from './statusMessage'
@@ -56,44 +56,6 @@ export const openLoginForm = (open = true) => ({
   open
 })
 
-// Decrypts the password and reauthorises with new session token
-// if no new PIN is passed in, just uses the current encryptionKey (if need to
-// reauthorise whilst still in the app for whatever reason)
-export const reauthorise = (code = null) =>
-  (dispatch, getState) => {
-    var username = getState().login.loggedInUsername
-    var encryptedPassword = getState().login.encryptedPassword
-    code && dispatch(setEncryptionKey(code))
-    var encryptionKey = getState().login.encryptionKey
-    var password = decrypt(encryptedPassword, encryptionKey)
-
-    return authenticate(username, password, dispatch)
-      .then(() => {
-        return true
-      })
-      .catch (err => {
-        if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
-          err.response.json()
-            .then(json => {
-              if (json && ['login', 'missingAuthorization'].includes(json.code)) {
-                dispatch(updateStatus('Incorrect Unlock', ERROR_SEVERITY.SEVERE))
-              }
-              else if (json && ['temporarilyBlocked', 'remoteAddressBlocked'].includes(json.code)){
-                dispatch(updateStatus('Temporarily blocked', ERROR_SEVERITY.SEVERE))
-              }
-              else {
-                dispatch(unknownError(err))
-              }
-            })
-            .catch(() => {
-              dispatch(unknownError(err))
-            })
-        }
-        return false
-      })
-  }
-
-
 export const setStorePassword = (storePassword = true) => ({
   type: 'login/SET_STORE_PASSWORD',
   storePassword
@@ -126,24 +88,6 @@ export const openQuickUnlockDisclaimer = (open = true) => ({
   type: 'login/OPEN_PASSWORD_DISCLAIMER',
   open
 })
-
-export const authenticateCyclosPIN = (PIN) =>
-
-  (dispatch, getState) => {
-    return checkPin(PIN)
-      .then((success) => {
-        if (success) {
-          dispatch(setEncryptionKey(PIN))
-          return true
-        }
-        else {
-          return false
-        }
-      })
-      .catch((err) => {
-        return false
-      })
-  }
 
 export const acceptQuickUnlockDisclaimer = (accepted, username, password) =>
   (dispatch, getState) => {
@@ -233,26 +177,62 @@ export const login = (username, password) =>
           dispatch(storeEncryptedPassword(password))
         }
       })
-      .catch (err => {
-        if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
-          err.response.json()
-            .then(json => {
-              if (json && json.passwordStatus === 'temporarilyBlocked') {
-                dispatch(updateStatus('Account temporarily blocked', ERROR_SEVERITY.SEVERE))
-              } else if (json && json.code === 'login') {
-                dispatch(updateStatus('Username and Password do not match', ERROR_SEVERITY.SEVERE))
-              } else if (json && json.code === 'remoteAddressBlocked') {
-                dispatch(updateStatus('Remote address temporarily blocked', ERROR_SEVERITY.SEVERE))
-              } else {
-                dispatch(unknownError(err))
-              }
-            })
-            .catch(() => {
-              dispatch(unknownError(err))
-            })
-        }
-      })
+      .catch(evalResponseError(dispatch))
   }
+
+// Decrypts the password and reauthorises with new session token
+// if no new PIN is passed in, just uses the current encryptionKey (if need to
+// reauthorise whilst still in the app for whatever reason)
+export const reauthorise = (code = null) =>
+  (dispatch, getState) => {
+    const username = getState().login.loggedInUsername
+    const encryptedPassword = getState().login.encryptedPassword
+    code && dispatch(setEncryptionKey(code))
+    const encryptionKey = getState().login.encryptionKey
+    const password = decrypt(encryptedPassword, encryptionKey)
+
+    return authenticate(username, password, dispatch)
+      .then(() => {
+        return true
+      })
+      .catch(evalResponseError(dispatch, 'PIN', false))
+  }
+
+export const authenticateCyclosPIN = (username, PIN) =>
+  (dispatch, getState) => {
+    return checkPin(username, PIN)
+    .then((success) => {
+      if (success) {
+        dispatch(setEncryptionKey(PIN))
+      }
+      return success
+    })
+    .catch(evalResponseError(dispatch, 'PIN', false))
+  }
+
+const evalResponseError = (dispatch, accessPassword, returnValue) => (err) => {
+  if (err instanceof APIError && err.type === UNAUTHORIZED_ACCESS) {
+    accessPassword = accessPassword ? accessPassword : 'Password'
+    err.response.json()
+      .then(json => {
+        if (json && json.code == 'login' && json.passwordStatus === 'temporarilyBlocked') {
+          dispatch(updateStatus(accessPassword+' temporarily blocked', ERROR_SEVERITY.SEVERE))
+        } else if (json && ['login', 'missingAuthorization'].includes(json.code)) {
+          dispatch(updateStatus('Username and '+accessPassword+' do not match', ERROR_SEVERITY.SEVERE))
+        } else if (json && json.code === 'remoteAddressBlocked') {
+          dispatch(updateStatus('Remote address temporarily blocked', ERROR_SEVERITY.SEVERE))
+        } else {
+          dispatch(unknownError(err))
+        }
+        return returnValue
+      })
+      .catch(() => {
+        dispatch(unknownError(err))
+        return returnValue
+      })
+    }
+  return returnValue
+}
 
 export const logout = () => dispatch => {
   dispatch(loggedOut())
