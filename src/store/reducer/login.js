@@ -1,7 +1,7 @@
 import merge from '../../util/merge'
 import { encrypt, decrypt } from '../../util/encryptionUtil'
 import module_exists from '../../util/module_exists'
-import { authenticate, deleteSessionToken, checkPin } from '../../api/api'
+import { authenticate, deleteSessionToken, checkPassword, checkPin } from '../../api/api'
 import APIError, { UNAUTHORIZED_ACCESS } from '../../api/apiError'
 import { loadAccountDetails, resetAccount } from './account'
 import { loadTransactions, resetTransactions } from './transaction'
@@ -154,7 +154,13 @@ const simplifyLogin = (username, password) =>
   (dispatch, getState) => {
     // If store password was checked, open the disclaimer before loggin in
     if (getState().login.storePassword && getState().login.encryptedPassword === '') {
-      dispatch(openQuickUnlockDisclaimer(true))
+      authenticateCyclosPassword(username, password, dispatch)
+      .then((success) => {
+        if (success)
+        {
+            dispatch(openQuickUnlockDisclaimer(true))
+        }
+      })
     }
     // Otherwise just log in
     else {
@@ -198,6 +204,18 @@ export const reauthorise = (code = null) =>
       .catch(evalResponseError(dispatch, 'PIN', false))
   }
 
+export const authenticateCyclosPassword = (username, password, dispatch) => {
+  const f = (dispatch) => {
+    return checkPassword(username, password)
+    .then((success) => {
+      return success
+    })
+    .catch(evalResponseError(dispatch, 'password', false))
+  }
+
+  return (dispatch ? f(dispatch) : f)
+}
+
 export const authenticateCyclosPIN = (username, PIN) =>
   (dispatch, getState) => {
     return checkPin(username, PIN)
@@ -213,24 +231,24 @@ export const authenticateCyclosPIN = (username, PIN) =>
 const evalResponseError = (dispatch, accessPassword, returnValue) => (err) => {
   if (err instanceof APIError && err.type === UNAUTHORIZED_ACCESS) {
     accessPassword = accessPassword ? accessPassword : 'Password'
-    err.response.json()
-      .then(json => {
-        if (json && json.code == 'login' && json.passwordStatus === 'temporarilyBlocked') {
-          dispatch(updateStatus(accessPassword+' temporarily blocked', ERROR_SEVERITY.SEVERE))
-        } else if (json && ['login', 'missingAuthorization'].includes(json.code)) {
-          dispatch(updateStatus('Username and '+accessPassword+' do not match', ERROR_SEVERITY.SEVERE))
-        } else if (json && json.code === 'remoteAddressBlocked') {
-          dispatch(updateStatus('Remote address temporarily blocked', ERROR_SEVERITY.SEVERE))
-        } else {
-          dispatch(unknownError(err))
-        }
-        return returnValue
-      })
-      .catch(() => {
+    return err.response.json()
+    .then(json => {
+      if (json && json.code == 'login' && json.passwordStatus === 'temporarilyBlocked') {
+        dispatch(updateStatus(accessPassword+' temporarily blocked', ERROR_SEVERITY.SEVERE))
+      } else if (json && ['login', 'missingAuthorization'].includes(json.code)) {
+        dispatch(updateStatus('Username and '+accessPassword+' do not match', ERROR_SEVERITY.SEVERE))
+      } else if (json && json.code === 'remoteAddressBlocked') {
+        dispatch(updateStatus('Remote address temporarily blocked', ERROR_SEVERITY.SEVERE))
+      } else {
         dispatch(unknownError(err))
-        return returnValue
-      })
-    }
+      }
+      return returnValue
+    })
+    .catch(() => {
+      dispatch(unknownError(err))
+      return returnValue
+    })
+  }
   return returnValue
 }
 
