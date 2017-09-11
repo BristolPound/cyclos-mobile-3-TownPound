@@ -182,24 +182,22 @@ class LockScreen extends React.Component {
 
   loginReplacementMethod(code) {
     this.props.authenticateCyclosPIN(this.props.loggedInUsername, code)
-      .then((success) => {
-        if (success) {
-          this.unlock()
-          this.props.postUnlock() // login after authorising the PIN
-        }
-      })
-      .catch((err) => {
-        return false
-      })
-
+    .then((success) => {
+      if (success) {
+        this.unlock()
+        this.props.postUnlock() // login after authorising the PIN
+      }
+    })
+    .catch((err) => {
+      return false
+    })
   }
 
   storedPasswordUnlock(code) {
     // If being used as a login replacement, perform full log in using
     // different auth method
     if (this.props.loginReplacement) {
-      this.loginReplacementMethod(code)
-      return
+      return this.loginReplacementMethod(code)
     }
 
     if (this.checkPin(code)) {
