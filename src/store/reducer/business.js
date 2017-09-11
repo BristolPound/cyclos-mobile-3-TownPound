@@ -185,7 +185,7 @@ export const openTraderModal = (businessId) => (dispatch, getState) => {
 export const loadBusinessList = (force = false) => (dispatch, getState) => {
     const persistedDate = getState().business.businessListTimestamp
     //ToDo: to load data every time! When api has changed make a call to check whether something changed since last time the data was pulled
-    if (Date.now() - persistedDate > moment.duration(2, 'days') || force) {
+    if (true || Date.now() - persistedDate > moment.duration(2, 'days') || force) {
       getBusinesses()
         .then((data) => {
           dispatch(businessListReceived(data.directory))
@@ -305,7 +305,7 @@ const reducer = (state = initialState, action) => {
         filteredBusinesses: newFilteredBusinesses
       })
       break
-      
+
     case 'business/RESET_TRADER_SCREEN_ID':
       state = merge(state, {
         traderScreenBusinessId: undefined,

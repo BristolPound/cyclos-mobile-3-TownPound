@@ -13,6 +13,7 @@ import Images from '@Assets/images'
 export const labels = {
     AMOUNT: 'Amount',
     CONFIRM: 'Confirm',
+    CASH_ONLY_BUSINESS: 'Cash Only Business',
     CURRENT_BALANCE: 'CURRENT BALANCE',
     DESCRIPTION: 'Description (optional)',
     ENTER_AMOUNT: 'Enter Amount',
@@ -45,6 +46,9 @@ class InputComponent extends KeyboardComponent {
   getButtonColor () {
     if (this.props.invalidInput || this.props.buttonText === labels.NO_PAYMENT_AVAILABLE) {
       return Colors.offWhite
+    }
+    else if (this.props.buttonText === labels.CASH_ONLY_BUSINESS) {
+      return Colors.secondaryBlue
     }
     return Colors.primaryBlue
   }

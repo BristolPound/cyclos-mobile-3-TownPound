@@ -84,7 +84,7 @@ class SendMoney extends React.Component {
 
   payByTextOnPress () {
     var action = this.props.payee.fields && this.props.payee.fields.icon === 1 ? 'exc' : 'pay'
-    var text = action + ' ' + this.state.pin + ' ' + (this.props.payee.shortDisplay || this.props.payee.fields.username) + ' ' + this.props.amount
+    var text = action + ' ' + this.state.pin + ' '  + (this.props.payee.shortDisplay || this.props.payee.fields.username) + ' ' + this.props.amount
     Communications.textWithoutEncoding(Config.TXT2PAY_NO, text)
     this.props.updateAmount('')
     this.setState({pin: ''})
@@ -115,7 +115,11 @@ class SendMoney extends React.Component {
             onButtonPress: () => {},
             accessibilityLabel: labels.NO_PAYMENT_AVAILABLE
           }
-          if (this.props.paymentTypes && this.props.paymentTypes.length > 0 ) {
+          if (!this.props.payee.fields.username) {
+            inputProps.buttonText = labels.CASH_ONLY_BUSINESS,
+            inputProps.accessibilityLabel = labels.CASH_ONLY_BUSINESS
+          }
+          else if (this.props.paymentTypes && this.props.paymentTypes.length > 0 ) {
             inputProps.buttonText = labels.SEND_PAYMENT
             inputProps.onButtonPress = () => { !this.props.alertShouldPopUp && this.nextPage() }
           }
