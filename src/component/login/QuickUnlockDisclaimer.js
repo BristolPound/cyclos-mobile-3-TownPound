@@ -72,8 +72,9 @@ class QuickUnlockDisclaimer extends React.Component {
               style={style.textInput}
               autoFocus={true}
               value={this.state.enteredPIN}
+              onSubmitEditing={() => this.inputValid() && this.props.acceptCallback(this.state.enteredPIN)}
               onChangeText={(enteredPIN) => this.updateEnteredPIN(enteredPIN)}
-              placeholder="Enter an Unlock Pin"
+              placeholder="Enter PIN"
               keyboardType='numeric'
               secureTextEntry={true}
               maxLength={PIN_LENGTH}
