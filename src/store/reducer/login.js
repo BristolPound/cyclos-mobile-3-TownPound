@@ -137,10 +137,29 @@ export const authenticateCyclosPIN = (PIN) =>
           return true
         }
         else {
+          dispatch(updateStatus('Incorrect PIN', ERROR_SEVERITY.SEVERE))
           return false
         }
       })
-      .catch((err) => {
+      .catch (err => {
+        if (err instanceof ApiError && err.type === UNAUTHORIZED_ACCESS) {
+          err.response.json()
+            .then(json => {
+              if (json && (json.passwordStatus === 'temporarilyBlocked') || json.code === 'remoteAddressBlocked') {
+                dispatch(updateStatus('Quick Unlock Temporarily Blocked', ERROR_SEVERITY.SEVERE))
+                dispatch(setStorePassword(false))
+              }
+              else if (json && ['login', 'missingAuthorization'].includes(json.code)) {
+                dispatch(updateStatus('Incorrect PIN', ERROR_SEVERITY.SEVERE))
+              }
+              else {
+                dispatch(unknownError(err))
+              }
+            })
+            .catch(() => {
+              dispatch(unknownError(err))
+            })
+        }
         return false
       })
   }
