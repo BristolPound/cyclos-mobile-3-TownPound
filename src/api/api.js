@@ -112,6 +112,22 @@ export const authenticate = (username, password, dispatch) =>
     return results.sessionToken
   })
 
+export const checkPassword = (username, password) => {
+  return fetch(BASE_URL + 'self/passwords?fields=type.name&fields=status', {
+    headers: basicAuthHeaders(username, password)
+  })
+  // 403 with '{"code":"inaccessibleChannel"}' is returned upon correct PIN
+  // 401 with '{"code":"login"}' is returened on incorrect username/PIN combination
+  // 401 with '{"code":"login","passwordStatus":"temporarilyBlocked"}' is returned when PIN blocked, be it correct or incorrect
+  .then((response) => {
+    throwErrorOnUnexpectedResponse(response, 200)
+    return response.json()
+    .then(json => {
+      return true
+    })
+  })
+}
+
 export const checkPin = (username, PIN) => {
   return fetch(BASE_URL + 'auth', {
     headers: basicAuthHeaders(username, PIN, true)
