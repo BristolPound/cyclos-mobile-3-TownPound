@@ -187,6 +187,9 @@ class LockScreen extends React.Component {
         this.unlock()
         this.props.postUnlock() // login after authorising the PIN
       }
+      else {
+        this.failedAttempt()
+      }
     })
     .catch((err) => {
       return false
