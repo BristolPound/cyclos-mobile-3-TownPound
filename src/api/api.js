@@ -2,7 +2,7 @@ import _ from 'lodash'
 import {encode} from 'base-64'
 import merge from '../util/merge'
 import cyclosUrl from '../util/config'
-import { throwErrorOnUnexpectedResponse } from './apiError'
+import { APIError, throwErrorOnUnexpectedResponse, UNEXPECTED_DATA, UNEXPECTED_ERROR } from './apiError'
 import Config from '@Config/config'
 import { flavour, default_config, configurations } from '@Config/config'
 
@@ -31,20 +31,12 @@ export const setBaseUrl = newUrl => {
   BASE_URL = newUrl
 }
 
-export const checkPin = (PIN) => {
-  if (PIN !== '0000') {
-    return Promise.resolve(true)
-  }  else {
-    return Promise.resolve(false)
-  }
-}
-
-const httpCommonHeaders = () => {
+const httpCommonHeaders = (isPIN) => {
   const headers = new Headers()
   headers.append('Accept', 'application/json')
   headers.append('Content-Type', 'application/json')
   if (Config.CYCLOS.channel) {
-      const channel = Config.CYCLOS.channel.replace('{CHANNEL_SECRET}', Config.secrets.CHANNEL_SECRET)
+      const channel = Config.CYCLOS.channel.replace('{CHANNEL_SECRET}', Config.secrets.CHANNEL_SECRET) + (isPIN ? '_PIN' : '')
       headers.append('Channel', channel)
   }
   return headers
@@ -58,8 +50,8 @@ const httpHeaders = (requiresAuthorisation) => {
   return headers
 }
 
-const basicAuthHeaders = (username, password) => {
-  const headers = httpCommonHeaders()
+const basicAuthHeaders = (username, password, isPIN) => {
+  const headers = httpCommonHeaders(isPIN)
   headers.append('Authorization', 'Basic ' + encode(username + ':' + password))
   return headers
 }
@@ -119,3 +111,49 @@ export const authenticate = (username, password, dispatch) =>
     globalSessionToken = results.sessionToken
     return results.sessionToken
   })
+
+export const checkPassword = (username, password) => {
+  return fetch(BASE_URL + 'self/passwords?fields=type.name&fields=status', {
+    headers: basicAuthHeaders(username, password)
+  })
+  // 403 with '{"code":"inaccessibleChannel"}' is returned upon correct PIN
+  // 401 with '{"code":"login"}' is returened on incorrect username/PIN combination
+  // 401 with '{"code":"login","passwordStatus":"temporarilyBlocked"}' is returned when PIN blocked, be it correct or incorrect
+  .then((response) => {
+    throwErrorOnUnexpectedResponse(response, 200)
+    return response.json()
+    .then(json => {
+      return true
+    })
+  })
+}
+
+export const checkPin = (username, PIN) => {
+  return fetch(BASE_URL + 'auth', {
+    headers: basicAuthHeaders(username, PIN, true)
+  })
+  // 403 with '{"code":"inaccessibleChannel"}' is returned upon correct PIN
+  // 401 with '{"code":"login"}' is returened on incorrect username/PIN combination
+  // 401 with '{"code":"login","passwordStatus":"temporarilyBlocked"}' is returned when PIN blocked, be it correct or incorrect
+  .then((response) => {
+    throwErrorOnUnexpectedResponse(response, 403)
+    return response.json()
+    .then(json => {
+      if (json.code && json.code == "inaccessibleChannel")
+      {
+        return true
+      }
+
+      const e = json.code ? UNEXPECTED_ERROR : UNEXPECTED_DATA
+      if (!json.code)
+      {
+        json = {code: UNEXPECTED_DATA, data: json}
+      }
+
+      // restore the json() method
+      response.json = () => Promise.resolve(json)
+      response.text = () => Promise.resolve(JSON.stringify(json))
+      throw new APIError(e, response)
+    })
+  })
+}
