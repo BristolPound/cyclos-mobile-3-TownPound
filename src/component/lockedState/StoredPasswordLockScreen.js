@@ -98,8 +98,9 @@ class StoredPasswordLockScreen extends KeyboardComponent {
                           placeholderTextColor={Colors.gray4}
                           secureTextEntry={true}
                           underlineColorAndroid={Colors.transparent}
-                          onChangeText={(value) => this.updateEnteredPIN(value)}>
-                      </TextInput>
+                          onChangeText={(value) => this.updateEnteredPIN(value)}
+                          onSubmitEditing={() => this.inputValid() && this.props.headerMessage == '' && this.unlockAttempt()}
+                          />
                     </View>
                     <View style={style.buttonRow}>
                         <TouchableOpacity
