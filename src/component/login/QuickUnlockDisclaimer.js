@@ -81,20 +81,20 @@ class QuickUnlockDisclaimer extends React.Component {
           </View>
           <View style={style.buttonRow}>
             <TouchableOpacity
+              style={merge(style.buttonContainer, {borderWidth: 2, borderColor: Colors.primaryBlue})}
+              onPress={this.props.rejectCallback}
+            >
+              <Text style={merge(style.buttonText, {color: Colors.primaryBlue})}>
+                Cancel
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
               disabled={!this.inputValid()}
               style={merge(style.buttonContainer, {backgroundColor: this.getButtonColor()})}
               onPress={() => this.props.acceptCallback(this.state.enteredPIN)}
             >
               <Text style={merge(style.buttonText, {color: this.getButtonTextColor()})}>
                 Accept
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={merge(style.buttonContainer, {borderWidth: 2, borderColor: Colors.primaryBlue})}
-              onPress={this.props.rejectCallback}
-            >
-              <Text style={merge(style.buttonText, {color: Colors.primaryBlue})}>
-                Cancel
               </Text>
             </TouchableOpacity>
           </View>

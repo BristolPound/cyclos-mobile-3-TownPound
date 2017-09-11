@@ -32,19 +32,19 @@ class PrivacyPolicy extends React.Component {
           </ScrollView>
           <View style={style.buttonRow}>
             <TouchableOpacity
-              style={merge(style.buttonContainer, {backgroundColor: Colors.primaryBlue})}
-              onPress={this.props.acceptCallback}
-            >
-              <Text style={style.buttonText}>
-                Accept
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
               style={merge(style.buttonContainer, {borderWidth: 2, borderColor: Colors.primaryBlue})}
               onPress={this.props.rejectCallback}
             >
               <Text style={merge(style.buttonText, {color: Colors.primaryBlue})}>
                 Reject
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={merge(style.buttonContainer, {backgroundColor: Colors.primaryBlue})}
+              onPress={this.props.acceptCallback}
+            >
+              <Text style={style.buttonText}>
+                Accept
               </Text>
             </TouchableOpacity>
           </View>

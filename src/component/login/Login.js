@@ -8,7 +8,7 @@ import merge from '../../util/merge'
 import animateTo from '../../util/animateTo'
 import { beginLogin, unlockAndLogin, login,
     LOGIN_STATUSES, acceptPrivacyPolicy, flipStorePassword,
-    acceptQuickUnlockDisclaimer, authenticateCyclosPIN, setStorePassword
+    acceptQuickUnlockDisclaimer, authenticateCyclosPassword, authenticateCyclosPIN, setStorePassword
 } from '../../store/reducer/login'
 import KeyboardComponent from '../KeyboardComponent'
 import PrivacyPolicy from './PrivacyPolicy'
@@ -80,7 +80,7 @@ class Login extends KeyboardComponent {
 
     const { username, password } = this.state
 
-    this.props.authenticateCyclosPIN(PIN)
+    this.props.authenticateCyclosPIN(username, PIN)
       .then((success) => {
         if (success) {
           this.props.acceptQuickUnlockDisclaimer(true, username, password)
@@ -191,6 +191,7 @@ const mapDispatchToProps = (dispatch) =>
     acceptPrivacyPolicy,
     flipStorePassword,
     acceptQuickUnlockDisclaimer,
+    authenticateCyclosPassword,
     authenticateCyclosPIN,
     setStorePassword,
     login,
