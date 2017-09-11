@@ -82,9 +82,6 @@ class StoredPasswordLockScreen extends KeyboardComponent {
                               <Text style={merge(style.errorText, { paddingTop: 10 })}>
                                   The PIN you entered was incorrect. If you have forgotten the PIN, choose "Logout".
                               </Text>
-                              <Text style={merge(style.errorText, { paddingBottom: 10 })}>
-                                  You have {maxAttempts - this.props.failedAttempts} attempts left.
-                              </Text>
                           </View>
                       }
                     </View>
@@ -106,6 +103,13 @@ class StoredPasswordLockScreen extends KeyboardComponent {
                     </View>
                     <View style={style.buttonRow}>
                         <TouchableOpacity
+                            style={merge(style.buttonContainer, { backgroundColor: Colors.primaryBlue})}
+                            onPress={() => this.props.logout && this.props.logout()}>
+                            <DefaultText style={merge(style.buttonText, { color: 'white' })}>
+                                Logout
+                            </DefaultText>
+                        </TouchableOpacity>
+                        <TouchableOpacity
                           disabled={!this.inputValid() || this.props.headerMessage !== ''}
                           style={merge(style.buttonContainer, {backgroundColor: this.getButtonColor()})}
                           onPress={() => this.unlockAttempt()}
@@ -113,13 +117,6 @@ class StoredPasswordLockScreen extends KeyboardComponent {
                           <Text style={merge(style.buttonText, {color: this.getButtonTextColor()})}>
                             Unlock
                           </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={merge(style.buttonContainer, { backgroundColor: Colors.primaryBlue})}
-                            onPress={() => this.props.logout && this.props.logout()}>
-                            <DefaultText style={merge(style.buttonText, { color: 'white' })}>
-                                Logout
-                            </DefaultText>
                         </TouchableOpacity>
                     </View>
                 </View>
