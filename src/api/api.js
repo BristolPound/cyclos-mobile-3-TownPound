@@ -135,25 +135,25 @@ export const checkPin = (username, PIN) => {
   // 403 with '{"code":"inaccessibleChannel"}' is returned upon correct PIN
   // 401 with '{"code":"login"}' is returened on incorrect username/PIN combination
   // 401 with '{"code":"login","passwordStatus":"temporarilyBlocked"}' is returned when PIN blocked, be it correct or incorrect
-  .then((response) => {
-    throwErrorOnUnexpectedResponse(response, 403)
-    return response.json()
-    .then(json => {
-      if (json.code && json.code == "inaccessibleChannel")
-      {
-        return true
-      }
+    .then((response) => {
+      throwErrorOnUnexpectedResponse(response, 403)
+      return response.json()
+        .then(json => {
+          if (json.code && json.code == "inaccessibleChannel")
+          {
+            return true
+          }
 
-      const e = json.code ? UNEXPECTED_ERROR : UNEXPECTED_DATA
-      if (!json.code)
-      {
-        json = {code: UNEXPECTED_DATA, data: json}
-      }
+          const e = json.code ? UNEXPECTED_ERROR : UNEXPECTED_DATA
+          if (!json.code)
+          {
+            json = {code: UNEXPECTED_DATA, data: json}
+          }
 
-      // restore the json() method
-      response.json = () => Promise.resolve(json)
-      response.text = () => Promise.resolve(JSON.stringify(json))
-      throw new APIError(e, response)
+          // restore the json() method
+          response.json = () => Promise.resolve(json)
+          response.text = () => Promise.resolve(JSON.stringify(json))
+          throw new APIError(e, response)
+        })
     })
-  })
 }

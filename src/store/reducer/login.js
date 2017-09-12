@@ -219,38 +219,38 @@ export const authenticateCyclosPassword = (username, password, dispatch) => {
 export const authenticateCyclosPIN = (username, PIN) =>
   (dispatch, getState) => {
     return checkPin(username, PIN)
-    .then((success) => {
-      if (success) {
-        dispatch(setEncryptionKey(PIN))
-      }
-      else {
-        dispatch(setStorePassword(false))
-      }
-      return success
-    })
-    .catch(evalResponseError(dispatch, 'PIN', false))
+      .then((success) => {
+        if (success) {
+          dispatch(setEncryptionKey(PIN))
+        }
+        else {
+          dispatch(setStorePassword(false))
+        }
+        return success
+      })
+      .catch(evalResponseError(dispatch, 'PIN', false))
   }
 
 const evalResponseError = (dispatch, accessPassword, returnValue) => (err) => {
   if (err instanceof APIError && err.type === UNAUTHORIZED_ACCESS) {
     accessPassword = accessPassword ? accessPassword : 'Password'
     return err.response.json()
-    .then(json => {
-      if (json && json.code == 'login' && json.passwordStatus === 'temporarilyBlocked') {
-        dispatch(updateStatus(accessPassword+' temporarily blocked', ERROR_SEVERITY.SEVERE))
-      } else if (json && ['login', 'missingAuthorization'].includes(json.code)) {
-        dispatch(updateStatus('Username and '+accessPassword+' do not match', ERROR_SEVERITY.SEVERE))
-      } else if (json && json.code === 'remoteAddressBlocked') {
-        dispatch(updateStatus('Remote address temporarily blocked', ERROR_SEVERITY.SEVERE))
-      } else {
+      .then(json => {
+        if (json && json.code == 'login' && json.passwordStatus === 'temporarilyBlocked') {
+          dispatch(updateStatus(accessPassword+' temporarily blocked', ERROR_SEVERITY.SEVERE))
+        } else if (json && ['login', 'missingAuthorization'].includes(json.code)) {
+          dispatch(updateStatus('Username and '+accessPassword+' do not match', ERROR_SEVERITY.SEVERE))
+        } else if (json && json.code === 'remoteAddressBlocked') {
+          dispatch(updateStatus('Remote address temporarily blocked', ERROR_SEVERITY.SEVERE))
+        } else {
+          dispatch(unknownError(err))
+        }
+        return returnValue
+      })
+      .catch(() => {
         dispatch(unknownError(err))
-      }
-      return returnValue
-    })
-    .catch(() => {
-      dispatch(unknownError(err))
-      return returnValue
-    })
+        return returnValue
+      })
   }
   return returnValue
 }
