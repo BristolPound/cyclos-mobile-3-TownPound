@@ -132,7 +132,7 @@ export const checkPin = (username, PIN) => {
   return fetch(BASE_URL + 'auth', {
     headers: basicAuthHeaders(username, PIN, true)
   })
-  // 403 with '{"code":"inaccessibleChannel"}' is returned upon correct PIN
+  // 403 with '{"code":"inaccessibleChannel"}' is returned upon correct PIN (because channel is disabled for every user)
   // 401 with '{"code":"login"}' is returened on incorrect username/PIN combination
   // 401 with '{"code":"login","passwordStatus":"temporarilyBlocked"}' is returned when PIN blocked, be it correct or incorrect
     .then((response) => {

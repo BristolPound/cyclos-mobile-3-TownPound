@@ -127,6 +127,12 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'login/LOGGED_OUT':
+      break
+    case 'login/JUST_BROWSING':
+      state = merge(state, {
+        mainComponent: mainComponent.tabs
+      })
+      break
     case 'login/LOGGED_IN':
       state = merge(state, {
         mainComponent: mainComponent.tabs
