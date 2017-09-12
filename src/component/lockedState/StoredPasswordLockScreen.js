@@ -68,7 +68,7 @@ class StoredPasswordLockScreen extends KeyboardComponent {
                     <View style={style.instructionWrapper}>
                       <Text style={style.instructionText}>
                           For your privacy, the app was locked.
-                          To unlock, please enter your TXT2PAY PIN, as you specified when agreeing to "Quick Login". Or choose "Logout" to just browse.
+                          To unlock, please enter your Bristol Pound banking PIN, as you specified when agreeing to "Quick Login". Or choose "Logout" to just browse.
                       </Text>
                       { this.props.disabledUnlock &&
                         <View>

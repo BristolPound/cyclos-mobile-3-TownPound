@@ -5,7 +5,7 @@ import DefaultText from '../DefaultText'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import { bindActionCreators } from 'redux'
-import { openLoginForm, logout, LOGIN_STATUSES } from '../../store/reducer/login'
+import { openLoginForm, justBrowsing, LOGIN_STATUSES } from '../../store/reducer/login'
 import PLATFORM from '../../util/Platforms'
 import style from './SplashStyle'
 import Images from '@Assets/images'
@@ -88,9 +88,9 @@ class Splash  extends React.Component {
               : <View style={style.loginButton.replacementContainer}/>}
               <TouchableHighlight
                   style={style.skipButton.container}
-                  onPress={this.props.logout}
+                  onPress={this.props.justBrowsing}
                   underlayColor={Colors.primaryBlue}>
-                <DefaultText style={style.skipButton.text}>{this.props.logoutButtonText}</DefaultText>
+                <DefaultText style={style.skipButton.text}>{this.props.browsingButtonText}</DefaultText>
               </TouchableHighlight>
               { Config.ALLOW_LOGIN && this.props.renderInfoText(this.props) }
             </View>
@@ -108,6 +108,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ openLoginForm, logout }, dispatch)
+  bindActionCreators({ openLoginForm, justBrowsing }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Splash)

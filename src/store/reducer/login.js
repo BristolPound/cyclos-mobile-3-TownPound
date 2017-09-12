@@ -47,6 +47,10 @@ export const loggedOut = () => ({
   type: 'login/LOGGED_OUT'
 })
 
+export const justBrowsing = () => ({
+  type: 'login/JUST_BROWSING'
+})
+
 export const generateAUID = () => ({
   type: 'login/GENERATE_AUID'
 })
@@ -210,7 +214,7 @@ export const authenticateCyclosPassword = (username, password, dispatch) => {
     .then((success) => {
       return success
     })
-    .catch(evalResponseError(dispatch, 'password', false))
+    .catch(evalResponseError(dispatch))
   }
 
   return (dispatch ? f(dispatch) : f)
@@ -244,6 +248,9 @@ const evalResponseError = (dispatch, accessPassword, returnValue) => (err) => {
           dispatch(updateStatus('Remote address temporarily blocked', ERROR_SEVERITY.SEVERE))
         } else {
           dispatch(unknownError(err))
+        }
+        if (accessPassword == 'Password') {
+          dispatch(loggedOut())
         }
         return returnValue
       })
@@ -294,6 +301,11 @@ const reducer = (state = initialState, action) => {
       state = merge(state, {
         storePassword: newStorePassword,
         encryptedPassword: newEncryptedPassword
+      })
+      break
+    case 'login/JUST_BROWSING':
+      state = merge(state, {
+        loginStatus: LOGIN_STATUSES.LOGGED_OUT
       })
       break
     case 'login/LOGGED_OUT':
