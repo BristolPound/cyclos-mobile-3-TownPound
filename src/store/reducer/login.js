@@ -245,6 +245,9 @@ const evalResponseError = (dispatch, accessPassword, returnValue) => (err) => {
       } else {
         dispatch(unknownError(err))
       }
+      if (accessPassword == 'Password') {
+        dispatch(loggedOut())
+      }
       return returnValue
     })
     .catch(() => {
