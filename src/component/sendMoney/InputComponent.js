@@ -9,6 +9,7 @@ import KeyboardComponent from '../KeyboardComponent'
 import { View, TextInput, TouchableOpacity, Animated, Image } from 'react-native'
 import styles from './InputComponentStyle'
 import Images from '@Assets/images'
+import Drawer from 'react-native-drawer'
 
 export const labels = {
     AMOUNT: 'Amount',
@@ -68,6 +69,7 @@ class InputComponent extends KeyboardComponent {
       onButtonPress,
       buttonText,
       input,
+      cashpoint,
       descriptionInput,
       pinInput,
       invalidInput,
@@ -90,12 +92,52 @@ class InputComponent extends KeyboardComponent {
         </DefaultText>}
     </View>
 
+    // {cashpoint
+    //   ?   <Swiper style={{flex: 1, height: 30}}>
+    //         <View style={{flex:1, backgroundColor: 'blue'}}>
+    //           <DefaultText>Hello Swiper</DefaultText>
+    //         </View>
+    //         <View style={{flex:1, backgroundColor: 'green'}}>
+    //           <DefaultText>Goodbye Swiper</DefaultText>
+    //         </View>
+    //         <View style={{flex:1, backgroundColor: 'blue'}}>
+    //           <DefaultText>Hello Swiper</DefaultText>
+    //         </View>
+    //       </Swiper>
+    //   :   <TouchableOpacity onPress={invalidInput ? undefined : onButtonPress}>
+    //         {button}
+    //       </TouchableOpacity>
+    // }
+
     return (
           <Animated.View style={{backgroundColor: 'white', bottom: this.state.keyboardHeight }} accessibilityLabel={accessibilityLabel}>
 
-          <TouchableOpacity onPress={invalidInput ? undefined : onButtonPress}>
-             {button}
-          </TouchableOpacity>
+
+          <View style={{flex: 1, width: 300, height: 50, bottom: 0, position: 'absolute'}}>
+              <Drawer
+              captureGestures={true}
+              type={'overlay'}
+              tapToClose={true}
+              closedDrawerOffset={10}
+              openDrawerOffset={0.2}
+              acceptTap={true}
+              negotiatePan={true}
+              open={true}
+              content={   <View style={{flex:1, backgroundColor: 'blue'}}>
+                            <DefaultText>Hello Swiper</DefaultText>
+                          </View>}
+
+              >
+                <View style={{flex:1, backgroundColor: 'green'}}>
+                    <DefaultText>Hello Swiper</DefaultText>
+                </View>
+
+              </Drawer>
+          </View>
+
+
+
+
 
           {input
             ? <View>
