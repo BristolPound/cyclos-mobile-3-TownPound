@@ -62,7 +62,7 @@ class Splash  extends React.Component {
           })}
           resizeMode='cover'
           source={background}/>
-        { this.props.loginStatus !== LOGIN_STATUSES.LOGIN_IN_PROGRESS && !this.props.loginFormOpen
+        { this.props.loginStatus !== LOGIN_STATUSES.LOGIN_IN_PROGRESS && !this.props.loginFormOpen && !this.props.encryptedPassword
           ? <View style={style.bottomContainer}>
               { this.props.renderWelcomeMessage(this.props) }
               { Config.ALLOW_LOGIN ?
