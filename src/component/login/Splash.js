@@ -28,14 +28,6 @@ class Splash  extends React.Component {
     this.animateBackground()
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.loginFormOpen && PLATFORM.isAndroid()) {
-      this.setState({ showButtons: false})
-    }
-    if (!nextProps.loginFormOpen && this.props.loginFormOpen) {
-      setTimeout(() => this.setState({ showButtons: true }), 80)
-    }
-  }
 
   animateBackground() {
     // background image is 2028px wide
@@ -70,8 +62,7 @@ class Splash  extends React.Component {
           })}
           resizeMode='cover'
           source={background}/>
-        { this.state.showButtons
-          && this.props.loginStatus !== LOGIN_STATUSES.LOGIN_IN_PROGRESS
+        { this.props.loginStatus !== LOGIN_STATUSES.LOGIN_IN_PROGRESS && !this.props.loginFormOpen
           ? <View style={style.bottomContainer}>
               { this.props.renderWelcomeMessage(this.props) }
               { Config.ALLOW_LOGIN ?
