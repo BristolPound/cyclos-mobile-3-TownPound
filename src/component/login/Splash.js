@@ -71,8 +71,6 @@ class Splash  extends React.Component {
           resizeMode='cover'
           source={background}/>
         { this.state.showButtons
-          && !this.props.loginFormOpen
-          && !this.props.quickUnlockDisclaimerOpen
           && this.props.loginStatus !== LOGIN_STATUSES.LOGIN_IN_PROGRESS
           ? <View style={style.bottomContainer}>
               { this.props.renderWelcomeMessage(this.props) }
