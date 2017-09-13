@@ -59,15 +59,15 @@ class QuickUnlockDisclaimer extends React.Component {
             </Text>
           </View>
           <View style={style.separator}/>
-          <ScrollView style={style.instructionWrapper}>
-          <Text style={style.instructionText}>
-              Disclaimer:
-              Enter your TXT2PAY PIN code and press 'Accept' to enable the Quick Unlock method. This will use the TXT2PAY PIN to reauthenticate the device as opposed to
-              requiring the full password again. By accepting this option you are acknowledging that Bristol Pound takes no responsibility for any losses that occur as a
-              direct result of the inherent reduction in security that this method employs.
-              NOTE: You may logout at any time to reset this option.
-          </Text>
-          </ScrollView>
+          <View style={style.instructionWrapper}>
+            <Text style={style.instructionText}>
+                Disclaimer:
+                Enter your Bristol Pound banking PIN code and press 'Accept' to enable the Quick Unlock method. This will use the Bristol Pound banking PIN to reauthenticate the device as opposed to
+                requiring the full password again. By accepting this option you are acknowledging that Bristol Pound takes no responsibility for any losses that occur as a
+                direct result of the inherent reduction in security.
+                NOTE: You may logout at any time to reset this option.
+            </Text>
+          </View>
           <View style={style.pinEntry}>
             <TextInput
               style={style.textInput}
