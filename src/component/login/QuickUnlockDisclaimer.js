@@ -48,7 +48,6 @@ class QuickUnlockDisclaimer extends React.Component {
   }
 
   render() {
-    console.log("props bottom is " + this.props.bottom)
     var bottom = this.props.bottom
     return (
       <View style={merge(style.outerContainer, {bottom: bottom})}>
