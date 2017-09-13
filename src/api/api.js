@@ -139,14 +139,12 @@ export const checkPin = (username, PIN) => {
       throwErrorOnUnexpectedResponse(response, 403)
       return response.json()
         .then(json => {
-          if (json.code && json.code == "inaccessibleChannel")
-          {
+          if (json.code && json.code == 'inaccessibleChannel')          {
             return true
           }
 
           const e = json.code ? UNEXPECTED_ERROR : UNEXPECTED_DATA
-          if (!json.code)
-          {
+          if (!json.code)          {
             json = {code: UNEXPECTED_DATA, data: json}
           }
 

@@ -5,7 +5,7 @@ export const UNEXPECTED_ERROR = 'UNEXPECTED_ERROR'
 export const INPUT_ERROR = 'INPUT_ERROR'
 export const UNEXPECTED_HTTP_RESPONSE = 'UNEXPECTED_HTTP_RESPONSE'
 
-export const APIError = function(type, response) {
+export const APIError = function (type, response) {
   Error.call(this)
   this.message = 'An error response was returned from the Cyclos API'
   this.name = 'APIError'

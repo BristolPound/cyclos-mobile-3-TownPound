@@ -48,9 +48,10 @@ class QuickUnlockDisclaimer extends React.Component {
   }
 
   render() {
-    var bottom = this.props.bottom || screenHeight / 2
+    console.log("props bottom is " + this.props.bottom)
+    var bottom = this.props.bottom
     return (
-      <Animated.View style={merge(style.outerContainer, {bottom: bottom})}>
+      <View style={merge(style.outerContainer, {bottom: bottom})}>
         <View style={style.container}>
           <View style={style.header}>
             <Text style={style.headerText}>
@@ -100,7 +101,7 @@ class QuickUnlockDisclaimer extends React.Component {
             </TouchableOpacity>
           </View>
         </View>
-      </Animated.View>
+      </View>
     )
   }
 }

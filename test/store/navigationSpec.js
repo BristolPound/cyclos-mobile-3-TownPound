@@ -118,7 +118,17 @@ describe('Navigation reducer', () => {
 
 	it('should handle login/LOGGED_OUT', () => {
 	    expect(
-	      	reducer(initialState, {
+	      	reducer({
+          tabIndex: 0,
+          modalState: modalState.none,
+          mainComponent: mainComponent.tabs,
+          overlayVisible: false,
+          stateInitialised: false,
+          modalVisible: false,
+          modalOpen: false,
+          confirmationOpen: false,
+          coverApp: false
+        }, {
 	        	type: 'login/LOGGED_OUT'
 	      	})
 	    ).to.deep.equal({
