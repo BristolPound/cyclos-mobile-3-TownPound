@@ -17,9 +17,8 @@ class PrivacyPolicy extends React.Component {
 
 
   render() {
-    var bottom = this.props.bottom
     return (
-      <View style={merge(style.outerContainer, {bottom: bottom})}>
+      <View style={merge(style.outerContainer, {marginTop: 100})}>
         <View style={style.container}>
           <View style={style.header}>
             <Text style={style.headerText}>
