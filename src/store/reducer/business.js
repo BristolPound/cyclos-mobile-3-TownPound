@@ -305,7 +305,7 @@ const reducer = (state = initialState, action) => {
         filteredBusinesses: newFilteredBusinesses
       })
       break
-      
+
     case 'business/RESET_TRADER_SCREEN_ID':
       state = merge(state, {
         traderScreenBusinessId: undefined,

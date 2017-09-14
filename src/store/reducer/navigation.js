@@ -3,6 +3,7 @@ import merge from '../../util/merge'
 import { openTraderModal } from './business'
 import { moveMap, selectClosestBusiness } from './business'
 import { openPersonModal } from './person'
+import { screenHeight } from '../../util/ScreenSizes'
 
 export const modalState = {
   none: 'none',
@@ -50,6 +51,11 @@ export const setOverlayOpen = (value) => ({
 
 export const modalOpened = () => ({
   type: 'navigation/MODAL_OPENED'
+})
+
+export const setKeyboardHeight = () => ({
+  type: 'navigation/SET_KEYBOARD_HEIGHT',
+  height
 })
 
 export const selectMainComponent = (componentName) => ({
@@ -121,6 +127,12 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'login/LOGGED_OUT':
+      break
+    case 'login/JUST_BROWSING':
+      state = merge(state, {
+        mainComponent: mainComponent.tabs
+      })
+      break
     case 'login/LOGGED_IN':
       state = merge(state, {
         mainComponent: mainComponent.tabs

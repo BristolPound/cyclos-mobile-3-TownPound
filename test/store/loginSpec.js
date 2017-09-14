@@ -8,14 +8,19 @@ const LOGIN_STATUSES = {
 }
 
 const initialState = {
-  	loginStatus: LOGIN_STATUSES.LOGGED_OUT,
-    acceptedUsernames: {},
-    privacyPolicyAccepted: false,
-    privacyPolicyOpen: false,
-  	loginFormOpen: false,
-  	loggedInUsername: '',
-  	loggedInName: '',
-	  passToUnlock: ''
+  loginStatus: LOGIN_STATUSES.LOGGED_OUT,
+  loginFormOpen: false,
+  privacyPolicyOpen: false,
+  askToUnlock: false,
+  acceptedUsernames: {},
+  storePassword: false,
+  loggedInUsername: '',
+  loggedInName: '',
+  encryptedPassword: '',
+  quickUnlockDisclaimerOpen: false,
+  AUID: '',
+  encryptionKey: '',
+  unlockCode: ''
 }
 
 describe('Login reducer', () => {
@@ -46,14 +51,19 @@ describe('Login reducer', () => {
 	        	type: 'login/LOGGED_OUT'
 	      	})
 	    ).to.deep.equal({
-		  	loginStatus: LOGIN_STATUSES.LOGGED_OUT,
-        acceptedUsernames: {},
-        privacyPolicyAccepted: false,
+        loginStatus: LOGIN_STATUSES.LOGGED_OUT,
+        loginFormOpen: false,
         privacyPolicyOpen: false,
-		  	loginFormOpen: false,
-		  	loggedInUsername: '',
-  			loggedInName: '',
-			passToUnlock: ''
+        askToUnlock: false,
+        acceptedUsernames: {},
+        storePassword: false,
+        loggedInUsername: '',
+        loggedInName: '',
+        encryptedPassword: '',
+        quickUnlockDisclaimerOpen: false,
+        AUID: '',
+        encryptionKey: '',
+        unlockCode: ''
 		})
 	})
 
@@ -63,14 +73,19 @@ describe('Login reducer', () => {
 	        	type: 'login/LOGIN_IN_PROGRESS'
 	      	})
 	    ).to.deep.equal({
-		  	loginStatus: LOGIN_STATUSES.LOGIN_IN_PROGRESS,
-        acceptedUsernames: {},
-        privacyPolicyAccepted: false,
-        privacyPolicyOpen: false,
-		  	loginFormOpen: false,
-		  	loggedInUsername: '',
-  			loggedInName: '',
-			passToUnlock: ''
+  		  	loginStatus: LOGIN_STATUSES.LOGIN_IN_PROGRESS,
+          loginFormOpen: false,
+          privacyPolicyOpen: false,
+          askToUnlock: false,
+          acceptedUsernames: {},
+          storePassword: false,
+          loggedInUsername: '',
+          loggedInName: '',
+          encryptedPassword: '',
+          quickUnlockDisclaimerOpen: false,
+          AUID: '',
+          encryptionKey: '',
+          unlockCode: ''
 		})
 	})
 
@@ -81,14 +96,19 @@ describe('Login reducer', () => {
 	        	open: true
 	      	})
 	    ).to.deep.equal({
-		  	loginStatus: LOGIN_STATUSES.LOGGED_OUT,
-        acceptedUsernames: {},
-        privacyPolicyAccepted: false,
-        privacyPolicyOpen: false,
-		  	loginFormOpen: true,
-		  	loggedInUsername: '',
-  			loggedInName: '',
-			passToUnlock: ''
+          loginStatus: LOGIN_STATUSES.LOGGED_OUT,
+          loginFormOpen: true,
+          privacyPolicyOpen: false,
+          askToUnlock: false,
+          acceptedUsernames: {},
+          storePassword: false,
+          loggedInUsername: '',
+          loggedInName: '',
+          encryptedPassword: '',
+          quickUnlockDisclaimerOpen: false,
+          AUID: '',
+          encryptionKey: '',
+          unlockCode: ''
 		})
 	})
 })

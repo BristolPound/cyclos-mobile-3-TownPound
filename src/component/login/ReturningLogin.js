@@ -26,7 +26,7 @@ class ReturningLogin extends React.Component {
   render() {
     return (
       <Splash loginButtonText='Log in'
-        logoutButtonText="I'm just browsing"
+        browsingButtonText="I'm just browsing"
         renderWelcomeMessage={renderWelcomeMessage}
         renderInfoText={renderInfoText} />
     )

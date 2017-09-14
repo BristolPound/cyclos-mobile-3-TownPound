@@ -2,7 +2,7 @@ import reducer from '../../src/store/reducer/networkConnection'
 var expect = require('chai').expect
 
 const initialState = {
-  	status: false,
+  	status: true,
   	failedActionsQueue: []
 }
 
@@ -32,8 +32,7 @@ describe('NetworkConnection reducer', () => {
 	        	type: 'networkConnection/ACTION_FAILED',
 	        	failedAction: {type: 'Select person'}
 	      	})
-	    ).to.deep.equal({
-		  	status: false,
+	    ).to.containSubset({
 		  	failedActionsQueue: [{type: 'Select person'}]
 		})
 	})
