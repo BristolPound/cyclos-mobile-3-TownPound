@@ -5,11 +5,12 @@ import DefaultText from '../DefaultText'
 import Colors from '@Colors/colors'
 import merge from '../../util/merge'
 import { bindActionCreators } from 'redux'
-import { openLoginForm, logout } from '../../store/reducer/login'
+import { openLoginForm, justBrowsing, LOGIN_STATUSES } from '../../store/reducer/login'
 import PLATFORM from '../../util/Platforms'
 import style from './SplashStyle'
 import Images from '@Assets/images'
 import Config from '@Config/config'
+import NetworkConnection from '../NetworkConnection'
 
 const background = Images.background
 const screenWidth = Dimensions.get('window').width
@@ -27,14 +28,6 @@ class Splash  extends React.Component {
     this.animateBackground()
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.loginFormOpen && PLATFORM.isAndroid()) {
-      this.setState({ showButtons: false})
-    }
-    if (!nextProps.loginFormOpen && this.props.loginFormOpen) {
-      setTimeout(() => this.setState({ showButtons: true }), 80)
-    }
-  }
 
   animateBackground() {
     // background image is 2028px wide
@@ -69,7 +62,7 @@ class Splash  extends React.Component {
           })}
           resizeMode='cover'
           source={background}/>
-        { this.state.showButtons
+        { this.props.loginStatus !== LOGIN_STATUSES.LOGIN_IN_PROGRESS && !this.props.loginFormOpen && !this.props.encryptedPassword
           ? <View style={style.bottomContainer}>
               { this.props.renderWelcomeMessage(this.props) }
               { Config.ALLOW_LOGIN ?
@@ -84,14 +77,15 @@ class Splash  extends React.Component {
               : <View style={style.loginButton.replacementContainer}/>}
               <TouchableHighlight
                   style={style.skipButton.container}
-                  onPress={this.props.logout}
+                  onPress={this.props.justBrowsing}
                   underlayColor={Colors.primaryBlue}>
-                <DefaultText style={style.skipButton.text}>{this.props.logoutButtonText}</DefaultText>
+                <DefaultText style={style.skipButton.text}>{this.props.browsingButtonText}</DefaultText>
               </TouchableHighlight>
               { Config.ALLOW_LOGIN && this.props.renderInfoText(this.props) }
             </View>
           : undefined
         }
+        <NetworkConnection top={true}/>
       </View>
     )
   }
@@ -103,6 +97,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ openLoginForm, logout }, dispatch)
+  bindActionCreators({ openLoginForm, justBrowsing }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Splash)

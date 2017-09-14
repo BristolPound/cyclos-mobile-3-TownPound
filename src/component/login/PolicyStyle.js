@@ -1,13 +1,13 @@
 import { StyleSheet, Dimensions } from 'react-native'
 import Colors from '@Colors/colors'
-import { border, absolutePosition } from '../../util/StyleUtils'
+import { border, horizontalAbsolutePosition } from '../../util/StyleUtils'
 import { screenWidth, screenHeight } from '../../util/ScreenSizes'
 
 const style = {
-  wrapper: {
-    ...absolutePosition(),
+  outerContainer: {
+    ...horizontalAbsolutePosition(0, 0),
     backgroundColor: 'transparent',
-    flex: 1,
+    // flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -28,7 +28,7 @@ const style = {
   },
   container: {
     backgroundColor: Colors.offWhite,
-    marginBottom: 100,
+    // marginBottom: 100,
     width: screenWidth * 0.9,
     height: screenHeight * 0.5,
     elevation: 5,
@@ -44,6 +44,11 @@ const style = {
     marginBottom: 10,
   },
   instructionText: {
+    fontSize: 14,
+    color: Colors.gray,
+    textAlign: 'center'
+  },
+  instructionTextHTML: {
     div: {
       textAlign: 'center'
     },
@@ -67,10 +72,26 @@ const style = {
     marginRight: 5,
     marginLeft: 5,
   },
+  pinEntry: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 50,
+  },
   buttonText: {
     fontSize: 18,
     textAlign: 'center',
     color: 'white'
+  },
+  textInput: {
+    width: screenWidth * 0.7,
+    padding: 10,
+    textAlign: 'center',
+    borderColor: Colors.primaryBlue,
+    borderWidth: 2,
+    borderRadius: 5,
+    fontSize: 18,
+    marginBottom: 10,
   }
 
 }

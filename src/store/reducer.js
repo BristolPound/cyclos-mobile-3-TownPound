@@ -5,7 +5,7 @@ import transaction from './reducer/transaction'
 import business, { loadBusinessList, geolocationChanged, geolocationFailed } from './reducer/business'
 import person from './reducer/person'
 import navigation, { selectMainComponent, mainComponent, stateInitialised } from './reducer/navigation'
-import login from './reducer/login'
+import login, { generateAUID, setStorePassword } from './reducer/login'
 import sendMoney from './reducer/sendMoney'
 import account from './reducer/account'
 import networkConnection, {connectivityChanged} from './reducer/networkConnection'
@@ -54,5 +54,14 @@ export const initialise = (store) => {
   store.dispatch(stateInitialised())
   if (store.getState().login.loggedInUsername) {
     store.dispatch(selectMainComponent(mainComponent.returningLogin))
+  }
+  if (!store.getState().login.AUID) {
+    store.dispatch(generateAUID())
+  }
+  // If there is no stored password (encrypted) then store password should
+  // revert to false - in case a PIN is set and disclaimer agreed then
+  // the app is closed and opened before logging in
+  if (store.getState().login.encryptedPassword === '') {
+    store.dispatch(setStorePassword(false))
   }
 }

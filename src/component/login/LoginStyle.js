@@ -5,11 +5,12 @@ import commonStyle from '../style'
 const styles = {
   outerContainer: {
     ...horizontalAbsolutePosition(0, 0),
-    height: 204
+    height: 244
   },
   loginContainer: {
     backgroundColor: 'white',
-    ...commonStyle.shadow
+    ...commonStyle.shadow,
+    flexDirection: 'column'
   },
   loginButton: {
     height: 68,
@@ -29,6 +30,26 @@ const styles = {
   separator: {
     height: 1,
     backgroundColor: Colors.gray5
+  },
+  storePasswordContainer: {
+    height: 40,
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  checkbox: {
+    width: 150,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  checkboxLeftText: {
+    fontSize: 14,
+    color: Colors.primaryBlue
+  },
+  checkboxImage: {
+    tintColor: Colors.primaryBlue
   }
 }
 
