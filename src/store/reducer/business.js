@@ -335,8 +335,8 @@ const reducer = (state = initialState, action) => {
 
     case 'business/PAYMENT_DATA':
       var selected = state.traderScreenBusiness
-      selected.paymentTypes = action.data.paymentTypes
-      state = merge(state, { traderScreenBusiness: selected })
+      // selected.paymentTypes = action.data.paymentTypes
+      state = merge(state, { traderScreenBusiness: merge(selected, {paymentTypes: action.data.paymentTypes})})
   }
   return state
 }
