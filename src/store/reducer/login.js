@@ -13,7 +13,8 @@ import uuidv4 from 'uuid/v4'
 export const LOGIN_STATUSES = {
   LOGGED_IN: 'LOGGED_IN',
   LOGGED_OUT: 'LOGGED_OUT',
-  LOGIN_IN_PROGRESS: 'LOGIN_IN_PROGRESS'
+  LOGIN_IN_PROGRESS: 'LOGIN_IN_PROGRESS',
+  AUTHENTICATING: 'AUTHENTICATING'
 }
 
 export const unlockCharNo = 3
@@ -49,6 +50,10 @@ export const loggedOut = () => ({
 
 export const justBrowsing = () => ({
   type: 'login/JUST_BROWSING'
+})
+
+export const authenticatingStatus = () => ({
+  type: 'login/AUTHENTICATING'
 })
 
 export const generateAUID = () => ({
@@ -160,10 +165,7 @@ const simplifyLogin = (username, password) =>
     if (getState().login.storePassword && getState().login.encryptedPassword === '') {
       authenticateCyclosPassword(username, password, dispatch)
       .then((success) => {
-        if (success)
-        {
-            dispatch(openQuickUnlockDisclaimer(true))
-        }
+        success && dispatch(openQuickUnlockDisclaimer(true))
       })
     }
     // Otherwise just log in
@@ -210,6 +212,7 @@ export const reauthorise = (code = null) =>
 
 export const authenticateCyclosPassword = (username, password, dispatch) => {
   const f = (dispatch) => {
+    dispatch(authenticatingStatus())
     return checkPassword(username, password)
     .then((success) => {
       return success
@@ -222,6 +225,7 @@ export const authenticateCyclosPassword = (username, password, dispatch) => {
 
 export const authenticateCyclosPIN = (username, PIN) =>
   (dispatch, getState) => {
+    dispatch(authenticatingStatus())
     return checkPin(username, PIN)
       .then((success) => {
         if (success) {
@@ -236,6 +240,7 @@ export const authenticateCyclosPIN = (username, PIN) =>
   }
 
 const evalResponseError = (dispatch, accessPassword, returnValue) => (err) => {
+  dispatch(loggedOut())
   if (err instanceof APIError && err.type === UNAUTHORIZED_ACCESS) {
     accessPassword = accessPassword ? accessPassword : 'Password'
     return err.response.json()
@@ -306,6 +311,11 @@ const reducer = (state = initialState, action) => {
     case 'login/JUST_BROWSING':
       state = merge(state, {
         loginStatus: LOGIN_STATUSES.LOGGED_OUT
+      })
+      break
+    case 'login/AUTHENTICATING':
+      state = merge(state, {
+        loginStatus: LOGIN_STATUSES.AUTHENTICATING
       })
       break
     case 'login/LOGGED_OUT':

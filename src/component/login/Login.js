@@ -33,6 +33,21 @@ class Login extends KeyboardComponent {
     this.passwordInputRef.focus()
   }
 
+  loginValid() {
+    return (detailsValid() && loginStateValid())
+  }
+
+  loginStateValid() {
+    const { connection, loginStatus } = this.props
+
+    var invalidStatuses = [
+      LOGIN_STATUSES.AUTHENTICATING,
+      LOGIN_STATUSES.LOGIN_IN_PROGRESS
+    ]
+
+    return connection && !invalidStatuses.includes(loginStatus)
+  }
+
   // Cyclos doesn't like special characters or empty usernames :(
   detailsValid() {
     const { username, password } = this.state
@@ -41,7 +56,6 @@ class Login extends KeyboardComponent {
     return (
       username && !username.match(/\W/) && password
         && password.indexOf(' ') === -1
-        && connection
     )
   }
 
@@ -113,10 +127,10 @@ class Login extends KeyboardComponent {
       <View>
         <Animated.View style={merge(styles.outerContainer, { bottom: this.state.keyboardHeight })}>
           <Animated.View style={merge(styles.loginContainer, { bottom: this.state.bottom })}>
-            <TouchableOpacity style={{ ...styles.loginButton, backgroundColor: this.detailsValid() ? Colors.primaryBlue : Colors.offWhite }}
+            <TouchableOpacity style={{ ...styles.loginButton, backgroundColor: this.loginValid() ? Colors.primaryBlue : Colors.offWhite }}
                 accessibilityLabel={'Login Button'}
-                onPress={() => this.detailsValid() && this.beginLogin()}>
-              <DefaultText style={{ ...styles.loginButtonText, color: this.detailsValid() ? 'white' : 'black' }}>
+                onPress={() => this.loginValid() && this.beginLogin()}>
+              <DefaultText style={{ ...styles.loginButtonText, color: this.loginValid() ? 'white' : 'black' }}>
                 {loginButtonText}
               </DefaultText>
             </TouchableOpacity>
