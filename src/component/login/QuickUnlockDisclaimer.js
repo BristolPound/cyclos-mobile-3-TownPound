@@ -58,7 +58,7 @@ class QuickUnlockDisclaimer extends React.Component {
             </Text>
           </View>
           <View style={style.separator}/>
-          <View style={style.instructionWrapper}>
+          <ScrollView style={style.instructionWrapper}>
             <Text style={style.instructionText}>
                 Disclaimer:
                 Enter your Bristol Pound banking PIN code and press 'Accept' to enable the Quick Unlock method. This will use the Bristol Pound banking PIN to reauthenticate the device as opposed to
@@ -66,7 +66,7 @@ class QuickUnlockDisclaimer extends React.Component {
                 direct result of the inherent reduction in security.
                 NOTE: You may logout at any time to reset this option.
             </Text>
-          </View>
+          </ScrollView>
           <View style={style.pinEntry}>
             <TextInput
               style={style.textInput}
@@ -76,6 +76,7 @@ class QuickUnlockDisclaimer extends React.Component {
               onChangeText={(enteredPIN) => this.updateEnteredPIN(enteredPIN)}
               placeholder="Enter PIN"
               keyboardType='numeric'
+              underlineColorAndroid={Colors.transparent}
               secureTextEntry={true}
               maxLength={PIN_LENGTH}
             />

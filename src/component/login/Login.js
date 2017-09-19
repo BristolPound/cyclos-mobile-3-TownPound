@@ -18,6 +18,7 @@ import Images from '@Assets/images'
 import Checkbox from 'react-native-check-box'
 import LockScreen from '../lockedState/LockScreen'
 import NetworkConnection from '../NetworkConnection'
+import _ from 'lodash'
 import { screenHeight } from '../../util/ScreenSizes'
 
 
@@ -26,33 +27,25 @@ class Login extends KeyboardComponent {
     super()
     this.state.username = props.loggedInUsername
     this.state.maxKeyboardHeight = 0
+    this.THROTTLED_DELAY = 500
   }
-
 
   selectPasswordField() {
     this.passwordInputRef.focus()
   }
 
   loginValid() {
-    return (detailsValid() && loginStateValid())
+    return (this.detailsValid() && this.loginStateValid())
   }
 
   loginStateValid() {
-    const { connection, loginStatus } = this.props
-
-    var invalidStatuses = [
-      LOGIN_STATUSES.AUTHENTICATING,
-      LOGIN_STATUSES.LOGIN_IN_PROGRESS
-    ]
-
-    return connection && !invalidStatuses.includes(loginStatus)
+    const { connection, authenticating } = this.props
+    return connection && !authenticating
   }
 
   // Cyclos doesn't like special characters or empty usernames :(
   detailsValid() {
     const { username, password } = this.state
-    const { connection } = this.props
-
     return (
       username && !username.match(/\W/) && password
         && password.indexOf(' ') === -1
@@ -117,6 +110,12 @@ class Login extends KeyboardComponent {
     this.props.flipStorePassword()
   }
 
+  attemptLogin() {
+    if (this.loginValid()) {
+      this.beginLogin()
+    }
+  }
+
   render() {
     let loginButtonText = 'Log in'
     const {
@@ -129,7 +128,7 @@ class Login extends KeyboardComponent {
           <Animated.View style={merge(styles.loginContainer, { bottom: this.state.bottom })}>
             <TouchableOpacity style={{ ...styles.loginButton, backgroundColor: this.loginValid() ? Colors.primaryBlue : Colors.offWhite }}
                 accessibilityLabel={'Login Button'}
-                onPress={() => this.loginValid() && this.beginLogin()}>
+                onPress={_.throttle(this.attemptLogin.bind(this), this.THROTTLED_DELAY)}>
               <DefaultText style={{ ...styles.loginButtonText, color: this.loginValid() ? 'white' : 'black' }}>
                 {loginButtonText}
               </DefaultText>

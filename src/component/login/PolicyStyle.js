@@ -63,7 +63,7 @@ const style = {
     marginBottom: 7
   },
   buttonContainer: {
-    height: 40,
+    height: 50,
     flexDirection: 'row',
     borderRadius: 5,
     alignItems: 'center',
@@ -85,8 +85,11 @@ const style = {
   },
   textInput: {
     width: screenWidth * 0.7,
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 0,
     textAlign: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
     borderColor: Colors.primaryBlue,
     borderWidth: 2,
     borderRadius: 5,

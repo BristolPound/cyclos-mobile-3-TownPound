@@ -76,6 +76,9 @@ class LockScreen extends React.Component {
 
 
   resetState(){
+    // If it's a login replacement then it will unmount after login so just return
+    if (this.props.loginReplacement) return
+
     this.setState({
       askToUnlock: false,
       unlockError: false,
