@@ -13,8 +13,7 @@ import uuidv4 from 'uuid/v4'
 export const LOGIN_STATUSES = {
   LOGGED_IN: 'LOGGED_IN',
   LOGGED_OUT: 'LOGGED_OUT',
-  LOGIN_IN_PROGRESS: 'LOGIN_IN_PROGRESS',
-  AUTHENTICATING: 'AUTHENTICATING'
+  LOGIN_IN_PROGRESS: 'LOGIN_IN_PROGRESS'
 }
 
 export const unlockCharNo = 3
@@ -24,6 +23,7 @@ const initialState = {
   loginFormOpen: false,
   privacyPolicyOpen: false,
   askToUnlock: false,
+  authenticating: false,
   acceptedUsernames: {},
   storePassword: false,
   loggedInUsername: '',
@@ -52,8 +52,10 @@ export const justBrowsing = () => ({
   type: 'login/JUST_BROWSING'
 })
 
-export const authenticatingStatus = () => ({
-  type: 'login/AUTHENTICATING'
+export const authenticating = (isAuthenticating = true) => ({
+  type: 'login/AUTHENTICATING',
+  isAuthenticating
+
 })
 
 export const generateAUID = () => ({
@@ -212,9 +214,10 @@ export const reauthorise = (code = null) =>
 
 export const authenticateCyclosPassword = (username, password, dispatch) => {
   const f = (dispatch) => {
-    dispatch(authenticatingStatus())
+    dispatch(authenticating())
     return checkPassword(username, password)
     .then((success) => {
+      dispatch(authenticating(false))
       return success
     })
     .catch(evalResponseError(dispatch))
@@ -225,10 +228,11 @@ export const authenticateCyclosPassword = (username, password, dispatch) => {
 
 export const authenticateCyclosPIN = (username, PIN) =>
   (dispatch, getState) => {
-    dispatch(authenticatingStatus())
+    dispatch(authenticating())
     return checkPin(username, PIN)
       .then((success) => {
         if (success) {
+          dispatch(authenticating(false))
           dispatch(setEncryptionKey(PIN))
         }
         else {
@@ -240,7 +244,7 @@ export const authenticateCyclosPIN = (username, PIN) =>
   }
 
 const evalResponseError = (dispatch, accessPassword, returnValue) => (err) => {
-  dispatch(loggedOut())
+  dispatch(authenticating(false))
   if (err instanceof APIError && err.type === UNAUTHORIZED_ACCESS) {
     accessPassword = accessPassword ? accessPassword : 'Password'
     return err.response.json()
@@ -315,7 +319,7 @@ const reducer = (state = initialState, action) => {
       break
     case 'login/AUTHENTICATING':
       state = merge(state, {
-        loginStatus: LOGIN_STATUSES.AUTHENTICATING
+        authenticating: action.isAuthenticating
       })
       break
     case 'login/LOGGED_OUT':
