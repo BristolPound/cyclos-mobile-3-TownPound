@@ -189,7 +189,7 @@ class Login extends KeyboardComponent {
                 ? <QuickUnlockDisclaimer
                     acceptCallback={_.throttle((PIN) => this.acceptQuickLoginCallback(PIN), this.THROTTLED_DELAY)}
                     rejectCallback={() => this.cancelQuickLoginCallback()}
-                    disabledAccept={(!this.props.connection || this.props.authenticating)}
+                    disabledAccept={!this.loginStateValid()}
                     bottom={this.state.maxKeyboardHeight}
                   />
                 : loginView
