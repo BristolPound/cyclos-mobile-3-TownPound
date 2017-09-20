@@ -40,7 +40,7 @@ class QuickUnlockDisclaimer extends React.Component {
 
   inputValid() {
     var len = this.state.enteredPIN.length
-    if (len == PIN_LENGTH && this.props.connection) {
+    if (len == PIN_LENGTH && !this.props.disabledAccept) {
       return true
     }
 
