@@ -7,7 +7,6 @@ const style = {
   outerContainer: {
     ...horizontalAbsolutePosition(0, 0),
     backgroundColor: 'transparent',
-    // flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -28,7 +27,6 @@ const style = {
   },
   container: {
     backgroundColor: Colors.offWhite,
-    // marginBottom: 100,
     width: screenWidth * 0.9,
     height: screenHeight * 0.5,
     elevation: 5,

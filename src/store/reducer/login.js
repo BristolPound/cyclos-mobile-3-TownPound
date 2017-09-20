@@ -251,6 +251,7 @@ const evalResponseError = (dispatch, accessPassword, returnValue) => (err) => {
       .then(json => {
         if (json && json.code == 'login' && json.passwordStatus === 'temporarilyBlocked') {
           dispatch(updateStatus(accessPassword+' temporarily blocked', ERROR_SEVERITY.SEVERE))
+          dispatch(loggedOut())
         } else if (json && ['login', 'missingAuthorization'].includes(json.code)) {
           dispatch(updateStatus('Username and '+accessPassword+' do not match', ERROR_SEVERITY.SEVERE))
         } else if (json && json.code === 'remoteAddressBlocked') {
