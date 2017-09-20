@@ -15,6 +15,8 @@ const styles = {
   loginButton: {
     height: 68,
     padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   loginButtonText: {
     fontSize: 24,
