@@ -23,6 +23,7 @@ const initialState = {
   loginFormOpen: false,
   privacyPolicyOpen: false,
   askToUnlock: false,
+  authenticating: false,
   acceptedUsernames: {},
   storePassword: false,
   loggedInUsername: '',
@@ -49,6 +50,12 @@ export const loggedOut = () => ({
 
 export const justBrowsing = () => ({
   type: 'login/JUST_BROWSING'
+})
+
+export const authenticating = (isAuthenticating = true) => ({
+  type: 'login/AUTHENTICATING',
+  isAuthenticating
+
 })
 
 export const generateAUID = () => ({
@@ -160,10 +167,7 @@ const simplifyLogin = (username, password) =>
     if (getState().login.storePassword && getState().login.encryptedPassword === '') {
       authenticateCyclosPassword(username, password, dispatch)
       .then((success) => {
-        if (success)
-        {
-            dispatch(openQuickUnlockDisclaimer(true))
-        }
+        success && dispatch(openQuickUnlockDisclaimer(true))
       })
     }
     // Otherwise just log in
@@ -210,8 +214,10 @@ export const reauthorise = (code = null) =>
 
 export const authenticateCyclosPassword = (username, password, dispatch) => {
   const f = (dispatch) => {
+    dispatch(authenticating())
     return checkPassword(username, password)
     .then((success) => {
+      dispatch(authenticating(false))
       return success
     })
     .catch(evalResponseError(dispatch))
@@ -222,9 +228,11 @@ export const authenticateCyclosPassword = (username, password, dispatch) => {
 
 export const authenticateCyclosPIN = (username, PIN) =>
   (dispatch, getState) => {
+    dispatch(authenticating())
     return checkPin(username, PIN)
       .then((success) => {
         if (success) {
+          dispatch(authenticating(false))
           dispatch(setEncryptionKey(PIN))
         }
         else {
@@ -236,12 +244,14 @@ export const authenticateCyclosPIN = (username, PIN) =>
   }
 
 const evalResponseError = (dispatch, accessPassword, returnValue) => (err) => {
+  dispatch(authenticating(false))
   if (err instanceof APIError && err.type === UNAUTHORIZED_ACCESS) {
     accessPassword = accessPassword ? accessPassword : 'Password'
     return err.response.json()
       .then(json => {
         if (json && json.code == 'login' && json.passwordStatus === 'temporarilyBlocked') {
           dispatch(updateStatus(accessPassword+' temporarily blocked', ERROR_SEVERITY.SEVERE))
+          dispatch(loggedOut())
         } else if (json && ['login', 'missingAuthorization'].includes(json.code)) {
           dispatch(updateStatus('Username and '+accessPassword+' do not match', ERROR_SEVERITY.SEVERE))
         } else if (json && json.code === 'remoteAddressBlocked') {
@@ -306,6 +316,11 @@ const reducer = (state = initialState, action) => {
     case 'login/JUST_BROWSING':
       state = merge(state, {
         loginStatus: LOGIN_STATUSES.LOGGED_OUT
+      })
+      break
+    case 'login/AUTHENTICATING':
+      state = merge(state, {
+        authenticating: action.isAuthenticating
       })
       break
     case 'login/LOGGED_OUT':

@@ -18,6 +18,7 @@ import Images from '@Assets/images'
 import Checkbox from 'react-native-check-box'
 import LockScreen from '../lockedState/LockScreen'
 import NetworkConnection from '../NetworkConnection'
+import _ from 'lodash'
 import { screenHeight } from '../../util/ScreenSizes'
 
 
@@ -26,22 +27,28 @@ class Login extends KeyboardComponent {
     super()
     this.state.username = props.loggedInUsername
     this.state.maxKeyboardHeight = 0
+    this.THROTTLED_DELAY = 500
   }
-
 
   selectPasswordField() {
     this.passwordInputRef.focus()
   }
 
+  loginValid() {
+    return (this.detailsValid() && this.loginStateValid())
+  }
+
+  loginStateValid() {
+    const { connection, authenticating } = this.props
+    return connection && !authenticating
+  }
+
   // Cyclos doesn't like special characters or empty usernames :(
   detailsValid() {
     const { username, password } = this.state
-    const { connection } = this.props
-
     return (
       username && !username.match(/\W/) && password
         && password.indexOf(' ') === -1
-        && connection
     )
   }
 
@@ -103,6 +110,12 @@ class Login extends KeyboardComponent {
     this.props.flipStorePassword()
   }
 
+  attemptLogin() {
+    if (this.loginValid()) {
+      this.beginLogin()
+    }
+  }
+
   render() {
     let loginButtonText = 'Log in'
     const {
@@ -113,10 +126,10 @@ class Login extends KeyboardComponent {
       <View>
         <Animated.View style={merge(styles.outerContainer, { bottom: this.state.keyboardHeight })}>
           <Animated.View style={merge(styles.loginContainer, { bottom: this.state.bottom })}>
-            <TouchableOpacity style={{ ...styles.loginButton, backgroundColor: this.detailsValid() ? Colors.primaryBlue : Colors.offWhite }}
+            <TouchableOpacity style={{ ...styles.loginButton, backgroundColor: this.loginValid() ? Colors.primaryBlue : Colors.offWhite }}
                 accessibilityLabel={'Login Button'}
-                onPress={() => this.detailsValid() && this.beginLogin()}>
-              <DefaultText style={{ ...styles.loginButtonText, color: this.detailsValid() ? 'white' : 'black' }}>
+                onPress={_.throttle(this.attemptLogin.bind(this), this.THROTTLED_DELAY)}>
+              <DefaultText style={{ ...styles.loginButtonText, color: this.loginValid() ? 'white' : 'black' }}>
                 {loginButtonText}
               </DefaultText>
             </TouchableOpacity>
@@ -174,9 +187,9 @@ class Login extends KeyboardComponent {
                 />
               : this.props.quickUnlockDisclaimerOpen
                 ? <QuickUnlockDisclaimer
-                    acceptCallback={(PIN) => this.acceptQuickLoginCallback(PIN)}
+                    acceptCallback={_.throttle((PIN) => this.acceptQuickLoginCallback(PIN), this.THROTTLED_DELAY)}
                     rejectCallback={() => this.cancelQuickLoginCallback()}
-                    connection={this.props.connection}
+                    disabledAccept={!this.loginStateValid()}
                     bottom={this.state.maxKeyboardHeight}
                   />
                 : loginView
