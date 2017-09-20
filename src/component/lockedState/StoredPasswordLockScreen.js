@@ -6,6 +6,7 @@ import merge from '../../util/merge'
 import style from './LockStyle'
 import { unlockCharNo } from '../../store/reducer/login'
 import KeyboardComponent from '../KeyboardComponent'
+import _ from 'lodash'
 
 export const maxAttempts = 3;
 
@@ -16,6 +17,7 @@ class StoredPasswordLockScreen extends KeyboardComponent {
     constructor() {
       super()
       this.state.enteredPIN = ''
+      this.THROTTLED_DELAY = 300
     }
 
     updateEnteredPIN(enteredPIN) {
@@ -106,14 +108,14 @@ class StoredPasswordLockScreen extends KeyboardComponent {
                         <TouchableOpacity
                             style={merge(style.buttonContainer, { backgroundColor: Colors.primaryBlue})}
                             onPress={() => this.props.logout && this.props.logout()}>
-                            <DefaultText style={merge(style.buttonText, { color: 'white' })}>
+                            <Text style={merge(style.buttonText, { color: 'white' })}>
                                 Logout
-                            </DefaultText>
+                            </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                          disabled={!this.inputValid() || this.props.headerMessage !== ''}
+                          disabled={!this.inputValid()}
                           style={merge(style.buttonContainer, {backgroundColor: this.getButtonColor()})}
-                          onPress={() => this.unlockAttempt()}
+                          onPress={_.throttle(this.unlockAttempt.bind(this), this.THROTTLED_DELAY)}
                         >
                           <Text style={merge(style.buttonText, {color: this.getButtonTextColor()})}>
                             Unlock

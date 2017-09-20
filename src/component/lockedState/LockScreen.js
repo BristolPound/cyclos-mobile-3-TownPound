@@ -190,9 +190,6 @@ class LockScreen extends React.Component {
         this.unlock()
         this.props.postUnlock() // login after authorising the PIN
       }
-      else {
-        this.failedAttempt()
-      }
     })
     .catch((err) => {
       return false
@@ -205,13 +202,14 @@ class LockScreen extends React.Component {
     if (this.props.loginReplacement) {
       return this.loginReplacementMethod(code)
     }
-
-    if (this.checkPin(code)) {
-      this.unlock()
-      this.setAuthTimer(code)
-    }
     else {
-      this.failedAttempt()
+      if (this.checkPin(code)) {
+        this.unlock()
+        this.setAuthTimer(code)
+      }
+      else {
+        this.failedAttempt()
+      }
     }
 
     this.setHeader(false)
@@ -222,6 +220,8 @@ class LockScreen extends React.Component {
     if (!this.state.askToUnlock && !this.props.loginReplacement) {
       return <View style={{ height: 0 }}/>
     }
+    const { loginReplacement, connection } = this.props
+    var disabledUnlock = (loginReplacement && !connection) || this.props.authenticating
     return (
       <View style={style.wrapper}>
         {this.props.coverApp
@@ -267,12 +267,7 @@ const mapDispatchToProps = (dispatch) =>
 
 const mapStateToProps = (state) => ({
   ...state.navigation,
-  storePassword: state.login.storePassword,
-  loggedInUsername: state.login.loggedInUsername,
-  loginStatus: state.login.loginStatus,
-  encryptedPassword: state.login.encryptedPassword,
-  encryptionKey: state.login.encryptionKey,
-  unlockCode: state.login.unlockCode,
+  ...state.login,
   connection: state.networkConnection.status,
   statusMessage: state.statusMessage.message
 })
