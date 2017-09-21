@@ -98,14 +98,17 @@ class InputComponent extends KeyboardComponent {
                 <TextInput style={styles.textInput}
                     {...input}
                     autoFocus={true}
+                    underlineColorAndroid={Colors.transparent}
                     accessibilityLabel={input.placeholder} />
                 <View style={styles.separator}/>
                 {pinInput
                   ? <TextInput style={styles.textInput}
                       {...pinInput}
+                      underlineColorAndroid={Colors.transparent}
                       accessibilityLabel={pinInput.placeholder} />
                   : <TextInput style={styles.textInput}
                       {...descriptionInput}
+                      underlineColorAndroid={Colors.transparent}
                       accessibilityLabel={descriptionInput.placeholder} />
                 }
                 <BalanceMessage balance={balance}/>
