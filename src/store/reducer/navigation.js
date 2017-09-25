@@ -28,7 +28,6 @@ const initialState = {
   modalOpen: false,
   confirmationOpen: false,
   coverApp: false,
-  keyboardHeight: screenHeight / 2
 }
 
 export const navigateToTab = (tabIndex) =>
