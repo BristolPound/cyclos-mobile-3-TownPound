@@ -55,7 +55,7 @@ class Root extends React.Component {
               barStyle={this.props.mainComponent === mainComponent.returningLogin ? 'light-content' : 'dark-content'}/>
           {bodyComponent}
           <LoginOverlay/>
-          {(this.props.modalOpen && !this.props.loginFormOpen) && Config.ALLOW_LOGIN && (this.props.userShortDisplay !== this.props.payeeShortDisplay) ? <SendMoney /> : undefined}
+          {(this.props.modalOpen && !this.props.loginFormOpen) && Config.ALLOW_LOGIN && (!this.props.payeeShortDisplay || this.props.userShortDisplay !== this.props.payeeShortDisplay) ? <SendMoney /> : undefined}
           <Login/>
           {this.props.loginFormOpen && <NetworkConnection top={true}/>}
           <StatusMessage/>
@@ -83,8 +83,7 @@ const mapStateToProps = (state) => ({
     ...state.navigation,
     userShortDisplay: state.account.details.shortDisplay,
     payeeShortDisplay: state.business.traderScreenBusinessId ? state.business.businessList[state.business.traderScreenBusinessId].fields.username : '',
-    loginFormOpen: state.login.loginFormOpen,
-    passToUnlock: state.login.passToUnlock
+    loginFormOpen: state.login.loginFormOpen
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Root)
