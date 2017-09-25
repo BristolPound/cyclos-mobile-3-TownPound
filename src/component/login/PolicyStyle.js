@@ -7,7 +7,6 @@ const style = {
   outerContainer: {
     ...horizontalAbsolutePosition(0, 0),
     backgroundColor: 'transparent',
-    // flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -28,7 +27,6 @@ const style = {
   },
   container: {
     backgroundColor: Colors.offWhite,
-    // marginBottom: 100,
     width: screenWidth * 0.9,
     height: screenHeight * 0.5,
     elevation: 5,
@@ -63,7 +61,7 @@ const style = {
     marginBottom: 7
   },
   buttonContainer: {
-    height: 40,
+    height: 50,
     flexDirection: 'row',
     borderRadius: 5,
     alignItems: 'center',
@@ -85,8 +83,11 @@ const style = {
   },
   textInput: {
     width: screenWidth * 0.7,
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 0,
     textAlign: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
     borderColor: Colors.primaryBlue,
     borderWidth: 2,
     borderRadius: 5,

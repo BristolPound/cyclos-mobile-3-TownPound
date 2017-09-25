@@ -6,7 +6,6 @@ const DirectoryAPI = require('org.bristolpound.cyclos.api.directory')
 
 const directoryAPI = new DirectoryAPI(Config.DIRECTORY)
 
-
 const parseShortDisplay = fullDisplay =>
   fullDisplay.includes('(') ? fullDisplay.substring(fullDisplay.indexOf('(') + 1, fullDisplay.indexOf(')')) : fullDisplay
 

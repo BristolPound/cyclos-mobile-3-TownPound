@@ -17,9 +17,8 @@ class PrivacyPolicy extends React.Component {
 
 
   render() {
-    var bottom = this.props.bottom || screenHeight / 2
     return (
-      <View style={merge(style.outerContainer, {bottom: bottom})}>
+      <View style={merge(style.outerContainer, {marginTop: 100})}>
         <View style={style.container}>
           <View style={style.header}>
             <Text style={style.headerText}>
@@ -32,19 +31,19 @@ class PrivacyPolicy extends React.Component {
           </ScrollView>
           <View style={style.buttonRow}>
             <TouchableOpacity
-              style={merge(style.buttonContainer, {backgroundColor: Colors.primaryBlue})}
-              onPress={this.props.acceptCallback}
-            >
-              <Text style={style.buttonText}>
-                Accept
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
               style={merge(style.buttonContainer, {borderWidth: 2, borderColor: Colors.primaryBlue})}
               onPress={this.props.rejectCallback}
             >
               <Text style={merge(style.buttonText, {color: Colors.primaryBlue})}>
                 Reject
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={merge(style.buttonContainer, {backgroundColor: Colors.primaryBlue})}
+              onPress={this.props.acceptCallback}
+            >
+              <Text style={style.buttonText}>
+                Accept
               </Text>
             </TouchableOpacity>
           </View>
