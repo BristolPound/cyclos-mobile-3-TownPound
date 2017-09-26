@@ -2,7 +2,8 @@ import React from 'react'
 import animateTo from '../../util/animateTo'
 import Price from '../Price'
 import commonStyle from '../style'
- import Colors from '@Colors/colors'
+import Colors from '@Colors/colors'
+import { cashOnlyText } from '@Config/config'
 import DefaultText from '../DefaultText'
 import merge from '../../util/merge'
 import KeyboardComponent from '../KeyboardComponent'
@@ -13,6 +14,7 @@ import Images from '@Assets/images'
 export const labels = {
     AMOUNT: 'Amount',
     CONFIRM: 'Confirm',
+    CASH_ONLY_BUSINESS: cashOnlyText,
     CURRENT_BALANCE: 'CURRENT BALANCE',
     DESCRIPTION: 'Description (optional)',
     ENTER_AMOUNT: 'Enter Amount',
@@ -45,6 +47,9 @@ class InputComponent extends KeyboardComponent {
   getButtonColor () {
     if (this.props.invalidInput || this.props.buttonText === labels.NO_PAYMENT_AVAILABLE) {
       return Colors.offWhite
+    }
+    else if (this.props.buttonText === labels.CASH_ONLY_BUSINESS) {
+      return Colors.secondaryBlue
     }
     return Colors.primaryBlue
   }

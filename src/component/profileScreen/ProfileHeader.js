@@ -92,7 +92,9 @@ const ProfileHeader = (props) => {
           category={props.category}
           colorCode={0} />
         <DefaultText style={styles.header.title}>{props.name}</DefaultText>
-        <DefaultText style={getSubtitleStyle()}>{props.username}</DefaultText>
+        {props.username
+          ? <DefaultText style={getSubtitleStyle()}>{props.username}</DefaultText>
+          : null}
       </View>
     </View>
   )

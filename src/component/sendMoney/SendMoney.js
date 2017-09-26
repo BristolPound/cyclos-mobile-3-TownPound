@@ -84,7 +84,7 @@ class SendMoney extends React.Component {
 
   payByTextOnPress () {
     var action = this.props.payee.fields && this.props.payee.fields.icon === 1 ? 'exc' : 'pay'
-    var text = action + ' ' + this.state.pin + ' ' + (this.props.payee.shortDisplay || this.props.payee.fields.username) + ' ' + this.props.amount
+    var text = action + ' ' + this.state.pin + ' '  + (this.props.payee.shortDisplay || this.props.payee.fields.username) + ' ' + this.props.amount
     Communications.textWithoutEncoding(Config.TXT2PAY_NO, text)
     this.props.updateAmount('')
     this.setState({pin: ''})
@@ -105,7 +105,15 @@ class SendMoney extends React.Component {
         onButtonPress: () => {this.props.closeConfirmation() && this.props.updatePage(0)},
         accessibilityLabel: labels.PAYMENT_COMPLETE
       }
-    } else if (this.props.loggedIn) {
+    }
+    else if (!this.props.payee.fields.username) {
+      inputProps = {
+        buttonText: labels.CASH_ONLY_BUSINESS,
+        onButtonPress: () => {},
+        accessibilityLabel: labels.CASH_ONLY_BUSINESS
+      }
+    }
+    else if (this.props.loggedIn) {
       switch (this.props.inputPage) {
         case Page.Ready: // Initial state, ready to begin
         // sometimes when pressing on the 'no' on the alert triggers the onPress here
