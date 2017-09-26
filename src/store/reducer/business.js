@@ -174,7 +174,9 @@ export const resetTraderScreen = () => ({
 
 export const openTraderModal = (businessId) => (dispatch, getState) => {
   dispatch(selectBusinessForModal(businessId))
-  if(getState().login.loginStatus == 'LOGGED_IN'&& (getState().business.businessList[businessId].fields.username !== getState().account.details.shortDisplay)) {
+  var selectedBusiness = getState().business.traderScreenBusiness
+  var username = selectedBusiness.fields.username
+  if(getState().login.loginStatus == 'LOGGED_IN' && (username && username !== getState().account.details.shortDisplay)) {
     getPaymentData(businessId, dispatch)
       .then(result => dispatch(paymentDataReceived(result)))
   }

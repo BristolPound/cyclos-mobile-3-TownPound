@@ -215,7 +215,6 @@ const mapStateToProps = (state) => (
   {
     ...state.login,
     connection: state.networkConnection.status,
-    keyboardHeight: state.navigation.keyboardHeight
   }
 )
 
