@@ -76,6 +76,9 @@ class LockScreen extends React.Component {
 
 
   resetState(){
+    // If it's a login replacement then it will unmount after login so just return
+    if (this.props.loginReplacement) return
+
     this.setState({
       askToUnlock: false,
       unlockError: false,
@@ -181,33 +184,32 @@ class LockScreen extends React.Component {
   }
 
   loginReplacementMethod(code) {
-    this.props.authenticateCyclosPIN(code)
-      .then((success) => {
-        if (success) {
-          this.unlock()
-          this.props.postUnlock() // login after authorising the PIN
-        }
-      })
-      .catch((err) => {
-        return false
-      })
-
+    this.props.authenticateCyclosPIN(this.props.loggedInUsername, code)
+    .then((success) => {
+      if (success) {
+        this.unlock()
+        this.props.postUnlock() // login after authorising the PIN
+      }
+    })
+    .catch((err) => {
+      return false
+    })
   }
 
   storedPasswordUnlock(code) {
     // If being used as a login replacement, perform full log in using
     // different auth method
     if (this.props.loginReplacement) {
-      this.loginReplacementMethod(code)
-      return
-    }
-
-    if (this.checkPin(code)) {
-      this.unlock()
-      this.setAuthTimer(code)
+      return this.loginReplacementMethod(code)
     }
     else {
-      this.failedAttempt()
+      if (this.checkPin(code)) {
+        this.unlock()
+        this.setAuthTimer(code)
+      }
+      else {
+        this.failedAttempt()
+      }
     }
 
     this.setHeader(false)
@@ -218,6 +220,8 @@ class LockScreen extends React.Component {
     if (!this.state.askToUnlock && !this.props.loginReplacement) {
       return <View style={{ height: 0 }}/>
     }
+    const { loginReplacement, connection } = this.props
+    var disabledUnlock = (loginReplacement && !connection) || this.props.authenticating
     return (
       <View style={style.wrapper}>
         {this.props.coverApp
@@ -263,11 +267,7 @@ const mapDispatchToProps = (dispatch) =>
 
 const mapStateToProps = (state) => ({
   ...state.navigation,
-  storePassword: state.login.storePassword,
-  loginStatus: state.login.loginStatus,
-  encryptedPassword: state.login.encryptedPassword,
-  encryptionKey: state.login.encryptionKey,
-  unlockCode: state.login.unlockCode,
+  ...state.login,
   connection: state.networkConnection.status,
   statusMessage: state.statusMessage.message
 })

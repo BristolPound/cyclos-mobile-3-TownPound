@@ -174,7 +174,9 @@ export const resetTraderScreen = () => ({
 
 export const openTraderModal = (businessId) => (dispatch, getState) => {
   dispatch(selectBusinessForModal(businessId))
-  if(getState().login.loginStatus == 'LOGGED_IN'&& (getState().business.businessList[businessId].fields.username !== getState().account.details.shortDisplay)) {
+  var selectedBusiness = getState().business.traderScreenBusiness
+  var username = selectedBusiness.fields.username
+  if(getState().login.loginStatus == 'LOGGED_IN' && (username && username !== getState().account.details.shortDisplay)) {
     getPaymentData(businessId, dispatch)
       .then(result => dispatch(paymentDataReceived(result)))
   }
@@ -185,7 +187,7 @@ export const openTraderModal = (businessId) => (dispatch, getState) => {
 export const loadBusinessList = (force = false) => (dispatch, getState) => {
     const persistedDate = getState().business.businessListTimestamp
     //ToDo: to load data every time! When api has changed make a call to check whether something changed since last time the data was pulled
-    if (true || Date.now() - persistedDate > moment.duration(2, 'days') || force) {
+    if (Date.now() - persistedDate > moment.duration(2, 'days') || force) {
       getBusinesses()
         .then((data) => {
           dispatch(businessListReceived(data.directory))
@@ -334,7 +336,7 @@ const reducer = (state = initialState, action) => {
       break
 
     case 'business/PAYMENT_DATA':
-      var selected = state.traderScreenBusiness
+      var selected = merge(state.traderScreenBusiness)
       selected.paymentTypes = action.data.paymentTypes
       state = merge(state, { traderScreenBusiness: selected })
   }

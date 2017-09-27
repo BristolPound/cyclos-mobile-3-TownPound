@@ -6,6 +6,7 @@ import merge from '../../util/merge'
 import style from './LockStyle'
 import { unlockCharNo } from '../../store/reducer/login'
 import KeyboardComponent from '../KeyboardComponent'
+import _ from 'lodash'
 
 export const maxAttempts = 3;
 
@@ -16,6 +17,7 @@ class StoredPasswordLockScreen extends KeyboardComponent {
     constructor() {
       super()
       this.state.enteredPIN = ''
+      this.THROTTLED_DELAY = 300
     }
 
     updateEnteredPIN(enteredPIN) {
@@ -68,7 +70,7 @@ class StoredPasswordLockScreen extends KeyboardComponent {
                     <View style={style.instructionWrapper}>
                       <Text style={style.instructionText}>
                           For your privacy, the app was locked.
-                          To unlock, please enter your TXT2PAY PIN, as you specified when agreeing to "Quick Login". Or choose "Logout" to just browse.
+                          To unlock, please enter your Bristol Pound banking PIN, as you specified when agreeing to "Quick Login". Or choose "Logout" to just browse.
                       </Text>
                       { this.props.disabledUnlock &&
                         <View>
@@ -81,9 +83,6 @@ class StoredPasswordLockScreen extends KeyboardComponent {
                           <View>
                               <Text style={merge(style.errorText, { paddingTop: 10 })}>
                                   The PIN you entered was incorrect. If you have forgotten the PIN, choose "Logout".
-                              </Text>
-                              <Text style={merge(style.errorText, { paddingBottom: 10 })}>
-                                  You have {maxAttempts - this.props.failedAttempts} attempts left.
                               </Text>
                           </View>
                       }
@@ -101,25 +100,26 @@ class StoredPasswordLockScreen extends KeyboardComponent {
                           placeholderTextColor={Colors.gray4}
                           secureTextEntry={true}
                           underlineColorAndroid={Colors.transparent}
-                          onChangeText={(value) => this.updateEnteredPIN(value)}>
-                      </TextInput>
+                          onChangeText={(value) => this.updateEnteredPIN(value)}
+                          onSubmitEditing={() => this.inputValid() && this.props.headerMessage == '' && this.unlockAttempt()}
+                          />
                     </View>
                     <View style={style.buttonRow}>
                         <TouchableOpacity
-                          disabled={!this.inputValid() || this.props.headerMessage !== ''}
+                            style={merge(style.buttonContainer, { backgroundColor: Colors.primaryBlue})}
+                            onPress={() => this.props.logout && this.props.logout()}>
+                            <Text style={merge(style.buttonText, { color: 'white' })}>
+                                Logout
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          disabled={!this.inputValid()}
                           style={merge(style.buttonContainer, {backgroundColor: this.getButtonColor()})}
-                          onPress={() => this.unlockAttempt()}
+                          onPress={_.throttle(this.unlockAttempt.bind(this), this.THROTTLED_DELAY)}
                         >
                           <Text style={merge(style.buttonText, {color: this.getButtonTextColor()})}>
                             Unlock
                           </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={merge(style.buttonContainer, { backgroundColor: Colors.primaryBlue})}
-                            onPress={() => this.props.logout && this.props.logout()}>
-                            <DefaultText style={merge(style.buttonText, { color: 'white' })}>
-                                Logout
-                            </DefaultText>
                         </TouchableOpacity>
                     </View>
                 </View>

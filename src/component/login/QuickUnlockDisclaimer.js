@@ -40,7 +40,7 @@ class QuickUnlockDisclaimer extends React.Component {
 
   inputValid() {
     var len = this.state.enteredPIN.length
-    if (len == PIN_LENGTH && this.props.connection) {
+    if (len == PIN_LENGTH && !this.props.disabledAccept) {
       return true
     }
 
@@ -48,9 +48,9 @@ class QuickUnlockDisclaimer extends React.Component {
   }
 
   render() {
-    var bottom = this.props.bottom || screenHeight / 2
+    var bottom = this.props.bottom
     return (
-      <Animated.View style={merge(style.outerContainer, {bottom: bottom})}>
+      <View style={merge(style.outerContainer, {bottom: bottom})}>
         <View style={style.container}>
           <View style={style.header}>
             <Text style={style.headerText}>
@@ -59,27 +59,37 @@ class QuickUnlockDisclaimer extends React.Component {
           </View>
           <View style={style.separator}/>
           <ScrollView style={style.instructionWrapper}>
-          <Text style={style.instructionText}>
-              Disclaimer:
-              Enter your TXT2PAY PIN code and press 'Accept' to enable the Quick Unlock method. This will use the TXT2PAY PIN to reauthenticate the device as opposed to
-              requiring the full password again. By accepting this option you are acknowledging that Bristol Pound takes no responsibility for any losses that occur as a
-              direct result of the inherent reduction in security that this method employs.
-              NOTE: You may logout at any time to reset this option.
-          </Text>
+            <Text style={style.instructionText}>
+                Disclaimer:
+                Enter your Bristol Pound banking PIN code and press 'Accept' to enable the Quick Unlock method. This will use the Bristol Pound banking PIN to reauthenticate the device as opposed to
+                requiring the full password again. By accepting this option you are acknowledging that Bristol Pound takes no responsibility for any losses that occur as a
+                direct result of the inherent reduction in security.
+                NOTE: You may logout at any time to reset this option.
+            </Text>
           </ScrollView>
           <View style={style.pinEntry}>
             <TextInput
               style={style.textInput}
               autoFocus={true}
               value={this.state.enteredPIN}
+              onSubmitEditing={() => this.inputValid() && this.props.acceptCallback(this.state.enteredPIN)}
               onChangeText={(enteredPIN) => this.updateEnteredPIN(enteredPIN)}
-              placeholder="Enter an Unlock Pin"
+              placeholder="Enter PIN"
               keyboardType='numeric'
+              underlineColorAndroid={Colors.transparent}
               secureTextEntry={true}
               maxLength={PIN_LENGTH}
             />
           </View>
           <View style={style.buttonRow}>
+            <TouchableOpacity
+              style={merge(style.buttonContainer, {borderWidth: 2, borderColor: Colors.primaryBlue})}
+              onPress={this.props.rejectCallback}
+            >
+              <Text style={merge(style.buttonText, {color: Colors.primaryBlue})}>
+                Cancel
+              </Text>
+            </TouchableOpacity>
             <TouchableOpacity
               disabled={!this.inputValid()}
               style={merge(style.buttonContainer, {backgroundColor: this.getButtonColor()})}
@@ -89,17 +99,9 @@ class QuickUnlockDisclaimer extends React.Component {
                 Accept
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={merge(style.buttonContainer, {borderWidth: 2, borderColor: Colors.primaryBlue})}
-              onPress={this.props.rejectCallback}
-            >
-              <Text style={merge(style.buttonText, {color: Colors.primaryBlue})}>
-                Cancel
-              </Text>
-            </TouchableOpacity>
           </View>
         </View>
-      </Animated.View>
+      </View>
     )
   }
 }

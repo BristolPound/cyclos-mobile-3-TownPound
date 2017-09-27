@@ -15,6 +15,8 @@ const styles = {
   loginButton: {
     height: 68,
     padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   loginButtonText: {
     fontSize: 24,
@@ -39,13 +41,15 @@ const styles = {
     alignItems: 'center'
   },
   checkbox: {
-    width: 150,
-    height: 40,
+    height: 50,
+    flex: 1,
+    paddingHorizontal: 30,
     justifyContent: 'center',
     alignItems: 'center'
   },
   checkboxLeftText: {
     fontSize: 14,
+    justifyContent: 'center',
     color: Colors.primaryBlue
   },
   checkboxImage: {

@@ -105,7 +105,15 @@ class SendMoney extends React.Component {
         onButtonPress: () => {this.props.closeConfirmation() && this.props.updatePage(0)},
         accessibilityLabel: labels.PAYMENT_COMPLETE
       }
-    } else if (this.props.loggedIn) {
+    }
+    else if (!this.props.payee.fields.username) {
+      inputProps = {
+        buttonText: labels.CASH_ONLY_BUSINESS,
+        onButtonPress: () => {},
+        accessibilityLabel: labels.CASH_ONLY_BUSINESS
+      }
+    }
+    else if (this.props.loggedIn) {
       switch (this.props.inputPage) {
         case Page.Ready: // Initial state, ready to begin
         // sometimes when pressing on the 'no' on the alert triggers the onPress here
@@ -115,11 +123,7 @@ class SendMoney extends React.Component {
             onButtonPress: () => {},
             accessibilityLabel: labels.NO_PAYMENT_AVAILABLE
           }
-          if (!this.props.payee.fields.username) {
-            inputProps.buttonText = labels.CASH_ONLY_BUSINESS,
-            inputProps.accessibilityLabel = labels.CASH_ONLY_BUSINESS
-          }
-          else if (this.props.paymentTypes && this.props.paymentTypes.length > 0 ) {
+          if (this.props.paymentTypes && this.props.paymentTypes.length > 0 ) {
             inputProps.buttonText = labels.SEND_PAYMENT
             inputProps.onButtonPress = () => { !this.props.alertShouldPopUp && this.nextPage() }
           }

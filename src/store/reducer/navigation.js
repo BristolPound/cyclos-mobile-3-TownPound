@@ -27,8 +27,7 @@ const initialState = {
   modalVisible: false,
   modalOpen: false,
   confirmationOpen: false,
-  coverApp: false,
-  keyboardHeight: screenHeight / 2
+  coverApp: false
 }
 
 export const navigateToTab = (tabIndex) =>
@@ -128,6 +127,12 @@ const reducer = (state = initialState, action) => {
       })
       break
     case 'login/LOGGED_OUT':
+      break
+    case 'login/JUST_BROWSING':
+      state = merge(state, {
+        mainComponent: mainComponent.tabs
+      })
+      break
     case 'login/LOGGED_IN':
       state = merge(state, {
         mainComponent: mainComponent.tabs

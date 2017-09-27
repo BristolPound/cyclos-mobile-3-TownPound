@@ -35,7 +35,7 @@ class Onboarding extends React.Component {
     var logoutButtonText = Config.ALLOW_LOGIN ? "I'm just browsing" : "Start browsing"
     return (
       <Splash loginButtonText='Log in'
-        logoutButtonText={logoutButtonText}
+        browsingButtonText={logoutButtonText}
         renderWelcomeMessage={renderWelcomeMessage}
         renderInfoText={renderInfoText} />
     )

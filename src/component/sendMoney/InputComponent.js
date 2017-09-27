@@ -2,7 +2,8 @@ import React from 'react'
 import animateTo from '../../util/animateTo'
 import Price from '../Price'
 import commonStyle from '../style'
- import Colors from '@Colors/colors'
+import Colors from '@Colors/colors'
+import Config from '@Config/config'
 import DefaultText from '../DefaultText'
 import merge from '../../util/merge'
 import KeyboardComponent from '../KeyboardComponent'
@@ -13,8 +14,8 @@ import Drawer from 'react-native-drawer'
 
 export const labels = {
     AMOUNT: 'Amount',
+    CASH_ONLY_BUSINESS: Config.CASH_ONLY_TEXT,
     CONFIRM: 'Confirm',
-    CASH_ONLY_BUSINESS: 'Cash Only Business',
     CURRENT_BALANCE: 'CURRENT BALANCE',
     DESCRIPTION: 'Description (optional)',
     ENTER_AMOUNT: 'Enter Amount',
@@ -144,14 +145,17 @@ class InputComponent extends KeyboardComponent {
                 <TextInput style={styles.textInput}
                     {...input}
                     autoFocus={true}
+                    underlineColorAndroid={Colors.transparent}
                     accessibilityLabel={input.placeholder} />
                 <View style={styles.separator}/>
                 {pinInput
                   ? <TextInput style={styles.textInput}
                       {...pinInput}
+                      underlineColorAndroid={Colors.transparent}
                       accessibilityLabel={pinInput.placeholder} />
                   : <TextInput style={styles.textInput}
                       {...descriptionInput}
+                      underlineColorAndroid={Colors.transparent}
                       accessibilityLabel={descriptionInput.placeholder} />
                 }
                 <BalanceMessage balance={balance}/>
