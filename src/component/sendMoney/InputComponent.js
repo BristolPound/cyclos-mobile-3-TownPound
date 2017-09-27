@@ -16,17 +16,22 @@ export const labels = {
     AMOUNT: 'Amount',
     CASH_ONLY_BUSINESS: Config.CASH_ONLY_TEXT,
     CONFIRM: 'Confirm',
+    CONFIRM_WITHDRAWAL: 'Confirm Withdrawal',
     CURRENT_BALANCE: 'CURRENT BALANCE',
     DESCRIPTION: 'Description (optional)',
     ENTER_AMOUNT: 'Enter Amount',
     LOGIN_FOR_PAYMENT: 'Log in to make payment',
+    LOGIN_TO_WITHDRAW: 'Log in to withdraw cash',
     MAKING_PAYMENT: 'Making Payment',
+    MAKING_WITHDRAWAL: 'Withdrawing',
     NO_PAYMENT_AVAILABLE: 'No payment available',
     PAY: 'Pay',
     PAYMENT_COMPLETE: 'Payment complete',
     PIN: 'PIN',
     SEND_PAYMENT: 'Send Payment',
     USING_TXT2PAY: 'No internet connection (Using TXT2PAY)',
+    WITHDRAW: 'Withdraw',
+    WITHDRAW_CASH: 'Withdraw Cash'
 }
 
 const BalanceMessage = ({ balance }) => {
@@ -45,15 +50,25 @@ const BalanceMessage = ({ balance }) => {
 }
 
 class InputComponent extends KeyboardComponent {
-  getButtonColor () {
+  constructor(props) {
+    super(props)
+    this.state.withdrawing = false
+  }
+
+  getButtonColor (withdraw = false) {
     if (this.props.invalidInput || this.props.buttonText === labels.NO_PAYMENT_AVAILABLE) {
       return Colors.offWhite
     }
     else if (this.props.buttonText === labels.CASH_ONLY_BUSINESS) {
       return Colors.secondaryBlue
     }
+
+    if (withdraw) {
+      return Colors.orange
+    }
     return Colors.primaryBlue
   }
+
 
   getButtonTextColor () {
     return this.getButtonColor() === Colors.offWhite ? 'black' : 'white'
@@ -63,11 +78,17 @@ class InputComponent extends KeyboardComponent {
     if (nextProps.accessibilityLabel !== labels.ENTER_AMOUNT) {
       animateTo(this.state.keyboardHeight, 0, 50)
     }
+    // Reset to non withdrawing (normal) when going back to
+    // the optional withdrawal drawer
+    if (nextProps.optionalWithdraw && !this.props.optionalWithdraw) {
+      this.setState({withdrawing: false})
+    }
   }
 
   render () {
     let {
       onButtonPress,
+      onWithdrawPress,
       buttonText,
       input,
       cashpoint,
@@ -79,8 +100,10 @@ class InputComponent extends KeyboardComponent {
       amount,
       description,
       onChangeAmount,
+      optionalWithdraw,
       payee,
-      offlinePaymentLabel
+      offlinePaymentLabel,
+      withdrawText
     } = this.props
 
     const button = <View style={merge(styles.button, { backgroundColor: this.getButtonColor() })}>
@@ -93,54 +116,64 @@ class InputComponent extends KeyboardComponent {
         </DefaultText>}
     </View>
 
-    // {cashpoint
-    //   ?   <Swiper style={{flex: 1, height: 30}}>
-    //         <View style={{flex:1, backgroundColor: 'blue'}}>
-    //           <DefaultText>Hello Swiper</DefaultText>
-    //         </View>
-    //         <View style={{flex:1, backgroundColor: 'green'}}>
-    //           <DefaultText>Goodbye Swiper</DefaultText>
-    //         </View>
-    //         <View style={{flex:1, backgroundColor: 'blue'}}>
-    //           <DefaultText>Hello Swiper</DefaultText>
-    //         </View>
-    //       </Swiper>
-    //   :   <TouchableOpacity onPress={invalidInput ? undefined : onButtonPress}>
-    //         {button}
-    //       </TouchableOpacity>
-    // }
+    const withdrawButton = <View style={merge(styles.button, { backgroundColor: this.getButtonColor(true)})}>
+      <DefaultText style={merge(styles.buttonText, { color: this.getButtonTextColor() })}>
+        {withdrawText}
+      </DefaultText>
+      {offlinePaymentLabel &&
+        <DefaultText style={styles.noInternetMessage}>
+          {offlinePaymentLabel}
+        </DefaultText>}
+    </View>
+
+    const startWithdrawal = () => {
+      onButtonPress()
+      this.setState({withdrawing: true})
+    }
+
+    const optionalDrawer = <View style={styles.cashpointDrawer}>
+        <Drawer
+            type={'overlay'}
+            captureGestures={true}
+            tapToClose={true}
+            closedDrawerOffset={0.1}
+            openDrawerOffset={0.025}
+            side={'right'}
+            acceptTap={true}
+            negotiatePan={true}
+            content={
+              <View style={{flex:1,
+                  shadowOffset:{width: -5, height: 5},
+                  shadowColor: 'black',
+                  shadowOpacity: 0.5
+                }}>
+                  <TouchableOpacity onPress={invalidInput ? undefined : startWithdrawal}>
+                    {withdrawButton}
+                  </TouchableOpacity>
+              </View>}>
+            <TouchableOpacity onPress={invalidInput ? undefined : onButtonPress}>
+              {button}
+            </TouchableOpacity>
+
+        </Drawer>
+    </View>
+
+
+
 
     return (
           <Animated.View style={{backgroundColor: 'white', bottom: this.state.keyboardHeight }} accessibilityLabel={accessibilityLabel}>
 
-
-          <View style={styles.cashpointDrawer}>
-              <Drawer
-                  type={'overlay'}
-                  captureGestures={true}
-                  tapToClose={true}
-                  closedDrawerOffset={0.1}
-                  openDrawerOffset={0.025}
-                  side={'right'}
-                  acceptTap={true}
-                  negotiatePan={true}
-                  content={
-                    <View style={{flex:1, backgroundColor: 'blue',
-                        shadowOffset:{width: -5, height: 5},
-                        shadowColor: 'black',
-                        shadowOpacity: 0.5
-                      }}>
-                      <DefaultText>Hello Swiper</DefaultText>
-                    </View>}>
-                <View style={{flex:1, backgroundColor: 'green'}}>
-                    <DefaultText>Hello Swiper</DefaultText>
-                </View>
-
-              </Drawer>
-          </View>
-
-
-
+          {cashpoint && optionalWithdraw
+            ?   optionalDrawer
+            :   this.state.withdrawing
+                ?   <TouchableOpacity onPress={invalidInput ? undefined : (onWithdrawPress || onButtonPress)}>
+                      {withdrawButton}
+                    </TouchableOpacity>
+                :   <TouchableOpacity onPress={invalidInput ? undefined : onButtonPress}>
+                      {button}
+                    </TouchableOpacity>
+          }
 
 
           {input
@@ -156,10 +189,12 @@ class InputComponent extends KeyboardComponent {
                       {...pinInput}
                       underlineColorAndroid={Colors.transparent}
                       accessibilityLabel={pinInput.placeholder} />
-                  : <TextInput style={styles.textInput}
+                  : !this.state.withdrawing &&
+                    <TextInput style={styles.textInput}
                       {...descriptionInput}
                       underlineColorAndroid={Colors.transparent}
-                      accessibilityLabel={descriptionInput.placeholder} />
+                      accessibilityLabel={descriptionInput.placeholder}
+                    />
                 }
                 <BalanceMessage balance={balance}/>
               </View>

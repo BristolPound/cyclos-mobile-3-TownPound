@@ -79,7 +79,12 @@ export const askToContinuePayment = (value) => ({
   value
 })
 
-export const sendTransaction = () =>
+export const withdraw = (cashpointUsername) =>
+  (dispatch) => {
+    dispatch(sendTransaction(cashpointUsername))
+  }
+
+export const sendTransaction = (cashpointUsername = null) =>
   (dispatch, getState) => {
     if (getState().sendMoney.loading) {
       return
@@ -87,7 +92,7 @@ export const sendTransaction = () =>
     dispatch(setLoading())
     const { payeeId, amount, description } = getState().sendMoney
     makePayment({
-        subject: payeeId,
+        subject: cashpointUsername || payeeId,
         description: description,
         amount: amount
       }, dispatch)
