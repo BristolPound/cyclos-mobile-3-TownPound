@@ -114,21 +114,24 @@ class InputComponent extends KeyboardComponent {
           <Animated.View style={{backgroundColor: 'white', bottom: this.state.keyboardHeight }} accessibilityLabel={accessibilityLabel}>
 
 
-          <View style={{flex: 1, width: 300, height: 50, bottom: 0, position: 'absolute'}}>
+          <View style={styles.cashpointDrawer}>
               <Drawer
-              captureGestures={true}
-              type={'overlay'}
-              tapToClose={true}
-              closedDrawerOffset={10}
-              openDrawerOffset={0.2}
-              acceptTap={true}
-              negotiatePan={true}
-              open={true}
-              content={   <View style={{flex:1, backgroundColor: 'blue'}}>
-                            <DefaultText>Hello Swiper</DefaultText>
-                          </View>}
-
-              >
+                  type={'overlay'}
+                  captureGestures={true}
+                  tapToClose={true}
+                  closedDrawerOffset={0.1}
+                  openDrawerOffset={0.025}
+                  side={'right'}
+                  acceptTap={true}
+                  negotiatePan={true}
+                  content={
+                    <View style={{flex:1, backgroundColor: 'blue',
+                        shadowOffset:{width: -5, height: 5},
+                        shadowColor: 'black',
+                        shadowOpacity: 0.5
+                      }}>
+                      <DefaultText>Hello Swiper</DefaultText>
+                    </View>}>
                 <View style={{flex:1, backgroundColor: 'green'}}>
                     <DefaultText>Hello Swiper</DefaultText>
                 </View>

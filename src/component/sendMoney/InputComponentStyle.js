@@ -1,6 +1,7 @@
 import { Dimensions } from 'react-native'
  import Colors from '@Colors/colors'
-import { sectionHeight, dimensions, border } from '../../util/StyleUtils'
+import { sectionHeight, dimensions, horizontalAbsolutePosition, border } from '../../util/StyleUtils'
+
 
 const { width } = Dimensions.get('window')
 
@@ -10,6 +11,11 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column'
+  },
+  cashpointDrawer: {
+    height: sectionHeight,
+    ...horizontalAbsolutePosition(0, 0),
+    bottom: 0
   },
   buttonText: {
     fontSize: 24,
