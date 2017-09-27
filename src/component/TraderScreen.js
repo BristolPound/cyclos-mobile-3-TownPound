@@ -12,7 +12,7 @@ import { isIncorrectLocation } from '../util/business'
 import { resetTraderScreen } from '../store/reducer/business'
 import DefaultText from './DefaultText'
 import categories from '../util/categories'
-import Swiper from 'react-native-swiper'
+// import Swiper from 'react-native-swiper'
 
 import merge from '../util/merge'
 
