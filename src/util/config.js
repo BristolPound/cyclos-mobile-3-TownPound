@@ -8,6 +8,7 @@ export const global_default_config={
     APP_CURRENCY: 'Currency Name',
     APP_WEBSITE: 'https://github.com/ScottLogic/CityPoundSourceCode',
     TXT2PAY_NO: undefined,
+    CASH_ONLY_TEXT: 'Cash Only Business',
     CYCLOS: {
         host: undefined,
         cyclosPrefix: undefined,
