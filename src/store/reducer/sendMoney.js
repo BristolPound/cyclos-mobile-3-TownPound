@@ -1,6 +1,6 @@
 import moment from 'moment'
 
-import { makePayment } from '../../api/payments'
+import { makePayment, getPaymentData } from '../../api/payments'
 import merge from '../../util/merge'
 import { loadMoreTransactions } from './transaction'
 import { UNEXPECTED_ERROR, UNAUTHORIZED_ACCESS } from '../../api/apiError'

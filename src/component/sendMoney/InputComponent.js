@@ -136,8 +136,8 @@ class InputComponent extends KeyboardComponent {
             type={'overlay'}
             captureGestures={true}
             tapToClose={true}
-            closedDrawerOffset={0.1}
-            openDrawerOffset={0.025}
+            closedDrawerOffset={30}
+            openDrawerOffset={30}
             side={'right'}
             acceptTap={true}
             negotiatePan={true}

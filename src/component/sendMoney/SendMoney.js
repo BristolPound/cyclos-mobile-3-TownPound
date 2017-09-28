@@ -209,7 +209,7 @@ class SendMoney extends React.Component {
       }
     }
 
-    return <InputComponent {...inputProps} setOverlayOpen={this.props.setOverlayOpen} cashpoint={payee.categories.cashpoint} />
+    return <InputComponent {...inputProps} setOverlayOpen={this.props.setOverlayOpen} cashpoint={payee.fields.cashpointUsername} />
   }
 }
 

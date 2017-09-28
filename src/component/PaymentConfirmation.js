@@ -9,6 +9,7 @@ import ProfileHeader from './profileScreen/ProfileHeader'
 import DefaultText from './DefaultText'
 import categories from '../util/categories'
 import Images from '@Assets/images'
+import Config from '@Config/config'
 
 const PaymentConfirmation = (props) => {
 
@@ -22,7 +23,9 @@ const PaymentConfirmation = (props) => {
             <ProfileHeader
               name={props.payee.name || props.payee.display}
               username={props.payee.fields? props.payee.username : props.payee.shortDisplay}
-              image={props.payee.image ? props.payee.image.url : ''}
+              image={
+                props.payee.image ? props.payee.image.url : ''
+              }
               category={props.category}
               onPressClose={() => {props.closeConfirmation() && props.updatePage(0)}}
               isModal={true}
