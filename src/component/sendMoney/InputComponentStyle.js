@@ -10,12 +10,21 @@ const styles = {
     height: sectionHeight,
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    width: width
   },
   cashpointDrawer: {
     height: sectionHeight,
-    ...horizontalAbsolutePosition(0, 0),
-    bottom: 0
+    backgroundColor: 'white'
+  },
+  withdrawButtonOverlay: {
+    flex: 1,
+    shadowOffset: {
+      width: -5,
+      height: 5
+    },
+    shadowColor: 'black',
+    shadowOpacity: 0.5,
   },
   buttonText: {
     fontSize: 24,

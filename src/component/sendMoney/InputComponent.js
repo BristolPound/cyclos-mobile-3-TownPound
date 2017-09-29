@@ -7,7 +7,7 @@ import Config from '@Config/config'
 import DefaultText from '../DefaultText'
 import merge from '../../util/merge'
 import KeyboardComponent from '../KeyboardComponent'
-import { View, TextInput, TouchableOpacity, Animated, Image } from 'react-native'
+import { View, TextInput, TouchableOpacity, TouchableHighlight, Animated, Image } from 'react-native'
 import styles from './InputComponentStyle'
 import Images from '@Assets/images'
 import Drawer from 'react-native-drawer'
@@ -126,6 +126,15 @@ class InputComponent extends KeyboardComponent {
         </DefaultText>}
     </View>
 
+    const withdrawOverlay = <View style={merge(styles.button, { backgroundColor: this.getButtonColor(true)})}>
+      <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+        <Image style={{marginLeft: 90}} source={Images.cashpoint}/>
+        <DefaultText style={merge(styles.buttonText, { color: this.getButtonTextColor() })}>
+          {withdrawText}
+        </DefaultText>
+      </View>
+    </View>
+
     const startWithdrawal = () => {
       onButtonPress()
       this.setState({withdrawing: true})
@@ -136,21 +145,21 @@ class InputComponent extends KeyboardComponent {
             type={'overlay'}
             captureGestures={true}
             tapToClose={true}
-            closedDrawerOffset={30}
-            openDrawerOffset={30}
+            closedDrawerOffset={0.25}
+            openDrawerOffset={0.1}
+            styles={
+              {
+                drawer: styles.withdrawButtonOverlay
+              }
+            }
             side={'right'}
             acceptTap={true}
             negotiatePan={true}
             content={
-              <View style={{flex:1,
-                  shadowOffset:{width: -5, height: 5},
-                  shadowColor: 'black',
-                  shadowOpacity: 0.5
-                }}>
-                  <TouchableOpacity onPress={invalidInput ? undefined : startWithdrawal}>
-                    {withdrawButton}
-                  </TouchableOpacity>
-              </View>}>
+              <TouchableHighlight underlayColor='white' activeOpacity={0.8} onPress={invalidInput ? undefined : startWithdrawal}>
+                  {withdrawOverlay}
+              </TouchableHighlight>
+              }>
             <TouchableOpacity onPress={invalidInput ? undefined : onButtonPress}>
               {button}
             </TouchableOpacity>
