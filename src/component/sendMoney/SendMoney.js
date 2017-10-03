@@ -82,8 +82,8 @@ class SendMoney extends React.Component {
     )
   }
 
-  payByTextOnPress () {
-    var action = this.props.payee.fields && this.props.payee.fields.icon === 1 ? 'exc' : 'pay'
+  payByTextOnPress (withdrawing) {
+    var action = withdrawing ? 'exc' : 'pay'
     var text = action + ' ' + this.state.pin + ' '  + (this.props.payee.shortDisplay || this.props.payee.fields.username) + ' ' + this.props.amount
     Communications.textWithoutEncoding(Config.TXT2PAY_NO, text)
     this.props.updateAmount('')
@@ -124,12 +124,12 @@ class SendMoney extends React.Component {
             buttonText: labels.NO_PAYMENT_AVAILABLE,
             withdrawText: labels.NO_PAYMENT_AVAILABLE,
             onButtonPress: () => {},
-            accessibilityLabel: labels.NO_PAYMENT_AVAILABLE
+            accessibilityLabel: labels.NO_PAYMENT_AVAILABLE,
+            optionalWithdraw: true
           }
           if (this.props.paymentTypes && this.props.paymentTypes.length > 0 ) {
             inputProps.buttonText = labels.SEND_PAYMENT
             inputProps.withdrawText = labels.WITHDRAW_CASH
-            inputProps.optionalWithdraw = true
             inputProps.onButtonPress = () => { !this.props.alertShouldPopUp && this.nextPage() }
           }
           break
@@ -157,7 +157,8 @@ class SendMoney extends React.Component {
           }
           if (!this.props.connection) {
             inputProps.offlinePaymentLabel = labels.USING_TXT2PAY
-            inputProps.onButtonPress = () => { this.payByTextOnPress() }
+            inputProps.onButtonPress = () => { this.payByTextOnPress(false) }
+            inputProps.onWithdrawPress = () => { this.payByTextOnPress(true)}
             inputProps.pinInput = {
               keyboardType: 'numeric',
               value: this.state.pin,
