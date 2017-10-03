@@ -34,6 +34,8 @@ export const labels = {
     WITHDRAW_CASH: 'Withdraw Cash'
 }
 
+const DRAWER_PROTRUSION = 44 + 50
+
 const BalanceMessage = ({ balance }) => {
   return (
     <View style={styles.balanceContainer}>
@@ -146,8 +148,8 @@ class InputComponent extends KeyboardComponent {
             type={'overlay'}
             captureGestures={true}
             tapToClose={true}
-            closedDrawerOffset={0.25}
-            openDrawerOffset={0.2}
+            closedDrawerOffset={DRAWER_PROTRUSION}
+            openDrawerOffset={DRAWER_PROTRUSION}
             styles={{drawer: styles.withdrawButtonOverlay}}
             side={'right'}
             acceptTap={true}
