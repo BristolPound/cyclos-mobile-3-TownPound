@@ -78,11 +78,7 @@ class InputComponent extends KeyboardComponent {
     if (nextProps.accessibilityLabel !== labels.ENTER_AMOUNT) {
       animateTo(this.state.keyboardHeight, 0, 50)
     }
-    // Reset to non withdrawing (normal) when going back to
-    // the optional withdrawal drawer
-    if (this.props.resetWithdrawing && !nextProps.resetWithdrawing) {
-      this.setState({withdrawing: false})
-    }
+
   }
 
   render () {
@@ -127,17 +123,22 @@ class InputComponent extends KeyboardComponent {
     </View>
 
     const withdrawOverlay = <View style={merge(styles.button, { backgroundColor: this.getButtonColor(true)})}>
-      <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-        <Image style={{marginLeft: 90}} source={Images.cashpointTransparent}/>
-        <DefaultText style={merge(styles.buttonText, { color: this.getButtonTextColor() })}>
+      <View style={{flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
+        <Image source={Images.cashpointTransparent} style={{marginLeft: 20, marginRight: 30}}/>
+        <DefaultText style={merge(styles.buttonText, {textAlign: 'left', color: this.getButtonTextColor() })}>
           {withdrawText}
         </DefaultText>
       </View>
     </View>
 
     const startWithdrawal = () => {
-      onButtonPress()
       this.setState({withdrawing: true})
+      onButtonPress()
+    }
+
+    const startNormal = () => {
+      this.setState({withdrawing: false})
+      onButtonPress()
     }
 
     const optionalDrawer = <View style={styles.cashpointDrawer}>
@@ -146,17 +147,17 @@ class InputComponent extends KeyboardComponent {
             captureGestures={true}
             tapToClose={true}
             closedDrawerOffset={0.25}
-            openDrawerOffset={0.1}
+            openDrawerOffset={0.2}
             styles={{drawer: styles.withdrawButtonOverlay}}
             side={'right'}
             acceptTap={true}
             negotiatePan={true}
             content={
-              <TouchableHighlight underlayColor='white' activeOpacity={0.8} onPress={invalidInput ? undefined : startWithdrawal}>
+              <TouchableHighlight underlayColor='white' onPress={invalidInput ? undefined : startWithdrawal}>
                   {withdrawOverlay}
               </TouchableHighlight>
               }>
-            <TouchableOpacity onPress={invalidInput ? undefined : onButtonPress}>
+            <TouchableOpacity onPress={invalidInput ? undefined : startNormal}>
               {button}
             </TouchableOpacity>
 
@@ -169,7 +170,7 @@ class InputComponent extends KeyboardComponent {
     return (
           <Animated.View style={{backgroundColor: 'white', bottom: this.state.keyboardHeight }} accessibilityLabel={accessibilityLabel}>
 
-          {cashpoint && optionalWithdraw
+          {cashpoint && optionalWithdraw && this.props.buttonText !== labels.NO_PAYMENT_AVAILABLE
             ?   optionalDrawer
             :   this.state.withdrawing
                 ?   <TouchableOpacity onPress={invalidInput ? undefined : (onWithdrawPress || onButtonPress)}>

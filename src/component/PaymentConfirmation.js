@@ -16,22 +16,28 @@ const PaymentConfirmation = (props) => {
     const priceComponents = Math.abs(props.amountPaid).toFixed(2).split('.')
     const priceBeforeDecimal = !isNaN(priceComponents[0]) ? priceComponents[0] : '-'
     const priceAfterDecimal = !isNaN(priceComponents[1]) ? priceComponents[1] : '--'
+    const { payee, transactionType, category,
+        transactionNumber, description, timestamp
+    } = props
+
+    const imgSrc = payee.image
+          ?   payee.image.url
+          :   ''
 
     return (
       <View style={style.container}>
         	<ScrollView contentContainerStyle={style.innerContainer}>
             <ProfileHeader
-              name={props.payee.name || props.payee.display}
-              username={props.payee.fields? props.payee.username : props.payee.shortDisplay}
-              image={
-                props.payee.image ? props.payee.image.url : ''
-              }
+              withdrawal={transactionType === 'accesspoint'}
+              name={payee.name || payee.display}
+              username={payee.fields? payee.username : payee.shortDisplay}
+              image={imgSrc}
               category={props.category}
               onPressClose={() => {props.closeConfirmation() && props.updatePage(0)}}
               isModal={true}
               paymentComplete={true} />
             {renderPrice(priceBeforeDecimal, priceAfterDecimal)}
-            {renderDetails(props.transactionNumber, props.description, props.timestamp)}
+            {renderDetails(transactionNumber, description, timestamp)}
           </ScrollView>
         </View>
     )
@@ -99,6 +105,7 @@ const mapStateToProps = (state) => {
     amountPaid: state.sendMoney.amountPaid,
     timestamp: state.sendMoney.timestamp,
     transactionNumber: state.sendMoney.transactionNumber,
+    transactionType: state.sendMoney.transactionType,
     description: state.sendMoney.description
   }
 }
