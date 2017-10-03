@@ -80,7 +80,7 @@ class InputComponent extends KeyboardComponent {
     }
     // Reset to non withdrawing (normal) when going back to
     // the optional withdrawal drawer
-    if (nextProps.optionalWithdraw && !this.props.optionalWithdraw) {
+    if (this.props.resetWithdrawing && !nextProps.resetWithdrawing) {
       this.setState({withdrawing: false})
     }
   }
@@ -128,7 +128,7 @@ class InputComponent extends KeyboardComponent {
 
     const withdrawOverlay = <View style={merge(styles.button, { backgroundColor: this.getButtonColor(true)})}>
       <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-        <Image style={{marginLeft: 90}} source={Images.cashpoint}/>
+        <Image style={{marginLeft: 90}} source={Images.cashpointTransparent}/>
         <DefaultText style={merge(styles.buttonText, { color: this.getButtonTextColor() })}>
           {withdrawText}
         </DefaultText>
@@ -147,11 +147,7 @@ class InputComponent extends KeyboardComponent {
             tapToClose={true}
             closedDrawerOffset={0.25}
             openDrawerOffset={0.1}
-            styles={
-              {
-                drawer: styles.withdrawButtonOverlay
-              }
-            }
+            styles={{drawer: styles.withdrawButtonOverlay}}
             side={'right'}
             acceptTap={true}
             negotiatePan={true}
