@@ -24,7 +24,7 @@ const styles = {
       height: 5
     },
     shadowColor: 'black',
-    shadowOpacity: 0.5,
+    shadowOpacity: 0.5
   },
   buttonText: {
     fontSize: 24,
