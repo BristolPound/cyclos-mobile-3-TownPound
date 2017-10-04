@@ -83,11 +83,17 @@ class SendMoney extends React.Component {
   }
 
   payByTextOnPress (withdrawing) {
-    var action = withdrawing ? 'exc' : 'pay'
+    var action = withdrawing
+      ? Config.TXT2PAY_ACTION_WITHDRAW
+      : Config.TXT2PAY_ACTION_PAY
     const usernameToPay = withdrawing
       ? this.props.payee.fields.cashpointUsername
       : (this.props.payee.shortDisplay || this.props.payee.fields.username)
-    var text = action + ' ' + this.state.pin + ' '  + usernameToPay + ' ' + this.props.amount
+    const text = Config.TXT2PAY_TEMPLATE
+        .replace('{ACTION}', action)
+        .replace('{PIN}', this.state.pin)
+        .replace('{PAYEE}', usernameToPay)
+        .replace('{AMOUNT}', this.props.amount)
     Communications.textWithoutEncoding(Config.TXT2PAY_NO, text)
     this.props.updateAmount('')
     this.setState({pin: ''})
