@@ -3,8 +3,10 @@ import Config from '@Config/config'
 
 const STORE_VERSION = 0
 
-export default const updateStoreVersion = (store) => {
+export default updateStoreVersion = (store) => {
   const currentStoreVersion = store.getState().storeVersion.version
+
+  console.log("the current store version is " + currentStoreVersion)
 
   if (!currentStoreVersion) {
     store.dispatch(updateVersion(STORE_VERSION))
