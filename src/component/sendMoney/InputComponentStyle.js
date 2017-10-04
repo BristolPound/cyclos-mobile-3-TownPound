@@ -1,6 +1,6 @@
 import { Dimensions } from 'react-native'
  import Colors from '@Colors/colors'
-import { sectionHeight, dimensions, horizontalAbsolutePosition, border } from '../../util/StyleUtils'
+import { sectionHeight, dimensions, border } from '../../util/StyleUtils'
 
 
 const { width } = Dimensions.get('window')
