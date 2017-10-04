@@ -12,7 +12,6 @@ import { isIncorrectLocation } from '../util/business'
 import { resetTraderScreen } from '../store/reducer/business'
 import DefaultText from './DefaultText'
 import categories from '../util/categories'
-// import Swiper from 'react-native-swiper'
 
 import merge from '../util/merge'
 
@@ -48,15 +47,6 @@ const TraderScreen = (props) => {
       </View>
   )
 }
-
-// <Swiper>
-//     <View style={{flex:1, backgroundColor: 'blue'}}>
-//       <DefaultText>Hello Swiper</DefaultText>
-//     </View>
-//     <View style={{flex:1, backgroundColor: 'green'}}>
-//       <DefaultText>Goodbye Swiper</DefaultText>
-//     </View>
-// </Swiper>
 
 
 const getTransactionsForSelectedBusiness = (state) => {
