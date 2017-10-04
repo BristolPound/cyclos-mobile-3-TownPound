@@ -38,8 +38,9 @@ export const initialise = (store) => {
       (status) => store.dispatch(connectivityChanged(status))
     ))
 
-
+    console.log("force is ")
   const force = updateStoreVersion(store)
+  console.log(force)
 
 
   store.dispatch(loadBusinessList(force))

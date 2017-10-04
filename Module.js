@@ -9,6 +9,7 @@ import _ from 'lodash'
 // initialise config, as long it is not implemented in the store
 import config from './src/util/config'
 import Root from './src/component/Root'
+import reduxReset from 'redux-reset'
 import { reducer, initialise } from './src/store/reducer'
 
 class Module extends React.Component {
@@ -19,7 +20,8 @@ class Module extends React.Component {
 
     let enhancers = [
       applyMiddleware(thunk),
-      autoRehydrate()
+      autoRehydrate(),
+      reduxReset()
     ]
 
     this.store =
@@ -35,6 +37,11 @@ class Module extends React.Component {
           (state) => _.pick(state, ['businessList', 'businessListTimestamp', 'categories']),
           (state) => state,
           {whitelist: ['business']}
+        ),
+        createTransform(
+          (state) => _.pick(state, ['version']),
+          (state) => state,
+          {whitelist: ['storeVersion']}
         ),
         createTransform(
           (state) => _.pick(state, ['transactions', 'monthlyTotalSpent']),
