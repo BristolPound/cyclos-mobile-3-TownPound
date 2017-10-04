@@ -2,6 +2,7 @@ import { Dimensions } from 'react-native'
  import Colors from '@Colors/colors'
 import { sectionHeight, dimensions, border } from '../../util/StyleUtils'
 
+
 const { width } = Dimensions.get('window')
 
 const styles = {
@@ -9,7 +10,21 @@ const styles = {
     height: sectionHeight,
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    width: width
+  },
+  cashpointDrawer: {
+    height: sectionHeight,
+    backgroundColor: 'white'
+  },
+  withdrawButtonOverlay: {
+    flex: 1,
+    shadowOffset: {
+      width: -5,
+      height: 5
+    },
+    shadowColor: 'black',
+    shadowOpacity: 0.5
   },
   buttonText: {
     fontSize: 24,

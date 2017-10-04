@@ -48,6 +48,7 @@ const TraderScreen = (props) => {
   )
 }
 
+
 const getTransactionsForSelectedBusiness = (state) => {
   return state.transaction.transactions.filter(transaction => {
     return transaction.relatedAccount.kind === 'user' && transaction.relatedAccount.user.id === state.business.traderScreenBusinessId

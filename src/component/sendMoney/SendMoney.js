@@ -82,9 +82,18 @@ class SendMoney extends React.Component {
     )
   }
 
-  payByTextOnPress () {
-    var action = this.props.payee.fields && this.props.payee.fields.icon === 1 ? 'exc' : 'pay'
-    var text = action + ' ' + this.state.pin + ' '  + (this.props.payee.shortDisplay || this.props.payee.fields.username) + ' ' + this.props.amount
+  payByTextOnPress (withdrawing) {
+    var action = withdrawing
+      ? Config.TXT2PAY_ACTION_WITHDRAW
+      : Config.TXT2PAY_ACTION_PAY
+    const usernameToPay = withdrawing
+      ? this.props.payee.fields.cashpointUsername
+      : (this.props.payee.shortDisplay || this.props.payee.fields.username)
+    const text = Config.TXT2PAY_TEMPLATE
+        .replace('{ACTION}', action)
+        .replace('{PIN}', this.state.pin)
+        .replace('{PAYEE}', usernameToPay)
+        .replace('{AMOUNT}', this.props.amount)
     Communications.textWithoutEncoding(Config.TXT2PAY_NO, text)
     this.props.updateAmount('')
     this.setState({pin: ''})
@@ -94,6 +103,7 @@ class SendMoney extends React.Component {
 
   render () {
     let inputProps
+    const { payee } = this.props
 
     if (this.props.resetClipboard) {
       Clipboard.setString(tempClipboardString)
@@ -102,11 +112,12 @@ class SendMoney extends React.Component {
     if (this.props.inputPage === Page.PaymentComplete) {
       inputProps = {
         buttonText: this.props.message,
+        withdrawText: this.props.message,
         onButtonPress: () => {this.props.closeConfirmation() && this.props.updatePage(0)},
         accessibilityLabel: labels.PAYMENT_COMPLETE
       }
     }
-    else if (!this.props.payee.fields.username) {
+    else if (!payee.fields.username) {
       inputProps = {
         buttonText: labels.CASH_ONLY_BUSINESS,
         onButtonPress: () => {},
@@ -120,17 +131,21 @@ class SendMoney extends React.Component {
         //-> hence the !this.props.alertShouldPopUp check
           inputProps = {
             buttonText: labels.NO_PAYMENT_AVAILABLE,
+            withdrawText: labels.NO_PAYMENT_AVAILABLE,
             onButtonPress: () => {},
-            accessibilityLabel: labels.NO_PAYMENT_AVAILABLE
+            accessibilityLabel: labels.NO_PAYMENT_AVAILABLE,
+            optionalWithdraw: true
           }
           if (this.props.paymentTypes && this.props.paymentTypes.length > 0 ) {
             inputProps.buttonText = labels.SEND_PAYMENT
+            inputProps.withdrawText = labels.WITHDRAW_CASH
             inputProps.onButtonPress = () => { !this.props.alertShouldPopUp && this.nextPage() }
           }
           break
         case Page.EnterAmount: // provide amount
           inputProps = {
-            buttonText: labels.PAY + ' ' + (this.props.payee.display || this.props.payee.name || ""),
+            buttonText: labels.PAY + ' ' + (payee.display || payee.name || ""),
+            withdrawText: labels.WITHDRAW,
             onButtonPress: () => { this.nextPage() },
             input: {
               keyboardType: 'numeric',
@@ -151,7 +166,8 @@ class SendMoney extends React.Component {
           }
           if (!this.props.connection) {
             inputProps.offlinePaymentLabel = labels.USING_TXT2PAY
-            inputProps.onButtonPress = () => { this.payByTextOnPress() }
+            inputProps.onButtonPress = () => { this.payByTextOnPress(false) }
+            inputProps.onWithdrawPress = () => { this.payByTextOnPress(true)}
             inputProps.pinInput = {
               keyboardType: 'numeric',
               value: this.state.pin,
@@ -164,9 +180,11 @@ class SendMoney extends React.Component {
         case Page.ConfirmAmount: // provide amount
           inputProps = {
             buttonText: labels.CONFIRM,
-            onButtonPress: () => { this.props.sendTransaction(); this.nextPage() },
+            withdrawText: labels.CONFIRM_WITHDRAWAL,
+            onButtonPress: () => { this.props.sendTransaction(payee.fields.username); this.nextPage() },
+            onWithdrawPress: () => {this.props.sendTransaction(payee.fields.cashpointUsername); this.nextPage() },
             amount: this.props.amount,
-            payee: this.props.payee.display || this.props.payee.name || "",
+            payee: payee.display || payee.name || "",
             description: this.props.description,
             onChangeAmount: () => { this.prevPage() },
             accessibilityLabel: labels.CONFIRM
@@ -186,6 +204,7 @@ class SendMoney extends React.Component {
         case Page.MakingPayment: // in progress
           inputProps = {
             buttonText: labels.MAKING_PAYMENT,
+            withdrawText: labels.MAKING_WITHDRAWAL,
             loading: true,
             accessibilityLabel: labels.MAKING_PAYMENT
           }
@@ -194,12 +213,13 @@ class SendMoney extends React.Component {
     } else {
       inputProps = {
         buttonText: labels.LOGIN_FOR_PAYMENT,
+        withdrawText: labels.LOGIN_TO_WITHDRAW,
         onButtonPress: () => this.props.openLoginForm(true),
         accessibilityLabel: labels.LOGIN_FOR_PAYMENT
       }
     }
 
-    return <InputComponent {...inputProps} setOverlayOpen={this.props.setOverlayOpen} />
+    return <InputComponent {...inputProps} setOverlayOpen={this.props.setOverlayOpen} cashpoint={payee.fields.cashpointUsername} />
   }
 }
 

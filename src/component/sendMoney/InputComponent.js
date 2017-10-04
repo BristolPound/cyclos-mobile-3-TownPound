@@ -7,26 +7,34 @@ import Config from '@Config/config'
 import DefaultText from '../DefaultText'
 import merge from '../../util/merge'
 import KeyboardComponent from '../KeyboardComponent'
-import { View, TextInput, TouchableOpacity, Animated, Image } from 'react-native'
+import { View, TextInput, TouchableOpacity, TouchableHighlight, Animated, Image } from 'react-native'
 import styles from './InputComponentStyle'
 import Images from '@Assets/images'
+import Drawer from 'react-native-drawer'
 
 export const labels = {
     AMOUNT: 'Amount',
     CASH_ONLY_BUSINESS: Config.CASH_ONLY_TEXT,
     CONFIRM: 'Confirm',
+    CONFIRM_WITHDRAWAL: 'Confirm Withdrawal',
     CURRENT_BALANCE: 'CURRENT BALANCE',
     DESCRIPTION: 'Description (optional)',
     ENTER_AMOUNT: 'Enter Amount',
     LOGIN_FOR_PAYMENT: 'Log in to make payment',
+    LOGIN_TO_WITHDRAW: 'Log in to withdraw cash',
     MAKING_PAYMENT: 'Making Payment',
+    MAKING_WITHDRAWAL: 'Withdrawing',
     NO_PAYMENT_AVAILABLE: 'No payment available',
     PAY: 'Pay',
     PAYMENT_COMPLETE: 'Payment complete',
     PIN: 'PIN',
     SEND_PAYMENT: 'Send Payment',
     USING_TXT2PAY: 'No internet connection (Using TXT2PAY)',
+    WITHDRAW: 'Withdraw',
+    WITHDRAW_CASH: 'Withdraw Cash'
 }
+
+const DRAWER_PROTRUSION = 44 + 50
 
 const BalanceMessage = ({ balance }) => {
   return (
@@ -44,15 +52,25 @@ const BalanceMessage = ({ balance }) => {
 }
 
 class InputComponent extends KeyboardComponent {
-  getButtonColor () {
+  constructor(props) {
+    super(props)
+    this.state.withdrawing = false
+  }
+
+  getButtonColor (withdraw = false) {
     if (this.props.invalidInput || this.props.buttonText === labels.NO_PAYMENT_AVAILABLE) {
       return Colors.offWhite
     }
     else if (this.props.buttonText === labels.CASH_ONLY_BUSINESS) {
       return Colors.secondaryBlue
     }
+
+    if (withdraw) {
+      return Colors.orange
+    }
     return Colors.primaryBlue
   }
+
 
   getButtonTextColor () {
     return this.getButtonColor() === Colors.offWhite ? 'black' : 'white'
@@ -62,13 +80,16 @@ class InputComponent extends KeyboardComponent {
     if (nextProps.accessibilityLabel !== labels.ENTER_AMOUNT) {
       animateTo(this.state.keyboardHeight, 0, 50)
     }
+
   }
 
   render () {
     let {
       onButtonPress,
+      onWithdrawPress,
       buttonText,
       input,
+      cashpoint,
       descriptionInput,
       pinInput,
       invalidInput,
@@ -77,8 +98,10 @@ class InputComponent extends KeyboardComponent {
       amount,
       description,
       onChangeAmount,
+      optionalWithdraw,
       payee,
-      offlinePaymentLabel
+      offlinePaymentLabel,
+      withdrawText
     } = this.props
 
     const button = <View style={merge(styles.button, { backgroundColor: this.getButtonColor() })}>
@@ -91,12 +114,75 @@ class InputComponent extends KeyboardComponent {
         </DefaultText>}
     </View>
 
+    const withdrawButton = <View style={merge(styles.button, { backgroundColor: this.getButtonColor(true)})}>
+      <DefaultText style={merge(styles.buttonText, { color: this.getButtonTextColor() })}>
+        {withdrawText}
+      </DefaultText>
+      {offlinePaymentLabel &&
+        <DefaultText style={styles.noInternetMessage}>
+          {offlinePaymentLabel}
+        </DefaultText>}
+    </View>
+
+    const withdrawOverlay = <View style={merge(styles.button, { backgroundColor: this.getButtonColor(true)})}>
+      <View style={{flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
+        <Image source={Images.cashpointTransparent} style={{marginLeft: 20, marginRight: 30}}/>
+        <DefaultText style={merge(styles.buttonText, {textAlign: 'left', color: this.getButtonTextColor() })}>
+          {withdrawText}
+        </DefaultText>
+      </View>
+    </View>
+
+    const startWithdrawal = () => {
+      this.setState({withdrawing: true})
+      onButtonPress()
+    }
+
+    const startNormal = () => {
+      this.setState({withdrawing: false})
+      onButtonPress()
+    }
+
+    const optionalDrawer = <View style={styles.cashpointDrawer}>
+        <Drawer
+            type={'overlay'}
+            captureGestures={true}
+            tapToClose={true}
+            closedDrawerOffset={DRAWER_PROTRUSION}
+            openDrawerOffset={DRAWER_PROTRUSION}
+            styles={{drawer: styles.withdrawButtonOverlay}}
+            side={'right'}
+            acceptTap={true}
+            negotiatePan={true}
+            content={
+              <TouchableHighlight underlayColor='white' onPress={invalidInput ? undefined : startWithdrawal}>
+                  {withdrawOverlay}
+              </TouchableHighlight>
+              }>
+            <TouchableOpacity onPress={invalidInput ? undefined : startNormal}>
+              {button}
+            </TouchableOpacity>
+
+        </Drawer>
+    </View>
+
+
+
+
     return (
           <Animated.View style={{backgroundColor: 'white', bottom: this.state.keyboardHeight }} accessibilityLabel={accessibilityLabel}>
 
-          <TouchableOpacity onPress={invalidInput ? undefined : onButtonPress}>
-             {button}
-          </TouchableOpacity>
+          {cashpoint && optionalWithdraw && this.props.buttonText !== labels.NO_PAYMENT_AVAILABLE
+            ?   optionalDrawer
+            :   this.state.withdrawing
+                ?   <TouchableOpacity onPress={invalidInput ? undefined : (onWithdrawPress || onButtonPress)}>
+                      {withdrawButton}
+                    </TouchableOpacity>
+                :   <TouchableOpacity onPress={invalidInput ? undefined : onButtonPress}>
+                      {button}
+                    </TouchableOpacity>
+          }
+
 
           {input
             ? <View>
@@ -111,10 +197,12 @@ class InputComponent extends KeyboardComponent {
                       {...pinInput}
                       underlineColorAndroid={Colors.transparent}
                       accessibilityLabel={pinInput.placeholder} />
-                  : <TextInput style={styles.textInput}
+                  : !this.state.withdrawing &&
+                    <TextInput style={styles.textInput}
                       {...descriptionInput}
                       underlineColorAndroid={Colors.transparent}
-                      accessibilityLabel={descriptionInput.placeholder} />
+                      accessibilityLabel={descriptionInput.placeholder}
+                    />
                 }
                 <BalanceMessage balance={balance}/>
               </View>

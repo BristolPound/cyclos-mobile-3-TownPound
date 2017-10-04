@@ -17,6 +17,7 @@ const initialState = {
   timestamp: undefined,
   inputPage: 0,
   transactionNumber: -1,
+  transactionType: undefined,
   resetClipboard: false,
   alertShouldPopUp: false
 }
@@ -65,13 +66,14 @@ const setLoading = () => ({
   type: 'sendMoney/SET_LOADING'
 })
 
-const transactionComplete = (success, message, amountPaid, timestamp, transactionNumber) => ({
+const transactionComplete = (success, message, amountPaid, timestamp, transactionNumber, transactionType = null) => ({
   type: 'sendMoney/TRANSACTION_COMPLETE',
   success,
   message,
   amountPaid,
   timestamp,
-  transactionNumber
+  transactionNumber,
+  transactionType
 })
 
 export const askToContinuePayment = (value) => ({
@@ -79,22 +81,24 @@ export const askToContinuePayment = (value) => ({
   value
 })
 
-export const sendTransaction = () =>
+export const sendTransaction = (username) =>
   (dispatch, getState) => {
     if (getState().sendMoney.loading) {
       return
     }
     dispatch(setLoading())
-    const { payeeId, amount, description } = getState().sendMoney
+    const { amount, description } = getState().sendMoney
     makePayment({
-        subject: payeeId,
+        subject: username,
         description: description,
         amount: amount
       }, dispatch)
       .then((result) => {
         dispatch(loadMoreTransactions())
         dispatch(updatePayee(result.toUser.id))
-        dispatch(transactionComplete(true, 'Transaction complete', amount, moment(result.date).format('MMMM Do YYYY, h:mm:ss a'), result.transactionNumber))
+        dispatch(transactionComplete(true, 'Transaction complete', amount,
+            moment(result.date).format('MMMM Do YYYY, h:mm:ss a'),
+            result.transactionNumber, result.type.to.internalName))
       })
       .catch(err => {
         if (err.type === UNAUTHORIZED_ACCESS) {
@@ -135,6 +139,7 @@ const reducer = (state = initialState, action) => {
         timestamp: undefined,
         inputPage: 0,
         transactionNumber: -1,
+        transactionType: undefined,
         resetClipboard: false,
         alertShouldPopUp: false
       })
@@ -172,7 +177,8 @@ const reducer = (state = initialState, action) => {
         amountPaid: action.amountPaid,
         timestamp: action.timestamp,
         loading: false,
-        transactionNumber: action.transactionNumber
+        transactionNumber: action.transactionNumber,
+        transactionType: action.transactionType
       }
       if (action.message !== 'Session expired') {
         stateToUpdate.amount = ''

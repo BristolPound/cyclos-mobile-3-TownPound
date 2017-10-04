@@ -37,6 +37,15 @@ const Placeholder = ({style, colorCode, category}) =>
     {layer(categoryImage[category], {height: style.height - 2, width: style.width - 2, margin: 1})}
   </View>
 
+const WithdrawalImage = ({style}) =>
+  <View style={style}>
+    {layer(Images.cashpoint, {height: style.height - 2, width: style.width - 2, margin: 1})}
+  </View>
+
 const ProfileImage = (props) =>
-    props.image ? <CustomImage {...props}/> : <Placeholder {...props}/>
+    props.withdrawal
+      ? <WithdrawalImage {...props}/>
+      : props.image
+        ? <CustomImage {...props}/>
+        : <Placeholder {...props}/>
 export default ProfileImage

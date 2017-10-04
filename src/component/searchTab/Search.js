@@ -54,7 +54,7 @@ export default class Search extends React.Component {
       const termsMatch = (field) => {
         let match = true
         this.state.searchTerms.forEach((term) => {
-          if (match && field.toLowerCase().indexOf(term.toLowerCase()) === -1) {
+          if (!field || match && field.toLowerCase().indexOf(term.toLowerCase()) === -1) {
             match = false
           }
         })
