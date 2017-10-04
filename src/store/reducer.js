@@ -6,6 +6,7 @@ import business, { loadBusinessList, geolocationChanged, geolocationFailed } fro
 import person from './reducer/person'
 import navigation, { selectMainComponent, mainComponent, stateInitialised } from './reducer/navigation'
 import login, { generateAUID, setStorePassword } from './reducer/login'
+import storeVersion from './reducer/storeVersion'
 import sendMoney from './reducer/sendMoney'
 import account from './reducer/account'
 import networkConnection, {connectivityChanged} from './reducer/networkConnection'
@@ -13,6 +14,7 @@ import developerOptions from './reducer/developerOptions'
 import statusMessage from './reducer/statusMessage'
 import { setBaseUrl } from '../api/api'
 import { Location, Permissions } from 'expo'
+import updateStoreVersion from '../util/updateStore'
 
 export const reducer = combineReducers({
   transaction,
@@ -24,7 +26,8 @@ export const reducer = combineReducers({
   account,
   networkConnection,
   developerOptions,
-  statusMessage
+  statusMessage,
+  storeVersion
 })
 
 export const initialise = (store) => {
@@ -36,7 +39,10 @@ export const initialise = (store) => {
     ))
 
 
-  store.dispatch(loadBusinessList())
+  const force = updateStoreVersion(store)
+
+
+  store.dispatch(loadBusinessList(force))
 
   let _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION)
