@@ -176,7 +176,7 @@ class SendMoney extends React.Component {
             buttonText: labels.CONFIRM,
             withdrawText: labels.CONFIRM_WITHDRAWAL,
             onButtonPress: () => { this.props.sendTransaction(payee.fields.username); this.nextPage() },
-            onWithdrawPress: () => {this.props.withdraw(payee.fields.cashpointUsername); this.nextPage() },
+            onWithdrawPress: () => {this.props.sendTransaction(payee.fields.cashpointUsername); this.nextPage() },
             amount: this.props.amount,
             payee: payee.display || payee.name || "",
             description: this.props.description,
