@@ -1,43 +1,19 @@
-import { updateVersion, resetStore } from '../store/reducer/storeVersion'
+import _ from 'lodash'
+import React from 'react'
+import { View } from 'react-native'
+import { createMigrate } from 'redux-persist'
+import migrations from '../store/migrations'
 import Config from '@Config/config'
 
-const STORE_VERSION = 0
+export const STORE_VERSION = _.max(Object.keys(migrations))
 
-export default const updateStoreVersion = (store) => {
-  const currentStoreVersion = store.getState().storeVersion.version
+export const Loading = <View style={{flex: 1}}/>
 
-  if (!currentStoreVersion) {
-    store.dispatch(updateVersion(STORE_VERSION))
-    return true
+export const storeMigration = createMigrate(migrations, { debug: true })
+/*export const storeMigration = (state) => {
+    console.log('Migration Running!')
+    return Promise.resolve(state)
   }
+*/
 
-
-  // For dev purposes - if a reset version is set and it's greater than the
-  // current version, clear out and reset the store as specified in the
-  // reducers, then set the version to the STORE_VERSION
-  if (__DEV__ && Config.resetVersion && currentStoreVersion < Config.resetVersion) {
-    purgeStoredState({storage: AsyncStorage})
-    store.dispatch(resetStore())
-    store.dispatch(updateVersion(STORE_VERSION))
-    return true
-  }
-
-  if (currentStoreVersion === STORE_VERSION) {
-    return false
-  }
-
-  // Perform all of the update sequences in order starting from the
-  // current store version, then set the version to the new STORE_VERSION
-  switch (currentStoreVersion) {
-    case 0:
-      // Get the loggedInUsername and put it in the object/array
-      // of previously logged in usernames with blank access token etc.
-
-    default:
-      store.dispatch(updateVersion(STORE_VERSION))
-  }
-
-  return true
-
-
-}
+export default storeMigration

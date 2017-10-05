@@ -18,12 +18,11 @@ export const mainComponent = {
   tabs: 'tabs',
 }
 
-const initialState = {
+export const initialState = {
   tabIndex: 0,
   modalState: modalState.none,
   mainComponent: mainComponent.onboarding,
   overlayVisible: false,
-  stateInitialised: false,
   modalVisible: false,
   modalOpen: false,
   confirmationOpen: false,
@@ -61,10 +60,6 @@ export const setKeyboardHeight = () => ({
 export const selectMainComponent = (componentName) => ({
   type: 'navigation/SELECT_MAIN_COMPONENT',
   componentName
-})
-
-export const stateInitialised = () => ({
-  type: 'navigation/STATE_INITIALIZED'
 })
 
 export const closeConfirmation = () => ({
@@ -141,11 +136,6 @@ const reducer = (state = initialState, action) => {
     case 'navigation/SELECT_MAIN_COMPONENT':
       state = merge(state, {
         mainComponent: action.componentName
-      })
-      break
-    case 'navigation/STATE_INITIALIZED':
-      state = merge(state, {
-        stateInitialised: true
       })
       break
     case 'sendMoney/TRANSACTION_COMPLETE':
