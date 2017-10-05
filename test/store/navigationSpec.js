@@ -19,7 +19,6 @@ const initialState = {
   modalState: modalState.none,
   mainComponent: mainComponent.onboarding,
   overlayVisible: false,
-  stateInitialised: false,
   modalVisible: false,
   modalOpen: false,
   confirmationOpen: false,
@@ -45,7 +44,6 @@ describe('Navigation reducer', () => {
 		  	modalState: modalState.none,
 		  	mainComponent: mainComponent.onboarding,
 		  	overlayVisible: false,
-		  	stateInitialised: false,
 		  	modalVisible: false,
 		  	modalOpen: false,
 		  	confirmationOpen: false,
@@ -64,7 +62,6 @@ describe('Navigation reducer', () => {
 		  	modalState: modalState.traderScreen,
 		  	mainComponent: mainComponent.onboarding,
 		  	overlayVisible: false,
-		  	stateInitialised: false,
 		  	modalVisible: true,
 		  	modalOpen: false,
 		  	confirmationOpen: false,
@@ -79,7 +76,6 @@ describe('Navigation reducer', () => {
 			  	modalState: modalState.traderScreen,
 			  	mainComponent: mainComponent.onboarding,
 			  	overlayVisible: false,
-			  	stateInitialised: false,
 			  	modalVisible: true,
 			  	modalOpen: true,
 			  	confirmationOpen: false
@@ -91,7 +87,6 @@ describe('Navigation reducer', () => {
 		  	modalState: modalState.none,
 		  	mainComponent: mainComponent.onboarding,
 		  	overlayVisible: false,
-		  	stateInitialised: false,
 		  	modalVisible: false,
 		  	modalOpen: false,
 		  	confirmationOpen: false
@@ -108,7 +103,6 @@ describe('Navigation reducer', () => {
 		  	modalState: modalState.none,
 		  	mainComponent: mainComponent.tabs,
 		  	overlayVisible: false,
-		  	stateInitialised: false,
 		  	modalVisible: false,
 		  	modalOpen: false,
 		  	confirmationOpen: false,
@@ -123,7 +117,6 @@ describe('Navigation reducer', () => {
           modalState: modalState.none,
           mainComponent: mainComponent.tabs,
           overlayVisible: false,
-          stateInitialised: false,
           modalVisible: false,
           modalOpen: false,
           confirmationOpen: false,
@@ -136,7 +129,6 @@ describe('Navigation reducer', () => {
 		  	modalState: modalState.none,
 		  	mainComponent: mainComponent.tabs,
 		  	overlayVisible: false,
-		  	stateInitialised: false,
 		  	modalVisible: false,
 		  	modalOpen: false,
 		  	confirmationOpen: false,
@@ -155,29 +147,10 @@ describe('Navigation reducer', () => {
 		  	modalState: modalState.none,
 		  	mainComponent: mainComponent.returningLogin,
 		  	overlayVisible: false,
-		  	stateInitialised: false,
 		  	modalVisible: false,
 		  	modalOpen: false,
 		  	confirmationOpen: false,
   			coverApp: false
-		})
-	})
-
-	it('should handle STATE_INITIALIZED', () => {
-	    expect(
-	      	reducer(initialState, {
-	        	type: 'navigation/STATE_INITIALIZED'
-	      	})
-	    ).to.deep.equal({
-		  	tabIndex: 0,
-		  	modalState: modalState.none,
-		  	mainComponent: mainComponent.onboarding,
-		  	overlayVisible: false,
-		  	stateInitialised: true,
-		  	modalVisible: false,
-		  	modalOpen: false,
-		  	confirmationOpen: false,
- 		 	coverApp: false
 		})
 	})
 
@@ -192,7 +165,6 @@ describe('Navigation reducer', () => {
 		  	modalState: modalState.none,
 		  	mainComponent: mainComponent.onboarding,
 		  	overlayVisible: false,
-		  	stateInitialised: false,
 		  	modalVisible: false,
 		  	modalOpen: false,
 		  	confirmationOpen: true,
@@ -207,7 +179,6 @@ describe('Navigation reducer', () => {
 			  	modalState: modalState.none,
 			  	mainComponent: mainComponent.onboarding,
 			  	overlayVisible: true,
-			  	stateInitialised: false,
 			  	modalVisible: false,
 			  	modalOpen: false,
 			  	confirmationOpen: false
@@ -219,7 +190,6 @@ describe('Navigation reducer', () => {
 		  	modalState: modalState.none,
 		  	mainComponent: mainComponent.onboarding,
 		  	overlayVisible: false,
-		  	stateInitialised: false,
 		  	modalVisible: false,
 		  	modalOpen: false,
 		  	confirmationOpen: false
@@ -237,7 +207,6 @@ describe('Navigation reducer', () => {
 		  	modalState: modalState.none,
 		  	mainComponent: mainComponent.onboarding,
 		  	overlayVisible: true,
-		  	stateInitialised: false,
 		  	modalVisible: false,
 		  	modalOpen: false,
 		  	confirmationOpen: false,
@@ -256,7 +225,6 @@ describe('Navigation reducer', () => {
 		  	modalState: modalState.none,
 		  	mainComponent: mainComponent.onboarding,
 		  	overlayVisible: true,
-		  	stateInitialised: false,
 		  	modalVisible: false,
 		  	modalOpen: false,
 		  	confirmationOpen: false,
@@ -271,7 +239,6 @@ describe('Navigation reducer', () => {
 			  	modalState: modalState.none,
 			  	mainComponent: mainComponent.onboarding,
 			  	overlayVisible: false,
-			  	stateInitialised: false,
 			  	modalVisible: false,
 			  	modalOpen: false,
 			  	confirmationOpen: true
@@ -283,7 +250,6 @@ describe('Navigation reducer', () => {
 		  	modalState: modalState.none,
 		  	mainComponent: mainComponent.onboarding,
 		  	overlayVisible: false,
-		  	stateInitialised: false,
 		  	modalVisible: false,
 		  	modalOpen: false,
 		  	confirmationOpen: false
@@ -300,7 +266,6 @@ describe('Navigation reducer', () => {
 		  	modalState: modalState.none,
 		  	mainComponent: mainComponent.onboarding,
 		  	overlayVisible: false,
-		  	stateInitialised: false,
 		  	modalVisible: false,
 		  	modalOpen: true,
 		  	confirmationOpen: false,

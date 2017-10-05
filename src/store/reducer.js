@@ -1,36 +1,43 @@
 import { combineReducers } from 'redux'
 import { NetInfo } from 'react-native'
 
-import transaction from './reducer/transaction'
-import business, { loadBusinessList, geolocationChanged, geolocationFailed } from './reducer/business'
+import * as transaction     from './reducer/transaction'
+import * as business        from './reducer/business'
 import person from './reducer/person'
-import navigation, { selectMainComponent, mainComponent, stateInitialised } from './reducer/navigation'
-import login, { generateAUID, setStorePassword } from './reducer/login'
-import storeVersion from './reducer/storeVersion'
+import navigation, { selectMainComponent, mainComponent } from './reducer/navigation'
+import * as login           from './reducer/login'
 import sendMoney from './reducer/sendMoney'
 import account from './reducer/account'
-import networkConnection, {connectivityChanged} from './reducer/networkConnection'
+import networkConnection, {connectivityChanged, addFailedAction } from './reducer/networkConnection'
 import developerOptions from './reducer/developerOptions'
 import statusMessage from './reducer/statusMessage'
 import { setBaseUrl } from '../api/api'
 import { Location, Permissions } from 'expo'
-import updateStoreVersion from '../util/updateStore'
 
 export const reducer = combineReducers({
-  transaction,
-  business,
+  transaction.reducer,
+  business.reducer,
   person,
   navigation,
-  login,
+  login.reducer,
   sendMoney,
   account,
   networkConnection,
   developerOptions,
   statusMessage,
-  storeVersion
 })
 
+export const transforms = [
+  business.transform,
+  transaction.transform,
+  login.transform,
+]
+
 export const initialise = (store) => {
+
+  // queue load business list for when connection is available
+  store.dispatch(addFailedAction(business.loadBusinessList()))
+
   NetInfo.isConnected.fetch()
     .then((status) => status && store.dispatch(connectivityChanged(true)))
     .then(() => NetInfo.isConnected.addEventListener(
@@ -38,36 +45,29 @@ export const initialise = (store) => {
       (status) => store.dispatch(connectivityChanged(status))
     ))
 
-
-  const force = updateStoreVersion(store)
-
-
-  store.dispatch(loadBusinessList(force))
-
   let _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION)
     if (status !== 'granted') {
       alert('Unable to get location. Are location services enabled?')
-      store.dispatch(geolocationFailed())
+      store.dispatch(business.geolocationFailed())
     }
 
     let location = await Location.getCurrentPositionAsync({})
-    geolocationChanged(location.coords, store.dispatch)
+    business.geolocationChanged(location.coords, store.dispatch)
   }
 
   _getLocationAsync()
 
-  store.dispatch(stateInitialised())
   if (store.getState().login.loggedInUsername) {
     store.dispatch(selectMainComponent(mainComponent.returningLogin))
   }
   if (!store.getState().login.AUID) {
-    store.dispatch(generateAUID())
+    store.dispatch(login.generateAUID())
   }
   // If there is no stored password (encrypted) then store password should
   // revert to false - in case a PIN is set and disclaimer agreed then
   // the app is closed and opened before logging in
   if (store.getState().login.encryptedPassword === '') {
-    store.dispatch(setStorePassword(false))
+    store.dispatch(login.setStorePassword(false))
   }
 }

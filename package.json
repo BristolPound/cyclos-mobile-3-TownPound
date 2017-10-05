@@ -33,7 +33,7 @@
     "react-redux": "^4.4.5",
     "react-test-renderer": "16.0.0-alpha.12",
     "redux": "^3.5.2",
-    "redux-persist": "^4.0.0-alpha5",
+    "redux-persist": "git+https://github.com/BristolPound/redux-persist.git#v5.0.0-rc.6.bp.2",
     "redux-thunk": "^2.1.0",
     "rn-nodeify": "^6.0.1",
     "remote-redux-devtools": "0.5.0",
