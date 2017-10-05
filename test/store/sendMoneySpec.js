@@ -12,6 +12,7 @@ const initialState = {
   timestamp: undefined,
   inputPage: 0,
   transactionNumber: -1,
+  transactionType: undefined,
   resetClipboard: false,
   alertShouldPopUp: false
 }
@@ -49,6 +50,7 @@ describe('SendMoney reducer', () => {
 		  	timestamp: undefined,
 		  	inputPage: 0,
 		  	transactionNumber: -1,
+        transactionType: undefined,
   			resetClipboard: false,
   			alertShouldPopUp: false
 		})
@@ -71,6 +73,7 @@ describe('SendMoney reducer', () => {
 		  	timestamp: undefined,
 		  	inputPage: 0,
 		  	transactionNumber: -1,
+        transactionType: undefined,
   			resetClipboard: false,
   			alertShouldPopUp: false
 		})
@@ -92,6 +95,7 @@ describe('SendMoney reducer', () => {
 		  	timestamp: undefined,
 		  	inputPage: 0,
 		  	transactionNumber: -1,
+        transactionType: undefined,
   			resetClipboard: false,
   			alertShouldPopUp: false
 		})
@@ -114,6 +118,7 @@ describe('SendMoney reducer', () => {
 		  	timestamp: undefined,
 		  	inputPage: Page.EnterAmount,
 		  	transactionNumber: -1,
+        transactionType: undefined,
         	resetClipboard: false,
   			alertShouldPopUp: false
 		})
@@ -127,7 +132,8 @@ describe('SendMoney reducer', () => {
 	        	message: 'Done',
 	        	amountPaid: 5,
 	        	timestamp: '10.10.2017',
-	        	transactionNumber: '000012'
+	        	transactionNumber: '000012',
+            transactionType: 'member'
 	      	})
 	    ).to.deep.equal({
 		  	payeeId: '',
@@ -140,6 +146,7 @@ describe('SendMoney reducer', () => {
 		  	timestamp: '10.10.2017',
 		  	inputPage: Page.PaymentComplete,
 		  	transactionNumber: '000012',
+        transactionType: 'member',
   			resetClipboard: false,
   			alertShouldPopUp: false
 		})
@@ -162,6 +169,7 @@ describe('SendMoney reducer', () => {
 		  	timestamp: undefined,
 		  	inputPage: Page.Ready,
 		  	transactionNumber: -1,
+        transactionType: undefined,
           	resetClipboard: false,
   			alertShouldPopUp: false
 		})
@@ -179,6 +187,7 @@ describe('SendMoney reducer', () => {
 				timestamp: undefined,
 				inputPage: Page.EnterAmount,
 				transactionNumber: -1,
+        transactionType: undefined,
 				resetClipboard: false,
 				alertShouldPopUp: false
 			}, {
@@ -195,6 +204,7 @@ describe('SendMoney reducer', () => {
 		  	timestamp: undefined,
 		  	inputPage: Page.Ready,
 		  	transactionNumber: -1,
+        transactionType: undefined,
           	resetClipboard: true,
   			alertShouldPopUp: false
 		})
@@ -217,6 +227,7 @@ describe('SendMoney reducer', () => {
 		  	timestamp: undefined,
 		  	inputPage: Page.Ready,
 		  	transactionNumber: -1,
+        transactionType: undefined,
   			resetClipboard: false,
   			alertShouldPopUp: false
 		})
