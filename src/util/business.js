@@ -4,15 +4,12 @@ import haversine from 'haversine'
 const BUSINESS_LIST_MAX_LENGTH = 50
 
 export const addColorCodes = (list) => {
-    const newList = list
-    _.each(newList, (component, index, newList) => {
-        const compareColorCodes = (distance) =>
-            index >= distance && component.colorCode === newList[index - distance].colorCode
-        do {
-            component.colorCode = Math.floor(Math.random() * 4)
-        } while (compareColorCodes(1) || compareColorCodes(2))
+    let colorCode = Math.floor(Math.random() * 4)
+    _.forEach(list, (component) => {
+        component.colorCode = colorCode % 4
+        colorCode++
     })
-    return newList
+    return list
 }
 
 const orderBusinessList = (viewport) => (business) => business.address.location ? haversine(viewport, business.address.location) : Number.MAX_VALUE
@@ -83,4 +80,3 @@ export const getBusinessesByExclusiveFilter = (businesses, activeFilters, catego
 export const isIncorrectLocation = (location) => {
     return _.inRange(location.longitude, -0.01, 0.01) && _.inRange(location.latitude, -0.01, 0.01)
   }
-

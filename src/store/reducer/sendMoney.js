@@ -2,8 +2,9 @@ import moment from 'moment'
 
 import { makePayment } from '../../api/payments'
 import merge from '../../util/merge'
-import { loadMoreTransactions } from './transaction'
+import { loadMoreTransactions, updateTransactions } from './transaction'
 import { UNEXPECTED_ERROR, UNAUTHORIZED_ACCESS } from '../../api/apiError'
+import { navigateToTab } from './navigation'
 import { logout } from './login'
 
 const initialState = {
@@ -94,11 +95,13 @@ export const sendTransaction = (username) =>
         amount: amount
       }, dispatch)
       .then((result) => {
-        dispatch(loadMoreTransactions())
+        dispatch(updateTransactions())
         dispatch(updatePayee(result.toUser.id))
         dispatch(transactionComplete(true, 'Transaction complete', amount,
             moment(result.date).format('MMMM Do YYYY, h:mm:ss a'),
-            result.transactionNumber, result.type.to.internalName))
+            result.transactionNumber, result.type.to.internalName)
+        )
+        dispatch(navigateToTab(0))
       })
       .catch(err => {
         if (err.type === UNAUTHORIZED_ACCESS) {
