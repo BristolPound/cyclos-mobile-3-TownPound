@@ -81,7 +81,11 @@ const mapDispatchToProps = (dispatch) =>
 const mapStateToProps = (state) => ({
     ...state.navigation,
     userShortDisplay: state.account.details.shortDisplay,
-    payeeShortDisplay: state.business.traderScreenBusinessId ? state.business.businessList[state.business.traderScreenBusinessId].fields.username : '',
+    payeeShortDisplay: state.business.traderScreenBusinessId
+          ? state.business.businessList[state.business.traderScreenBusinessId].fields.username
+          : state.person.selectedPerson
+            ? state.person.selectedPerson.shortDisplay
+            : '',
     loginFormOpen: state.login.loginFormOpen
 })
 

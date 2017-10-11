@@ -103,7 +103,7 @@ class SendMoney extends React.Component {
 
   render () {
     let inputProps
-    const { payee } = this.props
+    const { payee, payeeShortDisplay } = this.props
 
     if (this.props.resetClipboard) {
       Clipboard.setString(tempClipboardString)
@@ -117,7 +117,7 @@ class SendMoney extends React.Component {
         accessibilityLabel: labels.PAYMENT_COMPLETE
       }
     }
-    else if (!payee.fields.username) {
+    else if (!payeeShortDisplay) {
       inputProps = {
         buttonText: labels.CASH_ONLY_BUSINESS,
         onButtonPress: () => {},
@@ -181,7 +181,7 @@ class SendMoney extends React.Component {
           inputProps = {
             buttonText: labels.CONFIRM,
             withdrawText: labels.CONFIRM_WITHDRAWAL,
-            onButtonPress: () => { this.props.sendTransaction(payee.fields.username); this.nextPage() },
+            onButtonPress: () => { this.props.sendTransaction(payeeShortDisplay); this.nextPage() },
             onWithdrawPress: () => {this.props.sendTransaction(payee.fields.cashpointUsername); this.nextPage() },
             amount: this.props.amount,
             payee: payee.display || payee.name || "",
@@ -219,7 +219,11 @@ class SendMoney extends React.Component {
       }
     }
 
-    return <InputComponent {...inputProps} setOverlayOpen={this.props.setOverlayOpen} cashpoint={payee.fields.cashpointUsername} />
+    let cashpoint = payee.fields
+      ? payee.fields.cashpointUsername
+      : null
+
+    return <InputComponent {...inputProps} setOverlayOpen={this.props.setOverlayOpen} cashpoint={cashpoint} />
   }
 }
 
@@ -228,11 +232,17 @@ const mapDispatchToProps = (dispatch) =>
 
 const mapStateToProps = (state) => {
   const payee = state.business.traderScreenBusiness || state.person.selectedPerson || {}
+  const payeeShortDisplay = state.business.traderScreenBusinessId
+        ? state.business.businessList[state.business.traderScreenBusinessId].fields.username
+        : state.person.selectedPerson
+          ? state.person.selectedPerson.shortDisplay
+          : ''
   const paymentTypes = payee && payee.paymentTypes || undefined
 
   return {
     ...state.sendMoney,
     payee,
+    payeeShortDisplay,
     paymentTypes,
     balance: state.account.balance,
     loggedIn: state.login.loginStatus === LOGIN_STATUSES.LOGGED_IN,
