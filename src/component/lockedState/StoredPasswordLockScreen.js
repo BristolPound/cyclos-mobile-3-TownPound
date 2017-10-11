@@ -18,6 +18,7 @@ class StoredPasswordLockScreen extends KeyboardComponent {
       super()
       this.state.enteredPIN = ''
       this.THROTTLED_DELAY = 300
+      this.state.maxKeyboardHeight = 0
     }
 
     updateEnteredPIN(enteredPIN) {
@@ -60,70 +61,72 @@ class StoredPasswordLockScreen extends KeyboardComponent {
 
     render() {
         return (
-            <Animated.View style={merge(style.outerContainer, {bottom: this.state.keyboardHeight})}>
-                <View style={style.container}>
-                    <View style={style.header}>
-                      <Text style={style.headerText}>
-                        {this.props.headerMessage || "Unlock App"}
-                      </Text>
-                    </View>
-                    <View style={style.instructionWrapper}>
-                      <Text style={style.instructionText}>
-                          For your privacy, the app was locked.
-                          To unlock, please enter your Bristol Pound banking PIN, as you specified when agreeing to "Quick Login". Or choose "Logout" to just browse.
-                      </Text>
-                      { this.props.disabledUnlock &&
-                        <View>
-                            <Text style={merge(style.errorText, { paddingTop: 10 })}>
-                                No internet available right now, log out just to browse
-                            </Text>
-                        </View>
-                      }
-                      { this.props.error &&
+          this.props.showLockScreen
+            ?  <Animated.View style={merge(style.outerContainer, {bottom: this.state.maxkeyboardHeight})}>
+                  <View style={style.container}>
+                      <View style={style.header}>
+                        <Text style={style.headerText}>
+                          {this.props.headerMessage || "Unlock App"}
+                        </Text>
+                      </View>
+                      <View style={style.instructionWrapper}>
+                        <Text style={style.instructionText}>
+                            For your privacy, the app was locked.
+                            To unlock, please enter your Bristol Pound banking PIN, as you specified when agreeing to "Quick Login". Or choose "Logout" to just browse.
+                        </Text>
+                        { this.props.disabledUnlock &&
                           <View>
                               <Text style={merge(style.errorText, { paddingTop: 10 })}>
-                                  The PIN you entered was incorrect. If you have forgotten the PIN, choose "Logout".
+                                  No internet available right now, log out just to browse
                               </Text>
                           </View>
-                      }
-                    </View>
-                    <View style={style.form}/>
-                    <View style={style.pinEntry}>
-                      <TextInput
-                          placeholder="Enter PIN"
-                          autoFocus={true}
-                          value={this.state.enteredPIN}
-                          accessibilityLabel={'Unlock PIN'}
-                          style={style.textInput}
-                          keyboardType='numeric'
-                          maxLength={PIN_LENGTH}
-                          placeholderTextColor={Colors.gray4}
-                          secureTextEntry={true}
-                          underlineColorAndroid={Colors.transparent}
-                          onChangeText={(value) => this.updateEnteredPIN(value)}
-                          onSubmitEditing={() => this.inputValid() && this.props.headerMessage == '' && this.unlockAttempt()}
-                          />
-                    </View>
-                    <View style={style.buttonRow}>
-                        <TouchableOpacity
-                            style={merge(style.buttonContainer, { backgroundColor: Colors.primaryBlue})}
-                            onPress={() => this.props.logout && this.props.logout()}>
-                            <Text style={merge(style.buttonText, { color: 'white' })}>
-                                Logout
+                        }
+                        { this.props.error &&
+                            <View>
+                                <Text style={merge(style.errorText, { paddingTop: 10 })}>
+                                    The PIN you entered was incorrect. If you have forgotten the PIN, choose "Logout".
+                                </Text>
+                            </View>
+                        }
+                      </View>
+                      <View style={style.form}/>
+                      <View style={style.pinEntry}>
+                        <TextInput
+                            placeholder="Enter PIN"
+                            autoFocus={true}
+                            value={this.state.enteredPIN}
+                            accessibilityLabel={'Unlock PIN'}
+                            style={style.textInput}
+                            keyboardType='numeric'
+                            maxLength={PIN_LENGTH}
+                            placeholderTextColor={Colors.gray4}
+                            secureTextEntry={true}
+                            underlineColorAndroid={Colors.transparent}
+                            onChangeText={(value) => this.updateEnteredPIN(value)}
+                            onSubmitEditing={() => this.inputValid() && this.props.headerMessage == '' && this.unlockAttempt()}
+                            />
+                      </View>
+                      <View style={style.buttonRow}>
+                          <TouchableOpacity
+                              style={merge(style.buttonContainer, { backgroundColor: Colors.primaryBlue})}
+                              onPress={() => this.props.logout && this.props.logout()}>
+                              <Text style={merge(style.buttonText, { color: 'white' })}>
+                                  Logout
+                              </Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            disabled={!this.inputValid()}
+                            style={merge(style.buttonContainer, {backgroundColor: this.getButtonColor()})}
+                            onPress={_.throttle(this.unlockAttempt.bind(this), this.THROTTLED_DELAY)}
+                          >
+                            <Text style={merge(style.buttonText, {color: this.getButtonTextColor()})}>
+                              Unlock
                             </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          disabled={!this.inputValid()}
-                          style={merge(style.buttonContainer, {backgroundColor: this.getButtonColor()})}
-                          onPress={_.throttle(this.unlockAttempt.bind(this), this.THROTTLED_DELAY)}
-                        >
-                          <Text style={merge(style.buttonText, {color: this.getButtonTextColor()})}>
-                            Unlock
-                          </Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </Animated.View>
+                          </TouchableOpacity>
+                      </View>
+                  </View>
+              </Animated.View>
+            : null
         )
     }
 }

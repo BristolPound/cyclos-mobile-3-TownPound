@@ -229,18 +229,17 @@ class LockScreen extends React.Component {
         }
         <Overlay overlayVisible={this.state.headerMessage ? true : false}
                  onPress={() => {}}
-                 underlayColor={Colors.transparent}/>
-        {this.props.storePassword
-          ?   <StoredPasswordLockScreen
+                 underlayColor={Colors.transparent}
+        />
+        <StoredPasswordLockScreen
                 storedPasswordUnlock={this.storedPasswordUnlock.bind(this)}
                 error={this.state.unlockError}
                 failedAttempts={this.state.failedAttempts}
                 logout={() => this.logoutPress()}
                 disabledUnlock={this.props.loginReplacement && !this.props.connection}
                 headerMessage={this.state.headerMessage}
-              />
-          :   null
-        }
+                showLockScreen={this.props.storePassword}
+          />
         <NetworkConnection top={true}/>
       </View>
     )
