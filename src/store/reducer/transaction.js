@@ -1,4 +1,5 @@
 import { ListView } from 'react-native'
+import { createTransform } from 'redux-persist'
 import merge from '../../util/merge'
 import _ from 'lodash'
 import { calculateMonthlyTotalSpent,
@@ -12,7 +13,7 @@ import { accountBalanceReceived } from './account'
 
 const lastIndex = (arr) => arr.length - 1
 
-const initialState = {
+export const initialState = {
   refreshing: false,
   selectedMonthIndex: 0,
   loadingTransactions: false,
@@ -24,6 +25,12 @@ const initialState = {
   }),
   spendingListRef: null
 }
+
+export const transform = createTransform(
+  (state) => _.pick(state, ['transactions', 'monthlyTotalSpent']),
+  (state) => state,
+  {whitelist: ['transaction']}
+)
 
 export const selectMonth = (monthIndex) => (dispatch) => {
     dispatch ({
@@ -114,7 +121,7 @@ const filterTransactionsByMonthIndex = (state, monthIndex) =>
     ? filterTransactionsByMonth(state.transactionsDataSource, state.monthlyTotalSpent[monthIndex])
     : state.transactionsDataSource.cloneWithRowsAndSections({}, [])
 
-const reducer = (state = initialState, action) => {
+export const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'navigation/NAVIGATE_TO_TAB':
       if (action.tabIndex === 1) {

@@ -2,6 +2,7 @@ import haversine from 'haversine'
 import _ from 'lodash'
 import moment from 'moment'
 import { Dimensions } from 'react-native'
+import { createTransform } from 'redux-persist'
 import merge from '../../util/merge'
 import { getPaymentData } from '../../api/payments'
 import { getClosestBusinesses, offsetOverlappingBusinesses, getBusinessesByFilter, getBusinessesByExclusiveFilter } from '../../util/business'
@@ -36,6 +37,29 @@ export const tabModes = {
   serach: 'search'
 }
 
+export const initialState = {
+  businessList: [],
+  categories: [],
+  businessListTimestamp: null,
+  selectedBusinessId: undefined,
+  closestBusinesses: [],
+  activeFilters: [],
+  filteredBusinesses: [],
+  mapViewport: MapViewport,
+  forceRegion: MapViewport,
+  tabMode: tabModes.default,
+  traderScreenBusinessId: undefined,
+  traderScreenBusiness: undefined,
+  geolocationStatus: null,
+  businessListRef: null,
+}
+
+export const transform = createTransform(
+  (state) => _.pick(state, ['businessList', 'businessListTimestamp', 'categories']),
+  (state) => (state),
+  {whitelist: ['business']}
+)
+
 function formatCategory (category) {
     return {'id': category.id, 'label': category.label}
 }
@@ -56,23 +80,6 @@ const businessArea = (viewport) =>
   merge(viewport, {
     latitudeDelta: viewport.latitudeDelta * (height / (height + mapOverflow * 2) - 2 * mapCenterModifier)
   })
-
-const initialState = {
-  businessList: [],
-  categories: [],
-  businessListTimestamp: null,
-  selectedBusinessId: undefined,
-  closestBusinesses: [],
-  activeFilters: [],
-  filteredBusinesses: [],
-  mapViewport: MapViewport,
-  forceRegion: MapViewport,
-  tabMode: tabModes.default,
-  traderScreenBusinessId: undefined,
-  traderScreenBusiness: undefined,
-  geolocationStatus: null,
-  businessListRef: null,
-}
 
 export const businessListReceived = (businessList) => ({
   type: 'business/BUSINESS_LIST_RECEIVED',
@@ -202,7 +209,7 @@ export const loadBusinessList = (force = false) => (dispatch, getState) => {
     }
   }
 
-const reducer = (state = initialState, action) => {
+export const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'business/BUSINESS_LIST_RECEIVED':
       const offsetBusinesses = offsetOverlappingBusinesses(action.businessList)

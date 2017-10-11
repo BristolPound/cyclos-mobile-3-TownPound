@@ -18,7 +18,7 @@ export const LOGIN_STATUSES = {
 
 export const unlockCharNo = 3
 
-const initialState = {
+export const initialState = {
   loginStatus: LOGIN_STATUSES.LOGGED_OUT,
   loginFormOpen: false,
   privacyPolicyOpen: false,
@@ -34,6 +34,12 @@ const initialState = {
   encryptionKey: '',
   unlockCode: ''
 }
+
+export const transform = createTransform(
+  (state) => _.pick(state, ['loggedInUsername', 'loggedInName', 'acceptedUsernames', 'encryptedPassword', 'storePassword', 'AUID']),
+  (state) => ({...initialState, ...state}),
+  {whitelist: ['login']}
+)
 
 export const loginInProgress = () => ({
   type: 'login/LOGIN_IN_PROGRESS'
@@ -278,7 +284,7 @@ export const logout = () => dispatch => {
   dispatch(resetAccount())
 }
 
-const reducer = (state = initialState, action) => {
+export const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'login/LOGGED_IN':
       state = merge(state, {

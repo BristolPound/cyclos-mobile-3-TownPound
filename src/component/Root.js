@@ -28,13 +28,6 @@ class Root extends React.Component {
 
 
   render () {
-      // The app is rendered before the state has been loaded via redux-persist. This state property allows
-      // the main 'app' UI to be hidden until initialised.
-      if (!this.props.stateInitialised) {
-        return (
-          <View style={{flex: 1}}/>
-        )
-      }
       let bodyComponent
       if (this.props.mainComponent === mainComponent.returningLogin) {
         bodyComponent = <ReturningLogin />
